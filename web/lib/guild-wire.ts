@@ -2,7 +2,7 @@ import { getPrisma } from "@/lib/prisma";
 
 export type GuildWireItem = {
   id: string;
-  kind: "welcome" | "departure" | "system";
+  kind: "welcome" | "departure" | "notice" | "system";
   title: string;
   summary: string;
   occurredAt: Date;
@@ -25,7 +25,7 @@ export async function getGuildWire() {
 
   try {
     const events = await getPrisma().automationEvent.findMany({
-      where: { kind: { in: ["MEMBER_WELCOME", "MEMBER_DEPARTURE", "ROSTER_BASELINE"] } },
+      where: { kind: { in: ["MEMBER_WELCOME", "MEMBER_DEPARTURE", "ROSTER_BASELINE", "OFFICER_NOTICE"] } },
       orderBy: { occurredAt: "desc" },
       take: 8,
     });
@@ -33,8 +33,18 @@ export async function getGuildWire() {
     if (!events.length) return fallbackItems;
     return events.map((event): GuildWireItem => ({
       id: event.id,
-      kind: event.kind === "MEMBER_WELCOME" ? "welcome" : event.kind === "MEMBER_DEPARTURE" ? "departure" : "system",
-      title: event.kind === "MEMBER_WELCOME" ? "Welcome to the band" : event.kind === "MEMBER_DEPARTURE" ? "Until the next gig" : "Roster connected",
+      kind: event.kind === "MEMBER_WELCOME"
+        ? "welcome"
+        : event.kind === "MEMBER_DEPARTURE"
+          ? "departure"
+          : event.kind === "OFFICER_NOTICE"
+            ? "notice"
+            : "system",
+      title: event.title ?? (event.kind === "MEMBER_WELCOME"
+        ? "Welcome to the band"
+        : event.kind === "MEMBER_DEPARTURE"
+          ? "Until the next gig"
+          : "Roster connected"),
       summary: event.summary,
       occurredAt: event.occurredAt,
       status: event.status.toLowerCase() as GuildWireItem["status"],

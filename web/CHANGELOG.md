@@ -2,6 +2,23 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.9.0 — 2026-08-19
+
+- Added the Wall of Fame: a leaderboard celebrating the guild's top galactic power and maxed raid-ticket members.
+
+## 0.8.0 — 2026-08-19
+
+- Added Discord OAuth account linking with ally-code verification, so members can prove ownership of their roster entry.
+- Fixed the previously dormant departure automation by giving members a way to actually set `discordUserId`.
+- Added a personalized "cantina card" on the Members panel showing linked members their live GP, raid tickets, and Wall of Shame status.
+
+## 0.7.0 — 2026-08-19
+
+- Wired the dashboard metric cards to the latest live guild snapshot instead of static placeholders.
+- Added the Wall of Shame: a themed bulletin surfacing under-geared or inactive members from the latest sync.
+- Added an officer's desk with a shared-password sign-in and a composer that posts Cantina notices straight to the Guild Wire and Discord.
+- Made the automation feed, roster preview, and Discord sync status reflect real data across desktop and mobile.
+
 ## 0.6.0 — 2026-08-19
 
 - Added the Guild Wire as the shared website and Discord communications feed.

@@ -66,31 +66,34 @@ function authorizationHeaders(path: string, body: string): Record<string, string
   };
 }
 
-export async function fetchGuildRoster(): Promise<GuildRoster> {
+async function postComlink<T>(path: string, payload: Record<string, unknown>): Promise<T> {
   const baseUrl = process.env.COMLINK_URL;
-  const guildId = process.env.SWGOH_GUILD_ID;
-  if (!baseUrl || !guildId) {
-    throw new Error("COMLINK_URL and SWGOH_GUILD_ID are required");
-  }
+  if (!baseUrl) throw new Error("COMLINK_URL is required");
 
-  const path = "/guild";
-  const body = JSON.stringify({
-    payload: { guildId, includeRecentGuildActivityInfo: true },
-    enums: false,
-  });
+  const body = JSON.stringify({ payload, enums: false });
   const response = await fetch(`${baseUrl.replace(/\/$/, "")}${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "User-Agent": "BluesBrothersDroid/0.6",
+      "User-Agent": "BluesBrothersDroid/0.7",
       ...authorizationHeaders(path, body),
     },
     body,
     signal: AbortSignal.timeout(45_000),
   });
 
-  if (!response.ok) throw new Error(`Comlink returned HTTP ${response.status}`);
-  const payload = (await response.json()) as ComlinkResponse;
+  if (!response.ok) throw new Error(`Comlink returned HTTP ${response.status} for ${path}`);
+  return (await response.json()) as T;
+}
+
+export async function fetchGuildRoster(): Promise<GuildRoster> {
+  const guildId = process.env.SWGOH_GUILD_ID;
+  if (!guildId) throw new Error("SWGOH_GUILD_ID is required");
+
+  const payload = await postComlink<ComlinkResponse>("/guild", {
+    guildId,
+    includeRecentGuildActivityInfo: true,
+  });
   const guild = payload.guild;
   if (!guild || !Array.isArray(guild.member)) {
     throw new Error("Comlink returned an unexpected guild response");
@@ -117,4 +120,31 @@ export async function fetchGuildRoster(): Promise<GuildRoster> {
   });
 
   return { guildId, name: guild.profile?.name || "Blues Brothers", members };
+}
+
+type ComlinkPlayerResponse = {
+  name?: string;
+  playerId?: string;
+  allyCode?: string | number;
+};
+
+export type ComlinkPlayer = {
+  playerId: string;
+  name: string;
+};
+
+export function sanitizeAllyCode(input: string) {
+  const digits = input.replace(/\D/g, "");
+  return digits.length === 9 ? digits : null;
+}
+
+export async function fetchPlayerByAllyCode(allyCode: string): Promise<ComlinkPlayer | null> {
+  const clean = sanitizeAllyCode(allyCode);
+  if (!clean) return null;
+
+  const payload = await postComlink<ComlinkPlayerResponse>("/player", { allyCode: clean });
+  const playerId = String(payload.playerId ?? "").trim();
+  if (!playerId) return null;
+
+  return { playerId, name: String(payload.name || "Unknown player") };
 }

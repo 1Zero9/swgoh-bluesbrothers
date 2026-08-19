@@ -8,9 +8,10 @@ type MobileMenuProps = {
   items: string[][];
   version: string;
   discordUrl: string;
+  syncLabel: string;
 };
 
-export default function MobileMenu({ items, version, discordUrl }: MobileMenuProps) {
+export default function MobileMenu({ items, version, discordUrl, syncLabel }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function MobileMenu({ items, version, discordUrl }: MobileMenuPro
             <div className="drawer-footer">
               <div><span>Colour mode</span><ThemeToggle /></div>
               <a className="drawer-discord" href={discordUrl} target="_blank" rel="noreferrer"><span aria-hidden="true">◈</span> Open Discord</a>
-              <p><i /> Comlink connected · Last capture 18 Aug, 23:00</p>
+              <p><i /> {syncLabel}</p>
             </div>
           </aside>
         </div>

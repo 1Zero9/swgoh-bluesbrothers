@@ -142,6 +142,7 @@ model AutomationEvent {
   playerId         String?
   kind             String
   status           AutomationStatus @default(PENDING)
+  title            String?
   summary          String
   metadata         Json?
   discordChannelId String?
