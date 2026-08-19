@@ -91,3 +91,54 @@ def test_membership_changes_and_gp_gains() -> None:
     assert "Joined: New Player" in report
     assert "Left: Old Player" in report
     assert "Player One: **+100K**" in report
+
+
+def test_new_member_has_inactivity_grace_period() -> None:
+    now = datetime.fromtimestamp(1_700_100_000, tz=timezone.utc)
+    current = snapshot(galactic_legends=None)
+    current = GuildSnapshot(
+        **{
+            **current.to_dict(),
+            "member_activity": [
+                MemberActivity(
+                    "new",
+                    "New Player",
+                    9_000_000,
+                    0,
+                    1_699_900_000_000,
+                    int(now.timestamp()) - 3600,
+                ),
+            ],
+            "raid_tickets": 0,
+        }
+    )
+
+    report = render_officer_report(current, now=now)
+    assert "Inactive 24h+: **0**" in report
+    assert "**Inactive 24h+**\n• None" in report
+
+
+def test_long_officer_report_is_limited_for_discord() -> None:
+    current = snapshot(galactic_legends=None)
+    current = GuildSnapshot(
+        **{
+            **current.to_dict(),
+            "members": 50,
+            "member_activity": [
+                MemberActivity(
+                    str(index),
+                    f"Player {index} With An Unusually Long Display Name",
+                    9_000_000,
+                    100,
+                    1_700_050_000_000,
+                )
+                for index in range(50)
+            ],
+            "raid_tickets": 5_000,
+        }
+    )
+    now = datetime.fromtimestamp(1_700_100_000, tz=timezone.utc)
+
+    report = render_officer_report(current, now=now)
+    assert len(report) <= 2_000
+    assert report.endswith("…report truncated")

@@ -47,6 +47,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--live", action="store_true", help="Fetch live guild data from Comlink")
     parser.add_argument("--send", action="store_true", help="Post the report to Discord")
     parser.add_argument(
+        "--alert",
+        metavar="MESSAGE",
+        help="Post an operational alert to Discord without creating a report",
+    )
+    parser.add_argument(
         "--report",
         choices=("summary", "officer"),
         default="summary",
@@ -61,6 +66,19 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = build_parser().parse_args()
     load_dotenv(PROJECT_ROOT / ".env")
+
+    if args.alert is not None:
+        if args.live or args.input or args.send or args.no_save or args.report != "summary":
+            raise SystemExit("--alert cannot be combined with report options")
+        webhook_url = os.environ.get("DISCORD_WEBHOOK_URL", "")
+        if not webhook_url:
+            raise SystemExit("DISCORD_WEBHOOK_URL is missing; add it to .env")
+        post_webhook(
+            webhook_url,
+            f"**BLUES BROTHERS DROID — AUTOMATION ALERT**\n\n{args.alert}",
+        )
+        print("Alert sent to Discord.")
+        return
 
     if args.live and args.input:
         raise SystemExit("Choose either --live or --input, not both")

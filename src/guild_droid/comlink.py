@@ -66,7 +66,12 @@ def normalize_guild(response: dict[str, Any]) -> GuildSnapshot:
         if last_activity_time < inactive_cutoff_ms:
             inactive_24h += 1
         member_tickets = 0
-        for contribution in member.get("memberContribution", []):
+        contributions = member.get("memberContribution") or []
+        if not isinstance(contributions, list):
+            contributions = []
+        for contribution in contributions:
+            if not isinstance(contribution, dict):
+                continue
             if _integer(contribution.get("type")) == 2:
                 member_tickets = _integer(contribution.get("currentValue"))
                 raid_tickets += member_tickets

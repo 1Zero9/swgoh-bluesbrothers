@@ -10,12 +10,26 @@ comlink_pid=""
 mkdir -p "$log_dir"
 
 cleanup() {
+  status=$?
+  trap - EXIT INT TERM
+
   if [ -n "$comlink_pid" ]; then
     kill "$comlink_pid" 2>/dev/null || true
     wait "$comlink_pid" 2>/dev/null || true
   fi
+
+  if [ "$status" -ne 0 ] && [ -x "$reporter" ]; then
+    failed_at=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    "$reporter" --alert \
+      "The scheduled officer report failed with exit status ${status} at ${failed_at}. Check data/logs/daily.err.log on the reporting Mac." \
+      || true
+  fi
+
+  exit "$status"
 }
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 if [ ! -x "$comlink" ]; then
   echo "Comlink is missing. Run scripts/setup_comlink.sh." >&2

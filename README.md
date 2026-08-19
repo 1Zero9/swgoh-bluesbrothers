@@ -84,7 +84,10 @@ which the guild was created, so adjust the schedule once officers confirm it.
 
 The scheduled runner starts Comlink, waits for it to become ready, posts one
 officer report, saves the snapshot, and shuts down the Comlink process it
-started. Logs are stored under `data/logs/`.
+started. Logs are stored under `data/logs/`. If a scheduled run fails, the
+runner attempts to post an automation alert to the configured Discord webhook.
+If Discord itself is unavailable, the failure is recorded only in the local
+error log.
 
 The installed LaunchAgent source is:
 
@@ -104,12 +107,17 @@ pytest
 `config.json` contains the public guild ID and the administrator's public ally
 code. Secrets belong only in `.env` or the hosting provider's secret store.
 
-## Next milestone
+## Current status and next milestones
 
-Once SWGOH.GG approves the API application, it can become a second data source
-for roster details not included in the basic Comlink guild response:
+The live Comlink report, Discord delivery, snapshot comparison, officer view,
+and daily macOS schedule are operational. The immediate milestone is to observe
+several consecutive daily runs, confirm the guild's actual ticket reset time,
+and adjust the schedule if necessary.
+
+Once SWGOH.GG approves the API application, it can become an optional second
+data source for roster details not included in the basic Comlink guild response:
 
 1. Add the API key to `.env` as `SWGOH_GG_API_KEY=...`.
 2. Implement the authenticated data adapter.
-3. Replace the sample snapshot with live guild data.
-4. Schedule one daily run after the guild's usual SWGOH.GG sync time.
+3. Add roster-focused reports that use the additional data.
+4. Schedule those reports after the guild's usual SWGOH.GG sync time.

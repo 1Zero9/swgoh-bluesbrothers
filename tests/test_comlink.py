@@ -33,3 +33,27 @@ def test_normalize_guild() -> None:
     assert snapshot.member_activity[0].name == "Unknown player"
     assert snapshot.member_activity[0].raid_tickets == 500
     assert snapshot.member_activity[0].guild_join_time == 1_600_000_000
+
+
+def test_normalize_guild_tolerates_missing_contributions() -> None:
+    response = {
+        "guild": {
+            "profile": {"name": "Blues Brothers"},
+            "member": [
+                {
+                    "playerId": "one",
+                    "playerName": "Player One",
+                    "memberContribution": None,
+                },
+                {
+                    "playerId": "two",
+                    "playerName": "Player Two",
+                    "memberContribution": [None, "unexpected"],
+                },
+            ],
+        }
+    }
+
+    snapshot = normalize_guild(response)
+    assert snapshot.raid_tickets == 0
+    assert [member.raid_tickets for member in snapshot.member_activity] == [0, 0]
