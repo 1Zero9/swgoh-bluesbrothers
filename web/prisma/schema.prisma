@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GuildEventType {
+  TERRITORY_BATTLE
+  TERRITORY_WAR
+  RAID
+}
+
+enum MembershipState {
+  ACTIVE
+  LEFT
+}
+
+enum AutomationStatus {
+  PENDING
+  SENT
+  FAILED
+  ACKNOWLEDGED
+}
+
+model Guild {
+  id               String            @id
+  name             String
+  discordGuildId   String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  snapshots        GuildSnapshot[]
+  membershipTerms  MembershipTerm[]
+  events           GuildEvent[]
+  automationEvents AutomationEvent[]
+}
+
+model Player {
+  id               String            @id
+  allyCode         String?           @unique
+  currentName      String
+  discordUserId    String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  names            PlayerName[]
+  membershipTerms  MembershipTerm[]
+  snapshots        MemberSnapshot[]
+  automationEvents AutomationEvent[]
+}
+
+model PlayerName {
+  id        String   @id @default(cuid())
+  playerId  String
+  name      String
+  firstSeen DateTime
+  lastSeen  DateTime
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, lastSeen])
+}
+
+model MembershipTerm {
+  id                  String          @id @default(cuid())
+  guildId             String
+  playerId            String
+  state               MembershipState @default(ACTIVE)
+  joinedAt            DateTime
+  leftAt              DateTime?
+  welcomeSentAt       DateTime?
+  departureNotifiedAt DateTime?
+  guild               Guild           @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  player              Player          @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([guildId, playerId, joinedAt])
+  @@index([guildId, state])
+}
+
+model GuildSnapshot {
+  id             String           @id @default(cuid())
+  guildId        String
+  capturedAt     DateTime
+  memberCount    Int
+  galacticPower  BigInt
+  characterPower BigInt
+  shipPower      BigInt
+  raidTickets    Int?
+  rawPayload     Json?
+  guild          Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  members        MemberSnapshot[]
+
+  @@unique([guildId, capturedAt])
+  @@index([capturedAt])
+}
+
+model MemberSnapshot {
+  id              String        @id @default(cuid())
+  guildSnapshotId String
+  playerId        String
+  galacticPower   BigInt
+  raidTickets     Int?
+  lastActivityAt  DateTime?
+  guildSnapshot   GuildSnapshot @relation(fields: [guildSnapshotId], references: [id], onDelete: Cascade)
+  player          Player        @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([guildSnapshotId, playerId])
+  @@index([playerId])
+}
+
+model GuildEvent {
+  id          String         @id @default(cuid())
+  guildId     String
+  externalId  String?
+  type        GuildEventType
+  name        String
+  startsAt    DateTime?
+  endsAt      DateTime?
+  finalResult Json?
+  guild       Guild          @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  snapshots   EventSnapshot[]
+
+  @@unique([guildId, type, externalId])
+  @@index([guildId, type, startsAt])
+}
+
+model EventSnapshot {
+  id         String     @id @default(cuid())
+  eventId    String
+  capturedAt DateTime
+  phase      String?
+  payload    Json
+  event      GuildEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, capturedAt])
+}
+
+model AutomationEvent {
+  id               String           @id @default(cuid())
+  guildId          String
+  playerId         String?
+  kind             String
+  status           AutomationStatus @default(PENDING)
+  summary          String
+  metadata         Json?
+  discordChannelId String?
+  discordMessageId String?
+  occurredAt       DateTime         @default(now())
+  sentAt           DateTime?
+  guild            Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  player           Player?          @relation(fields: [playerId], references: [id], onDelete: SetNull)
+
+  @@index([guildId, occurredAt])
+  @@index([status, occurredAt])
+}
