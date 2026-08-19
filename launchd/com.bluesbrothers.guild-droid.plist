@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.bluesbrothers.guild-droid</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/stephencranfield/Projects/SWGOH/scripts/run_daily.sh</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/stephencranfield/Projects/SWGOH</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>23</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/stephencranfield/Projects/SWGOH/data/logs/daily.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/stephencranfield/Projects/SWGOH/data/logs/daily.err.log</string>
+</dict>
+</plist>
