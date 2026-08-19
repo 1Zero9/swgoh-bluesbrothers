@@ -1,5 +1,7 @@
 # Blues Brothers Droid
 
+[![CI](https://github.com/1Zero9/swgoh-bluesbrothers/actions/workflows/ci.yml/badge.svg)](https://github.com/1Zero9/swgoh-bluesbrothers/actions/workflows/ci.yml)
+
 A small, free reporting service for the **Blues Brothers** SWGOH guild.
 
 Current milestone: fetch live public guild data through SWGOH Comlink, format
