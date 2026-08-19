@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.5.0 — 2026-08-19
+
+- Added Prisma 7 with the PostgreSQL driver adapter.
+- Added deploy-time Prisma Client generation.
+- Added configuration for pooled runtime and optional direct migration URLs.
+- Added a non-sensitive database health endpoint.
+
 ## 0.4.5 — 2026-08-19
 
 - Lowered the desktop logo, navigation, and utilities to align with the cantina sign.
