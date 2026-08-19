@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.6.0 — 2026-08-19
+
+- Added the Guild Wire as the shared website and Discord communications feed.
+- Added a protected daily roster sync with a safe first-run membership baseline.
+- Added automatic welcome and departure announcements through Discord.
+- Added Discord member-role removal for departed players with verified account mappings.
+- Added the optional official Discord server-presence widget and direct conversation links.
+
 ## 0.5.0 — 2026-08-19
 
 - Added Prisma 7 with the PostgreSQL driver adapter.

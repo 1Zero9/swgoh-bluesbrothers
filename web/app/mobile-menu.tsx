@@ -7,9 +7,10 @@ import ThemeToggle from "./theme-toggle";
 type MobileMenuProps = {
   items: string[][];
   version: string;
+  discordUrl: string;
 };
 
-export default function MobileMenu({ items, version }: MobileMenuProps) {
+export default function MobileMenu({ items, version, discordUrl }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function MobileMenu({ items, version }: MobileMenuProps) {
 
             <div className="drawer-footer">
               <div><span>Colour mode</span><ThemeToggle /></div>
-              <button className="drawer-discord" type="button" disabled><span aria-hidden="true">◈</span> Connect Discord</button>
+              <a className="drawer-discord" href={discordUrl} target="_blank" rel="noreferrer"><span aria-hidden="true">◈</span> Open Discord</a>
               <p><i /> Comlink connected · Last capture 18 Aug, 23:00</p>
             </div>
           </aside>

@@ -1,14 +1,17 @@
 import Image from "next/image";
 import packageInfo from "../package.json";
+import { getDiscordUrl } from "@/lib/discord";
+import { getGuildWire } from "@/lib/guild-wire";
 import MobileMenu from "./mobile-menu";
 import ThemeToggle from "./theme-toggle";
 
 const APP_VERSION = `v${packageInfo.version}`;
+export const dynamic = "force-dynamic";
 
 const navigation = [
+  ["Guild Wire", "GW"],
   ["Operations", "OP"],
   ["Members", "MB"],
-  ["Administration", "AD"],
 ];
 
 const eventCards = [
@@ -51,7 +54,12 @@ function Mark({ label }: { label: string }) {
   return <span className="nav-mark" aria-hidden="true">{label}</span>;
 }
 
-export default function Home() {
+export default async function Home() {
+  const guildWire = await getGuildWire();
+  const discordUrl = getDiscordUrl();
+  const discordGuildId = process.env.DISCORD_GUILD_ID;
+  const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);
+
   return (
     <main className="app-shell">
       <section className="workspace" id="top">
@@ -81,11 +89,11 @@ export default function Home() {
             <div className="header-controls">
               <span className="version-label">{APP_VERSION}</span>
               <ThemeToggle />
-              <button className="discord-button" type="button" disabled aria-label="Connect Discord">
-                <span aria-hidden="true">◈</span><b>Discord</b>
-              </button>
+              <a className="discord-button" href={discordUrl} target="_blank" rel="noreferrer" aria-label="Open Blues Brothers Discord">
+                <span aria-hidden="true">◈</span><b>Open Discord</b>
+              </a>
             </div>
-            <MobileMenu items={navigation} version={APP_VERSION} />
+            <MobileMenu items={navigation} version={APP_VERSION} discordUrl={discordUrl} />
           </header>
           <div className="hero-copy">
             <div className="hero-status"><span><i /> Comlink connected</span><time>Wednesday, 19 August</time></div>
@@ -122,6 +130,47 @@ export default function Home() {
             <strong>1</strong>
             <p>Member inactive over 24h</p>
           </article>
+        </section>
+
+        <section className="guild-wire" id="guild-wire" aria-labelledby="guild-wire-heading">
+          <div className="wire-feed">
+            <div className="section-heading wire-heading">
+              <div><p className="eyebrow">Guild communications</p><h2 id="guild-wire-heading">The Guild Wire</h2></div>
+              <span className="wire-sync"><i /> Website + Discord</span>
+            </div>
+            <p className="wire-intro">Guild news lives here. The same membership announcements are sent into Discord, where the conversation continues.</p>
+            <div className="wire-list">
+              {guildWire.map((item) => (
+                <article className={`wire-item wire-${item.kind}`} key={item.id}>
+                  <span className="wire-icon" aria-hidden="true">{item.kind === "welcome" ? "+" : item.kind === "departure" ? "↗" : "↻"}</span>
+                  <div>
+                    <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
+                    <p>{item.summary}</p>
+                  </div>
+                  <span className={`wire-state state-${item.status}`}>{item.status}</span>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="discord-handoff" aria-label="Discord conversation">
+            <div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Conversation layer</p><strong>Discord stays live</strong></div></div>
+            {showDiscordWidget ? (
+              <iframe
+                className="discord-widget"
+                src={`https://discord.com/widget?id=${discordGuildId}&theme=dark`}
+                title="Blues Brothers Discord server presence"
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              />
+            ) : (
+              <div className="widget-placeholder">
+                <span><i /> Discord connected</span>
+                <p>Enable the Discord server widget to show live presence here. Messages remain private inside Discord.</p>
+              </div>
+            )}
+            <a className="discord-open" href={discordUrl} target="_blank" rel="noreferrer">Open the conversation in Discord <span>→</span></a>
+            <small>Replies, reactions and officer discussion happen securely in the Discord app.</small>
+          </aside>
         </section>
 
         <section className="section-block" id="operations">

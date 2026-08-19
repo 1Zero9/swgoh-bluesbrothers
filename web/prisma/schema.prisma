@@ -70,6 +70,7 @@ model MembershipTerm {
   leftAt              DateTime?
   welcomeSentAt       DateTime?
   departureNotifiedAt DateTime?
+  discordAccessRemovedAt DateTime?
   guild               Guild           @relation(fields: [guildId], references: [id], onDelete: Cascade)
   player              Player          @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
