@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
 import packageInfo from "../package.json";
-import { getDashboardSummary, getRosterPreview } from "@/lib/dashboard";
+import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
+import { getRosterMembers } from "@/lib/members";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import AccountLink from "./account-link";
+import MemberDirectory from "./member-directory";
 import MobileMenu from "./mobile-menu";
 import OfficerDesk from "./officer-desk";
 import ThemeToggle from "./theme-toggle";
@@ -84,12 +86,12 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, roster, officerStore, memberContext] = await Promise.all([
+  const [guildWire, summary, wallOfShame, wallOfFame, rosterMembers, officerStore, memberContext] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfShame(),
     getWallOfFame(),
-    getRosterPreview(),
+    getRosterMembers(),
     cookies(),
     getMemberContext(),
   ]);
@@ -113,6 +115,12 @@ export default async function Home() {
     : "Awaiting first Comlink sync";
 
   const activityRows = guildWire.slice(0, 4);
+  const memberDirectoryEntries = rosterMembers.map((member) => ({
+    ...member,
+    galacticPower: member.galacticPower.toString(),
+    lastActivityAt: member.lastActivityAt?.toISOString() ?? null,
+    joinedAt: member.joinedAt?.toISOString() ?? null,
+  }));
 
   return (
     <main className="app-shell">
@@ -257,97 +265,77 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="section-block wall-of-fame-block" id="wall-of-fame" aria-labelledby="wof-heading">
-          <div className="section-heading">
-            <div><p className="eyebrow">Cantina legends</p><h2 id="wof-heading">The Wall of Fame</h2></div>
-            <span className="wof-tag">These are the droids you&apos;re looking for</span>
+        <section className="section-block roster-section" id="members" aria-labelledby="members-heading">
+          <div className="section-heading roster-heading">
+            <div><p className="eyebrow">Membership directory</p><h2 id="members-heading">Meet the band</h2></div>
+            <div className="roster-count"><strong>{rosterMembers.length || "—"}</strong><span>active crew</span></div>
           </div>
-          {wallOfFame.length ? (
-            <div className="fame-grid">
-              {wallOfFame.map((entry) => (
-                <article className="fame-card" key={entry.playerId}>
-                  <div className="fame-top">
-                    <span className="fame-rank" aria-hidden="true">#{entry.rank}</span>
-                    <span className="fame-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
-                    <div>
-                      <strong>{entry.name}</strong>
-                      <p>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit} GP</p>
-                    </div>
-                  </div>
-                  {entry.badges.length > 0 && (
-                    <ul className="fame-badges">
-                      {entry.badges.map((badge) => <li key={badge}>{badge}</li>)}
-                    </ul>
-                  )}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="fame-empty">
-              <p>{summary.live ? "The legends board fills in as the crew racks up power." : "The legends board fills in after the first roster sync."}</p>
-            </div>
-          )}
+          <p className="section-intro">Search the full roster, compare the live numbers, and open any member for a clearer view of their standing.</p>
+          <MemberDirectory members={memberDirectoryEntries} />
         </section>
 
-        <section className="section-block wall-of-shame-block" id="wall-of-shame" aria-labelledby="wos-heading">
-          <div className="section-heading">
-            <div><p className="eyebrow">Mos Eisley bulletin</p><h2 id="wos-heading">The Wall of Shame</h2></div>
-            <span className="wos-tag">You will never find a more wretched hive of low raid tickets</span>
+        <section className="section-block standings-section" aria-labelledby="standings-heading">
+          <div className="section-heading standings-heading">
+            <div><p className="eyebrow">Guild standings</p><h2 id="standings-heading">Legends &amp; watchlist</h2></div>
+            <span>One board to celebrate. One board to act on.</span>
           </div>
-          {wallOfShame.length ? (
-            <div className="shame-grid">
-              {wallOfShame.map((entry) => (
-                <article className="shame-card" key={entry.playerId}>
-                  <div className="shame-top">
-                    <span className="shame-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
-                    <div>
-                      <strong>{entry.name}</strong>
-                      <p>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit} GP</p>
-                    </div>
-                  </div>
-                  <ul className="shame-reasons">
-                    {entry.reasons.map((reason) => <li key={reason}>{reason}</li>)}
-                  </ul>
-                  <p className="shame-seen">
-                    {entry.lastActivityAt ? `Last seen ${formatRelativeTime(entry.lastActivityAt)}` : "Last seen: nobody remembers"}
-                  </p>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="shame-empty">
-              <p>{summary.live ? "Quiet night at the cantina — everyone's pulling their weight." : "The bounty board fills in after the first roster sync."}</p>
-            </div>
-          )}
+          <div className="standings-grid">
+            <section className="standing-panel fame-panel" id="wall-of-fame" aria-labelledby="wof-heading">
+              <header className="standing-panel-head">
+                <div><span className="standing-symbol">★</span><p>Cantina legends</p><h3 id="wof-heading">Wall of Fame</h3></div>
+                <strong>{wallOfFame.length}<small>top crew</small></strong>
+              </header>
+              <p className="standing-copy">The strongest members in the latest guild snapshot, ranked by galactic power.</p>
+              {wallOfFame.length ? (
+                <ol className="standing-list fame-list">
+                  {wallOfFame.map((entry) => (
+                    <li key={entry.playerId}>
+                      <a href={`#member-${entry.playerId}`}>
+                        <span className="standing-rank">{entry.rank}</span>
+                        <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
+                        <span className="standing-member"><strong>{entry.name}</strong><small>{entry.badges[0] || "Top five guild power"}</small></span>
+                        <span className="standing-value"><strong>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit}</strong><small>GP</small></span>
+                        <span className="standing-arrow">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <div className="standing-empty"><strong>No legends crowned yet</strong><p>{summary.live ? "Power rankings appear once enough members are tracked." : "The board opens after the first roster sync."}</p></div>
+              )}
+            </section>
+
+            <section className="standing-panel watch-panel" id="wall-of-shame" aria-labelledby="wos-heading">
+              <header className="standing-panel-head">
+                <div><span className="standing-symbol">!</span><p>Officer watchlist</p><h3 id="wos-heading">Needs a check-in</h3></div>
+                <strong>{wallOfShame.length}<small>flagged</small></strong>
+              </header>
+              <p className="standing-copy">A practical shortlist for activity and roster follow-up—not a permanent label.</p>
+              {wallOfShame.length ? (
+                <ul className="standing-list watch-list">
+                  {wallOfShame.map((entry) => (
+                    <li key={entry.playerId}>
+                      <a href={`#member-${entry.playerId}`}>
+                        <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
+                        <span className="standing-member"><strong>{entry.name}</strong><small>{entry.reasons.join(" · ")}</small></span>
+                        <span className="standing-value"><strong>{entry.raidTickets}</strong><small>tickets</small></span>
+                        <span className="standing-arrow">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="standing-empty standing-clear"><strong>All clear tonight</strong><p>{summary.live ? "No members currently need an officer check-in." : "The watchlist opens after the first roster sync."}</p></div>
+              )}
+            </section>
+          </div>
         </section>
 
         <div className="lower-grid">
-          <section className="panel" id="members">
-            <div className="panel-heading"><div><p className="eyebrow">Membership</p><h2>The band</h2></div><a href="#administration">View ledger</a></div>
-            <div className="member-summary">
-              <div className="avatar-stack" aria-hidden="true">
-                {roster.initials.map((letter, index) => <i key={`${letter}-${index}`}>{letter}</i>)}
-                {roster.total > roster.initials.length && <i>+{roster.total - roster.initials.length}</i>}
-              </div>
-              <div>
-                <strong>{roster.live ? `${roster.total} active members` : "Roster pending"}</strong>
-                <p>{roster.live ? "Updated with every daily Comlink sync." : "Tracking starts with the first database sync."}</p>
-              </div>
-            </div>
-            <div className="welcome-flow">
-              <span className="flow-icon">+</span>
-              <div><strong>New joiner automation</strong><p>Detect → record tenure → welcome in Discord → open officer checklist</p></div>
-              <span className="ready-pill">Live</span>
-            </div>
-            <div className="welcome-flow muted-flow">
-              <span className="flow-icon">↗</span>
-              <div><strong>Departure history</strong><p>Close tenure → preserve snapshots → remove assignments → notify officers</p></div>
-              <span className="ready-pill">Live</span>
-            </div>
-            <div className="account-panel">
-              <p className="account-panel-heading">Your cantina card</p>
-              <AccountLink context={memberContext} />
-            </div>
+          <section className="panel member-account-panel">
+            <div className="panel-heading"><div><p className="eyebrow">Personal view</p><h2>Your cantina card</h2></div><span className="private-pill">Private</span></div>
+            <p className="panel-intro">Link Discord once to see your own live standing and keep your guild identity connected.</p>
+            <AccountLink context={memberContext} />
           </section>
 
           <section className="panel" id="administration">

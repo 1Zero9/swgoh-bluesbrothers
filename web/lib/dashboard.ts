@@ -23,38 +23,6 @@ const fallbackSummary: DashboardSummary = {
   live: false,
 };
 
-export type RosterPreview = {
-  initials: string[];
-  total: number;
-  live: boolean;
-};
-
-export async function getRosterPreview(): Promise<RosterPreview> {
-  if (!process.env.DATABASE_URL) return { initials: [], total: 0, live: false };
-
-  try {
-    const snapshot = await getPrisma().guildSnapshot.findFirst({
-      orderBy: { capturedAt: "desc" },
-      include: {
-        members: {
-          include: { player: true },
-          orderBy: { galacticPower: "desc" },
-          take: 3,
-        },
-      },
-    });
-    if (!snapshot) return { initials: [], total: 0, live: false };
-
-    return {
-      initials: snapshot.members.map((member) => member.player.currentName.trim().charAt(0).toUpperCase() || "?"),
-      total: snapshot.memberCount,
-      live: true,
-    };
-  } catch {
-    return { initials: [], total: 0, live: false };
-  }
-}
-
 export async function getDashboardSummary(): Promise<DashboardSummary> {
   if (!process.env.DATABASE_URL) return fallbackSummary;
 

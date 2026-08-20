@@ -68,7 +68,7 @@ export default function AccountLink({ context }: { context: MemberContext }) {
         </div>
         {context.player.onWallOfShame ? (
           <div className="account-shame-warning">
-            <p>You&apos;re on the Wall of Shame:</p>
+            <p>Your card needs a check-in:</p>
             <ul>{context.player.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
           </div>
         ) : (
@@ -100,7 +100,7 @@ export default function AccountLink({ context }: { context: MemberContext }) {
 
   return (
     <div className="account-card account-signed-out">
-      <p className="account-hint">Link your Discord to see your stats and keep off the Wall of Shame.</p>
+      <p className="account-hint">Link your Discord to see your live stats and current guild standing.</p>
       <a className="account-link-button" href="/api/auth/discord">Link with Discord</a>
     </div>
   );

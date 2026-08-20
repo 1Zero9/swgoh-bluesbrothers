@@ -14,6 +14,25 @@ const INACTIVITY_HOURS = 48;
 const MAX_ENTRIES = 5;
 const MIN_GUILD_SIZE = 4;
 
+export function getMemberAttentionReasons(
+  member: { galacticPower: bigint; lastActivityAt: Date | null },
+  averageGp: bigint,
+  capturedAt: Date,
+) {
+  const reasons: string[] = [];
+  const gpFloor = (averageGp * BigInt(GP_THRESHOLD_RATIO)) / BigInt(100);
+  if (member.galacticPower > BigInt(0) && member.galacticPower < gpFloor) {
+    reasons.push("Under-geared next to the rest of the crew");
+  }
+  const hoursSinceActive = member.lastActivityAt
+    ? (capturedAt.getTime() - member.lastActivityAt.getTime()) / 3_600_000
+    : null;
+  if (hoursSinceActive === null || hoursSinceActive > INACTIVITY_HOURS) {
+    reasons.push("Gone quiet on the holonet");
+  }
+  return reasons;
+}
+
 function compareGp(a: bigint, b: bigint) {
   if (a < b) return -1;
   if (a > b) return 1;
@@ -32,20 +51,9 @@ async function computeAllEntries(): Promise<WallOfShameEntry[]> {
 
     const totalGp = snapshot.members.reduce((sum, member) => sum + member.galacticPower, BigInt(0));
     const averageGp = totalGp / BigInt(snapshot.members.length);
-    const gpFloor = (averageGp * BigInt(GP_THRESHOLD_RATIO)) / BigInt(100);
-    const capturedAtMs = snapshot.capturedAt.getTime();
 
     const entries = snapshot.members.flatMap((member) => {
-      const reasons: string[] = [];
-      if (member.galacticPower > BigInt(0) && member.galacticPower < gpFloor) {
-        reasons.push("Under-geared next to the rest of the crew");
-      }
-      const hoursSinceActive = member.lastActivityAt
-        ? (capturedAtMs - member.lastActivityAt.getTime()) / 3_600_000
-        : null;
-      if (hoursSinceActive === null || hoursSinceActive > INACTIVITY_HOURS) {
-        reasons.push("Gone quiet on the holonet");
-      }
+      const reasons = getMemberAttentionReasons(member, averageGp, snapshot.capturedAt);
       if (!reasons.length) return [];
 
       return [{

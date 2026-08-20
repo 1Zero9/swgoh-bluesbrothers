@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.1.0 · **Last updated:** 2026-08-20 · tracks site `v0.9.0`
+**Doc version:** 1.2.0 · **Last updated:** 2026-08-20 · tracks site `v0.10.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -159,9 +159,12 @@ Fetch timeout is 90s; the cron route itself has `maxDuration = 120` to give Coml
 Single shared password (`OFFICER_SITE_PASSWORD`) → signed session cookie (`AUTH_SESSION_SECRET`), no per-officer accounts. A signed-in officer can post a Guild Wire notice (`POST /api/officer/messages`), which is saved as an `AutomationEvent` and sent to Discord via `postDiscordAnnouncement`.
 
 ### 5.5 Wall of Fame / Wall of Shame (`lib/wall-of-fame.ts`, `lib/wall-of-shame.ts`)
-Derived views over the latest `GuildSnapshot` + `MemberSnapshot`/membership data — top galactic power members, and members flagged for low raid tickets / inactivity.
+Derived views over the latest `GuildSnapshot` + `MemberSnapshot`/membership data — top galactic power members, and members flagged for low raid tickets / inactivity. Both appear in a compact standings board and link back to the matching member in the roster directory.
 
-### 5.6 Health checks
+### 5.6 Member directory (`lib/members.ts`, `app/member-directory.tsx`)
+The latest snapshot is presented as a searchable, sortable card grid. Each card opens an accessible detail dialog with guild rank, galactic power, raid tickets, recent activity, current membership start date, and any officer-attention reasons.
+
+### 5.7 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
@@ -213,6 +216,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `discord-oauth.ts` | OAuth authorize-URL builder, code exchange, identity fetch |
 | `member-auth.ts` | Signed cookie helpers for the OAuth `state`/`link`/member session flow |
 | `member-context.ts` | Resolves the current visitor's linked `Player` (if any) for the "cantina card" |
+| `members.ts` | Builds the ranked member directory from the latest snapshot, active membership term, and attention rules |
 | `officer-auth.ts` | Shared-password check + signed officer session cookie |
 | `wall-of-fame.ts` / `wall-of-shame.ts` | Leaderboard/bulletin derivations described in §5.5 |
 
@@ -337,6 +341,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.2.0 — 2026-08-20
+- Added the searchable member directory, interactive member cards, and consolidated standings-board mechanics introduced in site v0.10.0.
 
 ### 1.1.0 — 2026-08-20
 - Added versioning header and this changelog.

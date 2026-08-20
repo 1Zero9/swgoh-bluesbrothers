@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.10.0 — 2026-08-20
+
+- Replaced the roster summary with a searchable, sortable directory and one interactive card per member.
+- Added member detail dialogs with guild rank, galactic power, raid tickets, activity, tenure, and attention status.
+- Reworked the Wall of Fame and officer watchlist into a compact, linked standings board with clearer hierarchy.
+- Simplified the lower dashboard into focused personal-account and officer-work areas.
+
 ## 0.9.0 — 2026-08-19
 
 - Added the Wall of Fame: a leaderboard celebrating the guild's top galactic power and maxed raid-ticket members.
