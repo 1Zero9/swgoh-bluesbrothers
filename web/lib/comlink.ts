@@ -79,7 +79,7 @@ async function postComlink<T>(path: string, payload: Record<string, unknown>): P
       ...authorizationHeaders(path, body),
     },
     body,
-    signal: AbortSignal.timeout(45_000),
+    signal: AbortSignal.timeout(90_000),
   });
 
   if (!response.ok) throw new Error(`Comlink returned HTTP ${response.status} for ${path}`);
