@@ -4,6 +4,9 @@
 
 A small, free reporting service for the **Blues Brothers** SWGOH guild.
 
+> For the live Next.js site, architecture, hosting/services, environment
+> variables and operational notes, see [`docs/knowledge-base.md`](docs/knowledge-base.md).
+
 Current milestone: fetch live public guild data through SWGOH Comlink, format
 snapshots, detect changes, and deliver reports to a private Discord test channel.
 
