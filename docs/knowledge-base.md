@@ -1,11 +1,43 @@
 # Blues Brothers Guild — Knowledge Base
 
+**Doc version:** 1.1.0 · **Last updated:** 2026-08-20 · tracks site `v0.9.0`
+
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
 
 - Production site: https://swgoh-bluesbrothers.vercel.app
 - Discord invite: set via `DISCORD_INVITE_URL`
 - Guild: **Blues Brothers** (SWGOH), guild ID in `SWGOH_GUILD_ID`
+
+> **Keeping this up to date:** this doc has its own semantic version,
+> independent of the site's `package.json` version. Bump it whenever you
+> make a meaningful change here and add a dated entry to the
+> [Changelog](#16-changelog) at the bottom — **patch** (1.1.x) for
+> corrections/small additions, **minor** (1.x.0) for new sections or
+> notable new mechanics, **major** (x.0.0) for a structural rewrite.
+> When the site ships an infra/architecture change (new service, new env
+> var, new automation), update this file in the same PR.
+
+---
+
+## Contents
+
+1. [Architecture at a glance](#1-architecture-at-a-glance)
+2. [Services & links](#2-services--links)
+3. [Tech stack](#3-tech-stack)
+4. [Repository map](#4-repository-map)
+5. [Core mechanics](#5-core-mechanics)
+6. [Data model](#6-data-model)
+7. [API routes](#7-api-routes)
+8. [lib/ module reference](#8-lib-module-reference)
+9. [Environment variables](#9-environment-variables)
+10. [CI/CD](#10-cicd)
+11. [Local development](#11-local-development)
+12. [Deployment & operations](#12-deployment--operations)
+13. [Lessons learned / gotchas](#13-lessons-learned--gotchas)
+14. [External documentation](#14-external-documentation)
+15. [Roadmap / open items](#15-roadmap--open-items)
+16. [Changelog](#16-changelog)
 
 ---
 
@@ -47,6 +79,7 @@ Two codebases:
 | **Prisma Postgres** | Database, provisioned via the Vercel Marketplace | Managed through Vercel project storage tab |
 | **Discord Developer Portal** | Bot + OAuth application (client ID/secret, bot token) | https://discord.com/developers/applications |
 | **Discord server** | The guild's live Discord | ID in `DISCORD_GUILD_ID` |
+| **Claude Code** | AI pair-programming CLI used to build/operate this project | https://docs.anthropic.com/en/docs/claude-code |
 
 ---
 
@@ -59,21 +92,55 @@ Two codebases:
 - **Background jobs**: Vercel Cron (`vercel.json`) **and** GitHub Actions `schedule` trigger, both calling the same protected route
 - **Game data**: [SWGOH Comlink](https://github.com/swgoh-utils/swgoh-comlink), self-hosted on Render, HMAC-SHA256-signed requests
 - **Discord integration**: OAuth2 (member account linking) + bot REST calls (role grants/removal, channel messages) — no `discord.js`, just `fetch` against the Discord REST API in `lib/discord.ts`
-- **CI**: GitHub Actions `ci.yml` — lint/build on PRs
+- **CI**: GitHub Actions `ci.yml` — currently exercises only the legacy Python CLI (see [§10](#10-cicd) for the gap)
 - **Legacy**: a Python CLI (`src/`, `guild-report` command) at the repo root — the original pre-web reporting tool; still functional, largely superseded by the web app's automated sync
 
 ---
 
-## 4. Core mechanics
+## 4. Repository map
 
-### 4.1 Guild sync (`lib/guild-sync.ts`, `app/api/cron/guild-sync/route.ts`)
-1. Triggered by GitHub Actions (hourly) or Vercel Cron (daily, fallback), both `POST /api/cron/guild-sync` with `Authorization: Bearer $CRON_SECRET`.
+```
+/                             legacy Python CLI reporter project
+├── src/                      guild-report package
+├── tests/                    pytest suite
+├── scripts/                  Comlink setup/start + daily run shell scripts
+├── launchd/                  macOS LaunchAgent plist for the daily local schedule
+├── data/                     local snapshot baseline + logs (gitignored contents)
+├── .github/workflows/        ci.yml (Python tests), guild-sync.yml (hourly cron trigger)
+├── docs/                     ← this knowledge base
+├── config.json                public guild ID + admin ally code
+├── README.md                  Python CLI docs
+│
+└── web/                      the live Next.js site — see web/README.md for setup
+    ├── app/
+    │   ├── api/               route handlers — see §7
+    │   ├── generated/prisma/  generated Prisma client (build output, gitignored)
+    │   ├── page.tsx            the whole dashboard (single-page app shell)
+    │   ├── globals.css         all styling
+    │   └── *.tsx                small client components (menu, theme toggle, officer desk, etc.)
+    ├── lib/                   server-side logic modules — see §8
+    ├── prisma/
+    │   ├── schema.prisma       data model — see §6
+    │   └── migrations/         committed SQL migrations
+    ├── scripts/build.mjs       runs `prisma migrate deploy` on Vercel production builds, then `next build`
+    ├── public/                 static assets (bb-title.png hero image, bb-logo.png, etc.)
+    ├── vercel.json             daily fallback cron config
+    ├── CHANGELOG.md            site release notes (semantic version = package.json version)
+    └── AGENTS.md / CLAUDE.md   Next.js agent instructions (auto-managed by `next dev`)
+```
+
+---
+
+## 5. Core mechanics
+
+### 5.1 Guild sync (`lib/guild-sync.ts`, `app/api/cron/guild-sync/route.ts`)
+1. Triggered by GitHub Actions (hourly) or Vercel Cron (daily, fallback), both `GET /api/cron/guild-sync` with `Authorization: Bearer $CRON_SECRET`.
 2. Fetches the live guild roster from Comlink (`/guild` endpoint, HMAC-signed).
-3. Inside one Prisma transaction (`timeout: 60_000ms` — see §6 lessons learned): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot`, and records `AutomationEvent`s.
+3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s), and records `AutomationEvent`s.
 4. Joins/departures produce a shared automation event shown in the site's **Guild Wire** and pushed to Discord. The very first sync is a **baseline** — no join/departure events fire, since there's nothing to compare against yet.
 5. Departure automation only removes `DISCORD_MEMBER_ROLE_ID` when the player has a **verified** `discordUserId` (never matched by display name).
 
-### 4.2 Comlink signing (`lib/comlink.ts`)
+### 5.2 Comlink signing (`lib/comlink.ts`)
 Every request to the Comlink instance is HMAC-SHA256 signed:
 ```
 timestamp = Date.now()
@@ -83,21 +150,75 @@ headers   = { "X-Date": timestamp, "Authorization": "HMAC-SHA256 Credential=<acc
 ```
 Fetch timeout is 90s; the cron route itself has `maxDuration = 120` to give Comlink's free-tier cold starts room to respond.
 
-### 4.3 Discord account linking (`lib/discord-oauth.ts`, `app/api/auth/discord/*`)
-Standard OAuth2 authorization-code flow. On callback, the Discord user is linked to a `Player` by verified ally code, enabling self-service role/member features (`member-context.ts`, `member-auth.ts`).
+### 5.3 Discord account linking (`lib/discord-oauth.ts`, `lib/member-auth.ts`, `app/api/auth/discord/*`, `app/api/members/link`)
+1. `GET /api/auth/discord` redirects to Discord's OAuth authorize URL with a signed `state` cookie (CSRF protection).
+2. `GET /api/auth/discord/callback` exchanges the code, fetches the Discord identity, and stores it in a short-lived signed `link` cookie — the user isn't a verified member yet.
+3. `POST /api/members/link` takes an ally code from the user, looks the player up live via Comlink, and if it matches a known `Player`, sets `discordUserId` on that record — completing verification.
 
-### 4.4 Officer access (`lib/officer-auth.ts`)
-Single shared password (`OFFICER_SITE_PASSWORD`) → signed session cookie (`AUTH_SESSION_SECRET`), no per-officer accounts. Grants access to the Officer Desk panel for posting Guild Wire notices.
+### 5.4 Officer access (`lib/officer-auth.ts`, `app/api/officer/session`, `app/api/officer/messages`)
+Single shared password (`OFFICER_SITE_PASSWORD`) → signed session cookie (`AUTH_SESSION_SECRET`), no per-officer accounts. A signed-in officer can post a Guild Wire notice (`POST /api/officer/messages`), which is saved as an `AutomationEvent` and sent to Discord via `postDiscordAnnouncement`.
 
-### 4.5 Wall of Fame / Wall of Shame (`lib/wall-of-fame.ts`, `lib/wall-of-shame.ts`)
-Derived views over the latest `GuildSnapshot` + membership data — top galactic power members, and members flagged for low raid tickets / inactivity.
+### 5.5 Wall of Fame / Wall of Shame (`lib/wall-of-fame.ts`, `lib/wall-of-shame.ts`)
+Derived views over the latest `GuildSnapshot` + `MemberSnapshot`/membership data — top galactic power members, and members flagged for low raid tickets / inactivity.
 
-### 4.6 Health checks
+### 5.6 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
 
-## 5. Environment variables
+## 6. Data model
+
+Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
+
+| Model | Purpose | Key fields / relations |
+|---|---|---|
+| `Guild` | One row per tracked guild | `discordGuildId`; has many snapshots, membership terms, events, automation events |
+| `Player` | Stable identity for a game account, independent of guild membership | `allyCode` (unique), `discordUserId` (unique, set only after verified linking), `currentName`; has many names, membership terms, snapshots |
+| `PlayerName` | Name-change history | `firstSeen`/`lastSeen` per name string |
+| `MembershipTerm` | One open/closed span of guild membership | `state` (`ACTIVE`/`LEFT`), `joinedAt`/`leftAt`, `welcomeSentAt`, `departureNotifiedAt`, `discordAccessRemovedAt` — drives join/departure automation |
+| `GuildSnapshot` | Point-in-time guild-wide stats from a sync | `memberCount`, `galacticPower`, `characterPower`, `shipPower`, `raidTickets`, raw Comlink `rawPayload` |
+| `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | `galacticPower`, `raidTickets`, `lastActivityAt` — feeds Wall of Fame/Shame |
+| `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult` — **not yet populated by any sync job** |
+| `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, `payload` — **not yet populated** |
+| `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
+
+---
+
+## 7. API routes
+
+All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+
+| Route | Method | Auth | Purpose |
+|---|---|---|---|
+| `/api/cron/guild-sync` | GET | `Authorization: Bearer $CRON_SECRET` | Runs the guild sync (§5.1). `maxDuration = 120`. |
+| `/api/health/database` | GET | none | DB connectivity probe. |
+| `/api/auth/discord` | GET | none (sets CSRF state cookie) | Starts Discord OAuth. 503 if not configured. |
+| `/api/auth/discord/callback` | GET | OAuth `code`/`state` | Completes OAuth, sets a pending `link` cookie, redirects home. |
+| `/api/members/link` | POST | pending `link` cookie | Verifies an ally code against Comlink and links it to a `Player`. `maxDuration = 30`. |
+| `/api/officer/session` | POST / DELETE | `password` in body (POST) / officer cookie (DELETE) | Officer sign-in / sign-out. |
+| `/api/officer/messages` | POST | officer session cookie | Posts a Guild Wire notice + Discord announcement. `maxDuration = 30`. |
+
+---
+
+## 8. lib/ module reference
+
+| Module | Responsibility |
+|---|---|
+| `comlink.ts` | HMAC request signing, `fetchPlayerByAllyCode`, guild roster fetch, ally-code sanitizing |
+| `prisma.ts` | `getPrisma()` — lazily builds the Prisma client with the `pg` driver adapter; throws clearly if `DATABASE_URL` is missing |
+| `guild-sync.ts` | The full sync transaction described in §5.1 |
+| `guild-wire.ts` | Reads recent `AutomationEvent`s for the website feed |
+| `dashboard.ts` | Aggregates the latest `GuildSnapshot` into the summary metric cards |
+| `discord.ts` | Bot REST calls — posting announcements, role add/remove |
+| `discord-oauth.ts` | OAuth authorize-URL builder, code exchange, identity fetch |
+| `member-auth.ts` | Signed cookie helpers for the OAuth `state`/`link`/member session flow |
+| `member-context.ts` | Resolves the current visitor's linked `Player` (if any) for the "cantina card" |
+| `officer-auth.ts` | Shared-password check + signed officer session cookie |
+| `wall-of-fame.ts` / `wall-of-shame.ts` | Leaderboard/bulletin derivations described in §5.5 |
+
+---
+
+## 9. Environment variables
 
 Set in three places independently — **they do not sync automatically**:
 - Local: `/Users/stephencranfield/Projects/SWGOH/.env` (root, gitignored) and `web/.env.local`
@@ -124,7 +245,43 @@ Set in three places independently — **they do not sync automatically**:
 
 ---
 
-## 6. Deployment & operations
+## 10. CI/CD
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `.github/workflows/ci.yml` | push to `main`, every PR | Installs the **Python** CLI project and runs `pytest` + `compileall` + shell-script syntax checks on `python-version` matrix `3.11`/`3.13`. **Does not currently lint, typecheck, or build the `web/` Next.js app** — that's a gap; run `npm run lint` / `npm run build` manually in `web/` before merging site changes. |
+| `.github/workflows/guild-sync.yml` | hourly `schedule`, or manual `workflow_dispatch` | Calls the production `/api/cron/guild-sync` route with `secrets.CRON_SECRET`, fails the job on a non-200 response. |
+
+There is no Vercel "Ignored Build Step" / preview-deploy gating configured beyond Vercel's defaults — every push produces a Preview deployment; Production requires either a `main` push to trigger a build or a manual `vercel --prod` (see [§12](#12-deployment--operations)).
+
+---
+
+## 11. Local development
+
+**Web app** (`web/`):
+```bash
+cd web
+npm install
+npm run dev        # http://localhost:3000
+npm run lint
+npm run db:generate # regenerate Prisma client after schema.prisma changes
+npm run db:studio   # Prisma Studio GUI against DATABASE_URL
+```
+
+**Legacy Python CLI** (repo root):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+guild-report --no-save
+pytest
+```
+
+Running the web app fully locally against live data also needs a local Comlink instance — see the root `README.md`'s "Fetch live guild data with Comlink" section, or point `COMLINK_URL` at the Render instance and use its credentials.
+
+---
+
+## 12. Deployment & operations
 
 ### Manual production deploy
 The Vercel project's **Root Directory** is set to `web`, relative to the Git repo root — so CLI deploys must run **from the repo root**, not from inside `web/`:
@@ -143,7 +300,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ---
 
-## 7. Lessons learned / gotchas
+## 13. Lessons learned / gotchas
 
 - **Vercel "Sensitive" env vars are write-only forever.** If a value seems stuck/wrong, delete and re-add fresh rather than trying to edit it.
 - **Prisma's default interactive-transaction timeout is 5s.** Sequential per-record work (e.g. a 50-member roster upsert loop) against a remote Postgres connection can blow past that easily — `guild-sync`'s transaction now sets `{ timeout: 60_000, maxWait: 10_000 }`.
@@ -153,8 +310,37 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ---
 
-## 8. Roadmap / open items
+## 14. External documentation
+
+| Topic | Link |
+|---|---|
+| Next.js (App Router) | https://nextjs.org/docs |
+| Prisma ORM / driver adapters | https://www.prisma.io/docs |
+| SWGOH Comlink API | https://github.com/swgoh-utils/swgoh-comlink |
+| Discord REST API | https://discord.com/developers/docs/reference |
+| Discord OAuth2 | https://discord.com/developers/docs/topics/oauth2 |
+| Vercel (deployments, cron, env vars) | https://vercel.com/docs |
+| Render | https://render.com/docs |
+| GitHub Actions | https://docs.github.com/actions |
+| Claude Code | https://docs.anthropic.com/en/docs/claude-code |
+
+---
+
+## 15. Roadmap / open items
 
 - Guild data accuracy pass (Wall of Fame / Wall of Shame thresholds, ticket targets)
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
 - General UI polish across the dashboard sections
+- `GuildEvent`/`EventSnapshot` models exist but nothing populates them yet (TB/TW/raid tracking)
+- CI doesn't currently build/lint the `web/` app — worth adding a Next.js job to `ci.yml`
+
+---
+
+## 16. Changelog
+
+### 1.1.0 — 2026-08-20
+- Added versioning header and this changelog.
+- Added table of contents, repository map, full data model reference, API routes table, lib/ module reference, CI/CD section, local development section, and external documentation links.
+
+### 1.0.0 — 2026-08-20
+- Initial knowledge base: architecture, services & links, tech stack, core mechanics, environment variables, deployment/operations, lessons learned, roadmap.
