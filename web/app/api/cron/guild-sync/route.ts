@@ -2,7 +2,7 @@ import { syncGuildRoster } from "@/lib/guild-sync";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -13,7 +13,11 @@ export async function GET(request: Request) {
   try {
     const result = await syncGuildRoster();
     return Response.json({ ok: true, ...result });
-  } catch {
-    return Response.json({ ok: false, error: "guild sync failed" }, { status: 500 });
+  } catch (error) {
+    console.error("guild sync failed", error);
+    return Response.json(
+      { ok: false, error: "guild sync failed", detail: error instanceof Error ? error.message : String(error) },
+      { status: 500 },
+    );
   }
 }
