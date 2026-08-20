@@ -350,7 +350,7 @@ html[data-theme="light"] footer { color: #796d5f; }
   .site-header { inset: 6px 12px auto; }
   .site-header .brand { justify-self: start; }.site-header .brand-logo { width: 70px; height: 70px; }
   .menu-trigger { width: 46px; height: 46px; }
-  .hero { min-height: 720px; padding: 34px 24px 48px; }.hero-image { object-position: 68% center; }
+  .hero { min-height: 620px; padding: 34px 24px 48px; }.hero-image { object-position: 76% center; }
   .dashboard-content { padding: 18px 16px 22px; }
   .hero-status time { display: none; }.hero-copy { transform: translateY(-20px); }.hero-copy > p:not(.eyebrow) { max-width: 100%; }.hero h1 { font-size: clamp(42px, 13vw, 62px); }
   .hero-actions { align-items: flex-start; flex-direction: column; gap: 16px; }
