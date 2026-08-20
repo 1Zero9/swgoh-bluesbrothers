@@ -2,6 +2,38 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.9.0 — 2026-08-19
+
+- Added the Wall of Fame: a leaderboard celebrating the guild's top galactic power and maxed raid-ticket members.
+
+## 0.8.0 — 2026-08-19
+
+- Added Discord OAuth account linking with ally-code verification, so members can prove ownership of their roster entry.
+- Fixed the previously dormant departure automation by giving members a way to actually set `discordUserId`.
+- Added a personalized "cantina card" on the Members panel showing linked members their live GP, raid tickets, and Wall of Shame status.
+
+## 0.7.0 — 2026-08-19
+
+- Wired the dashboard metric cards to the latest live guild snapshot instead of static placeholders.
+- Added the Wall of Shame: a themed bulletin surfacing under-geared or inactive members from the latest sync.
+- Added an officer's desk with a shared-password sign-in and a composer that posts Cantina notices straight to the Guild Wire and Discord.
+- Made the automation feed, roster preview, and Discord sync status reflect real data across desktop and mobile.
+
+## 0.6.0 — 2026-08-19
+
+- Added the Guild Wire as the shared website and Discord communications feed.
+- Added a protected daily roster sync with a safe first-run membership baseline.
+- Added automatic welcome and departure announcements through Discord.
+- Added Discord member-role removal for departed players with verified account mappings.
+- Added the optional official Discord server-presence widget and direct conversation links.
+
+## 0.5.0 — 2026-08-19
+
+- Added Prisma 7 with the PostgreSQL driver adapter.
+- Added deploy-time Prisma Client generation.
+- Added configuration for pooled runtime and optional direct migration URLs.
+- Added a non-sensitive database health endpoint.
+
 ## 0.4.5 — 2026-08-19
 
 - Lowered the desktop logo, navigation, and utilities to align with the cantina sign.

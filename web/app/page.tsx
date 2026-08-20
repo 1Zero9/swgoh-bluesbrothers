@@ -1,14 +1,27 @@
+import { cookies } from "next/headers";
 import Image from "next/image";
 import packageInfo from "../package.json";
+import { getDashboardSummary, getRosterPreview } from "@/lib/dashboard";
+import { getDiscordUrl } from "@/lib/discord";
+import { getGuildWire } from "@/lib/guild-wire";
+import { getMemberContext } from "@/lib/member-context";
+import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { getWallOfFame } from "@/lib/wall-of-fame";
+import { getWallOfShame } from "@/lib/wall-of-shame";
+import AccountLink from "./account-link";
 import MobileMenu from "./mobile-menu";
+import OfficerDesk from "./officer-desk";
 import ThemeToggle from "./theme-toggle";
 
 const APP_VERSION = `v${packageInfo.version}`;
+export const dynamic = "force-dynamic";
 
 const navigation = [
+  ["Guild Wire", "GW"],
   ["Operations", "OP"],
   ["Members", "MB"],
-  ["Administration", "AD"],
+  ["Wall of Fame", "WF"],
+  ["Wall of Shame", "WS"],
 ];
 
 const eventCards = [
@@ -41,17 +54,66 @@ const eventCards = [
   },
 ];
 
-const activity = [
-  ["Daily officer report delivered", "Discord", "23:00"],
-  ["49-member baseline captured", "Comlink", "22:00"],
-  ["Membership ledger prepared", "System", "Ready"],
-];
-
 function Mark({ label }: { label: string }) {
   return <span className="nav-mark" aria-hidden="true">{label}</span>;
 }
 
-export default function Home() {
+function formatPower(value: bigint) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return { value: "0", unit: "" };
+  if (num >= 1_000_000_000) return { value: (num / 1_000_000_000).toFixed(2), unit: "B" };
+  if (num >= 1_000_000) return { value: (num / 1_000_000).toFixed(1), unit: "M" };
+  if (num >= 1_000) return { value: (num / 1_000).toFixed(1), unit: "K" };
+  return { value: num.toLocaleString("en-GB"), unit: "" };
+}
+
+function formatRelativeTime(date: Date) {
+  const diffHours = (Date.now() - date.getTime()) / 3_600_000;
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${Math.round(diffHours)}h ago`;
+  const diffDays = diffHours / 24;
+  if (diffDays < 7) return `${Math.round(diffDays)}d ago`;
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function wireIcon(kind: string) {
+  if (kind === "welcome") return "+";
+  if (kind === "departure") return "↗";
+  if (kind === "notice") return "\u270E";
+  return "↻";
+}
+
+export default async function Home() {
+  const [guildWire, summary, wallOfShame, wallOfFame, roster, officerStore, memberContext] = await Promise.all([
+    getGuildWire(),
+    getDashboardSummary(),
+    getWallOfShame(),
+    getWallOfFame(),
+    getRosterPreview(),
+    cookies(),
+    getMemberContext(),
+  ]);
+  const isOfficer = verifyOfficerSessionValue(officerStore.get(OFFICER_COOKIE_NAME)?.value);
+  const discordUrl = getDiscordUrl();
+  const discordGuildId = process.env.DISCORD_GUILD_ID;
+  const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);
+
+  const power = formatPower(summary.guildPower);
+  const openSeats = summary.capacity - summary.memberCount;
+  const ticketPct = summary.live && summary.ticketTarget > 0
+    ? Math.min(100, Math.round((summary.dailyTickets / summary.ticketTarget) * 1000) / 10)
+    : 0;
+
+  const heroStatusLabel = summary.live ? "Comlink connected" : "Awaiting first sync";
+  const heroStatusDate = summary.capturedAt
+    ? summary.capturedAt.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+    : new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+  const syncLabel = summary.capturedAt
+    ? `Comlink connected · Last capture ${formatRelativeTime(summary.capturedAt)}`
+    : "Awaiting first Comlink sync";
+
+  const activityRows = guildWire.slice(0, 4);
+
   return (
     <main className="app-shell">
       <section className="workspace" id="top">
@@ -81,14 +143,14 @@ export default function Home() {
             <div className="header-controls">
               <span className="version-label">{APP_VERSION}</span>
               <ThemeToggle />
-              <button className="discord-button" type="button" disabled aria-label="Connect Discord">
-                <span aria-hidden="true">◈</span><b>Discord</b>
-              </button>
+              <a className="discord-button" href={discordUrl} target="_blank" rel="noreferrer" aria-label="Open Blues Brothers Discord">
+                <span aria-hidden="true">◈</span><b>Open Discord</b>
+              </a>
             </div>
-            <MobileMenu items={navigation} version={APP_VERSION} />
+            <MobileMenu items={navigation} version={APP_VERSION} discordUrl={discordUrl} syncLabel={syncLabel} />
           </header>
           <div className="hero-copy">
-            <div className="hero-status"><span><i /> Comlink connected</span><time>Wednesday, 19 August</time></div>
+            <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
             <p className="eyebrow">The roster. The plan. The next mission.</p>
             <h1 id="mission-heading">On a mission<br /><em>from the Force.</em></h1>
             <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
@@ -103,25 +165,78 @@ export default function Home() {
         <section className="metric-grid" aria-label="Guild health">
           <article className="metric-card">
             <div className="metric-head"><span>Active members</span><Mark label="MB" /></div>
-            <strong>49<span>/50</span></strong>
-            <p><b className="good">●</b> One place available</p>
+            <strong>{summary.live ? summary.memberCount : "—"}<span>/{summary.capacity}</span></strong>
+            <p>
+              {summary.live
+                ? openSeats > 0
+                  ? <><b className="good">●</b> {openSeats} place{openSeats === 1 ? "" : "s"} available</>
+                  : "Cantina's full up tonight"
+                : "Awaiting first roster sync"}
+            </p>
           </article>
           <article className="metric-card">
             <div className="metric-head"><span>Guild power</span><Mark label="GP" /></div>
-            <strong>571.7<span>M</span></strong>
-            <p>Baseline ready for trends</p>
+            <strong>{summary.live ? power.value : "—"}<span>{summary.live ? power.unit : ""}</span></strong>
+            <p>{summary.live ? "Live from the latest Comlink sync" : "Baseline appears after first sync"}</p>
           </article>
           <article className="metric-card">
             <div className="metric-head"><span>Daily tickets</span><Mark label="TK" /></div>
-            <strong>25,936</strong>
-            <div className="progress-track"><i style={{ width: "88.2%" }} /></div>
-            <p>88.2% of 29,400 target</p>
+            <strong>{summary.live ? summary.dailyTickets.toLocaleString("en-GB") : "—"}</strong>
+            <div className="progress-track"><i style={{ width: `${summary.live ? ticketPct : 0}%` }} /></div>
+            <p>{summary.live ? `${ticketPct}% of ${summary.ticketTarget.toLocaleString("en-GB")} target` : "Tracking starts with the first sync"}</p>
           </article>
-          <article className="metric-card attention">
+          <article className={`metric-card${wallOfShame.length ? " attention" : ""}`}>
             <div className="metric-head"><span>Needs attention</span><Mark label="!" /></div>
-            <strong>1</strong>
-            <p>Member inactive over 24h</p>
+            <strong>{wallOfShame.length}</strong>
+            <p>
+              {wallOfShame.length
+                ? "On the Wall of Shame right now"
+                : summary.live
+                  ? "Everyone is pulling their weight"
+                  : "Awaiting first roster sync"}
+            </p>
           </article>
+        </section>
+
+        <section className="guild-wire" id="guild-wire" aria-labelledby="guild-wire-heading">
+          <div className="wire-feed">
+            <div className="section-heading wire-heading">
+              <div><p className="eyebrow">Guild communications</p><h2 id="guild-wire-heading">The Guild Wire</h2></div>
+              <span className="wire-sync"><i /> Website + Discord</span>
+            </div>
+            <p className="wire-intro">Guild news lives here. The same membership announcements are sent into Discord, where the conversation continues.</p>
+            <div className="wire-list">
+              {guildWire.map((item) => (
+                <article className={`wire-item wire-${item.kind}`} key={item.id}>
+                  <span className="wire-icon" aria-hidden="true">{wireIcon(item.kind)}</span>
+                  <div>
+                    <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
+                    <p>{item.summary}</p>
+                  </div>
+                  <span className={`wire-state state-${item.status}`}>{item.status}</span>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="discord-handoff" aria-label="Discord conversation">
+            <div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Conversation layer</p><strong>Discord stays live</strong></div></div>
+            {showDiscordWidget ? (
+              <iframe
+                className="discord-widget"
+                src={`https://discord.com/widget?id=${discordGuildId}&theme=dark`}
+                title="Blues Brothers Discord server presence"
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              />
+            ) : (
+              <div className="widget-placeholder">
+                <span><i /> Discord connected</span>
+                <p>Enable the Discord server widget to show live presence here. Messages remain private inside Discord.</p>
+              </div>
+            )}
+            <a className="discord-open" href={discordUrl} target="_blank" rel="noreferrer">Open the conversation in Discord <span>→</span></a>
+            <small>Replies, reactions and officer discussion happen securely in the Discord app.</small>
+          </aside>
         </section>
 
         <section className="section-block" id="operations">
@@ -142,37 +257,117 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="section-block wall-of-fame-block" id="wall-of-fame" aria-labelledby="wof-heading">
+          <div className="section-heading">
+            <div><p className="eyebrow">Cantina legends</p><h2 id="wof-heading">The Wall of Fame</h2></div>
+            <span className="wof-tag">These are the droids you&apos;re looking for</span>
+          </div>
+          {wallOfFame.length ? (
+            <div className="fame-grid">
+              {wallOfFame.map((entry) => (
+                <article className="fame-card" key={entry.playerId}>
+                  <div className="fame-top">
+                    <span className="fame-rank" aria-hidden="true">#{entry.rank}</span>
+                    <span className="fame-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
+                    <div>
+                      <strong>{entry.name}</strong>
+                      <p>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit} GP</p>
+                    </div>
+                  </div>
+                  {entry.badges.length > 0 && (
+                    <ul className="fame-badges">
+                      {entry.badges.map((badge) => <li key={badge}>{badge}</li>)}
+                    </ul>
+                  )}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="fame-empty">
+              <p>{summary.live ? "The legends board fills in as the crew racks up power." : "The legends board fills in after the first roster sync."}</p>
+            </div>
+          )}
+        </section>
+
+        <section className="section-block wall-of-shame-block" id="wall-of-shame" aria-labelledby="wos-heading">
+          <div className="section-heading">
+            <div><p className="eyebrow">Mos Eisley bulletin</p><h2 id="wos-heading">The Wall of Shame</h2></div>
+            <span className="wos-tag">You will never find a more wretched hive of low raid tickets</span>
+          </div>
+          {wallOfShame.length ? (
+            <div className="shame-grid">
+              {wallOfShame.map((entry) => (
+                <article className="shame-card" key={entry.playerId}>
+                  <div className="shame-top">
+                    <span className="shame-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
+                    <div>
+                      <strong>{entry.name}</strong>
+                      <p>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit} GP</p>
+                    </div>
+                  </div>
+                  <ul className="shame-reasons">
+                    {entry.reasons.map((reason) => <li key={reason}>{reason}</li>)}
+                  </ul>
+                  <p className="shame-seen">
+                    {entry.lastActivityAt ? `Last seen ${formatRelativeTime(entry.lastActivityAt)}` : "Last seen: nobody remembers"}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="shame-empty">
+              <p>{summary.live ? "Quiet night at the cantina — everyone's pulling their weight." : "The bounty board fills in after the first roster sync."}</p>
+            </div>
+          )}
+        </section>
+
         <div className="lower-grid">
           <section className="panel" id="members">
             <div className="panel-heading"><div><p className="eyebrow">Membership</p><h2>The band</h2></div><a href="#administration">View ledger</a></div>
             <div className="member-summary">
-              <div className="avatar-stack" aria-hidden="true"><i>J</i><i>K</i><i>L</i><i>+46</i></div>
-              <div><strong>49 active members</strong><p>Tracking starts with the first database sync.</p></div>
+              <div className="avatar-stack" aria-hidden="true">
+                {roster.initials.map((letter, index) => <i key={`${letter}-${index}`}>{letter}</i>)}
+                {roster.total > roster.initials.length && <i>+{roster.total - roster.initials.length}</i>}
+              </div>
+              <div>
+                <strong>{roster.live ? `${roster.total} active members` : "Roster pending"}</strong>
+                <p>{roster.live ? "Updated with every daily Comlink sync." : "Tracking starts with the first database sync."}</p>
+              </div>
             </div>
             <div className="welcome-flow">
               <span className="flow-icon">+</span>
               <div><strong>New joiner automation</strong><p>Detect → record tenure → welcome in Discord → open officer checklist</p></div>
-              <span className="ready-pill">Ready to wire</span>
+              <span className="ready-pill">Live</span>
             </div>
             <div className="welcome-flow muted-flow">
               <span className="flow-icon">↗</span>
               <div><strong>Departure history</strong><p>Close tenure → preserve snapshots → remove assignments → notify officers</p></div>
-              <span className="ready-pill">Ready to wire</span>
+              <span className="ready-pill">Live</span>
+            </div>
+            <div className="account-panel">
+              <p className="account-panel-heading">Your cantina card</p>
+              <AccountLink context={memberContext} />
             </div>
           </section>
 
           <section className="panel" id="administration">
             <div className="panel-heading"><div><p className="eyebrow">Automation feed</p><h2>What the droid did</h2></div><span className="live-pill"><i /> Live</span></div>
             <div className="activity-list">
-              {activity.map(([title, source, time], index) => (
-                <div className="activity-row" key={title}>
-                  <span className={`activity-icon activity-${index}`}>{index === 0 ? "◈" : index === 1 ? "↻" : "✓"}</span>
-                  <div><strong>{title}</strong><p>{source}</p></div>
-                  <time>{time}</time>
+              {activityRows.length ? activityRows.map((item) => (
+                <div className="activity-row" key={item.id}>
+                  <span className={`activity-icon activity-${item.kind}`}>{wireIcon(item.kind)}</span>
+                  <div><strong>{item.title}</strong><p>{item.kind === "notice" ? "Officer" : item.kind === "system" ? "System" : "Discord"}</p></div>
+                  <time>{formatRelativeTime(item.occurredAt)}</time>
                 </div>
-              ))}
+              )) : (
+                <p className="empty-copy">No automation activity recorded yet.</p>
+              )}
             </div>
-            <button className="feed-button" type="button" disabled>Open full administration log <span>→</span></button>
+
+            <div className="officer-desk">
+              <p className="officer-desk-heading">Officer&apos;s desk</p>
+              <OfficerDesk signedIn={isOfficer} />
+            </div>
           </section>
         </div>
 
