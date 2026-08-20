@@ -12,3 +12,4 @@ data/*.json
 data/logs/*.log
 !data/.gitkeep
 !data/logs/.gitkeep
+.vercel
