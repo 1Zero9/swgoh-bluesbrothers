@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.2.0 · **Last updated:** 2026-08-20 · tracks site `v0.10.0`
+**Doc version:** 1.4.0 · **Last updated:** 2026-08-20 · tracks site `v0.12.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -107,13 +107,15 @@ Two codebases:
 ├── launchd/                  macOS LaunchAgent plist for the daily local schedule
 ├── data/                     local snapshot baseline + logs (gitignored contents)
 ├── .github/workflows/        ci.yml (Python tests), guild-sync.yml (hourly cron trigger)
-├── docs/                     ← this knowledge base
+├── docs/                     knowledge base + open-source research
 ├── config.json                public guild ID + admin ally code
 ├── README.md                  Python CLI docs
 │
 └── web/                      the live Next.js site — see web/README.md for setup
     ├── app/
     │   ├── api/               route handlers — see §7
+    │   ├── arsenal/           guild-wide priority-unit coverage
+    │   ├── credits/           open-source attribution and disclaimer
     │   ├── generated/prisma/  generated Prisma client (build output, gitignored)
     │   ├── page.tsx            the whole dashboard (single-page app shell)
     │   ├── globals.css         all styling
@@ -126,6 +128,7 @@ Two codebases:
     ├── public/                 static assets (bb-title.png hero image, bb-logo.png, etc.)
     ├── vercel.json             daily fallback cron config
     ├── CHANGELOG.md            site release notes (semantic version = package.json version)
+    ├── THIRD_PARTY_NOTICES.md  retained third-party licence notices
     └── AGENTS.md / CLAUDE.md   Next.js agent instructions (auto-managed by `next dev`)
 ```
 
@@ -136,9 +139,10 @@ Two codebases:
 ### 5.1 Guild sync (`lib/guild-sync.ts`, `app/api/cron/guild-sync/route.ts`)
 1. Triggered by GitHub Actions (hourly) or Vercel Cron (daily, fallback), both `GET /api/cron/guild-sync` with `Authorization: Bearer $CRON_SECRET`.
 2. Fetches the live guild roster from Comlink (`/guild` endpoint, HMAC-signed).
-3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s), and records `AutomationEvent`s.
+3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s with the complete raw member payload), and records `AutomationEvent`s.
 4. Joins/departures produce a shared automation event shown in the site's **Guild Wire** and pushed to Discord. The very first sync is a **baseline** — no join/departure events fire, since there's nothing to compare against yet.
 5. Departure automation only removes `DISCORD_MEMBER_ROLE_ID` when the player has a **verified** `discordUserId` (never matched by display name).
+6. After the roster transaction, up to two stale players are enriched through Comlink `/player`. This rotating batch stores the complete latest profile and a compact historical aggregate; a 50-member guild is fully refreshed in roughly 25 hourly runs without putting the cron route under a 50-request burst.
 
 ### 5.2 Comlink signing (`lib/comlink.ts`)
 Every request to the Comlink instance is HMAC-SHA256 signed:
@@ -164,7 +168,12 @@ Derived views over the latest `GuildSnapshot` + `MemberSnapshot`/membership data
 ### 5.6 Member directory (`lib/members.ts`, `app/member-directory.tsx`)
 The latest snapshot is presented as a searchable, sortable card grid. Each card opens an accessible detail dialog with guild rank, galactic power, raid tickets, recent activity, current membership start date, and any officer-attention reasons.
 
-### 5.7 Health checks
+### 5.7 Guild Arsenal (`lib/guild-arsenal.ts`, `lib/unit-checklist.ts`, `app/arsenal/page.tsx`)
+The latest full player profiles are compared with a curated set of Galactic Legends, priority light/dark-side characters, and capital ships. `/arsenal` shows ownership, seven-star, and R5+ coverage across every currently synced active member. Until rotating profile enrichment has covered the whole guild, the page reports its profile denominator explicitly rather than treating unsynced members as missing units.
+
+The checklist is adapted from the MIT-licensed `jmiln/SWGoHBot`; the complete notice is retained in `web/THIRD_PARTY_NOTICES.md` and exposed at `/credits`. Broader repository research and adoption decisions live in `docs/swgoh-open-source-research.md`.
+
+### 5.8 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
@@ -176,11 +185,12 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | Model | Purpose | Key fields / relations |
 |---|---|---|
 | `Guild` | One row per tracked guild | `discordGuildId`; has many snapshots, membership terms, events, automation events |
-| `Player` | Stable identity for a game account, independent of guild membership | `allyCode` (unique), `discordUserId` (unique, set only after verified linking), `currentName`; has many names, membership terms, snapshots |
+| `Player` | Stable identity for a game account, independent of guild membership | `allyCode`, `discordUserId`, level, portrait/title, `profileSyncedAt`, and the complete latest `profilePayload`; has many names, membership terms, roster snapshots, and profile-history snapshots |
 | `PlayerName` | Name-change history | `firstSeen`/`lastSeen` per name string |
 | `MembershipTerm` | One open/closed span of guild membership | `state` (`ACTIVE`/`LEFT`), `joinedAt`/`leftAt`, `welcomeSentAt`, `departureNotifiedAt`, `discordAccessRemovedAt` — drives join/departure automation |
 | `GuildSnapshot` | Point-in-time guild-wide stats from a sync | `memberCount`, `galacticPower`, `characterPower`, `shipPower`, `raidTickets`, raw Comlink `rawPayload` |
-| `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | `galacticPower`, `raidTickets`, `lastActivityAt` — feeds Wall of Fame/Shame |
+| `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | Total/character/ship GP, tickets, activity, player level, guild role, squad power, season score, league, guild XP, and the complete raw guild-member payload |
+| `PlayerProfileSnapshot` | Lightweight history from rotating full-profile enrichment | Galactic Legends, unlocked ultimates, relic units, roster-unit count, datacrons, and lifetime season score |
 | `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult` — **not yet populated by any sync job** |
 | `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, `payload` — **not yet populated** |
 | `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
@@ -217,6 +227,8 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `member-auth.ts` | Signed cookie helpers for the OAuth `state`/`link`/member session flow |
 | `member-context.ts` | Resolves the current visitor's linked `Player` (if any) for the "cantina card" |
 | `members.ts` | Builds the ranked member directory from the latest snapshot, active membership term, and attention rules |
+| `guild-arsenal.ts` | Aggregates priority-unit ownership, star, and relic coverage from stored full player profiles |
+| `unit-checklist.ts` | Attributed priority-unit definitions adapted from SWGoHBot under MIT |
 | `officer-auth.ts` | Shared-password check + signed officer session cookie |
 | `wall-of-fame.ts` / `wall-of-shame.ts` | Leaderboard/bulletin derivations described in §5.5 |
 
@@ -341,6 +353,12 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.4.0 — 2026-08-20
+- Documented the Guild Arsenal aggregation, open-source attribution rules, and repository research introduced in site v0.12.0.
+
+### 1.3.0 — 2026-08-20
+- Documented the expanded hourly member snapshots, rotating full-profile enrichment, complete latest-profile storage, and new member-card statistics introduced in site v0.11.0.
 
 ### 1.2.0 — 2026-08-20
 - Added the searchable member directory, interactive member cards, and consolidated standings-board mechanics introduced in site v0.10.0.

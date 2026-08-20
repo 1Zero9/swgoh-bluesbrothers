@@ -2,6 +2,21 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.12.0 — 2026-08-20
+
+- Added a live Guild Arsenal showing ownership, seven-star and relic coverage for Galactic Legends, priority units, and capital ships.
+- Adapted the priority-unit checklist from the MIT-licensed SWGoHBot project with full in-repo and user-facing attribution.
+- Added a Sources & Credits page and third-party notices for open-source dependencies and reused data.
+- Documented the wider SWGOH open-source landscape and a licence-aware feature adoption backlog.
+
+## 0.11.0 — 2026-08-20
+
+- Softened the dashboard with roomier spacing, rounded surfaces, layered shadows, and more clearly defined cards.
+- Expanded member cards with guild role, player level, Galactic Legends, raid tickets, and guild tenure.
+- Added richer member profiles with character/ship GP, relic-unit and datacron counts, activity, and join history.
+- Persisted the complete guild/member payload on hourly snapshots and added rotating full player-profile enrichment.
+- Added historical player-profile aggregates while retaining each player&apos;s complete latest Comlink profile.
+
 ## 0.10.0 — 2026-08-20
 
 - Replaced the roster summary with a searchable, sortable directory and one interactive card per member.

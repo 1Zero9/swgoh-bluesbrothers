@@ -8,6 +8,12 @@ type ComlinkMember = {
   shipGalacticPower?: string | number;
   guildJoinTime?: string | number;
   lastActivityTime?: string | number;
+  playerLevel?: string | number;
+  memberLevel?: string | number;
+  squadPower?: string | number;
+  lifetimeSeasonScore?: string | number;
+  leagueId?: string;
+  guildXp?: string | number;
   memberContribution?: Array<{ type?: string | number; currentValue?: string | number }>;
 };
 
@@ -27,12 +33,20 @@ export type GuildRosterMember = {
   raidTickets: number;
   joinedAt: Date;
   lastActivityAt: Date | null;
+  playerLevel: number;
+  memberRole: "Member" | "Officer" | "Leader";
+  squadPower: number;
+  lifetimeSeasonScore: bigint;
+  leagueId: string | null;
+  guildXp: number;
+  rawPayload: Record<string, unknown>;
 };
 
 export type GuildRoster = {
   guildId: string;
   name: string;
   members: GuildRosterMember[];
+  rawPayload: Record<string, unknown>;
 };
 
 function numberValue(value: string | number | undefined) {
@@ -44,6 +58,12 @@ function dateValue(value: string | number | undefined) {
   const parsed = numberValue(value);
   if (!parsed) return null;
   return new Date(parsed < 1_000_000_000_000 ? parsed * 1000 : parsed);
+}
+
+function memberRole(value: string | number | undefined): GuildRosterMember["memberRole"] {
+  if (value === 4 || value === "4" || value === "GUILD_LEADER") return "Leader";
+  if (value === 3 || value === "3" || value === "GUILD_OFFICER") return "Officer";
+  return "Member";
 }
 
 function authorizationHeaders(path: string, body: string): Record<string, string> {
@@ -116,10 +136,22 @@ export async function fetchGuildRoster(): Promise<GuildRoster> {
       raidTickets,
       joinedAt: dateValue(member.guildJoinTime) ?? new Date(),
       lastActivityAt: dateValue(member.lastActivityTime),
+      playerLevel: Math.trunc(numberValue(member.playerLevel)),
+      memberRole: memberRole(member.memberLevel),
+      squadPower: Math.trunc(numberValue(member.squadPower)),
+      lifetimeSeasonScore: BigInt(Math.trunc(numberValue(member.lifetimeSeasonScore))),
+      leagueId: member.leagueId ? String(member.leagueId) : null,
+      guildXp: Math.trunc(numberValue(member.guildXp)),
+      rawPayload: member as Record<string, unknown>,
     }];
   });
 
-  return { guildId, name: guild.profile?.name || "Blues Brothers", members };
+  return {
+    guildId,
+    name: guild.profile?.name || "Blues Brothers",
+    members,
+    rawPayload: payload as Record<string, unknown>,
+  };
 }
 
 type ComlinkPlayerResponse = {
@@ -132,6 +164,55 @@ export type ComlinkPlayer = {
   playerId: string;
   name: string;
 };
+
+type PlayerRosterUnit = {
+  definitionId?: string;
+  relic?: { currentTier?: string | number };
+  purchasedAbilityId?: string[];
+};
+
+export type ComlinkPlayerProfile = Record<string, unknown> & {
+  allyCode?: string | number;
+  playerId?: string;
+  level?: string | number;
+  lifetimeSeasonScore?: string | number;
+  selectedPlayerPortrait?: { id?: string };
+  selectedPlayerTitle?: { id?: string };
+  rosterUnit?: PlayerRosterUnit[];
+  datacron?: unknown[];
+};
+
+const GALACTIC_LEGEND_IDS = new Set([
+  "GLREY",
+  "SUPREMELEADERKYLOREN",
+  "GRANDMASTERLUKE",
+  "SITHPALPATINE",
+  "JEDIMASTERKENOBI",
+  "LORDVADER",
+  "JABBATHEHUTT",
+  "GLLEIA",
+  "GLAHSOKATANO",
+  "GLHONDO",
+]);
+
+export function summarizePlayerProfile(profile: ComlinkPlayerProfile) {
+  const roster = Array.isArray(profile.rosterUnit) ? profile.rosterUnit : [];
+  const baseIds = roster.map((unit) => String(unit.definitionId ?? "").split(":")[0]);
+  return {
+    galacticLegends: baseIds.filter((id) => GALACTIC_LEGEND_IDS.has(id)).length,
+    unlockedUltimates: roster.reduce(
+      (count, unit) => count + (unit.purchasedAbilityId ?? []).filter((id) => id.startsWith("ultimateability_")).length,
+      0,
+    ),
+    relicUnits: roster.filter((unit) => numberValue(unit.relic?.currentTier) > 2).length,
+    rosterUnits: roster.length,
+    datacrons: Array.isArray(profile.datacron) ? profile.datacron.length : 0,
+  };
+}
+
+export async function fetchPlayerProfileById(playerId: string): Promise<ComlinkPlayerProfile> {
+  return postComlink<ComlinkPlayerProfile>("/player", { playerId });
+}
 
 export function sanitizeAllyCode(input: string) {
   const digits = input.replace(/\D/g, "");

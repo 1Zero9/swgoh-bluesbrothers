@@ -118,8 +118,11 @@ export default async function Home() {
   const memberDirectoryEntries = rosterMembers.map((member) => ({
     ...member,
     galacticPower: member.galacticPower.toString(),
+    characterPower: member.characterPower.toString(),
+    shipPower: member.shipPower.toString(),
     lastActivityAt: member.lastActivityAt?.toISOString() ?? null,
     joinedAt: member.joinedAt?.toISOString() ?? null,
+    profileSyncedAt: member.profileSyncedAt?.toISOString() ?? null,
   }));
 
   return (
@@ -250,7 +253,7 @@ export default async function Home() {
         <section className="section-block" id="operations">
           <div className="section-heading">
             <div><p className="eyebrow">Operations board</p><h2>Upcoming missions</h2></div>
-            <a href="#playbook">Open guild playbook <span>→</span></a>
+            <a href="/arsenal">Open guild arsenal <span>→</span></a>
           </div>
           <div className="event-grid">
             {eventCards.map((event) => (
@@ -361,7 +364,7 @@ export default async function Home() {
 
         <footer>
           <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
-          <span>On a mission from the Force.</span>
+          <span className="footer-links"><a href="/arsenal">Guild Arsenal</a><a href="/credits">Sources &amp; credits</a></span>
         </footer>
         </div>
       </section>

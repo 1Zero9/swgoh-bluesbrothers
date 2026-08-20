@@ -1,4 +1,9 @@
-import { fetchGuildRoster } from "@/lib/comlink";
+import { Prisma } from "@/app/generated/prisma/client";
+import {
+  fetchGuildRoster,
+  fetchPlayerProfileById,
+  summarizePlayerProfile,
+} from "@/lib/comlink";
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 
@@ -9,6 +14,55 @@ type PendingAnnouncement = {
   playerName: string;
   discordUserId: string | null;
 };
+
+const PROFILE_BATCH_SIZE = 2;
+const PROFILE_REFRESH_MS = 20 * 60 * 60 * 1000;
+
+async function enrichStalePlayerProfiles(playerIds: string[], capturedAt: Date) {
+  const prisma = getPrisma();
+  const players = await prisma.player.findMany({
+    where: { id: { in: playerIds } },
+    select: { id: true, profileSyncedAt: true },
+  });
+  const staleBefore = capturedAt.getTime() - PROFILE_REFRESH_MS;
+  const selected = players
+    .filter((player) => !player.profileSyncedAt || player.profileSyncedAt.getTime() < staleBefore)
+    .sort((a, b) => (a.profileSyncedAt?.getTime() ?? 0) - (b.profileSyncedAt?.getTime() ?? 0))
+    .slice(0, PROFILE_BATCH_SIZE);
+
+  const results = await Promise.allSettled(selected.map(async (player) => {
+    const profile = await fetchPlayerProfileById(player.id);
+    const summary = summarizePlayerProfile(profile);
+    const allyCode = String(profile.allyCode ?? "").replace(/\D/g, "") || undefined;
+    const portraitId = profile.selectedPlayerPortrait?.id || undefined;
+    const titleId = profile.selectedPlayerTitle?.id || undefined;
+    const lifetimeSeasonScore = BigInt(Math.trunc(Number(profile.lifetimeSeasonScore ?? 0)));
+
+    await prisma.$transaction([
+      prisma.player.update({
+        where: { id: player.id },
+        data: {
+          allyCode,
+          level: Math.trunc(Number(profile.level ?? 0)) || undefined,
+          portraitId,
+          titleId,
+          profileSyncedAt: capturedAt,
+          profilePayload: profile as Prisma.InputJsonValue,
+        },
+      }),
+      prisma.playerProfileSnapshot.create({
+        data: {
+          playerId: player.id,
+          capturedAt,
+          ...summary,
+          lifetimeSeasonScore,
+        },
+      }),
+    ]);
+  }));
+
+  return results.filter((result) => result.status === "fulfilled").length;
+}
 
 export async function syncGuildRoster() {
   const roster = await fetchGuildRoster();
@@ -35,8 +89,8 @@ export async function syncGuildRoster() {
     for (const member of roster.members) {
       const player = await tx.player.upsert({
         where: { id: member.playerId },
-        update: { currentName: member.name },
-        create: { id: member.playerId, currentName: member.name },
+        update: { currentName: member.name, level: member.playerLevel || undefined },
+        create: { id: member.playerId, currentName: member.name, level: member.playerLevel || undefined },
       });
       const latestName = await tx.playerName.findFirst({
         where: { playerId: member.playerId },
@@ -91,12 +145,22 @@ export async function syncGuildRoster() {
         characterPower: roster.members.reduce((sum, member) => sum + member.characterPower, BigInt(0)),
         shipPower: roster.members.reduce((sum, member) => sum + member.shipPower, BigInt(0)),
         raidTickets: roster.members.reduce((sum, member) => sum + member.raidTickets, 0),
+        rawPayload: roster.rawPayload as Prisma.InputJsonValue,
         members: {
           create: roster.members.map((member) => ({
             playerId: member.playerId,
             galacticPower: member.galacticPower,
+            characterPower: member.characterPower,
+            shipPower: member.shipPower,
             raidTickets: member.raidTickets,
             lastActivityAt: member.lastActivityAt,
+            playerLevel: member.playerLevel,
+            memberRole: member.memberRole,
+            squadPower: member.squadPower,
+            lifetimeSeasonScore: member.lifetimeSeasonScore,
+            leagueId: member.leagueId,
+            guildXp: member.guildXp,
+            rawPayload: member.rawPayload as Prisma.InputJsonValue,
           })),
         },
       },
@@ -154,6 +218,11 @@ export async function syncGuildRoster() {
     }
   }
 
+  const profilesEnriched = await enrichStalePlayerProfiles(
+    roster.members.map((member) => member.playerId),
+    capturedAt,
+  );
+
   return {
     guild: roster.name,
     members: roster.members.length,
@@ -162,6 +231,7 @@ export async function syncGuildRoster() {
     departures: announcements.filter((item) => item.kind === "MEMBER_DEPARTURE").length,
     discordDelivered: delivered,
     discordAccessRemoved: accessRemoved,
+    profilesEnriched,
     discordUrl: getDiscordUrl(),
     capturedAt: capturedAt.toISOString(),
   };

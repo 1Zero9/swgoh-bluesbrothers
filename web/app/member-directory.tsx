@@ -6,10 +6,18 @@ export type MemberDirectoryEntry = {
   playerId: string;
   name: string;
   galacticPower: string;
+  characterPower: string;
+  shipPower: string;
   raidTickets: number;
   lastActivityAt: string | null;
   joinedAt: string | null;
   rank: number;
+  playerLevel: number;
+  memberRole: string;
+  galacticLegends: number | null;
+  relicUnits: number | null;
+  datacrons: number | null;
+  profileSyncedAt: string | null;
   attentionReasons: string[];
 };
 
@@ -37,6 +45,15 @@ function longDate(value: string | null) {
   return value
     ? new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
     : "Not recorded";
+}
+
+function guildTenure(value: string | null) {
+  if (!value) return "Not recorded";
+  const days = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 86_400_000));
+  if (days < 31) return `${days}d`;
+  if (days < 365) return `${Math.floor(days / 30)}mo`;
+  const years = days / 365;
+  return `${years.toFixed(years >= 10 ? 0 : 1)}yr`;
 }
 
 export default function MemberDirectory({ members }: { members: MemberDirectoryEntry[] }) {
@@ -102,14 +119,16 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
               >
                 <span className="member-card-head">
                   <i aria-hidden="true">{member.name.charAt(0).toUpperCase()}</i>
-                  <span><strong>{member.name}</strong><small>Guild rank #{member.rank}</small></span>
-                  <em className={needsAttention ? "status-watch" : "status-clear"}>{needsAttention ? "Review" : "Clear"}</em>
+                  <span><strong>{member.name}</strong><small>Guild rank #{member.rank} · Level {member.playerLevel || "—"}</small></span>
+                  <em className={`role-${member.memberRole.toLowerCase()}`}>{member.memberRole}</em>
                 </span>
                 <span className="member-card-stats">
                   <span><small>Power</small><strong>{formatPower(member.galacticPower)}</strong></span>
+                  <span><small>GLs</small><strong>{member.galacticLegends ?? "—"}</strong></span>
                   <span><small>Tickets</small><strong>{member.raidTickets}<b>/600</b></strong></span>
+                  <span><small>In guild</small><strong>{guildTenure(member.joinedAt)}</strong></span>
                 </span>
-                <span className="member-card-foot"><small>{relativeTime(member.lastActivityAt)}</small><b>Open card →</b></span>
+                <span className="member-card-foot"><small>{needsAttention ? `Needs check-in · ${relativeTime(member.lastActivityAt)}` : relativeTime(member.lastActivityAt)}</small><b>Open card →</b></span>
               </button>
             );
           })}
@@ -135,13 +154,18 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
             <button className="member-dialog-close" type="button" onClick={() => dialogRef.current?.close()} aria-label="Close member card">×</button>
             <div className="profile-hero">
               <span className="profile-avatar" aria-hidden="true">{selected.name.charAt(0).toUpperCase()}</span>
-              <div><p>Blues Brothers member</p><h3 id="member-profile-title">{selected.name}</h3><span>Guild rank #{selected.rank}</span></div>
+              <div><p>{selected.memberRole} · Blues Brothers</p><h3 id="member-profile-title">{selected.name}</h3><span>Guild rank #{selected.rank} · Player level {selected.playerLevel || "—"}</span></div>
             </div>
             <div className="profile-stat-grid">
               <div><span>Galactic power</span><strong>{formatPower(selected.galacticPower)}</strong></div>
+              <div><span>Character GP</span><strong>{formatPower(selected.characterPower)}</strong></div>
+              <div><span>Ship GP</span><strong>{formatPower(selected.shipPower)}</strong></div>
+              <div><span>Galactic Legends</span><strong>{selected.galacticLegends ?? "Syncing"}</strong></div>
               <div><span>Raid tickets</span><strong>{selected.raidTickets}<small>/600</small></strong></div>
+              <div><span>Relic units</span><strong>{selected.relicUnits ?? "Syncing"}</strong></div>
+              <div><span>Datacrons</span><strong>{selected.datacrons ?? "Syncing"}</strong></div>
               <div><span>Last activity</span><strong>{relativeTime(selected.lastActivityAt).replace("Active ", "")}</strong></div>
-              <div><span>Joined the band</span><strong>{longDate(selected.joinedAt)}</strong></div>
+              <div className="profile-stat-wide"><span>Joined the band</span><strong>{longDate(selected.joinedAt)} · {guildTenure(selected.joinedAt)}</strong></div>
             </div>
             <div className={`profile-standing${selected.attentionReasons.length ? " profile-standing-watch" : ""}`}>
               <span>{selected.attentionReasons.length ? "Needs a check-in" : "All clear"}</span>

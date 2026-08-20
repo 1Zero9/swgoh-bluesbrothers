@@ -42,12 +42,18 @@ model Player {
   allyCode         String?           @unique
   currentName      String
   discordUserId    String?           @unique
+  level            Int?
+  portraitId       String?
+  titleId          String?
+  profileSyncedAt  DateTime?
+  profilePayload   Json?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   names            PlayerName[]
   membershipTerms  MembershipTerm[]
   snapshots        MemberSnapshot[]
   automationEvents AutomationEvent[]
+  profileSnapshots PlayerProfileSnapshot[]
 }
 
 model PlayerName {
@@ -100,13 +106,38 @@ model MemberSnapshot {
   guildSnapshotId String
   playerId        String
   galacticPower   BigInt
+  characterPower  BigInt?
+  shipPower       BigInt?
   raidTickets     Int?
   lastActivityAt  DateTime?
+  playerLevel     Int?
+  memberRole      String?
+  squadPower      Int?
+  lifetimeSeasonScore BigInt?
+  leagueId        String?
+  guildXp         Int?
+  rawPayload      Json?
   guildSnapshot   GuildSnapshot @relation(fields: [guildSnapshotId], references: [id], onDelete: Cascade)
   player          Player        @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@unique([guildSnapshotId, playerId])
   @@index([playerId])
+}
+
+model PlayerProfileSnapshot {
+  id                 String   @id @default(cuid())
+  playerId           String
+  capturedAt         DateTime @default(now())
+  galacticLegends    Int
+  unlockedUltimates  Int
+  relicUnits         Int
+  rosterUnits        Int
+  datacrons          Int
+  lifetimeSeasonScore BigInt?
+  player             Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, capturedAt])
+  @@index([capturedAt])
 }
 
 model GuildEvent {
