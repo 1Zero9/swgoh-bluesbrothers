@@ -1,0 +1,22 @@
+name: Guild sync
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger guild sync
+        run: |
+          status=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            "https://swgoh-bluesbrothers.vercel.app/api/cron/guild-sync" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 150)
+          echo "HTTP status: $status"
+          cat /tmp/response.json
+          if [ "$status" -ne 200 ]; then
+            exit 1
+          fi
