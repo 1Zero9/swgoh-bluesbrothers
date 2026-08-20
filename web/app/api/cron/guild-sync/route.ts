@@ -15,9 +15,6 @@ export async function GET(request: Request) {
     return Response.json({ ok: true, ...result });
   } catch (error) {
     console.error("guild sync failed", error);
-    return Response.json(
-      { ok: false, error: "guild sync failed", detail: error instanceof Error ? error.message : String(error) },
-      { status: 500 },
-    );
+    return Response.json({ ok: false, error: "guild sync failed" }, { status: 500 });
   }
 }

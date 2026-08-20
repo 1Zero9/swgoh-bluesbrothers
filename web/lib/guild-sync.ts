@@ -114,7 +114,7 @@ export async function syncGuildRoster() {
       });
     }
     return pending;
-  });
+  }, { timeout: 60_000, maxWait: 10_000 });
 
   let delivered = 0;
   let accessRemoved = 0;
