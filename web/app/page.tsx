@@ -45,7 +45,8 @@ const eventCards = [
     title: "The next gig",
     status: "No active war",
     copy: "Registration, defensive assignments and the opponent counter board will share one live plan.",
-    action: "Preview TW board",
+    action: "Open TW war room",
+    href: "/territory-war",
     tone: "amber",
   },
   {
@@ -266,7 +267,11 @@ export default async function Home() {
                 <div className="event-symbol" aria-hidden="true"><span>{event.eyebrow.split(" ").map((word) => word[0]).join("")}</span></div>
                 <h3>{event.title}</h3>
                 <p>{event.copy}</p>
-                <button type="button" disabled>{event.action}<span>→</span></button>
+                {event.href ? (
+                  <a className="event-action" href={event.href}>{event.action}<span>→</span></a>
+                ) : (
+                  <button type="button" disabled>{event.action}<span>→</span></button>
+                )}
               </article>
             ))}
           </div>

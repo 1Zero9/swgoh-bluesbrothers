@@ -18,6 +18,23 @@ type PendingAnnouncement = {
 const PROFILE_BATCH_SIZE = 2;
 const PROFILE_REFRESH_MS = 20 * 60 * 60 * 1000;
 
+function comlinkDate(value: string | number | undefined) {
+  const parsed = Number(value ?? 0);
+  if (!Number.isFinite(parsed) || parsed <= 0) return null;
+  return new Date(parsed < 1_000_000_000_000 ? parsed * 1000 : parsed);
+}
+
+function territoryWarOpponentName(
+  guildId: string,
+  war: (Awaited<ReturnType<typeof fetchGuildRoster>>)["territoryWars"][number],
+) {
+  const home = war.homeGuild?.profile;
+  const away = war.awayGuild?.profile;
+  if (home?.id === guildId) return away?.name;
+  if (away?.id === guildId) return home?.name;
+  return away?.name || home?.name;
+}
+
 async function enrichStalePlayerProfiles(playerIds: string[], capturedAt: Date) {
   const prisma = getPrisma();
   const players = await prisma.player.findMany({
@@ -77,6 +94,70 @@ export async function syncGuildRoster() {
       update: { name: roster.name, discordGuildId: process.env.DISCORD_GUILD_ID || undefined },
       create: { id: roster.guildId, name: roster.name, discordGuildId: process.env.DISCORD_GUILD_ID || undefined },
     });
+
+    for (const war of roster.territoryWars) {
+      const externalId = String(war.instanceId ?? "").trim();
+      if (!externalId) continue;
+      const opponent = territoryWarOpponentName(roster.guildId, war);
+      const event = await tx.guildEvent.upsert({
+        where: {
+          guildId_type_externalId: {
+            guildId: roster.guildId,
+            type: "TERRITORY_WAR",
+            externalId,
+          },
+        },
+        update: {
+          name: opponent ? `Territory War vs ${opponent}` : "Territory War",
+          endsAt: comlinkDate(war.currentRoundEndTime),
+        },
+        create: {
+          guildId: roster.guildId,
+          externalId,
+          type: "TERRITORY_WAR",
+          name: opponent ? `Territory War vs ${opponent}` : "Territory War",
+          endsAt: comlinkDate(war.currentRoundEndTime),
+        },
+      });
+      await tx.eventSnapshot.create({
+        data: {
+          eventId: event.id,
+          capturedAt,
+          phase: war.currentRound === undefined ? null : `Round ${war.currentRound}`,
+          payload: war as Prisma.InputJsonValue,
+        },
+      });
+    }
+
+    for (const result of roster.territoryWarResults) {
+      const externalId = String(result.territoryWarId ?? "").trim();
+      if (!externalId) continue;
+      const opponent = result.opponentGuildProfile?.name;
+      await tx.guildEvent.upsert({
+        where: {
+          guildId_type_externalId: {
+            guildId: roster.guildId,
+            type: "TERRITORY_WAR",
+            externalId,
+          },
+        },
+        update: {
+          name: opponent ? `Territory War vs ${opponent}` : "Territory War",
+          startsAt: comlinkDate(result.startTime),
+          endsAt: comlinkDate(result.endTimeSeconds),
+          finalResult: result as Prisma.InputJsonValue,
+        },
+        create: {
+          guildId: roster.guildId,
+          externalId,
+          type: "TERRITORY_WAR",
+          name: opponent ? `Territory War vs ${opponent}` : "Territory War",
+          startsAt: comlinkDate(result.startTime),
+          endsAt: comlinkDate(result.endTimeSeconds),
+          finalResult: result as Prisma.InputJsonValue,
+        },
+      });
+    }
 
     const activeTerms = await tx.membershipTerm.findMany({
       where: { guildId: roster.guildId, state: "ACTIVE" },
@@ -232,6 +313,7 @@ export async function syncGuildRoster() {
     discordDelivered: delivered,
     discordAccessRemoved: accessRemoved,
     profilesEnriched,
+    territoryWars: roster.territoryWars.length,
     discordUrl: getDiscordUrl(),
     capturedAt: capturedAt.toISOString(),
   };

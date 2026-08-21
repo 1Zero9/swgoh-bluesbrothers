@@ -17,10 +17,61 @@ type ComlinkMember = {
   memberContribution?: Array<{ type?: string | number; currentValue?: string | number }>;
 };
 
+export type TerritoryWarParticipant = {
+  eligible?: boolean;
+  joinTime?: string | number;
+  memberId?: string;
+  power?: string | number;
+};
+
+export type TerritoryWarGuildStatus = {
+  conflictStatus?: Array<{
+    defeatedSquadCount?: string | number;
+    squadCapacity?: string | number;
+    squadCount?: string | number;
+    warSquad?: Array<Record<string, unknown>>;
+    zoneStatus?: {
+      commandMessage?: string;
+      score?: string | number;
+      zoneId?: string;
+      zoneState?: string | number;
+    };
+  }>;
+  profile?: {
+    guildGalacticPower?: string | number;
+    id?: string;
+    name?: string;
+  };
+};
+
+export type TerritoryWarStatus = Record<string, unknown> & {
+  awayGuild?: TerritoryWarGuildStatus;
+  currentRound?: string | number;
+  currentRoundEndTime?: string | number;
+  definitionId?: string;
+  excludedFromWar?: boolean;
+  homeGuild?: TerritoryWarGuildStatus;
+  instanceId?: string;
+  optedInMember?: TerritoryWarParticipant[];
+  optedInMemberId?: string[];
+};
+
+export type TerritoryWarResult = Record<string, unknown> & {
+  endTimeSeconds?: string | number;
+  opponentGuildProfile?: TerritoryWarGuildStatus["profile"];
+  opponentScore?: string | number;
+  power?: string | number;
+  score?: string | number;
+  startTime?: string | number;
+  territoryWarId?: string;
+};
+
 type ComlinkResponse = {
   guild?: {
     profile?: { name?: string };
     member?: ComlinkMember[];
+    recentTerritoryWarResult?: TerritoryWarResult[];
+    territoryWarStatus?: TerritoryWarStatus[];
   };
 };
 
@@ -46,6 +97,8 @@ export type GuildRoster = {
   guildId: string;
   name: string;
   members: GuildRosterMember[];
+  territoryWarResults: TerritoryWarResult[];
+  territoryWars: TerritoryWarStatus[];
   rawPayload: Record<string, unknown>;
 };
 
@@ -150,6 +203,8 @@ export async function fetchGuildRoster(): Promise<GuildRoster> {
     guildId,
     name: guild.profile?.name || "Blues Brothers",
     members,
+    territoryWarResults: Array.isArray(guild.recentTerritoryWarResult) ? guild.recentTerritoryWarResult : [],
+    territoryWars: Array.isArray(guild.territoryWarStatus) ? guild.territoryWarStatus : [],
     rawPayload: payload as Record<string, unknown>,
   };
 }

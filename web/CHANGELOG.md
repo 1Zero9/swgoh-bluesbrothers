@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.16.0 — 2026-08-21
+
+- Added a responsive Territory War room with live registration, locked GP, guild matchup, scores, zone state, commands, and roster readiness.
+- Started normalizing active TW status and recent results from the existing Comlink guild response into `GuildEvent` and hourly `EventSnapshot` history.
+- Added searchable registration/readiness member cards with current or locked GP, Galactic Legends, relic units, datacrons, activity, and profile-sync clarity.
+- Turned the Territory War operations card into a working route while retaining an honest pre-war state when no active event is present.
+
 ## 0.14.0 — 2026-08-21
 
 - Replaced café prices and mock ordering with complete, selectable sandwich recipes.
