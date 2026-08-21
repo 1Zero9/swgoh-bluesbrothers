@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
-import packageInfo from "../package.json";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
@@ -9,20 +8,10 @@ import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-au
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import AccountLink from "./account-link";
-import MobileMenu from "./mobile-menu";
 import OfficerDesk from "./officer-desk";
-import ThemeToggle from "./theme-toggle";
+import SiteHeader, { APP_VERSION } from "./site-header";
 
-const APP_VERSION = `v${packageInfo.version}`;
 export const dynamic = "force-dynamic";
-
-const navigation = [
-  { label: "Guild Wire", mark: "GW", href: "/#guild-wire" },
-  { label: "Operations", mark: "OP", href: "/operations" },
-  { label: "Territory War", mark: "TW", href: "/territory-war" },
-  { label: "Members", mark: "MB", href: "/members" },
-  { label: "Cantina", mark: "SF", href: "/cantina" },
-];
 
 const eventCards = [
   {
@@ -128,28 +117,7 @@ export default async function Home() {
             sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"
           />
           <div className="hero-shade" />
-          <header className="site-header">
-            <a className="brand" href="#top" aria-label="Blues Brothers guild command centre">
-              <Image className="brand-logo" src="/bb-logo.png" alt="" width={136} height={136} priority />
-              <span><strong>Blues Brothers</strong><small>Guild command</small></span>
-            </a>
-            <nav className="main-nav" aria-label="Primary navigation">
-              {navigation.map((item) => (
-                <a className="nav-link" href={item.href} key={item.label}>
-                  <Mark label={item.mark} />
-                  <span>{item.label}</span>
-                </a>
-              ))}
-            </nav>
-            <div className="header-controls">
-              <span className="version-label">{APP_VERSION}</span>
-              <ThemeToggle />
-              <a className="discord-button" href={discordUrl} target="_blank" rel="noreferrer" aria-label="Open Blues Brothers Discord">
-                <span aria-hidden="true">◈</span><b>Open Discord</b>
-              </a>
-            </div>
-            <MobileMenu items={navigation} version={APP_VERSION} discordUrl={discordUrl} syncLabel={syncLabel} />
-          </header>
+          <SiteHeader variant="hero" syncLabel={syncLabel} />
           <div className="hero-copy">
             <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
             <p className="eyebrow">The roster. The plan. The next mission.</p>

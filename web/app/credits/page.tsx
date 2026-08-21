@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteHeader from "@/app/site-header";
 
 export const metadata: Metadata = {
   title: "Sources & Credits · Blues Brothers",
@@ -26,10 +27,7 @@ const projects = [
 export default function CreditsPage() {
   return (
     <main className="intel-shell credits-shell">
-      <header className="intel-header">
-        <Link href="/" className="intel-back">← Guild command</Link>
-        <span>Sources · Licences · Thanks</span>
-      </header>
+      <SiteHeader />
       <section className="intel-hero credits-hero">
         <p className="eyebrow">Open-source credits</p>
         <h1>Built with help from<br /><em>the wider holotable.</em></h1>
