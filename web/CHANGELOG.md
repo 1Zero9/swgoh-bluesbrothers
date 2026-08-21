@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.18.2 — 2026-08-21
+
+- Replaced the subpage breadcrumb bar with the complete homepage header on every public destination.
+- Centralized the logo, primary navigation, version, theme controls, Discord action, and responsive mobile drawer in one shared `SiteHeader` component.
+- Added light-theme and phone/tablet styling for the shared subpage header while retaining the homepage overlay treatment.
+
 ## 0.18.1 — 2026-08-21
 
 - Restored the original `bb-title.png` neon-sign artwork as the homepage hero image.

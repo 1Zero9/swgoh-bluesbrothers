@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.10.1 · **Last updated:** 2026-08-21 · tracks site `v0.18.1`
+**Doc version:** 1.10.2 · **Last updated:** 2026-08-21 · tracks site `v0.18.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -195,7 +195,7 @@ The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use the
 
 The homepage retains its existing full-bleed hero structure and uses the original `bb-title.png` neon-sign artwork. Credits remains a compact utility page and has no supplied banner.
 
-Each internal destination also renders a lightweight `intel-header` bar (back link + related-destinations nav) above its `PageHero`. That bar breaks out of the constrained `.intel-shell` container via a full-viewport-width CSS technique (`margin-left/right: calc(50% - 50vw)` with matching horizontal padding) so it spans edge to edge like the homepage header, while its inner content still aligns with the shell's content width.
+Every public destination renders the same `SiteHeader` above its page content. The shared component owns the BB logo/home link, primary navigation, version label, colour-theme controls, Discord action, and the existing responsive mobile drawer. Home uses the overlay variant inside its artwork; subpages use the full-width page variant with content aligned to the 1220px shell and light/dark/gradient theme-specific contrast. This avoids separate navigation systems drifting apart.
 
 ### 5.12 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
@@ -384,6 +384,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.10.2 — 2026-08-21
+- Replaced the documented breadcrumb-only subpage bar with the shared full homepage header and mobile drawer introduced in site v0.18.2.
 
 ### 1.10.1 — 2026-08-21
 - Documented the full-width `intel-header` breakout technique and the revert of the homepage hero back to `bb-title.png`, tracking site v0.18.1.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import MemberDirectory from "@/app/member-directory";
 import PageHero from "@/app/page-hero";
+import SiteHeader from "@/app/site-header";
 import { getRosterMembers } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
@@ -24,10 +25,7 @@ export default async function MembersPage() {
 
   return (
     <main className="intel-shell destination-shell">
-      <header className="intel-header">
-        <Link href="/" className="intel-back">← Guild command</Link>
-        <nav aria-label="Related destinations"><Link href="/operations">Operations</Link><Link href="/cantina">Cantina</Link></nav>
-      </header>
+      <SiteHeader />
       <PageHero
         image="/members-banner.png"
         imageAlt="The Blues Brothers among guild members inside a crowded desert cantina"

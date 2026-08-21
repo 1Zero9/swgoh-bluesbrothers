@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import SiteHeader from "@/app/site-header";
 import { getGuildArsenal } from "@/lib/guild-arsenal";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
@@ -21,10 +22,7 @@ export default async function ArsenalPage() {
 
   return (
     <main className="intel-shell">
-      <header className="intel-header">
-        <Link href="/" className="intel-back">← Guild command</Link>
-        <span>Roster intelligence · Live profiles</span>
-      </header>
+      <SiteHeader />
 
       <PageHero
         image="/arsnel-banner.png"

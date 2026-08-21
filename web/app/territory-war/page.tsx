@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import SiteHeader from "@/app/site-header";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import WarRoster from "./war-roster";
 
@@ -54,10 +55,7 @@ export default async function TerritoryWarPage() {
 
   return (
     <main className="intel-shell tw-shell">
-      <header className="intel-header">
-        <Link href="/#operations" className="intel-back">← Guild command</Link>
-        <span>Territory War · Captured {capturedLabel}</span>
-      </header>
+      <SiteHeader syncLabel={`Territory War · Captured ${capturedLabel}`} />
 
       <PageHero
         image="/tw-banner.png"
