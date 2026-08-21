@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.19.1 — 2026-08-21
+
+- Swapped the `tw-banner`/`ops-banner` image content: Territory War now shows the sector/territory network hologram, Operations now shows the mission-briefing holotable — the two had been assigned to the wrong pages since the artwork was first added in v0.18.0.
+
 ## 0.19.0 — 2026-08-21
 
 - **Performance pass** to fix slow desktop loads and slow page-to-page navigation:
