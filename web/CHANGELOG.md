@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.18.3 — 2026-08-21
+
+- Made every shared internal-page hero span the full viewport directly below the site header, matching the homepage's edge-to-edge treatment.
+- Removed the card-like outer rounding while keeping hero text and controls aligned to the 1220px content grid.
+- Preserved responsive banner focal points and full-bleed behavior on phone and tablet layouts.
+
 ## 0.18.2 — 2026-08-21
 
 - Replaced the subpage breadcrumb bar with the complete homepage header on every public destination.

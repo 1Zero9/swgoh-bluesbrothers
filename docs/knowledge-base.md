@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.10.2 · **Last updated:** 2026-08-21 · tracks site `v0.18.2`
+**Doc version:** 1.10.3 · **Last updated:** 2026-08-21 · tracks site `v0.18.3`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -191,7 +191,7 @@ Comlink's existing `/guild` response includes guild-specific `territoryWarStatus
 The complete member directory and Cantina now live at `/members` and `/cantina`, removing the two longest interactive sections from the homepage. Guild command retains overview metrics, communications, compact mission links, standings, personal account context, and officer actions.
 
 ### 5.11 Shared banner heroes (`app/page-hero.tsx`)
-The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use their matching 1915×821 artwork from `web/public`. Internal destinations share `PageHero`, which standardizes responsive image optimization, accessible alternative text, left-side copy, layered contrast gradients, typography, spacing, rounded framing, and the blue/amber signal edge. Desktop preserves the wide supplied composition; the phone breakpoint shifts the image focal point toward the subjects and changes to a stronger bottom gradient so copy remains readable.
+The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use their matching 1915×821 artwork from `web/public`. Internal destinations share `PageHero`, which standardizes responsive image optimization, accessible alternative text, left-side copy, layered contrast gradients, typography, spacing, and the blue/amber signal edge. The shared hero breaks out of the 1220px content shell with `width: 100vw` and `margin-left: calc(50% - 50vw)`, producing a square, edge-to-edge banner directly below the header while its copy remains aligned to the normal content grid. Desktop preserves the wide supplied composition; the phone breakpoint shifts the image focal point toward the subjects and changes to a stronger bottom gradient so copy remains readable.
 
 The homepage retains its existing full-bleed hero structure and uses the original `bb-title.png` neon-sign artwork. Credits remains a compact utility page and has no supplied banner.
 
@@ -384,6 +384,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.10.3 — 2026-08-21
+- Documented the full-viewport internal hero layout and aligned inner copy introduced in site v0.18.3.
 
 ### 1.10.2 — 2026-08-21
 - Replaced the documented breadcrumb-only subpage bar with the shared full homepage header and mobile drawer introduced in site v0.18.2.
