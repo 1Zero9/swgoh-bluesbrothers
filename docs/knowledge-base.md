@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.10.0 · **Last updated:** 2026-08-21 · tracks site `v0.18.0`
+**Doc version:** 1.10.1 · **Last updated:** 2026-08-21 · tracks site `v0.18.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -193,7 +193,9 @@ The complete member directory and Cantina now live at `/members` and `/cantina`,
 ### 5.11 Shared banner heroes (`app/page-hero.tsx`)
 The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use their matching 1915×821 artwork from `web/public`. Internal destinations share `PageHero`, which standardizes responsive image optimization, accessible alternative text, left-side copy, layered contrast gradients, typography, spacing, rounded framing, and the blue/amber signal edge. Desktop preserves the wide supplied composition; the phone breakpoint shifts the image focal point toward the subjects and changes to a stronger bottom gradient so copy remains readable.
 
-The homepage retains its existing full-bleed hero structure but now uses `welcome-banner.png`, preserving the same header/navigation behaviour. Credits remains a compact utility page and has no supplied banner.
+The homepage retains its existing full-bleed hero structure and uses the original `bb-title.png` neon-sign artwork. Credits remains a compact utility page and has no supplied banner.
+
+Each internal destination also renders a lightweight `intel-header` bar (back link + related-destinations nav) above its `PageHero`. That bar breaks out of the constrained `.intel-shell` container via a full-viewport-width CSS technique (`margin-left/right: calc(50% - 50vw)` with matching horizontal padding) so it spans edge to edge like the homepage header, while its inner content still aligns with the shell's content width.
 
 ### 5.12 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
@@ -382,6 +384,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.10.1 — 2026-08-21
+- Documented the full-width `intel-header` breakout technique and the revert of the homepage hero back to `bb-title.png`, tracking site v0.18.1.
 
 ### 1.10.0 — 2026-08-21
 - Documented the shared responsive banner hero, eight supplied route images, new TB/Raid readiness routes, focal-point handling, and site v0.18.0.
