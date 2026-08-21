@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import SiteHeader from "./site-header";
 
 type PageHeroProps = {
   image: string;
@@ -10,6 +11,7 @@ type PageHeroProps = {
   children?: ReactNode;
   className?: string;
   priority?: boolean;
+  syncLabel?: string;
 };
 
 export default function PageHero({
@@ -21,6 +23,7 @@ export default function PageHero({
   children,
   className = "",
   priority = false,
+  syncLabel,
 }: PageHeroProps) {
   return (
     <section className={`page-hero ${className}`.trim()}>
@@ -30,9 +33,10 @@ export default function PageHero({
         alt={imageAlt}
         fill
         priority={priority}
-        sizes="(max-width: 760px) calc(100vw - 28px), 1220px"
+        sizes="100vw"
       />
       <div className="page-hero-shade" />
+      <SiteHeader homeHref="/" syncLabel={syncLabel} />
       <div className="page-hero-copy">
         <p className="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>

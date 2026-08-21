@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.10.3 · **Last updated:** 2026-08-21 · tracks site `v0.18.3`
+**Doc version:** 1.10.4 · **Last updated:** 2026-08-21 · tracks site `v0.18.4`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -193,9 +193,9 @@ The complete member directory and Cantina now live at `/members` and `/cantina`,
 ### 5.11 Shared banner heroes (`app/page-hero.tsx`)
 The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use their matching 1915×821 artwork from `web/public`. Internal destinations share `PageHero`, which standardizes responsive image optimization, accessible alternative text, left-side copy, layered contrast gradients, typography, spacing, and the blue/amber signal edge. The shared hero breaks out of the 1220px content shell with `width: 100vw` and `margin-left: calc(50% - 50vw)`, producing a square, edge-to-edge banner directly below the header while its copy remains aligned to the normal content grid. Desktop preserves the wide supplied composition; the phone breakpoint shifts the image focal point toward the subjects and changes to a stronger bottom gradient so copy remains readable.
 
-The homepage retains its existing full-bleed hero structure and uses the original `bb-title.png` neon-sign artwork. Credits remains a compact utility page and has no supplied banner.
+The homepage retains its existing full-bleed hero structure and uses the original `bb-title.png` neon-sign artwork. Credits has no supplied banner, so its integrated header sits over a compact dark command-gradient hero instead.
 
-Every public destination renders the same `SiteHeader` above its page content. The shared component owns the BB logo/home link, primary navigation, version label, colour-theme controls, Discord action, and the existing responsive mobile drawer. Home uses the overlay variant inside its artwork; subpages use the full-width page variant with content aligned to the 1220px shell and light/dark/gradient theme-specific contrast. This avoids separate navigation systems drifting apart.
+Every public destination renders the same `SiteHeader` inside its hero rather than in a detached toolbar above it. The shared component owns the BB logo/home link, primary navigation, version label, colour-theme controls, Discord action, and the existing responsive mobile drawer. `PageHero` owns this integration for all banner destinations, keeps the controls readable over the artwork, and collapses them to the drawer at tablet/mobile widths. This avoids separate navigation systems drifting apart.
 
 ### 5.12 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
@@ -384,6 +384,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.10.4 — 2026-08-21
+- Documented the removal of the detached subpage toolbar and the integrated hero navigation introduced in site v0.18.4.
 
 ### 1.10.3 — 2026-08-21
 - Documented the full-viewport internal hero layout and aligned inner copy introduced in site v0.18.3.

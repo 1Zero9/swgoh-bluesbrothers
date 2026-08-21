@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
-import SiteHeader from "@/app/site-header";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getTerritoryWarRoom } from "@/lib/territory-war";
 
@@ -20,7 +19,6 @@ export default async function OperationsPage() {
   const [war, summary] = await Promise.all([getTerritoryWarRoom(), getDashboardSummary()]);
   return (
     <main className="intel-shell destination-shell operations-shell">
-      <SiteHeader />
       <PageHero
         image="/ops-banner.png"
         imageAlt="The Blues Brothers and guild officers planning missions around a holographic operations table"

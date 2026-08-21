@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
-import SiteHeader from "@/app/site-header";
 import { getDashboardSummary } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +16,6 @@ export default async function RaidsPage() {
     : 0;
   return (
     <main className="intel-shell destination-shell mission-shell">
-      <SiteHeader />
       <PageHero
         image="/raid-banner.png"
         imageAlt="The Blues Brothers coordinating a guild raid against a giant creature"

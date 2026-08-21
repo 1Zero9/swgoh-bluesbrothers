@@ -19,18 +19,17 @@ function NavMark({ label }: { label: string }) {
 }
 
 export default function SiteHeader({
-  variant = "page",
+  homeHref = "#top",
   syncLabel = "Guild command online",
 }: {
-  variant?: "hero" | "page";
+  homeHref?: string;
   syncLabel?: string;
 }) {
   const discordUrl = getDiscordUrl();
-  const isHero = variant === "hero";
 
   return (
-    <header className={`site-header site-header-${variant}`}>
-      <a className="brand" href={isHero ? "#top" : "/"} aria-label="Blues Brothers guild command centre">
+    <header className="site-header">
+      <a className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
         <Image className="brand-logo" src="/bb-logo.png" alt="" width={136} height={136} priority />
         <span><strong>Blues Brothers</strong><small>Guild command</small></span>
       </a>
