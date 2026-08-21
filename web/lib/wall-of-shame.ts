@@ -1,4 +1,4 @@
-import { getPrisma } from "@/lib/prisma";
+import { getLatestGuildSnapshot } from "@/lib/guild-snapshot";
 
 export type WallOfShameEntry = {
   playerId: string;
@@ -40,36 +40,27 @@ function compareGp(a: bigint, b: bigint) {
 }
 
 async function computeAllEntries(): Promise<WallOfShameEntry[]> {
-  if (!process.env.DATABASE_URL) return [];
+  const snapshot = await getLatestGuildSnapshot();
+  if (!snapshot || snapshot.members.length < MIN_GUILD_SIZE) return [];
 
-  try {
-    const snapshot = await getPrisma().guildSnapshot.findFirst({
-      orderBy: { capturedAt: "desc" },
-      include: { members: { include: { player: true } } },
-    });
-    if (!snapshot || snapshot.members.length < MIN_GUILD_SIZE) return [];
+  const totalGp = snapshot.members.reduce((sum, member) => sum + member.galacticPower, BigInt(0));
+  const averageGp = totalGp / BigInt(snapshot.members.length);
 
-    const totalGp = snapshot.members.reduce((sum, member) => sum + member.galacticPower, BigInt(0));
-    const averageGp = totalGp / BigInt(snapshot.members.length);
+  const entries = snapshot.members.flatMap((member) => {
+    const reasons = getMemberAttentionReasons(member, averageGp, snapshot.capturedAt);
+    if (!reasons.length) return [];
 
-    const entries = snapshot.members.flatMap((member) => {
-      const reasons = getMemberAttentionReasons(member, averageGp, snapshot.capturedAt);
-      if (!reasons.length) return [];
+    return [{
+      playerId: member.playerId,
+      name: member.player.currentName,
+      galacticPower: member.galacticPower,
+      raidTickets: member.raidTickets ?? 0,
+      lastActivityAt: member.lastActivityAt,
+      reasons,
+    }];
+  });
 
-      return [{
-        playerId: member.playerId,
-        name: member.player.currentName,
-        galacticPower: member.galacticPower,
-        raidTickets: member.raidTickets ?? 0,
-        lastActivityAt: member.lastActivityAt,
-        reasons,
-      }];
-    });
-
-    return entries.sort((a, b) => compareGp(a.galacticPower, b.galacticPower));
-  } catch {
-    return [];
-  }
+  return entries.sort((a, b) => compareGp(a.galacticPower, b.galacticPower));
 }
 
 export async function getWallOfShame(): Promise<WallOfShameEntry[]> {

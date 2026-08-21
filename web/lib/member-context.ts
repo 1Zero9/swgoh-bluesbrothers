@@ -31,7 +31,14 @@ export async function getMemberContext(): Promise<MemberContext> {
     try {
       const player = await getPrisma().player.findUnique({
         where: { id: playerId },
-        include: { snapshots: { orderBy: { guildSnapshot: { capturedAt: "desc" } }, take: 1 } },
+        select: {
+          currentName: true,
+          snapshots: {
+            orderBy: { guildSnapshot: { capturedAt: "desc" } },
+            take: 1,
+            select: { galacticPower: true, raidTickets: true, lastActivityAt: true },
+          },
+        },
       });
       if (player) {
         const latest = player.snapshots[0];

@@ -4,7 +4,7 @@ import PageHero from "@/app/page-hero";
 import { getGuildArsenal } from "@/lib/guild-arsenal";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Guild Arsenal · Blues Brothers",
   description: "Live priority-unit coverage across the Blues Brothers SWGOH guild.",
@@ -22,7 +22,7 @@ export default async function ArsenalPage() {
   return (
     <main className="intel-shell">
       <PageHero
-        image="/arsnel-banner.png"
+        image="/arsnel-banner.webp"
         imageAlt="The Blues Brothers reviewing ships and units inside a busy guild arsenal"
         eyebrow="Guild arsenal"
         title={<>Know what the band<br /><em>can put on the field.</em></>}

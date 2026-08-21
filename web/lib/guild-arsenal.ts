@@ -56,9 +56,9 @@ export async function getGuildArsenal(): Promise<GuildArsenal> {
   try {
     const snapshot = await getPrisma().guildSnapshot.findFirst({
       orderBy: { capturedAt: "desc" },
-      include: {
+      select: {
         members: {
-          include: {
+          select: {
             player: { select: { profilePayload: true } },
           },
         },

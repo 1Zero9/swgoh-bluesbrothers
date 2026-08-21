@@ -4,7 +4,7 @@ import PageHero from "@/app/page-hero";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import WarRoster from "./war-roster";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Territory War Room · Blues Brothers",
   description: "Live Territory War registration, scores, zones and roster readiness for the Blues Brothers.",
@@ -55,7 +55,7 @@ export default async function TerritoryWarPage() {
   return (
     <main className="intel-shell tw-shell">
       <PageHero
-        image="/tw-banner.png"
+        image="/tw-banner.webp"
         imageAlt="The Blues Brothers and guild officers studying a holographic Territory War map"
         eyebrow="Territory War room"
         title={war.active ? <>The band is live.<br /><em>Know the field.</em></> : <>Get the band ready.<br /><em>Before the doors open.</em></>}

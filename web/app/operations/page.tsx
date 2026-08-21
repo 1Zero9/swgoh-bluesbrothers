@@ -4,7 +4,7 @@ import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getTerritoryWarRoom } from "@/lib/territory-war";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Guild Operations · Blues Brothers",
   description: "Territory War, Territory Battle, raid and roster-planning destinations.",
@@ -20,7 +20,7 @@ export default async function OperationsPage() {
   return (
     <main className="intel-shell destination-shell operations-shell">
       <PageHero
-        image="/ops-banner.png"
+        image="/ops-banner.webp"
         imageAlt="The Blues Brothers and guild officers planning missions around a holographic operations table"
         eyebrow="Guild operations"
         title={<>Every mission.<br /><em>One launch deck.</em></>}

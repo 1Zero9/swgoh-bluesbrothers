@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import packageInfo from "../package.json";
 import { getDiscordUrl } from "@/lib/discord";
 import MobileMenu from "./mobile-menu";
@@ -29,16 +30,16 @@ export default function SiteHeader({
 
   return (
     <header className="site-header">
-      <a className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
-        <Image className="brand-logo" src="/bb-logo.png" alt="" width={136} height={136} priority />
+      <Link className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
+        <Image className="brand-logo" src="/bb-logo.webp" alt="" width={136} height={136} priority />
         <span><strong>Blues Brothers</strong><small>Guild command</small></span>
-      </a>
+      </Link>
       <nav className="main-nav" aria-label="Primary navigation">
         {SITE_NAVIGATION.map((item) => (
-          <a className="nav-link" href={item.href} key={item.label}>
+          <Link className="nav-link" href={item.href} key={item.label}>
             <NavMark label={item.mark} />
             <span>{item.label}</span>
-          </a>
+          </Link>
         ))}
       </nav>
       <div className="header-controls">

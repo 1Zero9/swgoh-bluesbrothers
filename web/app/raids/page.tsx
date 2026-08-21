@@ -3,7 +3,7 @@ import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Raid Operations · Blues Brothers",
   description: "Raid tickets, readiness and score planning for the Blues Brothers guild.",
@@ -17,7 +17,7 @@ export default async function RaidsPage() {
   return (
     <main className="intel-shell destination-shell mission-shell">
       <PageHero
-        image="/raid-banner.png"
+        image="/raid-banner.webp"
         imageAlt="The Blues Brothers coordinating a guild raid against a giant creature"
         eyebrow="Raid operations"
         title={<>Bring the right teams.<br /><em>Hit the right notes.</em></>}

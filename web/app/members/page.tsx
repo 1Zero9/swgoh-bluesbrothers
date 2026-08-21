@@ -4,7 +4,7 @@ import MemberDirectory from "@/app/member-directory";
 import PageHero from "@/app/page-hero";
 import { getRosterMembers } from "@/lib/members";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Guild Members · Blues Brothers",
   description: "Search the Blues Brothers roster and open detailed member cards.",
@@ -25,7 +25,7 @@ export default async function MembersPage() {
   return (
     <main className="intel-shell destination-shell">
       <PageHero
-        image="/members-banner.png"
+        image="/members-banner.webp"
         imageAlt="The Blues Brothers among guild members inside a crowded desert cantina"
         eyebrow="Membership directory"
         title={<>Meet the whole band.<br /><em>One card at a time.</em></>}

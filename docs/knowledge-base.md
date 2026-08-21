@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.10.4 · **Last updated:** 2026-08-21 · tracks site `v0.18.4`
+**Doc version:** 1.11.0 · **Last updated:** 2026-08-21 · tracks site `v0.19.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -225,7 +225,7 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 
 ## 7. API routes
 
-All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynamic"`. (Public data pages under `web/app/*/page.tsx` mostly use `revalidate = 300` instead — see §13.)
 
 | Route | Method | Auth | Purpose |
 |---|---|---|---|
@@ -249,6 +249,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `guild-sync.ts` | The full sync transaction described in §5.1 |
 | `guild-wire.ts` | Reads recent `AutomationEvent`s for the website feed |
 | `dashboard.ts` | Aggregates the latest `GuildSnapshot` into the summary metric cards |
+| `guild-snapshot.ts` | `React.cache()`-memoized shared query for the latest `GuildSnapshot` + members/player summary fields (excludes `rawPayload`/`profilePayload`); reused by `wall-of-fame.ts`, `wall-of-shame.ts`, and `members.ts` to avoid duplicate per-request queries |
 | `discord.ts` | Bot REST calls — posting announcements, role add/remove |
 | `discord-oauth.ts` | OAuth authorize-URL builder, code exchange, identity fetch |
 | `member-auth.ts` | Signed cookie helpers for the OAuth `state`/`link`/member session flow |
@@ -352,6 +353,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 - **Deploying from inside `web/`** fails with `The specified Root Directory "web" does not exist` — always deploy from the repo root once `.vercel/project.json` is linked there.
 - **Render free tier** has no request-frequency limit, just a cold-start delay when the instance has been idle — hourly pings from the sync job keep it warm.
 - **CSS `object-fit: cover` on a portrait mobile box against a wide source image** can crop out content no `object-position` value can fix — the crop *window width* is bounded by `boxWidth × sourceHeight / boxHeight`; if that's narrower than the subject you're framing, you must shrink the box height (or use a differently cropped source image) to widen the window.
+- **A shared component rendered on every route (e.g. `SiteHeader`) must use `next/link`, not `<a href>`, for internal links** — plain anchors force a full hard browser reload on every navigation even though the rest of the app is client-routed. This was the single biggest cause of "slow page switching" once `SiteHeader` became universal in v0.18.2.
+- **Blanket `dynamic = "force-dynamic"` on every route means zero caching anywhere.** Since guild data only changes on the (Hobby-capped) once-daily cron sync, subpages that don't read cookies are safe to run as `revalidate = 300` ISR instead — cutting DB load and response time with negligible staleness risk. Only pages using `cookies()`/`headers()` (session-dependent) need to stay fully dynamic.
+- **Prisma `include` pulls every scalar column of a relation, including large `Json` columns.** Always use explicit `select` on models with heavy JSON fields (`GuildSnapshot.rawPayload`, `Player.profilePayload`) unless the caller genuinely needs them — several lib functions were unknowingly fetching multi-KB JSON blobs per member on every request.
 
 ---
 
@@ -384,6 +388,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.11.0 — 2026-08-21
+- Documented the performance pass in site v0.19.0: the new `lib/guild-snapshot.ts` shared/cached query helper, the shift from blanket `force-dynamic` to `revalidate = 300` on cookie-free subpages, and the `next/link` navigation fix.
 
 ### 1.10.4 — 2026-08-21
 - Documented the removal of the detached subpage toolbar and the integrated hero navigation introduced in site v0.18.4.

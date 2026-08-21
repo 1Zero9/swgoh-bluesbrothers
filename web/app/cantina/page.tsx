@@ -4,7 +4,7 @@ import PageHero from "@/app/page-hero";
 import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Soul Food Cantina · Blues Brothers",
   description: "Galactic sandwich recipes, beer pairings and community submissions.",
@@ -15,7 +15,7 @@ export default async function CantinaPage() {
   return (
     <main className="intel-shell destination-shell cantina-page">
       <PageHero
-        image="/cantin-bannera.png"
+        image="/cantin-bannera.webp"
         imageAlt="The Blues Brothers sampling food at a bustling galactic market cantina"
         eyebrow="Soul Food Cantina"
         title={<>Good food.<br /><em>Across the galaxy.</em></>}

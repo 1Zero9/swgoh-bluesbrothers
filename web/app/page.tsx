@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
@@ -110,7 +111,7 @@ export default async function Home() {
         <section className="hero" id="command-centre" aria-labelledby="mission-heading">
           <Image
             className="hero-image"
-            src="/bb-title.png"
+            src="/bb-title.webp"
             alt="The Blues Brothers outside their cantina in a desert spaceport"
             fill
             priority
@@ -125,7 +126,7 @@ export default async function Home() {
             <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
             <div className="hero-actions">
               <a className="primary-action" href="#administration">Review officer actions</a>
-              <a className="secondary-action" href="/members">View guild roster <span>→</span></a>
+              <Link className="secondary-action" href="/members">View guild roster <span>→</span></Link>
             </div>
           </div>
         </section>
@@ -211,7 +212,7 @@ export default async function Home() {
         <section className="section-block" id="operations">
           <div className="section-heading">
             <div><p className="eyebrow">Operations board</p><h2>Upcoming missions</h2></div>
-            <a href="/operations">Open operations hub <span>→</span></a>
+            <Link href="/operations">Open operations hub <span>→</span></Link>
           </div>
           <div className="event-grid">
             {eventCards.map((event) => (
@@ -221,7 +222,7 @@ export default async function Home() {
                 <h3>{event.title}</h3>
                 <p>{event.copy}</p>
                 {event.href ? (
-                  <a className="event-action" href={event.href}>{event.action}<span>→</span></a>
+                  <Link className="event-action" href={event.href}>{event.action}<span>→</span></Link>
                 ) : (
                   <button type="button" disabled>{event.action}<span>→</span></button>
                 )}
@@ -317,7 +318,7 @@ export default async function Home() {
 
         <footer>
           <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
-          <span className="footer-links"><a href="/operations">Operations</a><a href="/members">Members</a><a href="/cantina">Cantina</a><a href="/credits">Sources &amp; credits</a></span>
+          <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/credits">Sources &amp; credits</Link></span>
         </footer>
         </div>
       </section>

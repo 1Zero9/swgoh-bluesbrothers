@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import ThemeToggle from "./theme-toggle";
 
@@ -50,7 +51,7 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel }: Mo
           <aside className="menu-drawer" id="mobile-navigation" aria-label="Mobile navigation">
             <div className="drawer-heading">
               <div className="drawer-brand">
-                <Image src="/bb-logo.png" alt="" width={82} height={82} />
+                <Image src="/bb-logo.webp" alt="" width={82} height={82} />
                 <div><strong>Blues Brothers</strong><span>Guild command · {version}</span></div>
               </div>
               <button className="drawer-close" type="button" aria-label="Close navigation" onClick={() => setOpen(false)} autoFocus>×</button>
@@ -58,11 +59,11 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel }: Mo
 
             <nav className="drawer-nav" aria-label="Drawer navigation">
               {items.map((item) => (
-                <a href={item.href} onClick={() => setOpen(false)} key={item.label}>
+                <Link href={item.href} onClick={() => setOpen(false)} key={item.label}>
                   <span>{item.mark}</span>
                   <strong>{item.label}</strong>
                   <b aria-hidden="true">→</b>
-                </a>
+                </Link>
               ))}
             </nav>
 

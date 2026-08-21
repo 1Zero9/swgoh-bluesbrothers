@@ -3,7 +3,7 @@ import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Territory Battles · Blues Brothers",
   description: "Territory Battle readiness and planning for the Blues Brothers guild.",
@@ -19,7 +19,7 @@ export default async function TerritoryBattlesPage() {
   return (
     <main className="intel-shell destination-shell mission-shell">
       <PageHero
-        image="/tb-banner.png"
+        image="/tb-banner.webp"
         imageAlt="The Blues Brothers overlooking a large Territory Battle across a desert world"
         eyebrow="Territory Battles"
         title={<>See the whole field.<br /><em>Deploy with purpose.</em></>}

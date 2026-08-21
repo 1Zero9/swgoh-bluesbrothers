@@ -2,6 +2,16 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.19.0 — 2026-08-21
+
+- **Performance pass** to fix slow desktop loads and slow page-to-page navigation:
+  - Converted the shared `SiteHeader` and `MobileMenu` primary navigation from plain `<a>` tags to `next/link`, eliminating full hard-reloads on every page switch (the header renders on every route, so this was the biggest single win).
+  - Added `lib/guild-snapshot.ts`, a request-memoized (`React.cache()`) shared query for the latest guild snapshot + members, replacing three independent full-guild Prisma queries that were previously fired in parallel on the homepage alone.
+  - Trimmed Prisma `include`s to explicit `select`s across `wall-of-fame.ts`, `wall-of-shame.ts`, `members.ts`, `guild-arsenal.ts`, and `member-context.ts`, dropping unused `rawPayload`/`profilePayload` JSON blobs from queries that didn't need them.
+  - Replaced blanket `dynamic = "force-dynamic"` with `revalidate = 300` (5-minute ISR) on the seven subpages that don't read cookies, so they now serve prerendered/cached responses instead of re-querying the database on every request. The homepage stays fully dynamic (it reads session cookies).
+  - Added a root `app/loading.tsx` skeleton for the homepage's dynamic render.
+  - Converted all hero banner and logo images from lossless PNG to WebP (~90–95% smaller: banners ~2–2.5MB → ~140–235KB, logo 1.65MB → 54.5KB at a trimmed 512×512), and removed the orphaned unused `welcome-banner.png`.
+
 ## 0.18.4 — 2026-08-21
 
 - Removed the standalone subpage navigation toolbar and integrated the complete site header into every hero.

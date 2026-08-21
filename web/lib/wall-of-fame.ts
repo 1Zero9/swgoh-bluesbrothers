@@ -1,5 +1,5 @@
 import { TICKET_TARGET_PER_MEMBER } from "@/lib/dashboard";
-import { getPrisma } from "@/lib/prisma";
+import { getLatestGuildSnapshot } from "@/lib/guild-snapshot";
 
 export type WallOfFameEntry = {
   playerId: string;
@@ -20,32 +20,23 @@ function compareGpDesc(a: bigint, b: bigint) {
 }
 
 export async function getWallOfFame(): Promise<WallOfFameEntry[]> {
-  if (!process.env.DATABASE_URL) return [];
+  const snapshot = await getLatestGuildSnapshot();
+  if (!snapshot || snapshot.members.length < MIN_GUILD_SIZE) return [];
 
-  try {
-    const snapshot = await getPrisma().guildSnapshot.findFirst({
-      orderBy: { capturedAt: "desc" },
-      include: { members: { include: { player: true } } },
-    });
-    if (!snapshot || snapshot.members.length < MIN_GUILD_SIZE) return [];
+  const ranked = [...snapshot.members].sort((a, b) => compareGpDesc(a.galacticPower, b.galacticPower));
 
-    const ranked = [...snapshot.members].sort((a, b) => compareGpDesc(a.galacticPower, b.galacticPower));
+  return ranked.slice(0, MAX_ENTRIES).map((member, index) => {
+    const badges: string[] = [];
+    if (index === 0) badges.push("Top gun in the guild");
+    if ((member.raidTickets ?? 0) >= TICKET_TARGET_PER_MEMBER) badges.push("Maxed raid tickets");
 
-    return ranked.slice(0, MAX_ENTRIES).map((member, index) => {
-      const badges: string[] = [];
-      if (index === 0) badges.push("Top gun in the guild");
-      if ((member.raidTickets ?? 0) >= TICKET_TARGET_PER_MEMBER) badges.push("Maxed raid tickets");
-
-      return {
-        playerId: member.playerId,
-        name: member.player.currentName,
-        galacticPower: member.galacticPower,
-        raidTickets: member.raidTickets ?? 0,
-        rank: index + 1,
-        badges,
-      };
-    });
-  } catch {
-    return [];
-  }
+    return {
+      playerId: member.playerId,
+      name: member.player.currentName,
+      galacticPower: member.galacticPower,
+      raidTickets: member.raidTickets ?? 0,
+      rank: index + 1,
+      badges,
+    };
+  });
 }
