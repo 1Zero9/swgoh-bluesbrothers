@@ -411,7 +411,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 38px
 
 /* Roster intelligence and credits */
 .intel-shell { width: min(1220px, calc(100% - 40px)); margin: 0 auto; padding: 0 0 34px; }
-.intel-header { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); color: #8c9bac; font: 11px var(--font-geist-mono); letter-spacing: .1em; text-transform: uppercase; }
+.intel-header { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); color: #8c9bac; font: 11px var(--font-geist-mono); letter-spacing: .1em; text-transform: uppercase; width: 100vw; box-sizing: border-box; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(20px, calc((100vw - 1220px) / 2)); padding-right: max(20px, calc((100vw - 1220px) / 2)); }
 .intel-back { color: #c8d9ea; text-decoration: none; }
 .intel-back:hover { color: #fff; }
 .intel-hero { max-width: 900px; padding: clamp(70px, 10vw, 132px) 0 76px; }
@@ -811,7 +811,7 @@ html[data-theme="light"] footer { color: #796d5f; }
   .menu-drawer { width: 100%; padding-inline: 16px; }.drawer-brand img { width: 66px; height: 66px; }.drawer-nav a { min-height: 52px; }
   footer, .intel-footer { flex-direction: column; align-items: flex-start; }
   .intel-shell { width: min(100% - 28px, 1220px); }
-  .intel-header { min-height: 66px; }
+  .intel-header { min-height: 66px; padding-left: 14px; padding-right: 14px; }
   .intel-header > span { display: none; }
   .intel-hero { padding: 62px 0 54px; }
   .page-hero { min-height: 680px; margin: 14px 0 48px; border-radius: 22px; }

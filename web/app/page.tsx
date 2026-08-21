@@ -121,8 +121,8 @@ export default async function Home() {
         <section className="hero" id="command-centre" aria-labelledby="mission-heading">
           <Image
             className="hero-image"
-            src="/welcome-banner.png"
-            alt="The Blues Brothers welcoming travellers outside a busy desert cantina"
+            src="/bb-title.png"
+            alt="The Blues Brothers outside their cantina in a desert spaceport"
             fill
             priority
             sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"

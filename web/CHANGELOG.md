@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.18.1 — 2026-08-21
+
+- Restored the original `bb-title.png` neon-sign artwork as the homepage hero image.
+- Made the internal-page header bar (back link + related destinations) span the full viewport width on every subpage, matching the homepage header treatment.
+
 ## 0.18.0 — 2026-08-21
 
 - Added the supplied Welcome, Operations, Territory War, Territory Battle, Raid, Arsenal, Members, and Cantina banner artwork to the matching destinations.
