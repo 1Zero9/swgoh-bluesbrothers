@@ -1,3 +1,4 @@
+import { TICKET_TARGET_PER_MEMBER } from "@/lib/dashboard";
 import { getLatestGuildSnapshot } from "@/lib/guild-snapshot";
 
 export type WallOfShameEntry = {
@@ -11,11 +12,18 @@ export type WallOfShameEntry = {
 
 const GP_THRESHOLD_RATIO = 65;
 const INACTIVITY_HOURS = 48;
-const MAX_ENTRIES = 5;
+const TICKET_FLOOR_RATIO = 0.5;
+const STALE_PROFILE_DAYS = 7;
+const MAX_ENTRIES = 8;
 const MIN_GUILD_SIZE = 4;
 
 export function getMemberAttentionReasons(
-  member: { galacticPower: bigint; lastActivityAt: Date | null },
+  member: {
+    galacticPower: bigint;
+    lastActivityAt: Date | null;
+    raidTickets?: number | null;
+    profileSyncedAt?: Date | null;
+  },
   averageGp: bigint,
   capturedAt: Date,
 ) {
@@ -24,12 +32,28 @@ export function getMemberAttentionReasons(
   if (member.galacticPower > BigInt(0) && member.galacticPower < gpFloor) {
     reasons.push("Under-geared next to the rest of the crew");
   }
+
   const hoursSinceActive = member.lastActivityAt
     ? (capturedAt.getTime() - member.lastActivityAt.getTime()) / 3_600_000
     : null;
   if (hoursSinceActive === null || hoursSinceActive > INACTIVITY_HOURS) {
     reasons.push("Gone quiet on the holonet");
   }
+
+  const ticketFloor = TICKET_TARGET_PER_MEMBER * TICKET_FLOOR_RATIO;
+  if ((member.raidTickets ?? 0) < ticketFloor) {
+    reasons.push("Raid tickets running low");
+  }
+
+  const daysSinceProfileSync = member.profileSyncedAt
+    ? (capturedAt.getTime() - member.profileSyncedAt.getTime()) / 86_400_000
+    : null;
+  if (member.profileSyncedAt === undefined) {
+    // Caller did not supply profile sync data — skip this check rather than false-flag.
+  } else if (daysSinceProfileSync === null || daysSinceProfileSync > STALE_PROFILE_DAYS) {
+    reasons.push("Profile hasn't rotated through sync recently");
+  }
+
   return reasons;
 }
 
@@ -47,7 +71,16 @@ async function computeAllEntries(): Promise<WallOfShameEntry[]> {
   const averageGp = totalGp / BigInt(snapshot.members.length);
 
   const entries = snapshot.members.flatMap((member) => {
-    const reasons = getMemberAttentionReasons(member, averageGp, snapshot.capturedAt);
+    const reasons = getMemberAttentionReasons(
+      {
+        galacticPower: member.galacticPower,
+        lastActivityAt: member.lastActivityAt,
+        raidTickets: member.raidTickets,
+        profileSyncedAt: member.player.profileSyncedAt,
+      },
+      averageGp,
+      snapshot.capturedAt,
+    );
     if (!reasons.length) return [];
 
     return [{
@@ -60,7 +93,7 @@ async function computeAllEntries(): Promise<WallOfShameEntry[]> {
     }];
   });
 
-  return entries.sort((a, b) => compareGp(a.galacticPower, b.galacticPower));
+  return entries.sort((a, b) => b.reasons.length - a.reasons.length || compareGp(a.galacticPower, b.galacticPower));
 }
 
 export async function getWallOfShame(): Promise<WallOfShameEntry[]> {

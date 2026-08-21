@@ -37,7 +37,7 @@ export default async function TerritoryBattlesPage() {
         <article><span>02</span><h2>Operations</h2><p>Turn platoon requirements into member assignments with missing-unit visibility and clear ownership.</p><strong>Assignments next</strong></article>
         <article><span>03</span><h2>Combat missions</h2><p>Keep phase instructions, recommended teams and completion reporting beside the live plan.</p><strong>Mission board next</strong></article>
       </section>
-      <aside className="tw-data-note"><strong>Current data boundary</strong><p>This first route establishes the dedicated TB destination and live guild baseline. Phase, platoon and mission snapshots will be added when Territory Battle event normalization follows the TW pipeline.</p></aside>
+      <aside className="tw-data-note"><strong>Current data boundary</strong><p>Unlike Territory War, SWGOH&apos;s public Comlink guild data does not expose live Territory Battle status, phases or platoons (<code>territoryBattleStatus</code>/<code>territoryBattleResult</code>) outside the guild&apos;s own account — only completed-run star counts show up, and only for the single best attempt in the last 60 days. This destination stays a live guild baseline until that changes or a member-side data source is added.</p></aside>
       <footer className="intel-footer"><span>Territory Battle planning now has room to grow.</span><Link href="/operations">Back to Operations →</Link></footer>
     </main>
   );

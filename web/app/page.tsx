@@ -11,6 +11,7 @@ import { getWallOfShame } from "@/lib/wall-of-shame";
 import AccountLink from "./account-link";
 import OfficerDesk from "./officer-desk";
 import SiteHeader, { APP_VERSION } from "./site-header";
+import WallOfFameBoard from "./wall-of-fame-board";
 
 export const dynamic = "force-dynamic";
 
@@ -39,9 +40,9 @@ const eventCards = [
     id: "raids",
     eyebrow: "Raid operations",
     title: "Guild raid",
-    status: "Ready to track",
-    copy: "Roster readiness, attempts and personal score history will be collected after database setup.",
-    action: "View raid readiness",
+    status: "Results tracked",
+    copy: "See who carried the last completed raid, ranked by member damage contribution.",
+    action: "View raid results",
     href: "/raids",
     tone: "red",
   },
@@ -240,23 +241,11 @@ export default async function Home() {
             <section className="standing-panel fame-panel" id="wall-of-fame" aria-labelledby="wof-heading">
               <header className="standing-panel-head">
                 <div><span className="standing-symbol">★</span><p>Cantina legends</p><h3 id="wof-heading">Wall of Fame</h3></div>
-                <strong>{wallOfFame.length}<small>top crew</small></strong>
+                <strong>{wallOfFame[0]?.entries.length ?? 0}<small>per board</small></strong>
               </header>
-              <p className="standing-copy">The strongest members in the latest guild snapshot, ranked by galactic power.</p>
+              <p className="standing-copy">Guild leaderboards across power, tickets and roster depth — pick a board to see who&apos;s leading.</p>
               {wallOfFame.length ? (
-                <ol className="standing-list fame-list">
-                  {wallOfFame.map((entry) => (
-                    <li key={entry.playerId}>
-                      <a href={`#member-${entry.playerId}`}>
-                        <span className="standing-rank">{entry.rank}</span>
-                        <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
-                        <span className="standing-member"><strong>{entry.name}</strong><small>{entry.badges[0] || "Top five guild power"}</small></span>
-                        <span className="standing-value"><strong>{formatPower(entry.galacticPower).value}{formatPower(entry.galacticPower).unit}</strong><small>GP</small></span>
-                        <span className="standing-arrow">→</span>
-                      </a>
-                    </li>
-                  ))}
-                </ol>
+                <WallOfFameBoard categories={wallOfFame} />
               ) : (
                 <div className="standing-empty"><strong>No legends crowned yet</strong><p>{summary.live ? "Power rankings appear once enough members are tracked." : "The board opens after the first roster sync."}</p></div>
               )}

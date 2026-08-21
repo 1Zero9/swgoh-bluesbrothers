@@ -67,25 +67,32 @@ export default function WarRoster({ members, active }: { members: TerritoryWarMe
       </div>
 
       {visible.length ? (
-        <div className="tw-member-grid">
+        <div className="tw-member-list">
           {visible.map((member) => (
-            <article className={`tw-member-card${member.joined ? " is-joined" : ""}`} key={member.playerId}>
-              <header>
-                <span aria-hidden="true">{member.name.charAt(0).toUpperCase()}</span>
-                <div><h3>{member.name}</h3><p>{member.role}</p></div>
+            <details className={`tw-member-row${member.joined ? " is-joined" : ""}`} key={member.playerId}>
+              <summary>
+                <span className="tw-member-avatar" aria-hidden="true">{member.name.charAt(0).toUpperCase()}</span>
+                <span className="tw-member-name"><strong>{member.name}</strong><small>{member.role}</small></span>
+                <span className="tw-member-primary">
+                  <strong>{active ? power(member.lockedPower) : power(member.galacticPower)}</strong>
+                  <small>{active ? "Locked GP" : "Galactic power"}</small>
+                </span>
                 {active ? <strong className={member.joined ? "tw-joined" : "tw-out"}>{member.joined ? "Joined" : "Not joined"}</strong> : null}
-              </header>
-              <div className="tw-member-stats">
-                <span><small>{active ? "Locked GP" : "Galactic power"}</small><strong>{active ? power(member.lockedPower) : power(member.galacticPower)}</strong></span>
-                <span><small>GLs</small><strong>{member.galacticLegends ?? "—"}</strong></span>
-                <span><small>Relic units</small><strong>{member.relicUnits ?? "—"}</strong></span>
-                <span><small>Datacrons</small><strong>{member.datacrons ?? "—"}</strong></span>
+                <svg className="tw-chevron" width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 7l5 6 5-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </summary>
+              <div className="tw-member-detail">
+                <div className="tw-member-stats">
+                  <span><small>{active ? "Current GP" : "Galactic power"}</small><strong>{power(member.galacticPower)}</strong></span>
+                  <span><small>GLs</small><strong>{member.galacticLegends ?? "—"}</strong></span>
+                  <span><small>Relic units</small><strong>{member.relicUnits ?? "—"}</strong></span>
+                  <span><small>Datacrons</small><strong>{member.datacrons ?? "—"}</strong></span>
+                </div>
+                <footer>
+                  <span>{relativeActivity(member.lastActivityAt)}</span>
+                  <span>{member.profileSyncedAt ? "Profile captured" : "Profile awaiting sync"}</span>
+                </footer>
               </div>
-              <footer>
-                <span>{relativeActivity(member.lastActivityAt)}</span>
-                <span>{member.profileSyncedAt ? "Profile captured" : "Profile awaiting sync"}</span>
-              </footer>
-            </article>
+            </details>
           ))}
         </div>
       ) : (

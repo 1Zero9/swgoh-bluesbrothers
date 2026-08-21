@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.11.0 · **Last updated:** 2026-08-21 · tracks site `v0.19.0`
+**Doc version:** 1.13.0 · **Last updated:** 2026-08-21 · tracks site `v0.21.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -256,6 +256,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `member-context.ts` | Resolves the current visitor's linked `Player` (if any) for the "cantina card" |
 | `members.ts` | Builds the ranked member directory from the latest snapshot, active membership term, and attention rules |
 | `territory-war.ts` | Builds the live/pre-war TW room from raw and normalized event snapshots, zone state, participants, results, and current roster profiles |
+| `raids.ts` | Reads Comlink's `recentRaidResult` off the latest `GuildSnapshot.rawPayload` and ranks each raid's participants by damage (`memberProgress`); no live raid status is available (see §15) |
 | `guild-arsenal.ts` | Aggregates priority-unit ownership, star, and relic coverage from stored full player profiles |
 | `unit-checklist.ts` | Attributed priority-unit definitions adapted from SWGoHBot under MIT |
 | `recipes.ts` | Reads and validates published recipe/beer-pairing JSON, with built-in local fallback recipes |
@@ -377,17 +378,24 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 15. Roadmap / open items
 
-- Guild data accuracy pass (Wall of Fame / Wall of Shame thresholds, ticket targets)
+- Guild-wide UX pass: player-card-style detail (full stat cards) should stay on `/members`; every other destination should default to collapsed/searchable rows and only expand a member on demand. Territory War's roster and the new Raids board (v0.20.0/v0.21.0) follow this pattern.
+- **Comlink guild-data boundary (confirmed 2026-08-21 against the swgoh-comlink wiki):** the public `/guild` endpoint only returns live status for Territory War (`territoryWarStatus`) plus historical results for TW (`recentTerritoryWarResult`) and raids (`recentRaidResult`, last completed attempt per raid only). `territoryBattleStatus`, `territoryBattleResult`, and `raidStatus` (live) are **not returned** outside the guild's own account — there is no live TB/raid pipeline to build without a member-authenticated data source. Territory Battles stays a live-baseline-only page until that changes; Raids now uses `recentRaidResult` (see `lib/raids.ts`).
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
-- General UI polish across the dashboard sections
 - Officer moderation queue for approving/rejecting pending Soul Food Cantina recipe submissions
-- Add officer-owned TW defensive assignments and counter notes on top of the read-only live board
-- Extend `GuildEvent`/`EventSnapshot` normalization to Territory Battles and raids (TW is now populated)
+- Add officer-owned TW defensive assignments and counter notes on top of the read-only live board; investigate whether Comlink's per-zone `warSquad` field (currently untyped/unused) can drive a deployed-squad composition view once a fuller unit-name map exists (today `lib/unit-checklist.ts` only names ~50 priority units)
 - CI doesn't currently build/lint the `web/` app — worth adding a Next.js job to `ci.yml`
+- **Two-way Discord sync.** Today Discord integration is one-way only: `lib/discord.ts` posts announcements via webhook and removes a departed member's role via the bot token (both called from `lib/guild-sync.ts`). There is no listener for Discord → site (e.g. relaying an announcement channel's messages onto the Guild Wire). A real bot presence (gateway websocket) can't run on Vercel's serverless functions — it needs a small always-on worker, similar to how the self-hosted Comlink service is deployed (see §2). Needs a hosting decision before building.
+- **Member lifecycle / access tiers.** `MembershipState` is currently just `ACTIVE`/`LEFT` (see §6, `prisma/schema.prisma`). There's no "recruitment-only" access tier for players who join the in-game guild but never link Discord, and no automated prompt-to-join-Discord flow beyond the static invite link. Needs a schema addition (e.g. an access-level field on `Player` or `MembershipTerm`) plus site-auth gating (`lib/member-auth.ts`) before it can be built.
 
 ---
 
 ## 16. Changelog
+
+### 1.13.0 — 2026-08-21
+- Documented the Raids page's real `recentRaidResult` data (`lib/raids.ts`, `app/raids/raid-board.tsx`) and the confirmed Comlink guild-data boundary: no live Territory Battle or raid status is available outside the guild's own account, only completed-run results. Updated Territory Battles page copy to state this plainly. Tracks site v0.21.0.
+
+### 1.12.0 — 2026-08-21
+- Documented the TW roster's switch to collapsed/searchable rows, the multi-category Wall of Fame, the expanded Wall of Shame reasons, and the resulting roadmap split for two-way Discord sync and member access tiers, tracking site v0.20.0.
 
 ### 1.11.0 — 2026-08-21
 - Documented the performance pass in site v0.19.0: the new `lib/guild-snapshot.ts` shared/cached query helper, the shift from blanket `force-dynamic` to `revalidate = 300` on cookie-free subpages, and the `next/link` navigation fix.

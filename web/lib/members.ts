@@ -55,7 +55,11 @@ export async function getRosterMembers(): Promise<RosterMember[]> {
         relicUnits: profile?.relicUnits ?? null,
         datacrons: profile?.datacrons ?? null,
         profileSyncedAt: member.player.profileSyncedAt,
-        attentionReasons: getMemberAttentionReasons(member, averageGp, snapshot.capturedAt),
+        attentionReasons: getMemberAttentionReasons(
+          { ...member, profileSyncedAt: member.player.profileSyncedAt },
+          averageGp,
+          snapshot.capturedAt,
+        ),
       };
     });
 }

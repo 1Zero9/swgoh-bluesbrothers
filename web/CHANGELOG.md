@@ -2,6 +2,18 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.21.0 — 2026-08-21
+
+- **Raid operations** gained real data: `lib/raids.ts` reads Comlink's `recentRaidResult` from the latest guild snapshot and surfaces the last completed attempt for every raid the guild runs, with a searchable, ranked-by-damage participant board (`app/raids/raid-board.tsx`) per raid type.
+- Researched Comlink's actual guild-data boundaries: `territoryBattleStatus`/`territoryBattleResult`/`raidStatus` (live states) are not returned by the public `/guild` endpoint outside the guild's own account — only `recentRaidResult` (last completed raid attempt) and `recentTerritoryWarResult`/`territoryWarStatus` (already used) are available. The Territory Battles page copy now states this plainly instead of implying a TW-style live pipeline is coming.
+- Updated the homepage raid mission card to reflect that results are now tracked.
+
+## 0.20.0 — 2026-08-21
+
+- **Territory War roster** switched from a grid of always-expanded player cards to a compact, collapsible row list (native `<details>`/`<summary>`), so officers scanning a 50-member war can scan names/locked GP/joined status at a glance and expand only the members they need. Search, registration filter and sort are unchanged.
+- **Wall of Fame** rebuilt as a multi-category leaderboard (`lib/wall-of-fame.ts` now returns `WallOfFameCategory[]`) with tabs for Galactic Power, Raid Tickets, Galactic Legends, Relic Units and Datacrons, instead of a single GP-ranked top five. New client component `app/wall-of-fame-board.tsx` renders the tab switcher.
+- **Wall of Shame** gained two more attention reasons — raid tickets running low (below half the per-member target) and profiles that haven't rotated through the hourly sync in 7+ days — alongside the existing under-geared/inactivity checks, and now surfaces up to 8 members (was 5), sorted by how many reasons are flagged. The `/members` roster page's attention badges now also consider profile staleness.
+
 ## 0.19.1 — 2026-08-21
 
 - Swapped the `tw-banner`/`ops-banner` image content: Territory War now shows the sector/territory network hologram, Operations now shows the mission-briefing holotable — the two had been assigned to the wrong pages since the artwork was first added in v0.18.0.
