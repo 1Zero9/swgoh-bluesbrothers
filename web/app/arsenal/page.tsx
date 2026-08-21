@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/app/page-hero";
 import { getGuildArsenal } from "@/lib/guild-arsenal";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
@@ -25,16 +26,20 @@ export default async function ArsenalPage() {
         <span>Roster intelligence · Live profiles</span>
       </header>
 
-      <section className="intel-hero">
-        <p className="eyebrow">Guild arsenal</p>
-        <h1>Know what the band<br /><em>can put on the field.</em></h1>
-        <p>High-value roster coverage across Galactic Legends, core characters and capital ships. Counts refresh as player profiles rotate through the guild sync.</p>
+      <PageHero
+        image="/arsnel-banner.png"
+        imageAlt="The Blues Brothers reviewing ships and units inside a busy guild arsenal"
+        eyebrow="Guild arsenal"
+        title={<>Know what the band<br /><em>can put on the field.</em></>}
+        description="High-value roster coverage across Galactic Legends, core characters and capital ships. Counts refresh as player profiles rotate through the guild sync."
+        priority
+      >
         <div className="intel-summary" aria-label="Arsenal data coverage">
           <div><strong>{arsenal.syncedMembers}<span>/{arsenal.memberCount || "—"}</span></strong><small>profiles synced</small></div>
           <div><strong>{profileCoverage}<span>%</span></strong><small>roster coverage</small></div>
           <div><strong>{priorityUnitCount}</strong><small>priority units</small></div>
         </div>
-      </section>
+      </PageHero>
 
       {arsenal.categories.length ? (
         <div className="arsenal-sections">

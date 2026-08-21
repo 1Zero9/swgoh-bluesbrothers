@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/app/page-hero";
 import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
 
@@ -17,6 +18,14 @@ export default async function CantinaPage() {
         <Link href="/" className="intel-back">← Guild command</Link>
         <nav aria-label="Related destinations"><Link href="/members">Members</Link><Link href="/operations">Operations</Link></nav>
       </header>
+      <PageHero
+        image="/cantin-bannera.png"
+        imageAlt="The Blues Brothers sampling food at a bustling galactic market cantina"
+        eyebrow="Soul Food Cantina"
+        title={<>Good food.<br /><em>Across the galaxy.</em></>}
+        description="Galactic sandwich recipes, tap-droid beer pairings and community specials from Chicago to the Outer Rim."
+        priority
+      />
       <SoulFoodCafe recipes={recipes} />
       <footer className="intel-footer"><span>Recipes from the guild cantina databank.</span><Link href="/">Back to guild command →</Link></footer>
     </main>

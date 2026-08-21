@@ -32,7 +32,7 @@ const eventCards = [
     status: "Awaiting schedule",
     copy: "Mission loadouts, operations and deployment plans will appear here when event sync is enabled.",
     action: "Preview TB planner",
-    href: "/operations#territory-battles",
+    href: "/territory-battles",
     tone: "blue",
   },
   {
@@ -52,7 +52,7 @@ const eventCards = [
     status: "Ready to track",
     copy: "Roster readiness, attempts and personal score history will be collected after database setup.",
     action: "View raid readiness",
-    href: "/operations#raids",
+    href: "/raids",
     tone: "red",
   },
 ];
@@ -121,8 +121,8 @@ export default async function Home() {
         <section className="hero" id="command-centre" aria-labelledby="mission-heading">
           <Image
             className="hero-image"
-            src="/bb-title.png"
-            alt="The Blues Brothers outside their cantina in a desert spaceport"
+            src="/welcome-banner.png"
+            alt="The Blues Brothers welcoming travellers outside a busy desert cantina"
             fill
             priority
             sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"
