@@ -487,6 +487,13 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 38px
 .tw-member-card > footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(148,166,188,.1); color: #8492a2; font-size: 10px; }.tw-member-card > footer span:last-child { text-align: right; }
 .tw-empty { padding: 44px 24px; border: 1px dashed rgba(151,174,199,.2); border-radius: 18px; text-align: center; }.tw-empty strong { color: #dfe6ec; }.tw-empty p { margin: 7px 0 0; color: #8795a5; font-size: 12px; }
 .tw-data-note { margin-top: 62px; padding: 24px 26px; border: 1px solid rgba(104,150,203,.16); border-radius: 18px; background: rgba(15,24,34,.58); }.tw-data-note strong { color: #c9ddf1; font-size: 14px; }.tw-data-note p { margin: 8px 0 0; color: #8f9eae; font-size: 13px; line-height: 1.7; }.tw-data-note code { color: #d3ad79; font-family: var(--font-geist-mono); font-size: .92em; }
+
+.intel-header nav { display: flex; align-items: center; gap: 22px; }.intel-header nav a { color: #8999aa; text-decoration: none; }.intel-header nav a:hover { color: #d9e8f6; }
+.destination-hero { padding-bottom: 64px; }.destination-shell > .roster-tools { margin-top: 0; }.cantina-page .soul-food-cafe { margin-top: 48px; }
+.operation-quicklinks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 38px; }.operation-quicklinks a { min-width: 0; display: flex; align-items: center; gap: 11px; padding: 14px; border: 1px solid rgba(151,176,205,.16); border-radius: 14px; color: #dbe5ef; background: rgba(15,20,27,.7); text-decoration: none; }.operation-quicklinks a:hover { border-color: rgba(103,184,255,.4); background: rgba(22,31,43,.84); }.operation-quicklinks span { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid rgba(103,184,255,.28); border-radius: 9px; color: #8fc7ff; font: 10px var(--font-geist-mono); }.operation-quicklinks strong { overflow: hidden; font-size: 13px; font-weight: 540; text-overflow: ellipsis; white-space: nowrap; }
+.operation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }.operation-card { min-width: 0; min-height: 410px; display: flex; flex-direction: column; padding: 26px; border: 1px solid rgba(151,174,201,.15); border-radius: 22px; background: radial-gradient(circle at 100% 0, rgba(67,106,158,.1), transparent 38%), linear-gradient(150deg, rgba(23,28,35,.97), rgba(10,13,17,.99)); box-shadow: 0 18px 40px rgba(0,0,0,.2); scroll-margin-top: 24px; }.operation-card.operation-live { border-color: rgba(83,214,154,.2); background: radial-gradient(circle at 100% 0, rgba(52,175,116,.12), transparent 38%), linear-gradient(150deg, rgba(20,31,30,.97), rgba(10,13,17,.99)); }.operation-card.operation-arsenal { border-color: rgba(103,184,255,.2); }
+.operation-card > header { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: #91a0b1; font: 10px var(--font-geist-mono); letter-spacing: .08em; text-transform: uppercase; }.operation-card > header i { color: #76ce9e; font-style: normal; letter-spacing: 0; text-transform: none; }.operation-card:not(.operation-live):not(.operation-arsenal) > header i { color: #9b8e7e; }
+.operation-mark { width: 72px; height: 72px; display: grid; place-items: center; margin: 40px 0 28px; border: 1px solid rgba(103,184,255,.3); border-radius: 20px; color: #a9d5ff; background: rgba(35,93,155,.12); font: 17px var(--font-geist-mono); transform: rotate(-4deg); }.operation-live .operation-mark { border-color: rgba(83,214,154,.32); color: #82dfb0; background: rgba(42,126,88,.12); }.operation-card h2 { margin: 0; color: #f0e9df; font-size: clamp(24px, 3vw, 34px); font-weight: 570; letter-spacing: -.045em; }.operation-card > p { max-width: 540px; margin: 12px 0 22px; color: #97a4b2; font-size: 14px; line-height: 1.65; }.operation-card dl { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: auto 0 20px; }.operation-card dl div { padding: 12px; border-radius: 12px; background: rgba(255,255,255,.027); }.operation-card dt { color: #8896a6; font: 9px var(--font-geist-mono); letter-spacing: .06em; text-transform: uppercase; }.operation-card dd { margin: 5px 0 0; color: #e1e8ef; font-size: 17px; font-weight: 550; }.operation-card > a, .operation-pending { display: flex; justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(151,174,201,.13); color: #8fc7ff; text-decoration: none; font-size: 13px; }.operation-pending { color: #857f78; }
 .credits-hero { padding-bottom: 58px; }
 .credit-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 370px), 1fr)); gap: 20px; }
 .credit-card { display: grid; gap: 24px; padding: 30px; border: 1px solid rgba(158,187,219,.15); border-radius: 20px; background: linear-gradient(150deg, rgba(24,31,41,.94), rgba(10,13,17,.98)); box-shadow: 0 18px 42px rgba(0,0,0,.2); }
@@ -650,6 +657,13 @@ html[data-theme="light"] .tw-roster-tools select { color: #2a251f; background: #
 html[data-theme="light"] .tw-member-stats span,
 html[data-theme="light"] .tw-zone-grid dl div { background: rgba(85,64,39,.05); }
 html[data-theme="light"] .tw-data-note { background: rgba(230,238,246,.68); }
+html[data-theme="light"] .intel-header nav a { color: #6f6355; }
+html[data-theme="light"] .operation-quicklinks a,
+html[data-theme="light"] .operation-card { color: #2a251f; background: radial-gradient(circle at 100% 0, rgba(57,123,192,.09), transparent 40%), linear-gradient(150deg, #fffaf2, #eee2d0); box-shadow: 0 12px 28px rgba(74,53,31,.06); }
+html[data-theme="light"] .operation-card h2,
+html[data-theme="light"] .operation-card dd { color: #27231e; }
+html[data-theme="light"] .operation-card > p { color: #6d6358; }
+html[data-theme="light"] .operation-card dl div { background: rgba(85,64,39,.05); }
 html[data-theme="light"] .credit-note { border-color: rgba(65,54,42,.17); background: rgba(255,251,244,.5); }
 html[data-theme="light"] .credit-note h2 { color: #3e372f; }
 html[data-theme="light"] .credit-note p { color: #756a5d; }
@@ -711,6 +725,7 @@ html[data-theme="light"] footer { color: #796d5f; }
   .guild-wire { grid-template-columns: 1fr; }
   .tw-roster-tools { grid-template-columns: 1fr 170px 170px; }
   .tw-roster-tools > p { display: none; }
+  .operation-quicklinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
@@ -799,6 +814,11 @@ html[data-theme="light"] footer { color: #796d5f; }
   .tw-roster-tools > p { display: block; margin: 3px 1px; }
   .tw-member-card > footer { flex-direction: column; }.tw-member-card > footer span:last-child { text-align: left; }
   .tw-data-note { margin-top: 46px; padding: 20px; }
+  .intel-header nav { display: none; }
+  .cantina-page .soul-food-cafe { margin-top: 28px; }
+  .operation-quicklinks, .operation-grid { grid-template-columns: 1fr; }
+  .operation-card { min-height: 370px; padding: 22px; }
+  .operation-mark { margin: 32px 0 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; animation: none !important; } }

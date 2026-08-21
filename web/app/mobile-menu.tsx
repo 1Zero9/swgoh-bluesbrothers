@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import ThemeToggle from "./theme-toggle";
 
 type MobileMenuProps = {
-  items: string[][];
+  items: Array<{ label: string; mark: string; href: string }>;
   version: string;
   discordUrl: string;
   syncLabel: string;
@@ -57,10 +57,10 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel }: Mo
             </div>
 
             <nav className="drawer-nav" aria-label="Drawer navigation">
-              {items.map(([label, mark]) => (
-                <a href={`#${label.toLowerCase().replaceAll(" ", "-")}`} onClick={() => setOpen(false)} key={label}>
-                  <span>{mark}</span>
-                  <strong>{label}</strong>
+              {items.map((item) => (
+                <a href={item.href} onClick={() => setOpen(false)} key={item.label}>
+                  <span>{item.mark}</span>
+                  <strong>{item.label}</strong>
                   <b aria-hidden="true">→</b>
                 </a>
               ))}

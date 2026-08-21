@@ -5,28 +5,23 @@ import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
-import { getRosterMembers } from "@/lib/members";
-import { getSoulFoodRecipes } from "@/lib/recipes";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import AccountLink from "./account-link";
-import MemberDirectory from "./member-directory";
 import MobileMenu from "./mobile-menu";
 import OfficerDesk from "./officer-desk";
-import SoulFoodCafe from "./soul-food-cafe";
 import ThemeToggle from "./theme-toggle";
 
 const APP_VERSION = `v${packageInfo.version}`;
 export const dynamic = "force-dynamic";
 
 const navigation = [
-  ["Guild Wire", "GW"],
-  ["Operations", "OP"],
-  ["Soul Food Cantina", "SF"],
-  ["Members", "MB"],
-  ["Wall of Fame", "WF"],
-  ["Wall of Shame", "WS"],
+  { label: "Guild Wire", mark: "GW", href: "/#guild-wire" },
+  { label: "Operations", mark: "OP", href: "/operations" },
+  { label: "Territory War", mark: "TW", href: "/territory-war" },
+  { label: "Members", mark: "MB", href: "/members" },
+  { label: "Cantina", mark: "SF", href: "/cantina" },
 ];
 
 const eventCards = [
@@ -37,6 +32,7 @@ const eventCards = [
     status: "Awaiting schedule",
     copy: "Mission loadouts, operations and deployment plans will appear here when event sync is enabled.",
     action: "Preview TB planner",
+    href: "/operations#territory-battles",
     tone: "blue",
   },
   {
@@ -56,6 +52,7 @@ const eventCards = [
     status: "Ready to track",
     copy: "Roster readiness, attempts and personal score history will be collected after database setup.",
     action: "View raid readiness",
+    href: "/operations#raids",
     tone: "red",
   },
 ];
@@ -90,15 +87,13 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, rosterMembers, officerStore, memberContext, soulFoodRecipes] = await Promise.all([
+  const [guildWire, summary, wallOfShame, wallOfFame, officerStore, memberContext] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfShame(),
     getWallOfFame(),
-    getRosterMembers(),
     cookies(),
     getMemberContext(),
-    getSoulFoodRecipes(),
   ]);
   const isOfficer = verifyOfficerSessionValue(officerStore.get(OFFICER_COOKIE_NAME)?.value);
   const discordUrl = getDiscordUrl();
@@ -120,16 +115,6 @@ export default async function Home() {
     : "Awaiting first Comlink sync";
 
   const activityRows = guildWire.slice(0, 4);
-  const memberDirectoryEntries = rosterMembers.map((member) => ({
-    ...member,
-    galacticPower: member.galacticPower.toString(),
-    characterPower: member.characterPower.toString(),
-    shipPower: member.shipPower.toString(),
-    lastActivityAt: member.lastActivityAt?.toISOString() ?? null,
-    joinedAt: member.joinedAt?.toISOString() ?? null,
-    profileSyncedAt: member.profileSyncedAt?.toISOString() ?? null,
-  }));
-
   return (
     <main className="app-shell">
       <section className="workspace" id="top">
@@ -149,10 +134,10 @@ export default async function Home() {
               <span><strong>Blues Brothers</strong><small>Guild command</small></span>
             </a>
             <nav className="main-nav" aria-label="Primary navigation">
-              {navigation.map(([label, mark]) => (
-                <a className="nav-link" href={`#${label.toLowerCase().replaceAll(" ", "-")}`} key={label}>
-                  <Mark label={mark} />
-                  <span>{label}</span>
+              {navigation.map((item) => (
+                <a className="nav-link" href={item.href} key={item.label}>
+                  <Mark label={item.mark} />
+                  <span>{item.label}</span>
                 </a>
               ))}
             </nav>
@@ -172,7 +157,7 @@ export default async function Home() {
             <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
             <div className="hero-actions">
               <a className="primary-action" href="#administration">Review officer actions</a>
-              <a className="secondary-action" href="#members">View guild roster <span>→</span></a>
+              <a className="secondary-action" href="/members">View guild roster <span>→</span></a>
             </div>
           </div>
         </section>
@@ -258,7 +243,7 @@ export default async function Home() {
         <section className="section-block" id="operations">
           <div className="section-heading">
             <div><p className="eyebrow">Operations board</p><h2>Upcoming missions</h2></div>
-            <a href="/arsenal">Open guild arsenal <span>→</span></a>
+            <a href="/operations">Open operations hub <span>→</span></a>
           </div>
           <div className="event-grid">
             {eventCards.map((event) => (
@@ -275,17 +260,6 @@ export default async function Home() {
               </article>
             ))}
           </div>
-        </section>
-
-        <SoulFoodCafe recipes={soulFoodRecipes} />
-
-        <section className="section-block roster-section" id="members" aria-labelledby="members-heading">
-          <div className="section-heading roster-heading">
-            <div><p className="eyebrow">Membership directory</p><h2 id="members-heading">Meet the band</h2></div>
-            <div className="roster-count"><strong>{rosterMembers.length || "—"}</strong><span>active crew</span></div>
-          </div>
-          <p className="section-intro">Search the full roster, compare the live numbers, and open any member for a clearer view of their standing.</p>
-          <MemberDirectory members={memberDirectoryEntries} />
         </section>
 
         <section className="section-block standings-section" aria-labelledby="standings-heading">
@@ -375,7 +349,7 @@ export default async function Home() {
 
         <footer>
           <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
-          <span className="footer-links"><a href="/arsenal">Guild Arsenal</a><a href="/credits">Sources &amp; credits</a></span>
+          <span className="footer-links"><a href="/operations">Operations</a><a href="/members">Members</a><a href="/cantina">Cantina</a><a href="/credits">Sources &amp; credits</a></span>
         </footer>
         </div>
       </section>

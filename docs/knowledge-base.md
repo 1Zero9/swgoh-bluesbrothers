@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.8.0 · **Last updated:** 2026-08-21 · tracks site `v0.16.0`
+**Doc version:** 1.9.0 · **Last updated:** 2026-08-21 · tracks site `v0.17.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -165,16 +165,16 @@ Single shared password (`OFFICER_SITE_PASSWORD`) → signed session cookie (`AUT
 ### 5.5 Wall of Fame / Wall of Shame (`lib/wall-of-fame.ts`, `lib/wall-of-shame.ts`)
 Derived views over the latest `GuildSnapshot` + `MemberSnapshot`/membership data — top galactic power members, and members flagged for low raid tickets / inactivity. Both appear in a compact standings board and link back to the matching member in the roster directory.
 
-### 5.6 Member directory (`lib/members.ts`, `app/member-directory.tsx`)
-The latest snapshot is presented as a searchable, sortable card grid. Each card opens an accessible detail dialog with guild rank, galactic power, raid tickets, recent activity, current membership start date, and any officer-attention reasons.
+### 5.6 Member directory (`lib/members.ts`, `app/member-directory.tsx`, `app/members/page.tsx`)
+The latest snapshot is presented at `/members` as a searchable, sortable card grid. Each card opens an accessible detail dialog with guild rank, galactic power, raid tickets, recent activity, current membership start date, and any officer-attention reasons. Moving the complete directory off the homepage keeps guild command focused on overview and communications.
 
 ### 5.7 Guild Arsenal (`lib/guild-arsenal.ts`, `lib/unit-checklist.ts`, `app/arsenal/page.tsx`)
 The latest full player profiles are compared with a curated set of Galactic Legends, priority light/dark-side characters, and capital ships. `/arsenal` shows ownership, seven-star, and R5+ coverage across every currently synced active member. Until rotating profile enrichment has covered the whole guild, the page reports its profile denominator explicitly rather than treating unsynced members as missing units.
 
 The checklist is adapted from the MIT-licensed `jmiln/SWGoHBot`; the complete notice is retained in `web/THIRD_PARTY_NOTICES.md` and exposed at `/credits`. Broader repository research and adoption decisions live in `docs/swgoh-open-source-research.md`.
 
-### 5.8 Soul Food Cantina (`lib/recipes.ts`, `app/soul-food-cafe.tsx`, `app/api/recipes/submissions`)
-The home page includes a Star Wars and Blues Brothers-themed cantina with six database-backed sandwich recipes, structured ingredient lists, methods, and beer-pairing recommendations. The `20260821000000_soul_food_recipes` migration creates the recipe tables and seeds the initial published menu; `20260821010000_soul_food_cantina_theme` applies the themed public names and descriptions to existing databases. `lib/recipes.ts` reads published records and supplies an equivalent built-in fallback when the database is unavailable during local design work.
+### 5.8 Soul Food Cantina (`lib/recipes.ts`, `app/soul-food-cafe.tsx`, `app/cantina/page.tsx`, `app/api/recipes/submissions`)
+The dedicated `/cantina` page contains the Star Wars and Blues Brothers-themed kitchen with six database-backed sandwich recipes, structured ingredient lists, methods, and beer-pairing recommendations. The `20260821000000_soul_food_recipes` migration creates the recipe tables and seeds the initial published menu; `20260821010000_soul_food_cantina_theme` applies the themed public names and descriptions to existing databases. `lib/recipes.ts` reads published records and supplies an equivalent built-in fallback when the database is unavailable during local design work.
 
 Selecting a sandwich opens its full recipe. The client-side Mos Eisley tap-droid advisor selects a pairing stored with that recipe for crisp, hoppy, malty, or alcohol-free preferences. There are no prices or ordering semantics. The starfield, databank cards, blue-neon cantina treatment, and sandwich artwork remain CSS-only.
 
@@ -185,7 +185,12 @@ Comlink's existing `/guild` response includes guild-specific `territoryWarStatus
 
 `/territory-war` reads the newest TW data directly from the latest raw `GuildSnapshot` so the page works immediately with captures made before normalization shipped, then falls back to a recent normalized event snapshot. It presents registration/eligibility, locked power, opponent profile, summed zone scores, officer zone commands, defensive zone state, and a searchable member readiness board. Missing full-player profiles are shown as unknown rather than zero. The page does not invent counter recommendations or officer assignments that Comlink has not supplied.
 
-### 5.10 Health checks
+### 5.10 Operations and navigation (`app/operations/page.tsx`, `app/mobile-menu.tsx`)
+`/operations` is the launch deck for Territory War, Territory Battles, raids, and the Guild Arsenal. TW and the Arsenal link to their live dedicated tools; TB and raid cards expose current guild context and reserve clear growth points without pretending their planners are already implemented. Operations and TW are direct desktop/mobile navigation targets.
+
+The complete member directory and Cantina now live at `/members` and `/cantina`, removing the two longest interactive sections from the homepage. Guild command retains overview metrics, communications, compact mission links, standings, personal account context, and officer actions.
+
+### 5.11 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
@@ -372,6 +377,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.9.0 — 2026-08-21
+- Documented the Operations launch deck, direct TW navigation, dedicated member/Cantina routes, shorter homepage, and site v0.17.0.
 
 ### 1.8.0 — 2026-08-21
 - Documented Comlink Territory War fields, hourly `GuildEvent`/`EventSnapshot` normalization, raw-snapshot fallback, the live war room, and site v0.16.0.
