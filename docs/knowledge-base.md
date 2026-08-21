@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.7.0 · **Last updated:** 2026-08-21 · tracks site `v0.15.0`
+**Doc version:** 1.8.0 · **Last updated:** 2026-08-21 · tracks site `v0.16.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -139,7 +139,7 @@ Two codebases:
 ### 5.1 Guild sync (`lib/guild-sync.ts`, `app/api/cron/guild-sync/route.ts`)
 1. Triggered by GitHub Actions (hourly) or Vercel Cron (daily, fallback), both `GET /api/cron/guild-sync` with `Authorization: Bearer $CRON_SECRET`.
 2. Fetches the live guild roster from Comlink (`/guild` endpoint, HMAC-signed).
-3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s with the complete raw member payload), and records `AutomationEvent`s.
+3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s with the complete raw member payload), normalizes Territory War status/results into event history, and records `AutomationEvent`s.
 4. Joins/departures produce a shared automation event shown in the site's **Guild Wire** and pushed to Discord. The very first sync is a **baseline** — no join/departure events fire, since there's nothing to compare against yet.
 5. Departure automation only removes `DISCORD_MEMBER_ROLE_ID` when the player has a **verified** `discordUserId` (never matched by display name).
 6. After the roster transaction, up to two stale players are enriched through Comlink `/player`. This rotating batch stores the complete latest profile and a compact historical aggregate; a 50-member guild is fully refreshed in roughly 25 hourly runs without putting the cron route under a 50-request burst.
@@ -180,7 +180,12 @@ Selecting a sandwich opens its full recipe. The client-side Mos Eisley tap-droid
 
 Public submissions post to `/api/recipes/submissions`. Required fields and maximum lengths are validated server-side, a honeypot drops obvious bot submissions, and accepted recipes are stored in `RecipeSubmission` with `PENDING` status. They never appear publicly until an officer review flow explicitly approves and promotes them; that moderation UI is still an open item.
 
-### 5.9 Health checks
+### 5.9 Territory War room (`lib/territory-war.ts`, `app/territory-war/*`)
+Comlink's existing `/guild` response includes guild-specific `territoryWarStatus` and `recentTerritoryWarResult` data; there is no separate TW request. Each active `instanceId` is upserted as a `GuildEvent`, and every hourly capture becomes an `EventSnapshot` containing the complete live TW payload. Recent results populate the event's timing and `finalResult`.
+
+`/territory-war` reads the newest TW data directly from the latest raw `GuildSnapshot` so the page works immediately with captures made before normalization shipped, then falls back to a recent normalized event snapshot. It presents registration/eligibility, locked power, opponent profile, summed zone scores, officer zone commands, defensive zone state, and a searchable member readiness board. Missing full-player profiles are shown as unknown rather than zero. The page does not invent counter recommendations or officer assignments that Comlink has not supplied.
+
+### 5.10 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
@@ -198,8 +203,8 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `GuildSnapshot` | Point-in-time guild-wide stats from a sync | `memberCount`, `galacticPower`, `characterPower`, `shipPower`, `raidTickets`, raw Comlink `rawPayload` |
 | `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | Total/character/ship GP, tickets, activity, player level, guild role, squad power, season score, league, guild XP, and the complete raw guild-member payload |
 | `PlayerProfileSnapshot` | Lightweight history from rotating full-profile enrichment | Galactic Legends, unlocked ultimates, relic units, roster-unit count, datacrons, and lifetime season score |
-| `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult` — **not yet populated by any sync job** |
-| `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, `payload` — **not yet populated** |
+| `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult`; Territory Wars are populated by guild sync |
+| `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, complete raw `payload`; active Territory Wars are captured hourly |
 | `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
 | `Recipe` | Published Soul Food Cantina recipe | Slug, origin, description, JSON ingredient/method lists, JSON beer pairings, visual tone, sort order, publication state |
 | `RecipeSubmission` | Community recipe awaiting review | Bread, filling, toppings, method, optional submitter/beer/story fields, moderation `status` (`PENDING`/`APPROVED`/`REJECTED`) |
@@ -227,7 +232,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 
 | Module | Responsibility |
 |---|---|
-| `comlink.ts` | HMAC request signing, `fetchPlayerByAllyCode`, guild roster fetch, ally-code sanitizing |
+| `comlink.ts` | HMAC request signing, `fetchPlayerByAllyCode`, guild/TW roster fetch, ally-code sanitizing |
 | `prisma.ts` | `getPrisma()` — lazily builds the Prisma client with the `pg` driver adapter; throws clearly if `DATABASE_URL` is missing |
 | `guild-sync.ts` | The full sync transaction described in §5.1 |
 | `guild-wire.ts` | Reads recent `AutomationEvent`s for the website feed |
@@ -237,6 +242,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `member-auth.ts` | Signed cookie helpers for the OAuth `state`/`link`/member session flow |
 | `member-context.ts` | Resolves the current visitor's linked `Player` (if any) for the "cantina card" |
 | `members.ts` | Builds the ranked member directory from the latest snapshot, active membership term, and attention rules |
+| `territory-war.ts` | Builds the live/pre-war TW room from raw and normalized event snapshots, zone state, participants, results, and current roster profiles |
 | `guild-arsenal.ts` | Aggregates priority-unit ownership, star, and relic coverage from stored full player profiles |
 | `unit-checklist.ts` | Attributed priority-unit definitions adapted from SWGoHBot under MIT |
 | `recipes.ts` | Reads and validates published recipe/beer-pairing JSON, with built-in local fallback recipes |
@@ -359,12 +365,16 @@ PRs are merged into `main` automatically — no confirmation needed.
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
 - General UI polish across the dashboard sections
 - Officer moderation queue for approving/rejecting pending Soul Food Cantina recipe submissions
-- `GuildEvent`/`EventSnapshot` models exist but nothing populates them yet (TB/TW/raid tracking)
+- Add officer-owned TW defensive assignments and counter notes on top of the read-only live board
+- Extend `GuildEvent`/`EventSnapshot` normalization to Territory Battles and raids (TW is now populated)
 - CI doesn't currently build/lint the `web/` app — worth adding a Next.js job to `ci.yml`
 
 ---
 
 ## 16. Changelog
+
+### 1.8.0 — 2026-08-21
+- Documented Comlink Territory War fields, hourly `GuildEvent`/`EventSnapshot` normalization, raw-snapshot fallback, the live war room, and site v0.16.0.
 
 ### 1.7.0 — 2026-08-21
 - Documented the Star Wars/Blues Brothers Soul Food Cantina theme, CSS-only galactic treatment, tap-droid advisor copy, themed recipe data migration, and site v0.15.0.
