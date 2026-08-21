@@ -2,6 +2,20 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.14.0 — 2026-08-21
+
+- Replaced café prices and mock ordering with complete, selectable sandwich recipes.
+- Added PostgreSQL-backed published recipes with structured ingredients, methods, and beer-pairing data, seeded through a migration.
+- Added a complementary beer advisor with crisp, hoppy, malty, and alcohol-free recommendations for every recipe.
+- Added a public recipe-submission form and protected API that saves new ideas as pending moderation records.
+
+## 0.13.0 — 2026-08-21
+
+- Added the Soul Food Café as a warm, self-contained destination within the guild dashboard.
+- Added six selectable sandwiches inspired by well-known sandwich traditions, led by the café&apos;s Pork Sandwich.
+- Added an interactive sandwich maker with bread, main filling, cheese, extras, live pricing, and a kitchen order ticket.
+- Added responsive café navigation, custom sandwich illustrations, and mobile layouts without introducing third-party image assets.
+
 ## 0.12.0 — 2026-08-20
 
 - Added a live Guild Arsenal showing ownership, seven-star and relic coverage for Galactic Legends, priority units, and capital ships.

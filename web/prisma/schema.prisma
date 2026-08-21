@@ -25,6 +25,12 @@ enum AutomationStatus {
   ACKNOWLEDGED
 }
 
+enum RecipeSubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Guild {
   id               String            @id
   name             String
@@ -185,4 +191,40 @@ model AutomationEvent {
 
   @@index([guildId, occurredAt])
   @@index([status, occurredAt])
+}
+
+model Recipe {
+  id           String   @id
+  slug         String   @unique
+  name         String
+  origin       String
+  description  String
+  ingredients  Json
+  instructions Json
+  beerPairings Json
+  tone         String
+  sortOrder    Int      @default(0)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+model RecipeSubmission {
+  id            String                 @id @default(cuid())
+  name          String
+  origin        String?
+  bread         String
+  filling       String
+  toppings      String
+  instructions  String
+  beerSuggestion String?
+  submitterName String?
+  notes         String?
+  status        RecipeSubmissionStatus @default(PENDING)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  @@index([status, createdAt])
 }

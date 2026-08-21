@@ -6,6 +6,7 @@ import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
 import { getRosterMembers } from "@/lib/members";
+import { getSoulFoodRecipes } from "@/lib/recipes";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
@@ -13,6 +14,7 @@ import AccountLink from "./account-link";
 import MemberDirectory from "./member-directory";
 import MobileMenu from "./mobile-menu";
 import OfficerDesk from "./officer-desk";
+import SoulFoodCafe from "./soul-food-cafe";
 import ThemeToggle from "./theme-toggle";
 
 const APP_VERSION = `v${packageInfo.version}`;
@@ -21,6 +23,7 @@ export const dynamic = "force-dynamic";
 const navigation = [
   ["Guild Wire", "GW"],
   ["Operations", "OP"],
+  ["Soul Food Cafe", "SF"],
   ["Members", "MB"],
   ["Wall of Fame", "WF"],
   ["Wall of Shame", "WS"],
@@ -86,7 +89,7 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, rosterMembers, officerStore, memberContext] = await Promise.all([
+  const [guildWire, summary, wallOfShame, wallOfFame, rosterMembers, officerStore, memberContext, soulFoodRecipes] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfShame(),
@@ -94,6 +97,7 @@ export default async function Home() {
     getRosterMembers(),
     cookies(),
     getMemberContext(),
+    getSoulFoodRecipes(),
   ]);
   const isOfficer = verifyOfficerSessionValue(officerStore.get(OFFICER_COOKIE_NAME)?.value);
   const discordUrl = getDiscordUrl();
@@ -267,6 +271,8 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        <SoulFoodCafe recipes={soulFoodRecipes} />
 
         <section className="section-block roster-section" id="members" aria-labelledby="members-heading">
           <div className="section-heading roster-heading">
