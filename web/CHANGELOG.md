@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.17.0 — 2026-08-21
+
+- Added a dedicated Operations hub with prominent shortcuts for Territory War, Territory Battles, raids, and the Guild Arsenal.
+- Made Territory War and Operations direct destinations in the desktop and mobile primary navigation.
+- Moved the complete member directory and Soul Food Cantina from the increasingly long homepage onto `/members` and `/cantina`.
+- Kept compact mission cards on the homepage while linking them into the new route structure.
+
 ## 0.16.0 — 2026-08-21
 
 - Added a responsive Territory War room with live registration, locked GP, guild matchup, scores, zone state, commands, and roster readiness.
