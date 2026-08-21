@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.9.0 · **Last updated:** 2026-08-21 · tracks site `v0.17.0`
+**Doc version:** 1.10.0 · **Last updated:** 2026-08-21 · tracks site `v0.18.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -186,11 +186,16 @@ Comlink's existing `/guild` response includes guild-specific `territoryWarStatus
 `/territory-war` reads the newest TW data directly from the latest raw `GuildSnapshot` so the page works immediately with captures made before normalization shipped, then falls back to a recent normalized event snapshot. It presents registration/eligibility, locked power, opponent profile, summed zone scores, officer zone commands, defensive zone state, and a searchable member readiness board. Missing full-player profiles are shown as unknown rather than zero. The page does not invent counter recommendations or officer assignments that Comlink has not supplied.
 
 ### 5.10 Operations and navigation (`app/operations/page.tsx`, `app/mobile-menu.tsx`)
-`/operations` is the launch deck for Territory War, Territory Battles, raids, and the Guild Arsenal. TW and the Arsenal link to their live dedicated tools; TB and raid cards expose current guild context and reserve clear growth points without pretending their planners are already implemented. Operations and TW are direct desktop/mobile navigation targets.
+`/operations` is the launch deck for Territory War, Territory Battles, raids, and the Guild Arsenal. Each card now links to a dedicated route. `/territory-battles` establishes live guild readiness plus deployment/operation/mission planning areas; `/raids` establishes live ticket pace plus readiness/attempt/score areas. Those pages state their current data boundaries while TB and raid event normalization remain future work. Operations and TW are direct desktop/mobile navigation targets.
 
 The complete member directory and Cantina now live at `/members` and `/cantina`, removing the two longest interactive sections from the homepage. Guild command retains overview metrics, communications, compact mission links, standings, personal account context, and officer actions.
 
-### 5.11 Health checks
+### 5.11 Shared banner heroes (`app/page-hero.tsx`)
+The Home, Operations, TW, TB, Raid, Arsenal, Members, and Cantina routes use their matching 1915×821 artwork from `web/public`. Internal destinations share `PageHero`, which standardizes responsive image optimization, accessible alternative text, left-side copy, layered contrast gradients, typography, spacing, rounded framing, and the blue/amber signal edge. Desktop preserves the wide supplied composition; the phone breakpoint shifts the image focal point toward the subjects and changes to a stronger bottom gradient so copy remains readable.
+
+The homepage retains its existing full-bleed hero structure but now uses `welcome-banner.png`, preserving the same header/navigation behaviour. Credits remains a compact utility page and has no supplied banner.
+
+### 5.12 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
 ---
@@ -377,6 +382,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.10.0 — 2026-08-21
+- Documented the shared responsive banner hero, eight supplied route images, new TB/Raid readiness routes, focal-point handling, and site v0.18.0.
 
 ### 1.9.0 — 2026-08-21
 - Documented the Operations launch deck, direct TW navigation, dedicated member/Cantina routes, shorter homepage, and site v0.17.0.

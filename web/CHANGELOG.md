@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.18.0 — 2026-08-21
+
+- Added the supplied Welcome, Operations, Territory War, Territory Battle, Raid, Arsenal, Members, and Cantina banner artwork to the matching destinations.
+- Introduced one shared responsive internal-page hero with consistent image treatment, typography, gradients, spacing, and accessible alternative text.
+- Added dedicated `/territory-battles` and `/raids` readiness pages and promoted their Operations cards from reserved anchors to real routes.
+- Tuned wide-banner focal points, hero content, operation shortcuts, and planning cards for desktop, tablet, and mobile layouts.
+
 ## 0.17.0 — 2026-08-21
 
 - Added a dedicated Operations hub with prominent shortcuts for Territory War, Territory Battles, raids, and the Guild Arsenal.

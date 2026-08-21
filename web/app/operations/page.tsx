@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getTerritoryWarRoom } from "@/lib/territory-war";
 
@@ -22,17 +23,21 @@ export default async function OperationsPage() {
         <Link href="/" className="intel-back">← Guild command</Link>
         <nav aria-label="Related destinations"><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link></nav>
       </header>
-      <section className="intel-hero destination-hero operations-hero">
-        <p className="eyebrow">Guild operations</p>
-        <h1>Every mission.<br /><em>One launch deck.</em></h1>
-        <p>Territory War, Territory Battle, raids and roster intelligence now live together here instead of competing for space on the homepage.</p>
+      <PageHero
+        image="/ops-banner.png"
+        imageAlt="The Blues Brothers and guild officers planning missions around a holographic operations table"
+        eyebrow="Guild operations"
+        title={<>Every mission.<br /><em>One launch deck.</em></>}
+        description="Territory War, Territory Battle, raids and roster intelligence now live together here instead of competing for space on the homepage."
+        priority
+      >
         <div className="operation-quicklinks" aria-label="Operation shortcuts">
           <Link href="/territory-war"><span>TW</span><strong>Territory War</strong></Link>
-          <a href="#territory-battles"><span>TB</span><strong>Territory Battles</strong></a>
-          <a href="#raids"><span>RD</span><strong>Raids</strong></a>
+          <Link href="/territory-battles"><span>TB</span><strong>Territory Battles</strong></Link>
+          <Link href="/raids"><span>RD</span><strong>Raids</strong></Link>
           <Link href="/arsenal"><span>AR</span><strong>Guild Arsenal</strong></Link>
         </div>
-      </section>
+      </PageHero>
 
       <section className="operation-grid" aria-label="Operation destinations">
         <article className="operation-card operation-live" id="territory-war">
@@ -45,21 +50,21 @@ export default async function OperationsPage() {
         </article>
 
         <article className="operation-card" id="territory-battles">
-          <header><span>Territory Battle</span><i>Next build</i></header>
+          <header><span>Territory Battle</span><i>Readiness</i></header>
           <div className="operation-mark">TB</div>
           <h2>Rise of the Empire</h2>
           <p>Deployments, operations, combat missions and platoon assignments will land here as the next dedicated operations tool.</p>
           <dl><div><dt>Roster</dt><dd>{summary.live ? summary.memberCount : "—"}</dd></div><div><dt>Guild GP</dt><dd>{summary.live ? power(summary.guildPower) : "—"}</dd></div></dl>
-          <span className="operation-pending">Planner route reserved</span>
+          <Link href="/territory-battles">Open Territory Battles <span>→</span></Link>
         </article>
 
         <article className="operation-card" id="raids">
-          <header><span>Raid operations</span><i>Next build</i></header>
+          <header><span>Raid operations</span><i>Readiness</i></header>
           <div className="operation-mark">RD</div>
           <h2>Raid readiness</h2>
           <p>Attempts, personal score history and team readiness will move onto their own page as raid tracking comes online.</p>
           <dl><div><dt>Tickets</dt><dd>{summary.live ? summary.dailyTickets.toLocaleString("en-GB") : "—"}</dd></div><div><dt>Target</dt><dd>{summary.ticketTarget.toLocaleString("en-GB")}</dd></div></dl>
-          <span className="operation-pending">Raid route reserved</span>
+          <Link href="/raids">Open Raid operations <span>→</span></Link>
         </article>
 
         <article className="operation-card operation-arsenal">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MemberDirectory from "@/app/member-directory";
+import PageHero from "@/app/page-hero";
 import { getRosterMembers } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
@@ -27,12 +28,16 @@ export default async function MembersPage() {
         <Link href="/" className="intel-back">← Guild command</Link>
         <nav aria-label="Related destinations"><Link href="/operations">Operations</Link><Link href="/cantina">Cantina</Link></nav>
       </header>
-      <section className="intel-hero destination-hero">
-        <p className="eyebrow">Membership directory</p>
-        <h1>Meet the whole band.<br /><em>One card at a time.</em></h1>
-        <p>Search the live roster, compare the useful numbers and open any member for their detailed guild standing.</p>
+      <PageHero
+        image="/members-banner.png"
+        imageAlt="The Blues Brothers among guild members inside a crowded desert cantina"
+        eyebrow="Membership directory"
+        title={<>Meet the whole band.<br /><em>One card at a time.</em></>}
+        description="Search the live roster, compare the useful numbers and open any member for their detailed guild standing."
+        priority
+      >
         <div className="intel-summary"><div><strong>{members.length || "—"}</strong><small>active members</small></div></div>
-      </section>
+      </PageHero>
       <MemberDirectory members={members} />
       <footer className="intel-footer"><span>Roster data refreshes through the scheduled guild sync.</span><Link href="/territory-war">Open TW room →</Link></footer>
     </main>

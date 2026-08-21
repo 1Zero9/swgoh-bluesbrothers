@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHero from "@/app/page-hero";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import WarRoster from "./war-roster";
 
@@ -58,12 +59,17 @@ export default async function TerritoryWarPage() {
         <span>Territory War · Captured {capturedLabel}</span>
       </header>
 
-      <section className="intel-hero tw-hero">
-        <p className="eyebrow">Territory War room</p>
-        <h1>{war.active ? <>The band is live.<br /><em>Know the field.</em></> : <>Get the band ready.<br /><em>Before the doors open.</em></>}</h1>
-        <p>{war.active
+      <PageHero
+        image="/tw-banner.png"
+        imageAlt="The Blues Brothers and guild officers studying a holographic Territory War map"
+        eyebrow="Territory War room"
+        title={war.active ? <>The band is live.<br /><em>Know the field.</em></> : <>Get the band ready.<br /><em>Before the doors open.</em></>}
+        description={war.active
           ? `Live registration, locked power and zone state against ${war.opponentName || "the opposing guild"}. Every figure below comes from the latest stored Comlink guild capture.`
-          : "The next opponent has not entered the room yet. Use the readiness board to check roster coverage, activity and the people available for the next lock-in."}</p>
+          : "The next opponent has not entered the room yet. Use the readiness board to check roster coverage, activity and the people available for the next lock-in."}
+        className="tw-hero"
+        priority
+      >
         <div className={`tw-live-strip${war.active ? " is-live" : ""}`}>
           <span><i /> {war.active ? `Live war${war.round === null ? "" : ` · Round ${war.round}`}` : "No active war in the latest capture"}</span>
           <strong>{war.active ? (roundEndLabel ? `Round ends ${roundEndLabel}` : "Round timing unavailable") : `Last checked ${capturedLabel}`}</strong>
@@ -74,7 +80,7 @@ export default async function TerritoryWarPage() {
           <div><strong>{war.active ? war.guildScore.toLocaleString("en-GB") : "—"}</strong><small>{war.active ? "Blues Brothers score" : "guild score"}</small></div>
           <div><strong>{war.active ? war.opponentScore.toLocaleString("en-GB") : "—"}</strong><small>{war.active ? `${war.opponentName || "opponent"} score` : "opponent score"}</small></div>
         </div>
-      </section>
+      </PageHero>
 
       {war.active ? (
         <section className="tw-matchup" aria-label="Guild matchup">
