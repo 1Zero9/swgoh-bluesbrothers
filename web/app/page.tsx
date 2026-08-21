@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
 const navigation = [
   ["Guild Wire", "GW"],
   ["Operations", "OP"],
-  ["Soul Food Cafe", "SF"],
+  ["Soul Food Cantina", "SF"],
   ["Members", "MB"],
   ["Wall of Fame", "WF"],
   ["Wall of Shame", "WS"],

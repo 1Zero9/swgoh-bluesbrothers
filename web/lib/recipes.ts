@@ -25,9 +25,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-pork-sandwich",
     slug: "pork-sandwich",
-    name: "The Pork Sandwich",
-    origin: "Maxwell Street · Chicago",
-    description: "Juicy roast pork, melted provolone and sharp giardiniera on a jus-soaked roll.",
+    name: "The Pork Awakens",
+    origin: "Maxwell Street · Corellian route",
+    description: "A Chicago roast-pork legend with provolone, sharp giardiniera and enough jus to wake the Force.",
     ingredients: ["700g boneless pork shoulder", "4 soft sub rolls", "8 slices provolone", "120g hot giardiniera", "250ml light chicken stock", "2 garlic cloves", "1 tsp dried oregano", "Salt and black pepper"],
     instructions: ["Season the pork with garlic, oregano, salt and pepper, then roast at 160°C until tender enough to pull, about 3 hours.", "Rest the pork, slice or pull it, then warm it in the roasting juices loosened with the stock.", "Split and lightly toast the rolls. Layer in pork and provolone, then return to the oven just until the cheese softens.", "Spoon over a little jus, finish with giardiniera and serve immediately."],
     beerPairings: [
@@ -41,9 +41,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-italian-beef",
     slug: "italian-beef",
-    name: "Italian Beef",
-    origin: "Chicago · USA",
-    description: "Thinly sliced seasoned beef, sweet peppers and giardiniera in a dipped Italian roll.",
+    name: "The Beef Strikes Back",
+    origin: "Chicago · Bespin branch",
+    description: "Thin-sliced Chicago beef, sweet peppers and giardiniera return in a properly dipped Italian roll.",
     ingredients: ["700g beef sirloin or topside", "4 Italian rolls", "2 green peppers", "120g giardiniera", "500ml beef stock", "1 tsp dried oregano", "1 tsp garlic powder", "Black pepper"],
     instructions: ["Rub the beef with oregano, garlic powder and pepper. Roast at 180°C to medium, then cool completely for thin slicing.", "Simmer the stock with the roasting juices. Add the sliced beef and warm gently without boiling.", "Sauté sliced peppers until soft and lightly browned.", "Dip each roll quickly in the jus, then pack with beef, peppers and giardiniera."],
     beerPairings: [
@@ -57,9 +57,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-cubano",
     slug: "cubano",
-    name: "Cubano",
-    origin: "Cuba · Miami",
-    description: "A hot pressed sandwich of roast pork, ham, Swiss cheese, pickles and mustard.",
+    name: "The Kessel Run Cubano",
+    origin: "Cuba · Miami · 12 parsecs",
+    description: "Roast pork, ham, Swiss, pickles and mustard pressed faster than any sandwich in the sector.",
     ingredients: ["4 Cuban-style or soft white rolls", "300g sliced roast pork", "200g sliced ham", "8 slices Swiss cheese", "2 large dill pickles", "Yellow mustard", "Softened butter"],
     instructions: ["Split the rolls and spread mustard across both cut sides.", "Layer pork, ham, Swiss and thinly sliced pickles. Close and butter the outside of each roll.", "Press in a sandwich grill, or under a weighted frying pan, over medium heat.", "Cook until deeply crisp outside and the cheese has melted, then cut diagonally."],
     beerPairings: [
@@ -73,9 +73,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-reuben",
     slug: "reuben",
-    name: "Reuben",
-    origin: "New York · USA",
-    description: "Pastrami, Swiss cheese, sauerkraut and dressing griddled between slices of rye.",
+    name: "Reuben One",
+    origin: "New York · Rebel base",
+    description: "Pastrami, Swiss, sauerkraut and dressing lead the lunch rebellion between griddled rye.",
     ingredients: ["8 slices rye bread", "400g sliced pastrami", "8 slices Swiss cheese", "200g sauerkraut", "4 tbsp Russian dressing", "Softened butter"],
     instructions: ["Drain and squeeze the sauerkraut so the sandwich stays crisp.", "Spread dressing on the inside of each bread slice. Layer Swiss, pastrami, sauerkraut and a second slice of Swiss.", "Butter the outside of the bread and griddle over medium-low heat.", "Turn once and cook until both sides are crisp and the cheese is fully melted."],
     beerPairings: [
@@ -89,9 +89,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-banh-mi",
     slug: "banh-mi",
-    name: "Bánh Mì",
-    origin: "Vietnam",
-    description: "A crisp baguette filled with savoury pork, pâté, quick pickles, cucumber and herbs.",
+    name: "Bánh Mì Kenobi",
+    origin: "Vietnam · The high ground",
+    description: "The sandwich you are looking for: crisp baguette, savoury pork, pâté, quick pickles and herbs.",
     ingredients: ["2 small crisp baguettes", "300g cooked pork belly or roast pork", "80g smooth pâté", "1 carrot", "100g daikon", "1 cucumber", "Rice vinegar and sugar", "Fresh coriander", "Mayonnaise and sliced chilli"],
     instructions: ["Julienne the carrot and daikon, then toss with rice vinegar, sugar and salt. Leave for at least 30 minutes.", "Warm and slice the pork. Split the baguettes and remove a little crumb if they are very dense.", "Spread with pâté and mayonnaise, then add pork, drained pickles and cucumber batons.", "Finish with coriander and chilli, keeping the baguette crisp."],
     beerPairings: [
@@ -105,9 +105,9 @@ const FALLBACK_RECIPES: SoulFoodRecipe[] = [
   {
     id: "recipe-katsu-sando",
     slug: "katsu-sando",
-    name: "Katsu Sando",
-    origin: "Japan",
-    description: "Crisp pork cutlet, shredded cabbage and tonkatsu sauce in soft milk bread.",
+    name: "Katsu Solo",
+    origin: "Japan · Smuggler's cut",
+    description: "A lone crisp pork cutlet with cabbage and tonkatsu sauce, flying between soft milk bread.",
     ingredients: ["4 thick slices Japanese milk bread", "2 pork loin cutlets", "50g plain flour", "1 beaten egg", "100g panko crumbs", "Finely shredded cabbage", "Tonkatsu sauce", "Neutral oil and salt"],
     instructions: ["Flatten the cutlets evenly and season. Coat in flour, egg and then panko.", "Shallow-fry at 175°C until crisp and cooked through, then drain and rest briefly.", "Spread tonkatsu sauce on the bread and add a thin layer of cabbage.", "Add the cutlet, close, trim the crusts if desired and cut into neat fingers."],
     beerPairings: [

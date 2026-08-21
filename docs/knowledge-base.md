@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.6.0 · **Last updated:** 2026-08-21 · tracks site `v0.14.0`
+**Doc version:** 1.7.0 · **Last updated:** 2026-08-21 · tracks site `v0.15.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -173,10 +173,10 @@ The latest full player profiles are compared with a curated set of Galactic Lege
 
 The checklist is adapted from the MIT-licensed `jmiln/SWGoHBot`; the complete notice is retained in `web/THIRD_PARTY_NOTICES.md` and exposed at `/credits`. Broader repository research and adoption decisions live in `docs/swgoh-open-source-research.md`.
 
-### 5.8 Soul Food Café (`lib/recipes.ts`, `app/soul-food-cafe.tsx`, `app/api/recipes/submissions`)
-The home page includes six database-backed sandwich recipes with structured ingredient lists, methods, and beer-pairing recommendations. The `20260821000000_soul_food_recipes` migration creates the recipe tables and seeds the initial published menu; `lib/recipes.ts` reads published records and supplies an equivalent built-in fallback when the database is unavailable during local design work.
+### 5.8 Soul Food Cantina (`lib/recipes.ts`, `app/soul-food-cafe.tsx`, `app/api/recipes/submissions`)
+The home page includes a Star Wars and Blues Brothers-themed cantina with six database-backed sandwich recipes, structured ingredient lists, methods, and beer-pairing recommendations. The `20260821000000_soul_food_recipes` migration creates the recipe tables and seeds the initial published menu; `20260821010000_soul_food_cantina_theme` applies the themed public names and descriptions to existing databases. `lib/recipes.ts` reads published records and supplies an equivalent built-in fallback when the database is unavailable during local design work.
 
-Selecting a sandwich opens its full recipe. The client-side beer advisor selects a pairing stored with that recipe for crisp, hoppy, malty, or alcohol-free preferences. There are no prices or ordering semantics. Sandwich artwork remains CSS-only.
+Selecting a sandwich opens its full recipe. The client-side Mos Eisley tap-droid advisor selects a pairing stored with that recipe for crisp, hoppy, malty, or alcohol-free preferences. There are no prices or ordering semantics. The starfield, databank cards, blue-neon cantina treatment, and sandwich artwork remain CSS-only.
 
 Public submissions post to `/api/recipes/submissions`. Required fields and maximum lengths are validated server-side, a honeypot drops obvious bot submissions, and accepted recipes are stored in `RecipeSubmission` with `PENDING` status. They never appear publicly until an officer review flow explicitly approves and promotes them; that moderation UI is still an open item.
 
@@ -201,7 +201,7 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult` — **not yet populated by any sync job** |
 | `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, `payload` — **not yet populated** |
 | `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
-| `Recipe` | Published Soul Food Café recipe | Slug, origin, description, JSON ingredient/method lists, JSON beer pairings, visual tone, sort order, publication state |
+| `Recipe` | Published Soul Food Cantina recipe | Slug, origin, description, JSON ingredient/method lists, JSON beer pairings, visual tone, sort order, publication state |
 | `RecipeSubmission` | Community recipe awaiting review | Bread, filling, toppings, method, optional submitter/beer/story fields, moderation `status` (`PENDING`/`APPROVED`/`REJECTED`) |
 
 ---
@@ -358,13 +358,16 @@ PRs are merged into `main` automatically — no confirmation needed.
 - Guild data accuracy pass (Wall of Fame / Wall of Shame thresholds, ticket targets)
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
 - General UI polish across the dashboard sections
-- Officer moderation queue for approving/rejecting pending Soul Food Café recipe submissions
+- Officer moderation queue for approving/rejecting pending Soul Food Cantina recipe submissions
 - `GuildEvent`/`EventSnapshot` models exist but nothing populates them yet (TB/TW/raid tracking)
 - CI doesn't currently build/lint the `web/` app — worth adding a Next.js job to `ci.yml`
 
 ---
 
 ## 16. Changelog
+
+### 1.7.0 — 2026-08-21
+- Documented the Star Wars/Blues Brothers Soul Food Cantina theme, CSS-only galactic treatment, tap-droid advisor copy, themed recipe data migration, and site v0.15.0.
 
 ### 1.6.0 — 2026-08-21
 - Documented database-backed café recipes, seeded recipe migration, preference-aware beer pairings, and pending community submissions introduced in site v0.14.0.
