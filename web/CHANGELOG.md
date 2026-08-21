@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.18.4 — 2026-08-21
+
+- Removed the standalone subpage navigation toolbar and integrated the complete site header into every hero.
+- Kept the desktop links, theme controls, version and Discord action over the banner artwork, with the existing mobile drawer at smaller breakpoints.
+- Gave the Credits page an integrated dark command header so no public destination retains the detached toolbar.
+
 ## 0.18.3 — 2026-08-21
 
 - Made every shared internal-page hero span the full viewport directly below the site header, matching the homepage's edge-to-edge treatment.

@@ -117,7 +117,7 @@ export default async function Home() {
             sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"
           />
           <div className="hero-shade" />
-          <SiteHeader variant="hero" syncLabel={syncLabel} />
+          <SiteHeader syncLabel={syncLabel} />
           <div className="hero-copy">
             <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
             <p className="eyebrow">The roster. The plan. The next mission.</p>

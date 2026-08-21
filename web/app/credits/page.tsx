@@ -27,11 +27,13 @@ const projects = [
 export default function CreditsPage() {
   return (
     <main className="intel-shell credits-shell">
-      <SiteHeader />
-      <section className="intel-hero credits-hero">
-        <p className="eyebrow">Open-source credits</p>
-        <h1>Built with help from<br /><em>the wider holotable.</em></h1>
-        <p>We keep borrowed code and data visible, attributed, and inside the permissions granted by each project.</p>
+      <section className="credits-hero">
+        <SiteHeader homeHref="/" />
+        <div className="credits-hero-copy">
+          <p className="eyebrow">Open-source credits</p>
+          <h1>Built with help from<br /><em>the wider holotable.</em></h1>
+          <p>We keep borrowed code and data visible, attributed, and inside the permissions granted by each project.</p>
+        </div>
       </section>
       <section className="credit-list" aria-label="Open-source projects used by the site">
         {projects.map((project) => (

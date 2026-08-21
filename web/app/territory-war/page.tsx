@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
-import SiteHeader from "@/app/site-header";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import WarRoster from "./war-roster";
 
@@ -55,8 +54,6 @@ export default async function TerritoryWarPage() {
 
   return (
     <main className="intel-shell tw-shell">
-      <SiteHeader syncLabel={`Territory War · Captured ${capturedLabel}`} />
-
       <PageHero
         image="/tw-banner.png"
         imageAlt="The Blues Brothers and guild officers studying a holographic Territory War map"
@@ -67,6 +64,7 @@ export default async function TerritoryWarPage() {
           : "The next opponent has not entered the room yet. Use the readiness board to check roster coverage, activity and the people available for the next lock-in."}
         className="tw-hero"
         priority
+        syncLabel={`Territory War · Captured ${capturedLabel}`}
       >
         <div className={`tw-live-strip${war.active ? " is-live" : ""}`}>
           <span><i /> {war.active ? `Live war${war.round === null ? "" : ` · Round ${war.round}`}` : "No active war in the latest capture"}</span>
