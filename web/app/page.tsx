@@ -8,6 +8,7 @@ import { getMemberContext } from "@/lib/member-context";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
+import { getRosterChanges } from "@/lib/members";
 import AccountLink from "./account-link";
 import OfficerDesk from "./officer-desk";
 import SiteHeader, { APP_VERSION } from "./site-header";
@@ -78,13 +79,14 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, officerStore, memberContext] = await Promise.all([
+  const [guildWire, summary, wallOfShame, wallOfFame, officerStore, memberContext, changes] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfShame(),
     getWallOfFame(),
     cookies(),
     getMemberContext(),
+    getRosterChanges(),
   ]);
   const isOfficer = verifyOfficerSessionValue(officerStore.get(OFFICER_COOKIE_NAME)?.value);
   const discordUrl = getDiscordUrl();
@@ -104,8 +106,6 @@ export default async function Home() {
   const syncLabel = summary.capturedAt
     ? `Comlink connected · Last capture ${formatRelativeTime(summary.capturedAt)}`
     : "Awaiting first Comlink sync";
-
-  const activityRows = guildWire.slice(0, 4);
   return (
     <main className="app-shell">
       <section className="workspace" id="top">
@@ -285,20 +285,44 @@ export default async function Home() {
           </section>
 
           <section className="panel" id="administration">
-            <div className="panel-heading"><div><p className="eyebrow">Automation feed</p><h2>What the droid did</h2></div><span className="live-pill"><i /> Live</span></div>
-            <div className="activity-list">
-              {activityRows.length ? activityRows.map((item) => (
-                <div className="activity-row" key={item.id}>
-                  <span className={`activity-icon activity-${item.kind}`}>{wireIcon(item.kind)}</span>
-                  <div><strong>{item.title}</strong><p>{item.kind === "notice" ? "Officer" : item.kind === "system" ? "System" : "Discord"}</p></div>
-                  <time>{formatRelativeTime(item.occurredAt)}</time>
-                </div>
-              )) : (
-                <p className="empty-copy">No automation activity recorded yet.</p>
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Roster additions</p>
+                <h2>New Crew Welcomes</h2>
+              </div>
+              <span className="live-pill" style={{ background: "rgba(83, 214, 154, 0.15)", color: "#53d69a" }}>
+                Welcome 🎷
+              </span>
+            </div>
+            <p className="panel-intro">Give a warm welcome to the latest players to join the Blues Brothers guild roster.</p>
+            
+            <div className="activity-list" style={{ maxHeight: "250px", overflowY: "auto", display: "grid", gap: "10px", marginBottom: "20px" }}>
+              {changes.newMembers.length ? (
+                changes.newMembers.map((member) => {
+                  const memberPower = member.galacticPower ? formatPower(member.galacticPower) : null;
+                  return (
+                    <div className="activity-row" key={member.playerId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px", borderRadius: "8px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span className="activity-icon activity-welcome" style={{ display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "50%", background: "rgba(83, 214, 154, 0.1)", color: "#53d69a", fontStyle: "normal", fontSize: "14px", fontWeight: "bold" }}>+</span>
+                        <div>
+                          <strong style={{ display: "block", fontSize: "13px", color: "#fff" }}>{member.name}</strong>
+                          <span style={{ fontSize: "11px", color: "var(--muted)" }}>Joined {formatRelativeTime(new Date(member.joinedAt))}</span>
+                        </div>
+                      </div>
+                      {memberPower && (
+                        <span style={{ font: "11px var(--font-geist-mono)", padding: "2px 6px", borderRadius: "4px", background: "rgba(255,255,255,0.05)", color: "#fff" }}>
+                          {memberPower.value}{memberPower.unit} GP
+                        </span>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="empty-copy" style={{ color: "var(--muted)", fontSize: "12px", margin: "10px 0" }}>Roster is stable. No new band members checked in this week.</p>
               )}
             </div>
 
-            <div className="officer-desk">
+            <div className="officer-desk" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
               <p className="officer-desk-heading">Officer&apos;s desk</p>
               <OfficerDesk signedIn={isOfficer} />
               {isOfficer ? <Link className="officer-roster-link" href="/officer/roster">Open the full roster report →</Link> : null}
