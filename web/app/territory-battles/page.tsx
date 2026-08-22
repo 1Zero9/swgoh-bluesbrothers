@@ -19,8 +19,8 @@ export default async function TerritoryBattlesPage() {
   return (
     <main className="intel-shell destination-shell mission-shell">
       <PageHero
-        image="/tb-banner.webp"
-        imageAlt="The Blues Brothers overlooking a large Territory Battle across a desert world"
+        image="/tw-banner.webp"
+        imageAlt="The Blues Brothers and guild officers studying a holographic Territory Battle map"
         eyebrow="Territory Battles"
         title={<>See the whole field.<br /><em>Deploy with purpose.</em></>}
         description="The dedicated home for deployments, operations, combat missions and platoon planning as Territory Battle tracking comes online."

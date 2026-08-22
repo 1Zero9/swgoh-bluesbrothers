@@ -55,8 +55,8 @@ export default async function TerritoryWarPage() {
   return (
     <main className="intel-shell tw-shell">
       <PageHero
-        image="/tw-banner.webp"
-        imageAlt="The Blues Brothers and guild officers studying a holographic Territory War map"
+        image="/tb-banner.webp"
+        imageAlt="The Blues Brothers overlooking a massive Territory War battlefield"
         eyebrow="Territory War room"
         title={war.active ? <>The band is live.<br /><em>Know the field.</em></> : <>Get the band ready.<br /><em>Before the doors open.</em></>}
         description={war.active
