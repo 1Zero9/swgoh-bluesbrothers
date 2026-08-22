@@ -69,10 +69,75 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
   const [selected, setSelected] = useState<MemberDirectoryEntry | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
+  type ProgressionPoint = {
+    capturedAt: string;
+    galacticPower: string;
+    characterPower: string;
+    shipPower: string;
+    galacticLegends: number;
+    relicUnits: number;
+  };
+
+  const [progression, setProgression] = useState<ProgressionPoint[] | null>(null);
+  const [loadingProgression, setLoadingProgression] = useState(false);
+  const [loadedAt, setLoadedAt] = useState<number>(0);
+
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (selected && dialog && !dialog.open) dialog.showModal();
+    if (selected && dialog && !dialog.open) {
+      dialog.showModal();
+      setLoadingProgression(true);
+      setProgression(null);
+      fetch(`/api/members/progression?playerId=${selected.playerId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.points) {
+            setProgression(data.points);
+            setLoadedAt(Date.now());
+          }
+          setLoadingProgression(false);
+        })
+        .catch(() => {
+          setLoadingProgression(false);
+        });
+    }
   }, [selected]);
+
+  const growthStats = useMemo(() => {
+    if (!progression || progression.length < 2 || !loadedAt) return null;
+    
+    const latest = progression[progression.length - 1];
+    const latestGp = Number(latest.galacticPower);
+    
+    // Find snap around 7 days ago
+    const oneWeekAgo = loadedAt - 7 * 86_400_000;
+    const snap7d = progression.reduce((best, current) => {
+      const bestDiff = Math.abs(new Date(best.capturedAt).getTime() - oneWeekAgo);
+      const currentDiff = Math.abs(new Date(current.capturedAt).getTime() - oneWeekAgo);
+      return currentDiff < bestDiff ? current : best;
+    });
+    
+    // Find snap around 30 days ago
+    const oneMonthAgo = loadedAt - 30 * 86_400_000;
+    const snap30d = progression.reduce((best, current) => {
+      const bestDiff = Math.abs(new Date(best.capturedAt).getTime() - oneMonthAgo);
+      const currentDiff = Math.abs(new Date(current.capturedAt).getTime() - oneMonthAgo);
+      return currentDiff < bestDiff ? current : best;
+    });
+
+    const gpDelta7d = latestGp - Number(snap7d.galacticPower);
+    const gpDelta30d = latestGp - Number(snap30d.galacticPower);
+    
+    const relicsDelta = latest.relicUnits - snap7d.relicUnits;
+    const glsDelta = latest.galacticLegends - snap7d.galacticLegends;
+
+    return {
+      gpDelta7d,
+      gpDelta30d,
+      relicsDelta,
+      glsDelta,
+    };
+  }, [progression, loadedAt]);
 
   const visibleMembers = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
@@ -160,7 +225,7 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
         className="member-dialog"
         ref={dialogRef}
         aria-labelledby="member-profile-title"
-        onClose={() => setSelected(null)}
+        onClose={() => { setSelected(null); setProgression(null); }}
         onClick={(event) => {
           if (event.target === dialogRef.current) dialogRef.current?.close();
         }}
@@ -182,6 +247,34 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
               <div><span>Datacrons</span><strong>{selected.datacrons ?? "Syncing"}</strong></div>
               <div><span>Last activity</span><strong>{relativeTime(selected.lastActivityAt).replace("Active ", "")}</strong></div>
               <div className="profile-stat-wide"><span>Joined the band</span><strong>{longDate(selected.joinedAt)} · {guildTenure(selected.joinedAt)}</strong></div>
+            </div>
+            <div className="profile-progression" style={{ marginTop: "20px", borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
+              <h4 style={{ fontSize: "11px", textTransform: "uppercase", color: "#c0b19d", letterSpacing: "0.08em", margin: "0 0 12px" }}>Roster Growth &amp; Deltas</h4>
+              {loadingProgression ? (
+                <p style={{ fontSize: "12px", color: "var(--muted)" }}>Loading growth timeline...</p>
+              ) : growthStats ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", marginBottom: "16px" }}>
+                  <div style={{ padding: "10px", borderRadius: "8px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                    <span style={{ fontSize: "10px", color: "#738193", display: "block" }}>7-Day GP Progress</span>
+                    <strong style={{ fontSize: "14px", color: growthStats.gpDelta7d >= 0 ? "#53d69a" : "#ff5247" }}>
+                      {growthStats.gpDelta7d >= 0 ? "+" : ""}{formatPower(growthStats.gpDelta7d.toString())}
+                    </strong>
+                  </div>
+                  <div style={{ padding: "10px", borderRadius: "8px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                    <span style={{ fontSize: "10px", color: "#738193", display: "block" }}>30-Day GP Progress</span>
+                    <strong style={{ fontSize: "14px", color: growthStats.gpDelta30d >= 0 ? "#53d69a" : "#ff5247" }}>
+                      {growthStats.gpDelta30d >= 0 ? "+" : ""}{formatPower(growthStats.gpDelta30d.toString())}
+                    </strong>
+                  </div>
+                  {(growthStats.relicsDelta !== 0 || growthStats.glsDelta !== 0) && (
+                    <div style={{ gridColumn: "1 / -1", padding: "10px", borderRadius: "8px", background: "rgba(33, 112, 255, 0.05)", border: "1px solid rgba(33, 112, 255, 0.1)", fontSize: "12px", color: "#d3e8ff" }}>
+                      📈 Milestones: {growthStats.relicsDelta > 0 && `+${growthStats.relicsDelta} Relics`} {growthStats.glsDelta > 0 && `+${growthStats.glsDelta} GLs`} (7d)
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p style={{ fontSize: "12px", color: "#738193", marginBottom: "16px" }}>No historical snapshots recorded yet. Progression deltas will populate weekly.</p>
+              )}
             </div>
             <div className={`profile-standing${selected.attentionReasons.length ? " profile-standing-watch" : ""}`}>
               <span>{selected.attentionReasons.length ? "Needs a check-in" : "All clear"}</span>

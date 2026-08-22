@@ -12,6 +12,13 @@ type StoredPlayerProfile = {
   rosterUnit?: unknown;
 };
 
+export type GuildArsenalOwner = {
+  playerName: string;
+  rarity: number;
+  gearTier: number;
+  relicTier: number;
+};
+
 export type GuildArsenalUnit = {
   definitionId: string;
   name: string;
@@ -20,6 +27,7 @@ export type GuildArsenalUnit = {
   relic: number;
   relicFive: number;
   averageRelic: number;
+  owners: GuildArsenalOwner[];
 };
 
 export type GuildArsenalCategory = {
@@ -59,7 +67,7 @@ export async function getGuildArsenal(): Promise<GuildArsenal> {
       select: {
         members: {
           select: {
-            player: { select: { profilePayload: true } },
+            player: { select: { profilePayload: true, currentName: true } },
           },
         },
       },
@@ -68,16 +76,35 @@ export async function getGuildArsenal(): Promise<GuildArsenal> {
 
     const rosters = snapshot.members.flatMap((member) => {
       const roster = rosterFromProfile(member.player.profilePayload);
-      return roster ? [new Map(roster.map((unit) => [baseDefinitionId(unit.definitionId), unit]))] : [];
+      return roster ? [{
+        playerName: member.player.currentName,
+        rosterMap: new Map(roster.map((unit) => [baseDefinitionId(unit.definitionId), unit]))
+      }] : [];
     });
     const syncedMembers = rosters.length;
 
     const categories = ARSENAL_CATEGORIES.map((categoryName) => {
       const units = UNIT_CHECKLIST[categoryName].map((checklistUnit) => {
-        const ownedUnits = rosters.flatMap((roster) => {
-          const unit = roster.get(checklistUnit.definitionId);
-          return unit ? [unit] : [];
+        const ownedUnits: StoredRosterUnit[] = [];
+        const owners: GuildArsenalOwner[] = [];
+
+        rosters.forEach((entry) => {
+          const unit = entry.rosterMap.get(checklistUnit.definitionId);
+          if (unit) {
+            ownedUnits.push(unit);
+            const relicLevel = Math.max(0, numeric(unit.relic?.currentTier) - 2);
+            owners.push({
+              playerName: entry.playerName,
+              rarity: numeric(unit.currentRarity),
+              gearTier: numeric(unit.currentTier),
+              relicTier: relicLevel,
+            });
+          }
         });
+
+        // Sort owners: Relics desc, Gear desc, Stars desc, Name asc
+        owners.sort((a, b) => b.relicTier - a.relicTier || b.gearTier - a.gearTier || b.rarity - a.rarity || a.playerName.localeCompare(b.playerName));
+
         const relicLevels = ownedUnits.map((unit) => Math.max(0, numeric(unit.relic?.currentTier) - 2));
         return {
           ...checklistUnit,
@@ -88,6 +115,7 @@ export async function getGuildArsenal(): Promise<GuildArsenal> {
           averageRelic: relicLevels.length
             ? Math.round((relicLevels.reduce((total, level) => total + level, 0) / relicLevels.length) * 10) / 10
             : 0,
+          owners,
         };
       });
       const ownedSlots = units.reduce((total, unit) => total + unit.owned, 0);
