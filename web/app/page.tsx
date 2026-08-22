@@ -301,6 +301,7 @@ export default async function Home() {
             <div className="officer-desk">
               <p className="officer-desk-heading">Officer&apos;s desk</p>
               <OfficerDesk signedIn={isOfficer} />
+              {isOfficer ? <Link className="officer-roster-link" href="/officer/roster">Open the full roster report →</Link> : null}
             </div>
           </section>
         </div>

@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.13.0 · **Last updated:** 2026-08-21 · tracks site `v0.21.0`
+**Doc version:** 1.14.0 · **Last updated:** 2026-08-22 · tracks site `v0.21.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -200,6 +200,11 @@ Every public destination renders the same `SiteHeader` inside its hero rather th
 ### 5.12 Health checks
 - `GET /api/health/database` — `200 ok` / `503 unavailable` / `503 unconfigured`.
 
+### 5.13 Officer Roster Report (`lib/officer-roster.ts`, `app/officer/roster/*`)
+`/officer/roster` is a cookie-gated (officer session only) filterable/sortable table covering the **full guild history** — every `MembershipTerm` (ACTIVE and LEFT), deduplicated to the most recent term per player. `getOfficerRosterReport()` composes `getRosterMembers()` (current roster + `getMemberAttentionReasons()` flags), a direct `prisma.membershipTerm.findMany()` query, `getRaidRoom()` (latest completed raid's participants), and `getTerritoryWarRoom()` (current/recent war's `joined` status per member) into one row per player: role, active/inactive tag, tenure, GP, raid tickets vs. the `TICKET_TARGET_PER_MEMBER` target, last-raid participation + damage, TW joined status, last activity, and a computed `flags`/`needsAttention` list (existing Wall of Shame reasons plus "sat out the last raid" / "didn't join the last war").
+
+`raidParticipated` and `twJoined` are `null` — not `false` — whenever there's no recent raid/war to measure against (e.g. `twRoom.active === false`), to avoid falsely flagging members when there's simply no data. Territory Battle has **no** participation column with real data — Comlink doesn't expose it outside the guild's own account (§15) — so the table renders a static "No data" pill with an explanatory tooltip rather than fabricating a signal. Only `ACTIVE` members get attention flags computed; departed members are informational only. The table itself (`app/officer-roster-table.tsx`) is a client component with client-side search/status-filter/attention-toggle/sortable-column state, matching the existing `app/raids/raid-board.tsx` filter pattern. The page uses `dynamic = "force-dynamic"` (reads the officer cookie per-request) and is linked from the homepage officer's desk and the main site navigation once signed in.
+
 ---
 
 ## 6. Data model
@@ -262,6 +267,7 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `recipes.ts` | Reads and validates published recipe/beer-pairing JSON, with built-in local fallback recipes |
 | `officer-auth.ts` | Shared-password check + signed officer session cookie |
 | `wall-of-fame.ts` / `wall-of-shame.ts` | Leaderboard/bulletin derivations described in §5.5 |
+| `officer-roster.ts` | Officer-only full guild-history report combining roster stats, membership terms, raid participation, and TW joined status (§5.13) |
 
 ---
 
@@ -390,6 +396,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.14.0 — 2026-08-22
+- Added the officer-only Roster Report (`/officer/roster`, `lib/officer-roster.ts`, §5.13): a filterable/sortable table of the full guild history (active + departed members) with tickets, last-raid participation/damage, TW joined status, tenure, and computed "needs attention" flags. Territory Battle stays a "No data" placeholder column per the documented Comlink boundary. Also fixed the member trading-card `<dialog>` rendering pinned to the top-left instead of centered on screen.
 
 ### 1.13.0 — 2026-08-21
 - Documented the Raids page's real `recentRaidResult` data (`lib/raids.ts`, `app/raids/raid-board.tsx`) and the confirmed Comlink guild-data boundary: no live Territory Battle or raid status is available outside the guild's own account, only completed-run results. Updated Territory Battles page copy to state this plainly. Tracks site v0.21.0.
