@@ -56,6 +56,13 @@ function guildTenure(value: string | null) {
   return `${years.toFixed(years >= 10 ? 0 : 1)}yr`;
 }
 
+function roleTier(role: string) {
+  const normalized = role.toLowerCase();
+  if (normalized === "leader") return "leader";
+  if (normalized === "officer") return "officer";
+  return "member";
+}
+
 export default function MemberDirectory({ members }: { members: MemberDirectoryEntry[] }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortMode>("power");
@@ -87,7 +94,7 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
         <label className="roster-search">
           <span>Search the band</span>
           <input
-            type="search"
+            type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Find a member…"
@@ -108,27 +115,36 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
         <div className="roster-grid" aria-live="polite">
           {visibleMembers.map((member) => {
             const needsAttention = member.attentionReasons.length > 0;
+            const tier = roleTier(member.memberRole);
             return (
               <button
-                className={`member-card${needsAttention ? " member-card-attention" : ""}`}
+                className={`trading-card trading-card-${tier}${needsAttention ? " trading-card-attention" : ""}`}
                 id={`member-${member.playerId}`}
                 key={member.playerId}
                 type="button"
                 onClick={() => setSelected(member)}
                 aria-label={`View ${member.name}'s member card`}
               >
-                <span className="member-card-head">
+                <span className="trading-card-frame" aria-hidden="true" />
+                <span className="trading-card-rank">#{member.rank}</span>
+                <em className={`trading-card-role role-${tier}`}>{member.memberRole}</em>
+                <span className="trading-card-portrait">
                   <i aria-hidden="true">{member.name.charAt(0).toUpperCase()}</i>
-                  <span><strong>{member.name}</strong><small>Guild rank #{member.rank} · Level {member.playerLevel || "—"}</small></span>
-                  <em className={`role-${member.memberRole.toLowerCase()}`}>{member.memberRole}</em>
                 </span>
-                <span className="member-card-stats">
+                <span className="trading-card-name">
+                  <strong>{member.name}</strong>
+                  <small>Level {member.playerLevel || "—"} · {guildTenure(member.joinedAt)} in the band</small>
+                </span>
+                <span className="trading-card-stats">
                   <span><small>Power</small><strong>{formatPower(member.galacticPower)}</strong></span>
                   <span><small>GLs</small><strong>{member.galacticLegends ?? "—"}</strong></span>
                   <span><small>Tickets</small><strong>{member.raidTickets}<b>/600</b></strong></span>
-                  <span><small>In guild</small><strong>{guildTenure(member.joinedAt)}</strong></span>
+                  <span><small>Relics</small><strong>{member.relicUnits ?? "—"}</strong></span>
                 </span>
-                <span className="member-card-foot"><small>{needsAttention ? `Needs check-in · ${relativeTime(member.lastActivityAt)}` : relativeTime(member.lastActivityAt)}</small><b>Open card →</b></span>
+                <span className="trading-card-foot">
+                  <small>{needsAttention ? `Needs check-in · ${relativeTime(member.lastActivityAt)}` : relativeTime(member.lastActivityAt)}</small>
+                  <b>Open card →</b>
+                </span>
               </button>
             );
           })}
