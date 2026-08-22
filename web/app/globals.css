@@ -1601,7 +1601,8 @@ html[data-theme="light"] .site-header .brand small {
   color: rgba(255, 255, 255, 0.7);
 }
 html[data-theme="light"] .site-header .nav-link {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
 }
 html[data-theme="light"] .site-header .nav-link:hover,
 html[data-theme="light"] .site-header .nav-link.active {
@@ -1615,16 +1616,46 @@ html[data-theme="light"] .site-header .nav-link::after {
   background: #38bdf8;
 }
 html[data-theme="light"] .discord-button {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: #0284c7 !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: none !important;
+  border-color: #0284c7 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2) !important;
 }
 html[data-theme="light"] .discord-button:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: #0ea5e9 !important;
+  border-color: #0ea5e9 !important;
+}
+html[data-theme="light"] .comms-status {
+  color: #475569 !important;
+  background: #ffffff !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.3) !important;
+  font-weight: 600 !important;
+}
+html[data-theme="light"] .comms-status.is-live {
+  color: #15803d !important;
+  background: rgba(22, 163, 74, 0.08) !important;
+  border: 1.5px solid #16a34a !important;
+}
+html[data-theme="light"] .theme-picker {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.3) !important;
+}
+html[data-theme="light"] .theme-picker button {
+  color: #64748b !important;
+}
+html[data-theme="light"] .theme-picker button:hover {
+  background: rgba(148, 163, 184, 0.12) !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] .theme-picker [data-theme-choice="light"] {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2) !important;
 }
 html[data-theme="light"] .version-label {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 600 !important;
 }
 
 /* Light Theme Header Navigation Overrides (Scrolled - over white frosted glass) */
@@ -1652,13 +1683,14 @@ html.scrolled[data-theme="light"] .site-header .nav-link::after {
   background: #0284c7;
 }
 html.scrolled[data-theme="light"] .discord-button {
-  background: var(--blue) !important;
+  background: #0284c7 !important;
   color: #ffffff !important;
-  border-color: var(--blue-bright) !important;
-  box-shadow: none !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2) !important;
 }
 html.scrolled[data-theme="light"] .discord-button:hover {
-  background: var(--blue-bright) !important;
+  background: #0ea5e9 !important;
+  border-color: #0ea5e9 !important;
 }
 html.scrolled[data-theme="light"] .version-label,
 html.scrolled[data-theme="light"] .header-controls .version-label {
