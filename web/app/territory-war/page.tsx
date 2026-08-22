@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import WarRoster from "./war-roster";
+import TwPlanner from "./tw-planner";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -97,6 +98,8 @@ export default async function TerritoryWarPage() {
           {war.opponentZones.length ? <ZoneBoard title="Enemy field" zones={war.opponentZones} /> : null}
         </div>
       ) : null}
+
+      <TwPlanner squadsPool={war.squadsPool} joinedCount={war.active ? war.joinedCount : war.members.length} />
 
       <section className="tw-roster-section">
         <header>

@@ -48,6 +48,7 @@ export type TerritoryWarRoom = {
   members: TerritoryWarMember[];
   homeZones: TerritoryWarZone[];
   opponentZones: TerritoryWarZone[];
+  squadsPool: PlayerDefensiveSquad[];
   lastResult: {
     opponentName: string | null;
     score: number;
@@ -55,6 +56,66 @@ export type TerritoryWarRoom = {
     endedAt: Date | null;
   } | null;
 };
+
+export type PlayerDefensiveSquad = {
+  playerId: string;
+  joined: boolean;
+  lordVader: boolean;
+  jabba: boolean;
+  rey: boolean;
+  jmk: boolean;
+  reva: boolean;
+  malgus: boolean;
+  gas: boolean;
+  zorii: boolean;
+  cere: boolean;
+  executor: boolean;
+  profundity: boolean;
+  leviathan: boolean;
+};
+
+type StoredRosterUnit = {
+  definitionId?: unknown;
+  currentRarity?: unknown;
+  currentTier?: unknown;
+  relic?: { currentTier?: unknown } | null;
+};
+
+type StoredPlayerProfile = {
+  rosterUnit?: unknown;
+};
+
+function baseDefinitionId(value: unknown) {
+  return String(value ?? "").split(":")[0];
+}
+
+function rosterFromProfile(payload: unknown): StoredRosterUnit[] | null {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
+  const roster = (payload as StoredPlayerProfile).rosterUnit;
+  if (!Array.isArray(roster)) return null;
+  return roster.filter((unit): unit is StoredRosterUnit => Boolean(unit) && typeof unit === "object" && !Array.isArray(unit));
+}
+
+function checkUnit(
+  rosterMap: Map<string, StoredRosterUnit>,
+  defId: string,
+  minStars = 0,
+  minRelic = -1,
+  minGear = 0
+): boolean {
+  const unit = rosterMap.get(defId);
+  if (!unit) return false;
+  
+  const rarity = Number(unit.currentRarity ?? 0);
+  const gear = Number(unit.currentTier ?? 0);
+  const relic = Math.max(0, Number(unit.relic?.currentTier ?? 0) - 2);
+
+  if (minStars > 0 && rarity < minStars) return false;
+  if (minGear > 0 && gear < minGear) return false;
+  if (minRelic >= 0 && relic < minRelic) return false;
+
+  return true;
+}
 
 function record(value: unknown): JsonRecord | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
@@ -133,6 +194,7 @@ export async function getTerritoryWarRoom(): Promise<TerritoryWarRoom> {
     members: [],
     homeZones: [],
     opponentZones: [],
+    squadsPool: [],
     lastResult: null,
   };
   if (!process.env.DATABASE_URL) return empty;
@@ -211,6 +273,47 @@ export async function getTerritoryWarRoom(): Promise<TerritoryWarRoom> {
     });
     const joinedPower = participants.reduce((total, item) => total + BigInt(Math.trunc(numberValue(item.power))), BigInt(0));
 
+    const activeGuildId = guildId || ownProfile?.id;
+    const playerProfiles = activeGuildId ? await prisma.player.findMany({
+      where: {
+        membershipTerms: {
+          some: {
+            guildId: activeGuildId as string,
+            state: "ACTIVE",
+          },
+        },
+      },
+      select: {
+        id: true,
+        profilePayload: true,
+      },
+    }) : [];
+
+    const squadsPool = playerProfiles.flatMap((profile) => {
+      const isJoined = participantIds.has(profile.id);
+      const roster = rosterFromProfile(profile.profilePayload);
+      if (!roster) return [];
+      
+      const rosterMap = new Map(roster.map((unit) => [baseDefinitionId(unit.definitionId), unit]));
+      
+      return [{
+        playerId: profile.id,
+        joined: isJoined,
+        lordVader: checkUnit(rosterMap, "LORDVADER", 7, 7),
+        jabba: checkUnit(rosterMap, "JABBATHEHUTT", 7, 5),
+        rey: checkUnit(rosterMap, "GLREY", 7, 5),
+        jmk: checkUnit(rosterMap, "JEDIMASTERKENOBI", 7, 7),
+        reva: checkUnit(rosterMap, "THIRDSISTER", 7, 7),
+        malgus: checkUnit(rosterMap, "DARTHMALGUS", 7, 5),
+        gas: checkUnit(rosterMap, "GENERALSKYWALKER", 7, 5),
+        zorii: checkUnit(rosterMap, "ZORIIBLISS", 7, 0, 12),
+        cere: checkUnit(rosterMap, "CEREJUNDA", 7, 0, 12),
+        executor: checkUnit(rosterMap, "CAPITALEXECUTOR", 7),
+        profundity: checkUnit(rosterMap, "CAPITALPROFUNDITY", 7),
+        leviathan: checkUnit(rosterMap, "CAPITALLEVIATHAN", 7),
+      }];
+    });
+
     return {
       ...empty,
       capturedAt,
@@ -230,6 +333,7 @@ export async function getTerritoryWarRoom(): Promise<TerritoryWarRoom> {
       members,
       homeZones: zones(own),
       opponentZones: zones(opponent),
+      squadsPool,
       lastResult,
     };
   } catch {
