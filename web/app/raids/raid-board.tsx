@@ -55,7 +55,7 @@ export default function RaidBoard({ raids }: { raids: RaidSummary[] }) {
       <label className="raid-search">
         <span>Find a participant</span>
         <input
-          type="search"
+          type="text"
           placeholder="Search the roster…"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
