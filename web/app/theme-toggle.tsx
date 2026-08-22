@@ -7,7 +7,7 @@ const THEME_CHANGE_EVENT = "bb-theme-change";
 
 function getThemeSnapshot(): Theme {
   const theme = document.documentElement.dataset.theme;
-  return theme === "light" || theme === "dark" ? theme : "gradient";
+  return theme === "light" || theme === "gradient" ? theme : "dark";
 }
 
 function subscribeToTheme(onChange: () => void) {
@@ -16,7 +16,7 @@ function subscribeToTheme(onChange: () => void) {
 }
 
 export default function ThemeToggle() {
-  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "gradient");
+  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "dark");
 
   function setTheme(theme: Theme) {
     document.documentElement.dataset.theme = theme;

@@ -2009,6 +2009,78 @@ html[data-theme="light"] .squad-editor-card.exceeds-limit {
   background: #fff5f5;
 }
 
+/* Light Theme Territory War Overrides */
+html[data-theme="light"] .tw-matchup article > strong { color: #0f172a; }
+html[data-theme="light"] .tw-matchup article > strong small { color: #475569; }
+html[data-theme="light"] .tw-matchup > article p { color: #475569; }
+html[data-theme="light"] .tw-matchup > span { border-color: rgba(148, 163, 184, 0.25); background: #f1f5f9; color: #475569; }
+html[data-theme="light"] .tw-last-result > strong { color: #0f172a; }
+html[data-theme="light"] .tw-last-result > strong span { color: #64748b; }
+html[data-theme="light"] .tw-last-result p { color: #475569; }
+
+/* Light Theme Territory Battle Overrides */
+html[data-theme="light"] .tb-zone-card,
+html[data-theme="light"] .tb-summary-card {
+  background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+}
+html[data-theme="light"] .tb-zone-card:hover {
+  border-color: var(--blue);
+}
+html[data-theme="light"] .zone-header h3,
+html[data-theme="light"] .tb-summary-card h3,
+html[data-theme="light"] .balance-row strong {
+  color: #0f172a;
+}
+html[data-theme="light"] .balance-bar {
+  background: rgba(148, 163, 184, 0.16);
+}
+html[data-theme="light"] .tb-discord-exporter textarea {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+/* Light Theme Cantina Page Overrides */
+html[data-theme="light"] .soul-food-cafe {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.05);
+}
+html[data-theme="light"] .cantina-stars {
+  opacity: 0.05;
+}
+html[data-theme="light"] .signature-card,
+html[data-theme="light"] .recipe-sheet {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+}
+html[data-theme="light"] .signature-card::before {
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  box-shadow: 0 0 9px var(--blue);
+}
+html[data-theme="light"] .recipe-sheet > header {
+  border-bottom-color: rgba(148, 163, 184, 0.16);
+  background: radial-gradient(circle at 86% 15%, rgba(2, 132, 199, 0.05), transparent 45%);
+}
+html[data-theme="light"] .beer-advisor {
+  background: #fdfaf2;
+  border-color: rgba(217, 119, 6, 0.16);
+  color: #78350f;
+}
+html[data-theme="light"] .recipe-form-submit button {
+  background: var(--blue) !important;
+  border-color: var(--blue-bright) !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] .recipe-form-submit button:hover {
+  background: var(--blue-bright) !important;
+}
+
 @media (max-width: 1000px) {
   .tw-planner-grid {
     grid-template-columns: 1fr;

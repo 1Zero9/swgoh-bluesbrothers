@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 const themeScript = `
   try {
     const savedTheme = localStorage.getItem("bb-theme");
-    document.documentElement.dataset.theme = savedTheme || "gradient";
+    document.documentElement.dataset.theme = savedTheme || "dark";
   } catch {
-    document.documentElement.dataset.theme = "gradient";
+    document.documentElement.dataset.theme = "dark";
   }
 `;
 
