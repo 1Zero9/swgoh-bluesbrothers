@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
+import { getRosterMembers } from "@/lib/members";
+import TbPlanner from "./tb-planner";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Territory Battles · Blues Brothers",
-  description: "Territory Battle readiness and planning for the Blues Brothers guild.",
+  description: "Rise of the Empire (ROTE) star optimizer and deployment allocation strategy planner.",
 };
 
 function power(value: bigint) {
@@ -15,7 +17,14 @@ function power(value: bigint) {
 }
 
 export default async function TerritoryBattlesPage() {
-  const summary = await getDashboardSummary();
+  const [summary, members] = await Promise.all([
+    getDashboardSummary(),
+    getRosterMembers(),
+  ]);
+
+  const totalCharacterGp = members.reduce((sum, m) => sum + m.characterPower, BigInt(0));
+  const totalShipGp = members.reduce((sum, m) => sum + m.shipPower, BigInt(0));
+
   return (
     <main className="intel-shell destination-shell mission-shell">
       <PageHero
@@ -23,7 +32,7 @@ export default async function TerritoryBattlesPage() {
         imageAlt="The Blues Brothers and guild officers studying a holographic Territory Battle map"
         eyebrow="Territory Battles"
         title={<>See the whole field.<br /><em>Deploy with purpose.</em></>}
-        description="The dedicated home for deployments, operations, combat missions and platoon planning as Territory Battle tracking comes online."
+        description="Optimize stars in Rise of the Empire. Auto-allocate GP targets, adjust zone star thresholds, calculate pre-loads, and compile direct copy-paste instructions for Discord."
         priority
       >
         <div className="intel-summary">
@@ -32,13 +41,44 @@ export default async function TerritoryBattlesPage() {
           <div><strong>ROTE</strong><small>planning focus</small></div>
         </div>
       </PageHero>
-      <section className="mission-prep-grid" aria-label="Territory Battle planning areas">
-        <article><span>01</span><h2>Deployments</h2><p>Track the remaining guild power and make the final deployment call without burying it in chat.</p><strong>Planner groundwork</strong></article>
-        <article><span>02</span><h2>Operations</h2><p>Turn platoon requirements into member assignments with missing-unit visibility and clear ownership.</p><strong>Assignments next</strong></article>
-        <article><span>03</span><h2>Combat missions</h2><p>Keep phase instructions, recommended teams and completion reporting beside the live plan.</p><strong>Mission board next</strong></article>
+
+      <section className="tb-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Rise of the Empire</p>
+            <h2>Interactive ROTE Planner &amp; Star Optimizer</h2>
+          </div>
+          <span>Syncing from {members.length} player profiles</span>
+        </div>
+        
+        {members.length > 0 ? (
+          <TbPlanner
+            members={members}
+            initialCharacterGp={totalCharacterGp}
+            initialShipGp={totalShipGp}
+          />
+        ) : (
+          <div className="tw-empty">
+            <strong>No active roster sync found.</strong>
+            <p>Roster profiles must be synced at least once to populate the GP optimizer baseline.</p>
+          </div>
+        )}
       </section>
-      <aside className="tw-data-note"><strong>Current data boundary</strong><p>Unlike Territory War, SWGOH&apos;s public Comlink guild data does not expose live Territory Battle status, phases or platoons (<code>territoryBattleStatus</code>/<code>territoryBattleResult</code>) outside the guild&apos;s own account — only completed-run star counts show up, and only for the single best attempt in the last 60 days. This destination stays a live guild baseline until that changes or a member-side data source is added.</p></aside>
-      <footer className="intel-footer"><span>Territory Battle planning now has room to grow.</span><Link href="/operations">Back to Operations →</Link></footer>
+
+      <aside className="tw-data-note margin-top-20">
+        <strong>Comlink TB Data Boundaries</strong>
+        <p>
+          SWGOH&apos;s public Comlink guild data only returns completed-run star results from past events.
+          To bypass this constraint, this tool utilizes the latest database snapshot of your members&apos;
+          ground and fleet powers to calculate active deployment strategies. Target stars are calculated in
+          millions (M) based on standard Rise of the Empire zone thresholds.
+        </p>
+      </aside>
+
+      <footer className="intel-footer">
+        <span>Territory Battle allocations are calculated using synced guild snapshots.</span>
+        <Link href="/operations">Back to Operations →</Link>
+      </footer>
     </main>
   );
 }
