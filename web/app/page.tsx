@@ -296,21 +296,21 @@ export default async function Home() {
             </div>
             <p className="panel-intro">Give a warm welcome to the latest players to join the Blues Brothers guild roster.</p>
             
-            <div className="activity-list" style={{ maxHeight: "250px", overflowY: "auto", display: "grid", gap: "10px", marginBottom: "20px" }}>
+            <div className="activity-list welcome-list">
               {changes.newMembers.length ? (
                 changes.newMembers.map((member) => {
                   const memberPower = member.galacticPower ? formatPower(member.galacticPower) : null;
                   return (
-                    <div className="activity-row" key={member.playerId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px", borderRadius: "8px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span className="activity-icon activity-welcome" style={{ display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "50%", background: "rgba(83, 214, 154, 0.1)", color: "#53d69a", fontStyle: "normal", fontSize: "14px", fontWeight: "bold" }}>+</span>
+                    <div className="activity-row welcome-member-row" key={member.playerId}>
+                      <div className="welcome-member-profile">
+                        <span className="activity-icon activity-welcome">+</span>
                         <div>
-                          <strong style={{ display: "block", fontSize: "13px", color: "#fff" }}>{member.name}</strong>
-                          <span style={{ fontSize: "11px", color: "var(--muted)" }}>Joined {formatRelativeTime(new Date(member.joinedAt))}</span>
+                          <strong>{member.name}</strong>
+                          <span className="welcome-member-date">Joined {formatRelativeTime(new Date(member.joinedAt))}</span>
                         </div>
                       </div>
                       {memberPower && (
-                        <span style={{ font: "11px var(--font-geist-mono)", padding: "2px 6px", borderRadius: "4px", background: "rgba(255,255,255,0.05)", color: "#fff" }}>
+                        <span className="welcome-member-power">
                           {memberPower.value}{memberPower.unit} GP
                         </span>
                       )}
@@ -318,7 +318,7 @@ export default async function Home() {
                   );
                 })
               ) : (
-                <p className="empty-copy" style={{ color: "var(--muted)", fontSize: "12px", margin: "10px 0" }}>Roster is stable. No new band members checked in this week.</p>
+                <p className="empty-copy">Roster is stable. No new band members checked in this week.</p>
               )}
             </div>
 

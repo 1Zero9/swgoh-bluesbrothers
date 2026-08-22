@@ -1459,6 +1459,107 @@ html[data-theme="light"] footer { color: #796d5f; }
   box-shadow: 0 0 10px rgba(33, 112, 255, 0.2);
 }
 
+/* New Crew Welcomes Panel */
+.welcome-list {
+  max-height: 250px;
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.welcome-member-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+.welcome-member-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.welcome-member-row strong {
+  display: block;
+  font-size: 13px;
+  color: #fff;
+}
+.welcome-member-date {
+  font-size: 11px;
+  color: var(--muted);
+}
+.welcome-member-power {
+  font: 11px var(--font-geist-mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Light Theme High-Contrast Form & Control Overrides */
+html[data-theme="light"] .account-card {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(65, 54, 42, 0.16);
+}
+html[data-theme="light"] .account-card p.account-hint {
+  color: #5d554c;
+}
+html[data-theme="light"] .account-link-button {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue-bright);
+}
+html[data-theme="light"] .account-link-button:hover {
+  background: var(--blue-bright);
+}
+html[data-theme="light"] .officer-form input,
+html[data-theme="light"] .officer-form textarea,
+html[data-theme="light"] .account-card input {
+  background: #ffffff !important;
+  color: #171a20 !important;
+  border: 1px solid rgba(65, 54, 42, 0.24) !important;
+}
+html[data-theme="light"] .officer-form input::placeholder,
+html[data-theme="light"] .officer-form textarea::placeholder,
+html[data-theme="light"] .account-card input::placeholder {
+  color: #8c7e6e !important;
+}
+html[data-theme="light"] .officer-form button {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue-bright);
+}
+html[data-theme="light"] .officer-form button:hover {
+  background: var(--blue-bright);
+}
+html[data-theme="light"] .officer-signout {
+  background: rgba(65, 54, 42, 0.08);
+  border-color: rgba(65, 54, 42, 0.16);
+  color: #25221e;
+}
+html[data-theme="light"] .welcome-member-row {
+  background: rgba(255, 255, 255, 0.45) !important;
+  border-color: rgba(65, 54, 42, 0.14) !important;
+}
+html[data-theme="light"] .welcome-member-row strong {
+  color: #171a20;
+}
+html[data-theme="light"] .welcome-member-power {
+  background: rgba(65, 54, 42, 0.06);
+  color: #25221e;
+  border-color: rgba(65, 54, 42, 0.1);
+}
+html[data-theme="light"] .activity-icon.activity-welcome {
+  background: rgba(31, 155, 101, 0.12);
+  color: #1a6d45;
+}
+html[data-theme="light"] .officer-desk-heading {
+  color: #6f665b;
+}
+
 @media (max-width: 1100px) {
   .tb-planner-grid {
     grid-template-columns: 1fr;
