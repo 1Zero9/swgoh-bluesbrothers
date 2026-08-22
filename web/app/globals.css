@@ -1756,12 +1756,128 @@ html.scrolled[data-theme="light"] .header-controls .version-label {
 }
 
 /* TW Strategy Planner Styles */
-.tw-planner-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: clamp(16px, 3vw, 36px);
+.tw-planner-outer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   margin-top: 30px;
   margin-bottom: 50px;
+}
+.tw-visual-map-section {
+  padding: 24px;
+}
+.tw-map-board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+.tw-map-lane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+.lane-label {
+  font-size: 11px;
+  font-family: var(--font-geist-mono);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.lane-nodes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.lane-nodes.centered-nodes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 50%;
+}
+.map-node-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.map-node-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.map-node-card.active {
+  background: rgba(33, 112, 255, 0.08);
+  border-color: var(--blue);
+  box-shadow: 0 0 16px rgba(33, 112, 255, 0.2);
+}
+.node-badge {
+  display: inline-flex;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font: 9px var(--font-geist-mono);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  width: fit-content;
+}
+.node-badge.fleet-badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+.node-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.node-body strong {
+  font-size: 13.5px;
+  color: var(--text);
+}
+.node-allocation-summary {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-geist-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.node-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.node-footer span {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-geist-mono);
+}
+.node-progress {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.node-progress div {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.tw-planner-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(16px, 3vw, 36px);
 }
 .planner-controls-panel,
 .planner-detail-panel {
@@ -1799,110 +1915,42 @@ html.scrolled[data-theme="light"] .header-controls .version-label {
   border-radius: 8px;
   cursor: pointer;
 }
-.zones-list-wrapper h3 {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.zones-vertical-list {
+.allocation-editor-grid-vertical {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
-.zone-item-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(255, 255, 255, 0.01);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.zone-item-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-.zone-item-row.active {
-  background: rgba(33, 112, 255, 0.06);
-  border-color: var(--blue);
-  box-shadow: 0 0 12px rgba(33, 112, 255, 0.15);
-}
-.zone-row-info {
+.squad-editor-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-}
-.zone-row-info strong {
-  font-size: 14px;
-  color: var(--text);
-}
-.zone-row-info span {
-  font-size: 12px;
-  color: var(--muted);
-  font-family: var(--font-geist-mono);
-}
-.zone-gauge {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.zone-gauge-bar {
-  height: 100%;
-  background: var(--blue);
-  border-radius: 3px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.allocation-editor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
-}
-.squad-editor-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px;
+  padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
   background: rgba(255, 255, 255, 0.02);
-  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
-.squad-editor-card:hover {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-}
-.squad-info {
+.squad-editor-row-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
-.squad-info strong {
-  font-size: 13.5px;
+.squad-editor-row-info strong {
+  font-size: 13px;
   color: var(--text);
 }
-.squad-info span {
+.squad-editor-row-info span {
   font-size: 11px;
   color: var(--muted);
 }
 .counter-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 .counter-controls button {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1910,7 +1958,7 @@ html.scrolled[data-theme="light"] .header-controls .version-label {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1924,21 +1972,12 @@ html.scrolled[data-theme="light"] .header-controls .version-label {
   cursor: not-allowed;
 }
 .counter-val {
-  font-size: 15px;
+  font-size: 14px;
   font-family: var(--font-geist-mono);
   font-weight: 600;
   color: var(--text);
-  min-width: 24px;
+  min-width: 20px;
   text-align: center;
-}
-.squad-editor-card.exceeds-limit {
-  border-color: var(--red);
-  background: rgba(239, 68, 68, 0.03);
-}
-.squad-limit-warning {
-  font-size: 11px;
-  color: var(--red);
-  font-weight: 500;
 }
 
 .directives-exporter-section {
@@ -1972,28 +2011,32 @@ html.scrolled[data-theme="light"] .header-controls .version-label {
   min-width: 160px;
 }
 
-/* Light Theme overrides for TW Strategy Planner */
-html[data-theme="light"] .zone-item-row {
+/* Light Theme overrides for TW Strategy Planner Map */
+html[data-theme="light"] .tw-map-lane {
   background: #f8fafc;
   border-color: rgba(148, 163, 184, 0.16);
 }
-html[data-theme="light"] .zone-item-row:hover {
+html[data-theme="light"] .map-node-card {
+  background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+html[data-theme="light"] .map-node-card:hover {
   background: #f1f5f9;
 }
-html[data-theme="light"] .zone-item-row.active {
+html[data-theme="light"] .map-node-card.active {
   background: rgba(2, 132, 199, 0.06);
   border-color: var(--blue);
-  box-shadow: 0 0 12px rgba(2, 132, 199, 0.12);
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.15);
 }
-html[data-theme="light"] .zone-gauge {
+html[data-theme="light"] .node-badge {
+  background: rgba(148, 163, 184, 0.12);
+}
+html[data-theme="light"] .node-progress {
   background: rgba(148, 163, 184, 0.16);
 }
-html[data-theme="light"] .squad-editor-card {
+html[data-theme="light"] .squad-editor-row {
   background: #f8fafc;
   border-color: rgba(148, 163, 184, 0.16);
-}
-html[data-theme="light"] .squad-editor-card:hover {
-  background: #f1f5f9;
 }
 html[data-theme="light"] .counter-controls button {
   background: #ffffff;
@@ -2005,8 +2048,23 @@ html[data-theme="light"] .directives-output {
   background: #f8fafc;
   color: #0f172a;
 }
-html[data-theme="light"] .squad-editor-card.exceeds-limit {
-  background: #fff5f5;
+
+@media (max-width: 1000px) {
+  .tw-planner-grid {
+    grid-template-columns: 1fr;
+  }
+  .lane-nodes.centered-nodes {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 800px) {
+  .lane-nodes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lane-nodes.centered-nodes {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Light Theme Territory War Overrides */
