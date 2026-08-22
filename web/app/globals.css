@@ -2139,6 +2139,168 @@ html[data-theme="light"] .recipe-form-submit button:hover {
   background: var(--blue-bright) !important;
 }
 
+/* TW Tactical Counters Guide Styles */
+.tw-counters-guide-section {
+  padding: 24px;
+  margin-top: 30px;
+}
+.counters-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+.counter-tab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.01);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.counter-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.counter-tab-btn.active {
+  background: rgba(2, 132, 199, 0.08);
+  border-color: var(--blue);
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.15);
+}
+.vulnerability-badge {
+  font: 8px var(--font-geist-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.vulnerability-badge.high {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+.vulnerability-badge.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.vulnerability-badge.low {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+.counter-strategy-details-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--line);
+  margin-top: 16px;
+  animation: fade-in 0.2s ease-out;
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.details-header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+.details-header h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--text);
+}
+.details-header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.kill-order-route {
+  color: #f43f5e;
+  font-family: var(--font-geist-mono);
+}
+.counter-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.counter-option-panel {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-geist-mono);
+}
+.option-header strong {
+  color: var(--muted);
+}
+.success-tag {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.success-tag.warning-success {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.option-body h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+.option-body p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Light Theme overrides for Tactical Counters */
+html[data-theme="light"] .counter-tab-btn {
+  background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+html[data-theme="light"] .counter-tab-btn:hover {
+  background: #f1f5f9;
+}
+html[data-theme="light"] .counter-tab-btn.active {
+  background: rgba(2, 132, 199, 0.06);
+  border-color: var(--blue);
+}
+html[data-theme="light"] .counter-strategy-details-card {
+  background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+html[data-theme="light"] .counter-option-panel {
+  background: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+@media (max-width: 900px) {
+  .counter-options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1000px) {
   .tw-planner-grid {
     grid-template-columns: 1fr;

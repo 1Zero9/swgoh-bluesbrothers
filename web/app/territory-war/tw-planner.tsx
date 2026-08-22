@@ -40,6 +40,121 @@ const SQUAD_METRICS: Record<SquadKey, { label: string; recommendation: string; d
   leviathan: { label: "Leviathan Fleet", recommendation: "Elite fleet wall. Place in Fleet Front (Zone 9). Target 7★.", defaultRole: "Defense" },
 };
 
+type CounterTeam = {
+  name: string;
+  successRate: string;
+  efficiency: string;
+  notes: string;
+};
+
+type SquadStrategy = {
+  defendingSquad: string;
+  vulnerability: "High" | "Medium" | "Low";
+  primaryCounter: CounterTeam;
+  secondaryCounter: CounterTeam;
+  cheaperCounter: CounterTeam;
+  killOrder: string;
+};
+
+const TW_COUNTER_STRATEGIES: Record<SquadKey, SquadStrategy> = {
+  reva: {
+    defendingSquad: "Reva Inquisitorius",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Lord Vader GL", successRate: "95%", efficiency: "High", notes: "Use Lord Vader with Maul. Focus Reva first. Keep dots stacked." },
+    secondaryCounter: { name: "Jedi Master Kenobi GL", successRate: "88%", efficiency: "Medium", notes: "CAT stun on Reva. Focus Grand Inquisitor next." },
+    cheaperCounter: { name: "Cere Junda + Malicos", successRate: "75%", efficiency: "High (Non-GL)", notes: "Malicos massive burst on Reva. Crucial to have high tenacity." },
+    killOrder: "Reva ➔ Grand Inquisitor ➔ Fifth Brother ➔ Seventh Sister",
+  },
+  lordVader: {
+    defendingSquad: "Lord Vader GL",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Bounty Hunters (Fennec Shan lead)", successRate: "90%", efficiency: "Elite (Non-GL)", notes: "Fennec Shan lead with Greef, Bossk, Zam, and Mando. Get quick contract to disintegrate Lord Vader." },
+    secondaryCounter: { name: "JMK + CAT", successRate: "95%", efficiency: "Medium", notes: "CAT instant-kill on Maul or Royal Guard. Stun Lord Vader." },
+    cheaperCounter: { name: "Imperial Troopers (Veers lead)", successRate: "65%", efficiency: "High (Budget)", notes: "High speed required to run turn meter train. Fragile." },
+    killOrder: "Maul ➔ Royal Guard ➔ Lord Vader",
+  },
+  jabba: {
+    defendingSquad: "Jabba the Hutt GL",
+    vulnerability: "Low",
+    primaryCounter: { name: "Supreme Leader Kylo Ren (SLKR)", successRate: "92%", efficiency: "High", notes: "Use standard SLKR team with Kru, Hux, Lobster, and FO Officer. Poke Jabba to drain mastery." },
+    secondaryCounter: { name: "JMK + CAT", successRate: "88%", efficiency: "Medium", notes: "CAT leap on Krrsantan. Avoid hitting Jabba until ult is ready." },
+    cheaperCounter: { name: "Aphra + Droids", successRate: "70%", efficiency: "High (Non-GL)", notes: "Use BT-1 and 0-0-0 to stack debuffs and control turn meter." },
+    killOrder: "Boushh (Leia) ➔ Krrsantan ➔ Jabba",
+  },
+  rey: {
+    defendingSquad: "Rey GL",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Starkiller (Palpatine/Mara lead)", successRate: "94%", efficiency: "Elite (Non-GL)", notes: "Palpatine, Mara Jade, Starkiller, Visas, and light-side tank. Starkiller wipes out Rey with ult." },
+    secondaryCounter: { name: "Jedi Knight Luke (JKLS lead)", successRate: "90%", efficiency: "High", notes: "JML lead with JKLS and Revan. Keep Rey ability blocked." },
+    cheaperCounter: { name: "GAS 501st", successRate: "60%", efficiency: "Medium", notes: "Keep Rex alive to trigger Aerial Advantage. Trigger Rey's damage immunity carefully." },
+    killOrder: "Ben Solo ➔ Rey",
+  },
+  jmk: {
+    defendingSquad: "Jedi Master Kenobi GL",
+    vulnerability: "Low",
+    primaryCounter: { name: "Jabba the Hutt GL", successRate: "95%", efficiency: "High", notes: "Use standard Jabba team. Thermals bypass Kenobi's protection pools." },
+    secondaryCounter: { name: "Rey GL + Ben Solo", successRate: "85%", efficiency: "Medium", notes: "Rey's sudden whirlwind to bypass General Kenobi's taunt." },
+    cheaperCounter: { name: "Grand Admiral Thrawn + Magma", successRate: "50%", efficiency: "Low (Very Budget)", notes: "Fracture CAT immediately to prevent instant kill." },
+    killOrder: "Commander Ahsoka Tano (CAT) ➔ General Kenobi ➔ JMK",
+  },
+  malgus: {
+    defendingSquad: "Darth Malgus",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Jedi Knight Luke (JKLS lead)", successRate: "92%", efficiency: "High", notes: "JKLS lead with JKR and Bastila. Speed reduction slow-down strategy is extremely effective." },
+    secondaryCounter: { name: "GAS 501st", successRate: "80%", efficiency: "Medium", notes: "Keep Malgus ability blocked. Avoid AoE triggers when Malgus has doubt." },
+    cheaperCounter: { name: "Imperial Troopers (Veers lead)", successRate: "70%", efficiency: "High (Budget)", notes: "Requires very fast speed stats to run the turn train before Malgus moves." },
+    killOrder: "Darth Revan ➔ Bastila Shan (Fallen) ➔ Malgus",
+  },
+  gas: {
+    defendingSquad: "GAS 501st",
+    vulnerability: "High",
+    primaryCounter: { name: "Commander Luke Skywalker (CLS)", successRate: "95%", efficiency: "High (Non-GL)", notes: "CLS with Han, Chewie, Threepio & Chewie, C-3PO. Focus Rex immediately at start." },
+    secondaryCounter: { name: "Darth Revan + Malak", successRate: "90%", efficiency: "High", notes: "Fear mechanics bypass clone protection blocks." },
+    cheaperCounter: { name: "Sith Triumvirate (Traya lead)", successRate: "85%", efficiency: "Elite (Budget)", notes: "Traya lead with Sion and Nihilus. Isolating GAS completely disables his counterattacks." },
+    killOrder: "Rex ➔ Fives ➔ Echo ➔ Arc Trooper ➔ General Skywalker",
+  },
+  zorii: {
+    defendingSquad: "Zorii Resistance",
+    vulnerability: "High",
+    primaryCounter: { name: "Imperial Troopers (Veers lead)", successRate: "96%", efficiency: "High (Non-GL)", notes: "Standard Veers team. Target Rose Tico or Finn first. Clean turn train sweep." },
+    secondaryCounter: { name: "Traya + Savage Opress", successRate: "90%", efficiency: "High", notes: "Savage Opress solo or Traya lead. High durability to tank the resistance assists." },
+    cheaperCounter: { name: "Bounty Hunters (Aurra lead)", successRate: "75%", efficiency: "Medium", notes: "Aurra Sing lead to get fast disintegrate on Zorii." },
+    killOrder: "Zorii Bliss ➔ Finn ➔ Rose Tico",
+  },
+  cere: {
+    defendingSquad: "Cere & Malicos",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Sith Empire (Darth Revan lead)", successRate: "90%", efficiency: "High (Non-GL)", notes: "DR lead with Malak and Badstila. Shock prevents Malicos from gaining TM." },
+    secondaryCounter: { name: "CLS Rebels", successRate: "82%", efficiency: "Medium", notes: "Burst down Malicos before he can trigger heavy lightsaber attacks." },
+    cheaperCounter: { name: "Jedi Revan (JKR)", successRate: "70%", efficiency: "Medium", notes: "Mark Malicos immediately. Keep him controlled." },
+    killOrder: "Taron Malicos ➔ Cere Junda ➔ Cal Kestis",
+  },
+  executor: {
+    defendingSquad: "Executor Fleet",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Profundity Fleet", successRate: "94%", efficiency: "High", notes: "Bring Outrider, Falcon, Y-Wing. Target Hound's Tooth or Xanadu Blood." },
+    secondaryCounter: { name: "Malevolence Fleet", successRate: "80%", efficiency: "High (Budget)", notes: "Use Hyena Bomber and Vulture Droid to stack buzz droids and control turn meter." },
+    cheaperCounter: { name: "Chimera + Tie Defender", successRate: "85%", efficiency: "Elite (Non-GL)", notes: "Use Iden Versio's TIE Defender to stun and dodge Executor's target locks." },
+    killOrder: "Xanadu Blood ➔ Razor Crest ➔ Executor",
+  },
+  profundity: {
+    defendingSquad: "Profundity Fleet",
+    vulnerability: "Medium",
+    primaryCounter: { name: "Leviathan Fleet", successRate: "98%", efficiency: "High", notes: "Use standard Leviathan loadout. Seize hangar control quickly." },
+    secondaryCounter: { name: "Executor Fleet", successRate: "85%", efficiency: "Medium", notes: "Hound's Tooth, Razor Crest, Xanadu Blood. Target Outrider first." },
+    cheaperCounter: { name: "Malevolence Fleet", successRate: "70%", efficiency: "High (Budget)", notes: "Ion cannon shot on Profundity. Spam droid assists." },
+    killOrder: "Outrider ➔ Rebel Y-Wing ➔ Profundity",
+  },
+  leviathan: {
+    defendingSquad: "Leviathan Fleet",
+    vulnerability: "Low",
+    primaryCounter: { name: "Leviathan Fleet (Mirror)", successRate: "90%", efficiency: "Medium", notes: "Match speed stats. Target Fury-Class Interceptor first." },
+    secondaryCounter: { name: "Profundity Fleet", successRate: "75%", efficiency: "High", notes: "High RNG factor. Requires Outrider to avoid getting early target locked." },
+    cheaperCounter: { name: "Chimera + Interceptor", successRate: "60%", efficiency: "High (Skill)", notes: "Requires perfect reinforcement timing with TIE Defender and Emperor's Shuttle." },
+    killOrder: "Fury-Class Interceptor ➔ Dagger Starfighter ➔ Leviathan",
+  },
+};
+
 type ZoneAllocation = {
   id: number;
   name: string;
@@ -99,6 +214,7 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
   const [selectedZoneId, setSelectedZoneId] = useState<number>(1);
   const [globalCapacity, setGlobalCapacity] = useState<number>(() => Math.ceil(joinedCount / 2) || 25);
   const [copied, setCopied] = useState<boolean>(false);
+  const [selectedCounterKey, setSelectedCounterKey] = useState<SquadKey | null>(null);
 
   const selectedZone = useMemo(() => zones.find((z) => z.id === selectedZoneId)!, [zones, selectedZoneId]);
 
@@ -139,7 +255,7 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
     const tryPlace = (zoneIndex: number, squadKey: SquadKey, player: PlayerDefensiveSquad): boolean => {
       const placed = playerPlacements.get(player.playerId)!;
       if (placed.has(squadKey)) return false;
-      if (placed.size >= 3) return false; // Save remaining squads for offense sweeps
+      if (placed.size >= 3) return false;
 
       nextZones[zoneIndex].allocations[squadKey]++;
       placed.add(squadKey);
@@ -489,6 +605,79 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
             </tbody>
           </table>
         </div>
+      </section>
+
+      {/* Meta Counters lookup board */}
+      <section className="tw-counters-guide-section panel">
+        <header className="panel-heading">
+          <h2>Tactical Battle Counters & Win-Rate Guides</h2>
+          <p className="section-intro">Emulates community counter engines. Click on any squad to inspect its best counters, success ratings, and optimal kill orders.</p>
+        </header>
+
+        <div className="counters-selector-grid">
+          {Object.entries(SQUAD_LABELS).map(([key, label]) => {
+            const squadKey = key as SquadKey;
+            const strategy = TW_COUNTER_STRATEGIES[squadKey];
+            const isSelected = selectedCounterKey === squadKey;
+
+            return (
+              <button
+                key={squadKey}
+                className={`counter-tab-btn ${isSelected ? "active" : ""}`}
+                onClick={() => setSelectedCounterKey(isSelected ? null : squadKey)}
+              >
+                <span>{label}</span>
+                <small className={`vulnerability-badge ${strategy.vulnerability.toLowerCase()}`}>
+                  Vulnerability: {strategy.vulnerability}
+                </small>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedCounterKey && (
+          <div className="counter-strategy-details-card">
+            <header className="details-header">
+              <h3>Defeating {SQUAD_LABELS[selectedCounterKey]}</h3>
+              <p>Kill Order Priority: <strong className="kill-order-route">{TW_COUNTER_STRATEGIES[selectedCounterKey].killOrder}</strong></p>
+            </header>
+
+            <div className="counter-options-grid">
+              <div className="counter-option-panel primary-option">
+                <div className="option-header">
+                  <strong>Primary Counter</strong>
+                  <span className="success-tag">Success: {TW_COUNTER_STRATEGIES[selectedCounterKey].primaryCounter.successRate}</span>
+                </div>
+                <div className="option-body">
+                  <h4>{TW_COUNTER_STRATEGIES[selectedCounterKey].primaryCounter.name}</h4>
+                  <p>{TW_COUNTER_STRATEGIES[selectedCounterKey].primaryCounter.notes}</p>
+                </div>
+              </div>
+
+              <div className="counter-option-panel secondary-option">
+                <div className="option-header">
+                  <strong>Secondary Counter</strong>
+                  <span className="success-tag">Success: {TW_COUNTER_STRATEGIES[selectedCounterKey].secondaryCounter.successRate}</span>
+                </div>
+                <div className="option-body">
+                  <h4>{TW_COUNTER_STRATEGIES[selectedCounterKey].secondaryCounter.name}</h4>
+                  <p>{TW_COUNTER_STRATEGIES[selectedCounterKey].secondaryCounter.notes}</p>
+                </div>
+              </div>
+
+              <div className="counter-option-panel budget-option">
+                <div className="option-header">
+                  <strong>Budget / Non-GL Counter</strong>
+                  <span className="success-tag warning-success">Success: {TW_COUNTER_STRATEGIES[selectedCounterKey].cheaperCounter.successRate}</span>
+                </div>
+                <div className="option-body">
+                  <h4>{TW_COUNTER_STRATEGIES[selectedCounterKey].cheaperCounter.name}</h4>
+                  <p>{TW_COUNTER_STRATEGIES[selectedCounterKey].cheaperCounter.notes}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
