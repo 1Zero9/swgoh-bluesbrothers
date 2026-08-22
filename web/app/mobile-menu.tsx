@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggle from "./theme-toggle";
 
@@ -15,6 +16,16 @@ type MobileMenuProps = {
 
 export default function MobileMenu({ items, version, discordUrl, syncLabel, live = false }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  function isActive(href: string) {
+    if (href === "/#guild-wire") {
+      return pathname === "/";
+    }
+    const cleanHref = href.split("#")[0].split("?")[0];
+    if (!cleanHref) return false;
+    return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -59,13 +70,21 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
             </div>
 
             <nav className="drawer-nav" aria-label="Drawer navigation">
-              {items.map((item) => (
-                <Link href={item.href} onClick={() => setOpen(false)} key={item.label}>
-                  <span>{item.mark}</span>
-                  <strong>{item.label}</strong>
-                  <b aria-hidden="true">→</b>
-                </Link>
-              ))}
+              {items.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    key={item.label}
+                    className={active ? "active" : ""}
+                  >
+                    <span>{item.mark}</span>
+                    <strong>{item.label}</strong>
+                    <b aria-hidden="true">→</b>
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="drawer-footer">

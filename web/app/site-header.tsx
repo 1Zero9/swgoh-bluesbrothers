@@ -5,6 +5,8 @@ import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import MobileMenu from "./mobile-menu";
 import ThemeToggle from "./theme-toggle";
+import NavLinks from "./nav-links";
+import ScrollTracker from "./scroll-tracker";
 
 export const APP_VERSION = `v${packageInfo.version}`;
 
@@ -16,10 +18,6 @@ export const SITE_NAVIGATION = [
   { label: "Cantina", mark: "SF", href: "/cantina" },
   { label: "Officer Roster", mark: "OR", href: "/officer/roster" },
 ];
-
-function NavMark({ label }: { label: string }) {
-  return <span className="nav-mark" aria-hidden="true">{label}</span>;
-}
 
 function formatSyncedAgo(date: Date) {
   const diffMinutes = (Date.now() - date.getTime()) / 60_000;
@@ -46,18 +44,12 @@ export default async function SiteHeader({
 
   return (
     <header className="site-header">
+      <ScrollTracker />
       <Link className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
         <Image className="brand-logo" src="/bb-logo.webp" alt="" width={136} height={136} priority />
         <span><strong>Blues Brothers</strong><small>Guild command</small></span>
       </Link>
-      <nav className="main-nav" aria-label="Primary navigation">
-        {SITE_NAVIGATION.map((item) => (
-          <Link className="nav-link" href={item.href} key={item.label}>
-            <NavMark label={item.mark} />
-            <span>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
+      <NavLinks items={SITE_NAVIGATION} />
       <div className="header-controls">
         <span className={`comms-status${commsLive ? " is-live" : ""}`} title={commsLabel}>
           <i aria-hidden="true" />
