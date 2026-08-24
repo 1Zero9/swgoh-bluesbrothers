@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.24.0 — 2026-08-24
+
+- **Drag-and-drop defence assignment**: in the Territory War command tool's Defence mode, officers can now drag a joined member from a new "Available defenders" chip list straight onto a zone (auto-picks the player's first eligible squad), and drag an existing assignment row onto a different zone tab to move it. Every assignment row also gets an inline squad-correction dropdown, since the drop no longer requires manually selecting a squad. The original manual "Player"/"Squad" form stays as a fallback for touch/mobile devices, since native drag-and-drop is desktop/mouse-only.
+
 ## 0.23.0 — 2026-08-24
 
 - **Per-officer attribution**: the Territory War command tool now resolves a best-effort display name off the existing member-link Discord cookie and stamps it as `createdBy`/`updatedBy` on plans, zones, assignments, and attacks, shown as "by \<name\>" throughout the tool. Writes still work even when no name can be resolved (falls back to a generic "Officer" label) — this adds attribution on top of the existing shared officer password, not per-officer accounts.

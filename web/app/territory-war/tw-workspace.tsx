@@ -228,7 +228,7 @@ export default function TwWorkspace({
           onCreateAssignment={(zoneId, playerId, squadKey) =>
             callApi("/api/officer/tw/assignments", "POST", { planId, zoneId, playerId, squadKey }).catch(() => {})
           }
-          onUpdateAssignment={(id, updates) => callApi("/api/officer/tw/assignments", "PATCH", { id, ...updates }).catch(() => {})}
+          onUpdateAssignment={(id, updates) => callApi("/api/officer/tw/assignments", "PATCH", { id, planId, ...updates }).catch(() => {})}
           onDeleteAssignment={(id) => callApi("/api/officer/tw/assignments", "DELETE", { id }).catch(() => {})}
           onApplyRecommendations={() =>
             callApi("/api/officer/tw/recommendations", "POST", { planId, recommendations: recommendationsPreview }).catch(() => {})
