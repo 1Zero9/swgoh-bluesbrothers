@@ -16,7 +16,14 @@ export async function PATCH(request: Request) {
     return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
   const body = (await request.json().catch(() => null)) as
-    | { planId?: string; zoneId?: number; purpose?: string | null; targetCapacity?: number; note?: string | null }
+    | {
+        planId?: string;
+        zoneId?: number;
+        purpose?: string | null;
+        targetCapacity?: number;
+        note?: string | null;
+        commandId?: string | null;
+      }
     | null;
   if (!body?.planId || typeof body.zoneId !== "number") {
     return Response.json({ ok: false, error: "planId and zoneId are required" }, { status: 400 });
@@ -30,6 +37,7 @@ export async function PATCH(request: Request) {
         purpose: body.purpose,
         targetCapacity: body.targetCapacity,
         note: body.note,
+        commandId: body.commandId,
       },
       officer
     );

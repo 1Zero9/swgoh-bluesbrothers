@@ -14,6 +14,7 @@ import {
 import {
   buildAssignmentRecords,
   buildEffectiveZones,
+  type CommandSummary,
   type PersistedAssignment,
   type PersistedAttackAssignment,
   type PersistedZonePlan,
@@ -65,17 +66,21 @@ export default function TwWorkspace({
   pool,
   war,
   templates,
+  commands: initialCommands,
 }: {
   isOfficer: boolean;
   plan: WorkspacePlan | null;
   pool: EligiblePlayer[];
   war: WarMatchupSummary;
   templates: StrategyTemplateSummary[];
+  commands: CommandSummary[];
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("defence");
   const [plan, setPlan] = useState(initialPlan);
   const [syncedPlan, setSyncedPlan] = useState(initialPlan);
+  const [commands, setCommands] = useState(initialCommands);
+  const [syncedCommands, setSyncedCommands] = useState(initialCommands);
   const [busy, setBusy] = useState(false);
   const [banner, setBanner] = useState<{ tone: "error" | "info"; text: string } | null>(null);
 
@@ -83,8 +88,12 @@ export default function TwWorkspace({
     setSyncedPlan(initialPlan);
     setPlan(initialPlan);
   }
+  if (initialCommands !== syncedCommands) {
+    setSyncedCommands(initialCommands);
+    setCommands(initialCommands);
+  }
 
-  const zones = useMemo(() => buildEffectiveZones(plan?.zonePlans ?? []), [plan]);
+  const zones = useMemo(() => buildEffectiveZones(plan?.zonePlans ?? [], pool), [plan, pool]);
   const assignments = useMemo(
     () => buildAssignmentRecords(plan?.zonePlans ?? [], plan?.assignments ?? []),
     [plan]
@@ -224,6 +233,7 @@ export default function TwWorkspace({
           warnings={warnings}
           offenceReserve={offenceReserve}
           recommendationsPreview={recommendationsPreview}
+          commands={commands}
           busy={busy}
           onCreateAssignment={(zoneId, playerId, squadKey) =>
             callApi("/api/officer/tw/assignments", "POST", { planId, zoneId, playerId, squadKey }).catch(() => {})
@@ -233,6 +243,11 @@ export default function TwWorkspace({
           onApplyRecommendations={() =>
             callApi("/api/officer/tw/recommendations", "POST", { planId, recommendations: recommendationsPreview }).catch(() => {})
           }
+          onAssignCommand={(zoneId, commandId) =>
+            callApi("/api/officer/tw/zones", "PATCH", { planId, zoneId, commandId }).catch(() => {})
+          }
+          onCreateCommand={(input) => callApi("/api/officer/tw/commands", "POST", input).catch(() => {})}
+          onDeleteCommand={(id) => callApi("/api/officer/tw/commands", "DELETE", { id }).catch(() => {})}
         />
       ) : null}
 

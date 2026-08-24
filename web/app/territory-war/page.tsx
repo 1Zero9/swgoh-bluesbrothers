@@ -5,7 +5,15 @@ import PageHero from "@/app/page-hero";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getOfficerIdentity } from "@/lib/officer-identity";
-import { getCurrentTwEventId, getDefaultGuildId, getOrCreateActivePlan, getPlanDetail, listTemplates } from "@/lib/tw-plans";
+import {
+  ensureBuiltInCommands,
+  getCurrentTwEventId,
+  getDefaultGuildId,
+  getOrCreateActivePlan,
+  getPlanDetail,
+  listCommands,
+  listTemplates,
+} from "@/lib/tw-plans";
 import { buildPool } from "@/lib/tw-view";
 import WarRoster from "./war-roster";
 import TwWorkspace, { type WorkspacePlan } from "./tw-workspace";
@@ -63,19 +71,32 @@ export default async function TerritoryWarPage() {
 
   let plan: WorkspacePlan | null = null;
   let templates: { id: string; name: string; description: string | null; rules: unknown; isBuiltIn: boolean }[] = [];
+  let commands: import("@/lib/tw-view").CommandSummary[] = [];
   if (isOfficer) {
     const guildId = await getDefaultGuildId();
     if (guildId) {
       const eventId = await getCurrentTwEventId();
       const officer = await getOfficerIdentity();
+      await ensureBuiltInCommands(guildId);
       const record = await getOrCreateActivePlan(guildId, eventId, "Territory War plan", officer);
-      const [detail, templateRecords] = await Promise.all([getPlanDetail(record.id), listTemplates(guildId)]);
+      const [detail, templateRecords, commandRecords] = await Promise.all([
+        getPlanDetail(record.id),
+        listTemplates(guildId),
+        listCommands(guildId),
+      ]);
       templates = templateRecords.map((t) => ({
         id: t.id,
         name: t.name,
         description: t.description,
         rules: t.rules,
         isBuiltIn: t.isBuiltIn,
+      }));
+      commands = commandRecords.map((c) => ({
+        id: c.id,
+        name: c.name,
+        squadKey: c.squadKey,
+        kitNotes: c.kitNotes,
+        isBuiltIn: c.isBuiltIn,
       }));
       if (detail) {
         plan = {
@@ -91,6 +112,16 @@ export default async function TerritoryWarPage() {
             targetCapacity: z.targetCapacity,
             note: z.note,
             updatedBy: z.updatedBy,
+            commandId: z.commandId,
+            command: z.command
+              ? {
+                  id: z.command.id,
+                  name: z.command.name,
+                  squadKey: z.command.squadKey,
+                  kitNotes: z.command.kitNotes,
+                  isBuiltIn: z.command.isBuiltIn,
+                }
+              : null,
           })),
           assignments: detail.assignments.map((a) => ({
             id: a.id,
@@ -174,7 +205,7 @@ export default async function TerritoryWarPage() {
         </div>
       ) : null}
 
-      <TwWorkspace isOfficer={isOfficer} plan={plan} pool={pool} war={warSummary} templates={templates} />
+      <TwWorkspace isOfficer={isOfficer} plan={plan} pool={pool} war={warSummary} templates={templates} commands={commands} />
 
       <section className="tw-roster-section">
         <header>

@@ -2709,6 +2709,51 @@ html[data-theme="light"] .counter-option-panel {
 .twc-zone-detail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .twc-zone-detail > header h3 { margin: 0; color: #eee6dc; font-size: 16px; }
 .twc-zone-detail > header p { margin: 4px 0 0; color: #8795a5; font-size: 12px; }
+
+.twc-zone-detail-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.twc-zone-detail-header h3 { margin: 0; color: #eee6dc; font-size: 16px; }
+.twc-zone-detail-header p { margin: 4px 0 0; color: #8795a5; font-size: 12px; }
+
+.twc-confidence-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 8px 14px; border-radius: 12px; border: 1px solid rgba(151,174,199,.16); background: rgba(255,255,255,.02); text-align: right; }
+.twc-confidence-badge strong { font-size: 18px; line-height: 1; }
+.twc-confidence-badge span { font: 9px var(--font-geist-mono); letter-spacing: .06em; text-transform: uppercase; color: #8795a5; }
+.twc-confidence-badge.is-strong { border-color: rgba(83,214,154,.32); background: rgba(42,126,88,.12); }
+.twc-confidence-badge.is-strong strong { color: #82dfb0; }
+.twc-confidence-badge.is-likely { border-color: rgba(96,140,248,.3); background: rgba(56,111,248,.1); }
+.twc-confidence-badge.is-likely strong { color: #7fb3ff; }
+.twc-confidence-badge.is-contested { border-color: rgba(231,160,79,.32); background: rgba(228,155,77,.1); }
+.twc-confidence-badge.is-contested strong { color: #f1c589; }
+.twc-confidence-badge.is-vulnerable { border-color: rgba(228,127,109,.34); background: rgba(163,58,42,.12); }
+.twc-confidence-badge.is-vulnerable strong { color: #f0a08e; }
+
+.twc-confidence-factors { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 10px 14px; border: 1px dashed rgba(151,174,199,.16); border-radius: 11px; list-style: none; color: #8f9eae; font-size: 11.5px; line-height: 1.6; }
+
+.twc-command-picker { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+.twc-command-picker > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.twc-command-picker h4 { margin: 0; color: #eee6dc; font-size: 13px; font-weight: 580; }
+
+.twc-new-command-form { display: grid; grid-template-columns: 1.4fr 1fr auto; gap: 10px; align-items: end; padding: 12px 14px; border: 1px dashed rgba(151,174,199,.18); border-radius: 12px; background: rgba(255,255,255,.015); }
+.twc-new-command-form input, .twc-new-command-form select { min-height: 38px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(151,176,205,.2); background: #0b0f14; color: #edf2f6; font-size: 12.5px; }
+.twc-new-command-form button { min-height: 38px; padding: 0 16px; border-radius: 9px; border: 1px solid rgba(231,160,79,.35); background: rgba(228,155,77,.12); color: #f1c589; font-size: 12px; font-weight: 570; cursor: pointer; }
+.twc-new-command-form button:hover:not(:disabled) { background: rgba(228,155,77,.2); }
+.twc-new-command-form button:disabled { opacity: .5; cursor: default; }
+
+.twc-command-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.twc-command-card { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid rgba(151,174,199,.14); border-radius: 12px; background: rgba(255,255,255,.015); color: #c7d2dd; text-align: left; cursor: pointer; }
+.twc-command-card:hover { border-color: rgba(151,174,199,.3); }
+.twc-command-card.is-selected { border-color: rgba(231,160,79,.5); background: rgba(228,155,77,.1); box-shadow: 0 0 0 1px rgba(231,160,79,.3) inset; }
+.twc-command-card:disabled { opacity: .6; cursor: default; }
+.twc-command-card strong { color: #eee6dc; font-size: 12.5px; }
+.twc-command-card span { color: #8c99a9; font-size: 11px; }
+.twc-command-card small { color: #8795a5; font-size: 10.5px; line-height: 1.4; }
+.twc-command-tag { align-self: flex-start; margin-top: 4px; padding: 2px 8px; border-radius: 999px; background: rgba(151,174,199,.1); color: #8c99a9; font: 9px var(--font-geist-mono); letter-spacing: .05em; text-transform: uppercase; font-style: normal; }
+.twc-command-tag.twc-command-delete { border: 1px solid rgba(228,127,109,.28); background: rgba(163,58,42,.12); color: #f0a08e; cursor: pointer; }
+.twc-command-tag.twc-command-delete:hover { background: rgba(163,58,42,.2); }
+
+.twc-defenders-section { display: flex; flex-direction: column; gap: 12px; padding-top: 6px; border-top: 1px solid rgba(151,174,199,.12); }
+.twc-defenders-section > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.twc-defenders-section h4 { margin: 0; color: #eee6dc; font-size: 13px; font-weight: 580; }
+
 .twc-assignment-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; border-radius: 14px; transition: background-color .12s ease; }
 .twc-assignment-list.is-drag-over, .tw-empty.is-drag-over { background: rgba(42,126,88,.1); box-shadow: 0 0 0 1px rgba(83,214,154,.3) inset; }
 .twc-assignment-row { display: grid; grid-template-columns: 1fr auto auto auto auto auto; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid rgba(151,174,199,.12); border-radius: 11px; background: rgba(255,255,255,.015); cursor: grab; }
@@ -2831,6 +2876,34 @@ html[data-theme="light"] .counter-option-panel {
 .twc-template-form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .twc-template-form-actions button:not(.twc-primary-btn) { min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid rgba(151,176,205,.2); background: transparent; color: #c7d2dd; font-size: 12px; cursor: pointer; }
 
+.tbc-shell { padding: 26px 28px 30px; }
+.tbc-body { display: flex; flex-direction: column; gap: 16px; margin-top: 18px; }
+.tbc-planet-list { display: flex; flex-direction: column; gap: 10px; }
+.tbc-planet-row { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid rgba(151,174,199,.14); border-radius: 13px; background: rgba(255,255,255,.015); }
+.tbc-planet-row > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.tbc-planet-row > header strong { color: #eee6dc; font-size: 13.5px; }
+.tbc-strategy-pill { padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(151,174,199,.25); font: 9px var(--font-geist-mono); letter-spacing: .05em; text-transform: uppercase; }
+.tbc-strategy-pill.is-preload { color: #7fb3ff; border-color: rgba(96,140,248,.3); background: rgba(56,111,248,.12); }
+.tbc-strategy-pill.is-three-star { color: #82dfb0; border-color: rgba(83,214,154,.32); background: rgba(42,126,88,.14); }
+.tbc-strategy-pill.is-hold { color: #f1c589; border-color: rgba(231,160,79,.32); background: rgba(228,155,77,.12); }
+.tbc-strategy-pill.is-skip { color: #8c99a9; border-color: rgba(151,174,199,.2); background: rgba(151,174,199,.06); }
+.tbc-planet-row-controls { display: grid; grid-template-columns: 1fr 1fr 1.6fr auto; gap: 10px; align-items: end; }
+.tbc-planet-row-controls label { display: grid; gap: 4px; }
+.tbc-planet-row-controls label span { color: #8c99a9; font: 9px var(--font-geist-mono); letter-spacing: .06em; text-transform: uppercase; }
+.tbc-planet-row-controls select, .tbc-planet-row-controls input { min-height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid rgba(151,176,205,.2); background: #0b0f14; color: #edf2f6; font-size: 12px; }
+.tbc-planet-row .twc-attribution { color: #8795a5; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+
+.tbc-add-planet { display: grid; grid-template-columns: 1.6fr 1fr 1fr auto; gap: 10px; align-items: end; padding: 14px 16px; border: 1px dashed rgba(151,174,199,.18); border-radius: 13px; background: rgba(255,255,255,.015); }
+.tbc-add-planet label { display: grid; gap: 4px; }
+.tbc-add-planet label span { color: #8c99a9; font: 9px var(--font-geist-mono); letter-spacing: .06em; text-transform: uppercase; }
+.tbc-add-planet input, .tbc-add-planet select { min-height: 38px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(151,176,205,.2); background: #0b0f14; color: #edf2f6; font-size: 12.5px; }
+.tbc-add-planet button { min-height: 38px; padding: 0 16px; border-radius: 9px; border: 1px solid rgba(231,160,79,.35); background: rgba(228,155,77,.12); color: #f1c589; font-size: 12px; font-weight: 570; cursor: pointer; }
+.tbc-add-planet button:hover:not(:disabled) { background: rgba(228,155,77,.2); }
+.tbc-add-planet button:disabled { opacity: .5; cursor: default; }
+
+.tbc-strategy-legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 4px 0 0; padding: 0; color: #8795a5; font-size: 11px; line-height: 1.6; }
+.tbc-strategy-legend strong { color: #c7d2dd; }
+
 html[data-theme="light"] .twc-shell { background: #ffffff; border-color: rgba(148, 163, 184, 0.15); box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04); }
 html[data-theme="light"] .twc-header,
 html[data-theme="light"] .twc-tabs { border-color: rgba(148, 163, 184, 0.14); }
@@ -2839,24 +2912,39 @@ html[data-theme="light"] .twc-panel h3,
 html[data-theme="light"] .twc-readiness-card h4,
 html[data-theme="light"] .twc-zone-setup-row strong,
 html[data-theme="light"] .twc-zone-detail > header h3,
+html[data-theme="light"] .twc-zone-detail-header h3,
+html[data-theme="light"] .twc-command-picker h4,
+html[data-theme="light"] .twc-defenders-section h4,
+html[data-theme="light"] .twc-command-card strong,
 html[data-theme="light"] .twc-zone-list-name,
 html[data-theme="light"] .twc-assignment-row strong,
 html[data-theme="light"] .twc-attack-row strong,
 html[data-theme="light"] .twc-counter-card > strong,
 html[data-theme="light"] .twc-template-row strong,
 html[data-theme="light"] .twc-template-zone-row strong,
+html[data-theme="light"] .tbc-planet-row > header strong,
 html[data-theme="light"] .twc-gate-header h2 { color: #0f172a; }
 html[data-theme="light"] .twc-plan-meta,
 html[data-theme="light"] .twc-panel > p,
 html[data-theme="light"] .twc-readiness-card p,
 html[data-theme="light"] .twc-zone-setup-row small,
 html[data-theme="light"] .twc-zone-detail > header p,
+html[data-theme="light"] .twc-zone-detail-header p,
+html[data-theme="light"] .twc-confidence-badge span,
+html[data-theme="light"] .twc-confidence-factors,
+html[data-theme="light"] .twc-command-card span,
+html[data-theme="light"] .twc-command-card small,
+html[data-theme="light"] .twc-command-tag,
 html[data-theme="light"] .twc-zone-list-purpose,
 html[data-theme="light"] .twc-assignment-row small,
 html[data-theme="light"] .twc-attack-row small,
 html[data-theme="light"] .twc-template-row small,
 html[data-theme="light"] .twc-gate-header p,
 html[data-theme="light"] .twc-muted,
+html[data-theme="light"] .tbc-planet-row-controls label span,
+html[data-theme="light"] .tbc-add-planet label span,
+html[data-theme="light"] .tbc-strategy-legend,
+html[data-theme="light"] .tbc-planet-row .twc-attribution,
 html[data-theme="light"] .twc-counter-card dt { color: #64748b; }
 html[data-theme="light"] .twc-tabs button { color: #64748b; }
 html[data-theme="light"] .twc-tabs button:hover { color: #0f172a; }
@@ -2873,8 +2961,14 @@ html[data-theme="light"] .twc-counter-card,
 html[data-theme="light"] .twc-template-row,
 html[data-theme="light"] .twc-template-zone-row,
 html[data-theme="light"] .twc-defender-chip,
+html[data-theme="light"] .twc-confidence-badge,
+html[data-theme="light"] .twc-command-card,
+html[data-theme="light"] .twc-new-command-form,
+html[data-theme="light"] .tbc-planet-row,
+html[data-theme="light"] .tbc-add-planet,
 html[data-theme="light"] .twc-idle-list li { background: #ffffff; border-color: rgba(148, 163, 184, 0.15); }
-html[data-theme="light"] .twc-zone-list-item.is-active { background: rgba(2, 132, 199, 0.06); border-color: rgba(2, 132, 199, 0.3); }
+html[data-theme="light"] .twc-zone-list-item.is-active,
+html[data-theme="light"] .twc-command-card.is-selected { background: rgba(2, 132, 199, 0.06); border-color: rgba(2, 132, 199, 0.3); }
 html[data-theme="light"] .twc-template-row.is-active { background: rgba(22, 163, 74, 0.06); border-color: rgba(22, 163, 74, 0.3); }
 html[data-theme="light"] .twc-zone-list-item.is-drag-over,
 html[data-theme="light"] .twc-assignment-list.is-drag-over,
@@ -2894,6 +2988,12 @@ html[data-theme="light"] .twc-discord select,
 html[data-theme="light"] .twc-header-actions select,
 html[data-theme="light"] .twc-template-form > label input,
 html[data-theme="light"] .twc-template-zone-row input,
+html[data-theme="light"] .twc-new-command-form input,
+html[data-theme="light"] .twc-new-command-form select,
+html[data-theme="light"] .tbc-planet-row-controls select,
+html[data-theme="light"] .tbc-planet-row-controls input,
+html[data-theme="light"] .tbc-add-planet input,
+html[data-theme="light"] .tbc-add-planet select,
 html[data-theme="light"] .twc-discord textarea { color: #0f172a; background: #ffffff; border-color: rgba(148, 163, 184, 0.28); }
 html[data-theme="light"] .twc-icon-btn,
 html[data-theme="light"] .twc-panel button:not(.twc-primary-btn):not(.twc-icon-btn),
@@ -2914,13 +3014,16 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   .twc-defence { grid-template-columns: 1fr; }
   .twc-side-panel { flex-direction: row; flex-wrap: wrap; }
   .twc-side-panel > section { flex: 1 1 260px; }
+  .twc-command-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
 @media (max-width: 760px) {
   .twc-header { padding: 20px 18px; }
   .twc-header-actions { flex-wrap: wrap; }
   .twc-tabs { padding: 12px 14px 0; }
-  .twc-prepare, .twc-matchup, .twc-attack, .twc-workload, .twc-discord, .twc-defence, .twc-templates { padding: 20px 16px 24px; }
+  .twc-prepare, .twc-matchup, .twc-attack, .twc-workload, .twc-discord, .twc-defence, .twc-templates, .tbc-shell { padding: 20px 16px 24px; }
+  .tbc-planet-row-controls { grid-template-columns: 1fr; }
+  .tbc-add-planet { grid-template-columns: 1fr; }
   .twc-zone-setup-row { grid-template-columns: 1fr; }
   .twc-add-assignment { grid-template-columns: 1fr; }
   .twc-attack-form { grid-template-columns: 1fr; }
@@ -2931,6 +3034,9 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   .twc-fill-row { grid-template-columns: 100px 1fr 50px; font-size: 11px; }
   .twc-assignment-row, .twc-attack-row { grid-template-columns: 1fr; align-items: start; }
   .twc-defender-chips { max-height: none; }
+  .twc-zone-detail-header { flex-direction: column; align-items: flex-start; }
+  .twc-new-command-form { grid-template-columns: 1fr; }
+  .twc-command-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; animation: none !important; } }

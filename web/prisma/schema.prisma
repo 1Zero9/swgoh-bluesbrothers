@@ -74,6 +74,8 @@ model Guild {
   automationEvents AutomationEvent[]
   twTemplates      StrategyTemplate[]
   twPlans          TerritoryWarPlan[]
+  twCommands       TwCommand[]
+  tbPlans          TerritoryBattlePlan[]
 }
 
 model Player {
@@ -193,6 +195,7 @@ model GuildEvent {
   guild       Guild          @relation(fields: [guildId], references: [id], onDelete: Cascade)
   snapshots   EventSnapshot[]
   twPlans     TerritoryWarPlan[]
+  tbPlans     TerritoryBattlePlan[]
 
   @@unique([guildId, type, externalId])
   @@index([guildId, type, startsAt])
@@ -265,6 +268,23 @@ model RecipeSubmission {
   @@index([status, createdAt])
 }
 
+model TwCommand {
+  id          String       @id @default(cuid())
+  guildId     String
+  name        String
+  squadKey    String?
+  kitNotes    String?
+  isBuiltIn   Boolean      @default(false)
+  createdBy   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  guild       Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  zonePlans   ZonePlan[]
+  planetPlans PlanetPlan[]
+
+  @@index([guildId])
+}
+
 model StrategyTemplate {
   id          String             @id @default(cuid())
   guildId     String
@@ -312,13 +332,16 @@ model ZonePlan {
   purpose        String?
   targetCapacity Int                @default(25)
   note           String?
+  commandId      String?
   updatedBy      String?
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
   plan           TerritoryWarPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  command        TwCommand?         @relation(fields: [commandId], references: [id], onDelete: SetNull)
   assignments    PlayerAssignment[]
 
   @@unique([planId, zoneId])
+  @@index([commandId])
 }
 
 model PlayerAssignment {
@@ -359,4 +382,47 @@ model AttackAssignment {
   assignedPlayer   Player?          @relation(fields: [assignedPlayerId], references: [id], onDelete: SetNull)
 
   @@index([planId])
+}
+
+enum TbStrategy {
+  PRELOAD
+  THREE_STAR
+  HOLD
+  SKIP
+}
+
+model TerritoryBattlePlan {
+  id          String       @id @default(cuid())
+  guildId     String
+  eventId     String?
+  name        String
+  status      TwPlanStatus @default(DRAFT)
+  createdBy   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  guild       Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  event       GuildEvent?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  planetPlans PlanetPlan[]
+
+  @@index([guildId, status])
+  @@index([eventId])
+}
+
+model PlanetPlan {
+  id         String              @id @default(cuid())
+  planId     String
+  planetName String
+  phase      Int                 @default(1)
+  strategy   TbStrategy          @default(PRELOAD)
+  commandId  String?
+  note       String?
+  priority   Int                 @default(0)
+  updatedBy  String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  plan       TerritoryBattlePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  command    TwCommand?          @relation(fields: [commandId], references: [id], onDelete: SetNull)
+
+  @@index([planId, phase])
+  @@index([commandId])
 }

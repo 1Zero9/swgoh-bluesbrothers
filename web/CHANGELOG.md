@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.25.0 — 2026-08-24
+
+- **Command-based TW defence assignment**: replaced per-player drag-and-drop with named, reusable squad+kit presets ("Commands") that officers assign directly to a zone — pick a zone, pick a Command (e.g. "GL Vader + Datacron"), done. Every guild gets 12 built-in Commands for free (one per known TW squad) plus fully custom ones officers create inline. New `/api/officer/tw/commands` route and `TwCommand` model.
+- **Hold-confidence heuristic**: each zone now shows an honestly-labeled 0–100 hold-confidence score ("Strong Hold"/"Likely Hold"/"Contested"/"Vulnerable") derived from the assigned squad's known counter-vulnerability and available backup depth — explicitly not a fabricated win percentage, since Comlink doesn't expose opponent defense composition.
+- **Territory Battle command tool**: new officer planning section on `/territory-battles` using the same Command concept — set a pre-load / push-3★ / hold / skip strategy (and optional Command) per planet, per phase (Day 1–6), with real ROTE planet-name suggestions. New `TerritoryBattlePlan`/`PlanetPlan` models and `/api/officer/tb/plan` + `/api/officer/tb/planets` routes. Sits alongside (not replacing) the existing GP/star optimizer.
+- See `docs/knowledge-base.md` §5.9/§5.14.
+
 ## 0.24.0 — 2026-08-24
 
 - **Drag-and-drop defence assignment**: in the Territory War command tool's Defence mode, officers can now drag a joined member from a new "Available defenders" chip list straight onto a zone (auto-picks the player's first eligible squad), and drag an existing assignment row onto a different zone tab to move it. Every assignment row also gets an inline squad-correction dropdown, since the drop no longer requires manually selecting a squad. The original manual "Player"/"Squad" form stays as a fallback for touch/mobile devices, since native drag-and-drop is desktop/mouse-only.

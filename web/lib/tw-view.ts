@@ -1,5 +1,11 @@
 import { DEFAULT_ZONES, type SquadKey } from "@/lib/tw-squads";
-import type { AssignmentRecord, EligiblePlayer, ZoneInfo } from "@/lib/tw-planning-engine";
+import {
+  computeHoldConfidence,
+  type AssignmentRecord,
+  type EligiblePlayer,
+  type HoldConfidence,
+  type ZoneInfo,
+} from "@/lib/tw-planning-engine";
 
 /**
  * Pure view-model shaping shared between the server-rendered page and the
@@ -8,11 +14,22 @@ import type { AssignmentRecord, EligiblePlayer, ZoneInfo } from "@/lib/tw-planni
  * React imports here — safe to use from either side.
  */
 
+export type CommandSummary = {
+  id: string;
+  name: string;
+  squadKey: string | null;
+  kitNotes: string | null;
+  isBuiltIn: boolean;
+};
+
 export type EffectiveZone = ZoneInfo & {
   name: string;
   type: "ground" | "fleet";
   description: string;
   updatedBy: string | null;
+  commandId: string | null;
+  command: CommandSummary | null;
+  holdConfidence: HoldConfidence | null;
 };
 
 export type PersistedZonePlan = {
@@ -22,6 +39,8 @@ export type PersistedZonePlan = {
   targetCapacity: number;
   note: string | null;
   updatedBy: string | null;
+  commandId: string | null;
+  command: CommandSummary | null;
 };
 
 export type PersistedAssignment = {
@@ -48,10 +67,22 @@ export type PersistedAttackAssignment = {
   updatedBy: string | null;
 };
 
-export function buildEffectiveZones(zonePlans: PersistedZonePlan[]): EffectiveZone[] {
+/**
+ * Builds the 12 default TW zones merged with any officer overrides
+ * (purpose/capacity/note/assigned Command). When `pool` is supplied, also
+ * attaches a hold-confidence estimate for whichever squad the zone's
+ * assigned Command represents — see computeHoldConfidence() for why this is
+ * a labeled heuristic, not a true win probability.
+ */
+export function buildEffectiveZones(zonePlans: PersistedZonePlan[], pool: EligiblePlayer[] = []): EffectiveZone[] {
   const byZoneId = new Map(zonePlans.map((z) => [z.zoneId, z]));
   return DEFAULT_ZONES.map((zone) => {
     const override = byZoneId.get(zone.id);
+    const command = override?.command ?? null;
+    const holdConfidence =
+      command?.squadKey && pool.length
+        ? computeHoldConfidence(command.squadKey as SquadKey, pool)
+        : null;
     return {
       zoneId: zone.id,
       name: zone.name,
@@ -60,6 +91,9 @@ export function buildEffectiveZones(zonePlans: PersistedZonePlan[]): EffectiveZo
       purpose: override?.purpose ?? zone.purpose,
       targetCapacity: override?.targetCapacity ?? (zone.type === "fleet" ? 15 : 25),
       updatedBy: override?.updatedBy ?? null,
+      commandId: override?.commandId ?? null,
+      command,
+      holdConfidence,
     };
   });
 }

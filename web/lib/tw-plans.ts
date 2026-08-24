@@ -1,11 +1,13 @@
 import { getPrisma } from "@/lib/prisma";
 import { DEFAULT_ZONES, type SquadKey } from "@/lib/tw-squads";
+import { BUILT_IN_COMMAND_PRESETS } from "@/lib/tw-commands";
 import type { Recommendation } from "@/lib/tw-planning-engine";
 import type {
   TwAssignmentStatus,
   TwAssignmentSource,
   TwAttackStatus,
   TwPlanStatus,
+  TbStrategy,
 } from "@/app/generated/prisma/client";
 
 /**
@@ -65,7 +67,7 @@ export async function getPlanDetail(planId: string) {
   return prisma.territoryWarPlan.findUnique({
     where: { id: planId },
     include: {
-      zonePlans: { orderBy: { zoneId: "asc" } },
+      zonePlans: { orderBy: { zoneId: "asc" }, include: { command: true } },
       assignments: { orderBy: { priority: "asc" } },
       attackAssignments: { orderBy: { zoneLabel: "asc" } },
       template: true,
@@ -140,7 +142,12 @@ export async function clonePlan(planId: string, name: string, createdBy?: string
 export async function upsertZonePlan(
   planId: string,
   zoneId: number,
-  updates: { purpose?: string | null; targetCapacity?: number; note?: string | null },
+  updates: {
+    purpose?: string | null;
+    targetCapacity?: number;
+    note?: string | null;
+    commandId?: string | null;
+  },
   updatedBy?: string
 ) {
   const prisma = getPrisma();
@@ -148,6 +155,7 @@ export async function upsertZonePlan(
     where: { planId_zoneId: { planId, zoneId } },
     create: { planId, zoneId, ...updates, updatedBy: updatedBy ?? null },
     update: { ...updates, updatedBy: updatedBy ?? null },
+    include: { command: true },
   });
 }
 
@@ -366,4 +374,177 @@ export async function getCurrentTwEventId() {
     select: { id: true },
   });
   return event?.id ?? null;
+}
+
+export async function getCurrentTbEventId() {
+  const prisma = getPrisma();
+  const event = await prisma.guildEvent.findFirst({
+    where: { type: "TERRITORY_BATTLE" },
+    orderBy: { startsAt: "desc" },
+    select: { id: true },
+  });
+  return event?.id ?? null;
+}
+
+/**
+ * Idempotently ensures every one of the 12 built-in squad Commands (see
+ * lib/tw-commands.ts) exists for a guild. Safe to call on every page load —
+ * only inserts presets that are missing (matched by guildId + squadKey among
+ * isBuiltIn rows), never duplicates or overwrites an officer's edits to one.
+ */
+export async function ensureBuiltInCommands(guildId: string) {
+  const prisma = getPrisma();
+  const existing = await prisma.twCommand.findMany({
+    where: { guildId, isBuiltIn: true },
+    select: { squadKey: true },
+  });
+  const existingKeys = new Set(existing.map((c) => c.squadKey));
+  const missing = BUILT_IN_COMMAND_PRESETS.filter((preset) => !existingKeys.has(preset.squadKey));
+  if (missing.length === 0) return;
+
+  await prisma.twCommand.createMany({
+    data: missing.map((preset) => ({
+      guildId,
+      name: preset.name,
+      squadKey: preset.squadKey,
+      kitNotes: preset.kitNotes,
+      isBuiltIn: true,
+    })),
+  });
+}
+
+export async function listCommands(guildId: string) {
+  const prisma = getPrisma();
+  return prisma.twCommand.findMany({
+    where: { guildId },
+    orderBy: [{ isBuiltIn: "desc" }, { name: "asc" }],
+  });
+}
+
+export async function createCommand(input: {
+  guildId: string;
+  name: string;
+  squadKey?: string | null;
+  kitNotes?: string | null;
+  createdBy?: string;
+}) {
+  const prisma = getPrisma();
+  return prisma.twCommand.create({
+    data: {
+      guildId: input.guildId,
+      name: input.name,
+      squadKey: input.squadKey ?? null,
+      kitNotes: input.kitNotes ?? null,
+      isBuiltIn: false,
+      createdBy: input.createdBy ?? null,
+    },
+  });
+}
+
+export async function updateCommand(
+  commandId: string,
+  updates: { name?: string; squadKey?: string | null; kitNotes?: string | null }
+) {
+  const prisma = getPrisma();
+  return prisma.twCommand.update({ where: { id: commandId }, data: updates });
+}
+
+export async function deleteCommand(commandId: string) {
+  const prisma = getPrisma();
+  const command = await prisma.twCommand.findUnique({ where: { id: commandId }, select: { isBuiltIn: true } });
+  if (command?.isBuiltIn) throw new Error("built-in commands cannot be deleted");
+  return prisma.twCommand.delete({ where: { id: commandId } });
+}
+
+export async function getOrCreateActiveTbPlan(
+  guildId: string,
+  eventId: string | null,
+  name: string,
+  createdBy?: string
+) {
+  const prisma = getPrisma();
+  const existing = await prisma.territoryBattlePlan.findFirst({
+    where: {
+      guildId,
+      eventId: eventId ?? undefined,
+      status: { in: ["DRAFT", "ACTIVE"] },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  if (existing) return existing;
+
+  return prisma.territoryBattlePlan.create({
+    data: { guildId, eventId, name, status: "DRAFT", createdBy: createdBy ?? null },
+  });
+}
+
+export async function listTbPlansForGuild(guildId: string) {
+  const prisma = getPrisma();
+  return prisma.territoryBattlePlan.findMany({
+    where: { guildId },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, name: true, status: true, createdAt: true, eventId: true },
+  });
+}
+
+export async function getTbPlanDetail(planId: string) {
+  const prisma = getPrisma();
+  return prisma.territoryBattlePlan.findUnique({
+    where: { id: planId },
+    include: {
+      planetPlans: { orderBy: [{ phase: "asc" }, { priority: "asc" }], include: { command: true } },
+    },
+  });
+}
+
+export async function setTbPlanStatus(planId: string, status: TwPlanStatus) {
+  const prisma = getPrisma();
+  return prisma.territoryBattlePlan.update({ where: { id: planId }, data: { status } });
+}
+
+export async function upsertPlanetPlan(input: {
+  id?: string;
+  planId: string;
+  planetName: string;
+  phase?: number;
+  strategy?: TbStrategy;
+  commandId?: string | null;
+  note?: string | null;
+  priority?: number;
+  updatedBy?: string;
+}) {
+  const prisma = getPrisma();
+  if (input.id) {
+    return prisma.planetPlan.update({
+      where: { id: input.id },
+      data: {
+        planetName: input.planetName,
+        phase: input.phase,
+        strategy: input.strategy,
+        commandId: input.commandId,
+        note: input.note,
+        priority: input.priority,
+        updatedBy: input.updatedBy ?? null,
+      },
+      include: { command: true },
+    });
+  }
+  return prisma.planetPlan.create({
+    data: {
+      planId: input.planId,
+      planetName: input.planetName,
+      phase: input.phase ?? 1,
+      strategy: input.strategy ?? "PRELOAD",
+      commandId: input.commandId ?? null,
+      note: input.note ?? null,
+      priority: input.priority ?? 0,
+      updatedBy: input.updatedBy ?? null,
+    },
+    include: { command: true },
+  });
+}
+
+export async function deletePlanetPlan(id: string) {
+  const prisma = getPrisma();
+  return prisma.planetPlan.delete({ where: { id } });
 }

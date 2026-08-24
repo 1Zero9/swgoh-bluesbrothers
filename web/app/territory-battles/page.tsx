@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRosterMembers } from "@/lib/members";
+import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { getOfficerIdentity } from "@/lib/officer-identity";
+import {
+  ensureBuiltInCommands,
+  getCurrentTbEventId,
+  getDefaultGuildId,
+  getOrCreateActiveTbPlan,
+  getTbPlanDetail,
+  listCommands,
+} from "@/lib/tw-plans";
 import TbPlanner from "./tb-planner";
+import TbWorkspace, { type TbWorkspacePlan } from "./tb-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -24,6 +36,58 @@ export default async function TerritoryBattlesPage() {
 
   const totalCharacterGp = members.reduce((sum, m) => sum + m.characterPower, BigInt(0));
   const totalShipGp = members.reduce((sum, m) => sum + m.shipPower, BigInt(0));
+
+  const store = await cookies();
+  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+
+  let tbPlan: TbWorkspacePlan | null = null;
+  let commands: import("@/lib/tw-view").CommandSummary[] = [];
+  if (isOfficer) {
+    const guildId = await getDefaultGuildId();
+    if (guildId) {
+      const eventId = await getCurrentTbEventId();
+      const officer = await getOfficerIdentity();
+      await ensureBuiltInCommands(guildId);
+      const record = await getOrCreateActiveTbPlan(guildId, eventId, "Territory Battle plan", officer);
+      const [detail, commandRecords] = await Promise.all([
+        getTbPlanDetail(record.id),
+        listCommands(guildId),
+      ]);
+      commands = commandRecords.map((c) => ({
+        id: c.id,
+        name: c.name,
+        squadKey: c.squadKey,
+        kitNotes: c.kitNotes,
+        isBuiltIn: c.isBuiltIn,
+      }));
+      if (detail) {
+        tbPlan = {
+          id: detail.id,
+          name: detail.name,
+          status: detail.status,
+          planetPlans: detail.planetPlans.map((p) => ({
+            id: p.id,
+            planetName: p.planetName,
+            phase: p.phase,
+            strategy: p.strategy,
+            commandId: p.commandId,
+            command: p.command
+              ? {
+                  id: p.command.id,
+                  name: p.command.name,
+                  squadKey: p.command.squadKey,
+                  kitNotes: p.command.kitNotes,
+                  isBuiltIn: p.command.isBuiltIn,
+                }
+              : null,
+            note: p.note,
+            priority: p.priority,
+            updatedBy: p.updatedBy,
+          })),
+        };
+      }
+    }
+  }
 
   return (
     <main className="intel-shell destination-shell mission-shell">
@@ -63,6 +127,17 @@ export default async function TerritoryBattlesPage() {
             <p>Roster profiles must be synced at least once to populate the GP optimizer baseline.</p>
           </div>
         )}
+      </section>
+
+      <section className="tb-section margin-top-20">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Officer planning</p>
+            <h2>Territory Battle command tool</h2>
+          </div>
+          <span>Per-planet, per-day strategy and squad calls</span>
+        </div>
+        <TbWorkspace isOfficer={isOfficer} plan={tbPlan} commands={commands} />
       </section>
 
       <aside className="tw-data-note margin-top-20">

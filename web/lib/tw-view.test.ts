@@ -12,7 +12,7 @@ function boolAllocation(trueKeys: string[] = []) {
 
 test("buildEffectiveZones falls back to defaults and applies overrides", () => {
   const zones = buildEffectiveZones([
-    { id: "z1", zoneId: 1, purpose: "Trap", targetCapacity: 10, note: "test", updatedBy: null },
+    { id: "z1", zoneId: 1, purpose: "Trap", targetCapacity: 10, note: "test", updatedBy: null, commandId: null, command: null },
   ]);
   assert.equal(zones.length, 10);
   assert.equal(zones[0]?.purpose, "Trap");
@@ -22,7 +22,7 @@ test("buildEffectiveZones falls back to defaults and applies overrides", () => {
 
 test("buildAssignmentRecords resolves zonePlanId to zoneId", () => {
   const records = buildAssignmentRecords(
-    [{ id: "zp1", zoneId: 3, purpose: null, targetCapacity: 25, note: null, updatedBy: null }],
+    [{ id: "zp1", zoneId: 3, purpose: null, targetCapacity: 25, note: null, updatedBy: null, commandId: null, command: null }],
     [
       {
         id: "a1",

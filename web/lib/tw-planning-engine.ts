@@ -1,4 +1,11 @@
-import { DEFAULT_ZONES, SQUAD_DEFINITIONS, SQUAD_KEYS, isFleetSquad, type SquadKey } from "@/lib/tw-squads";
+import {
+  DEFAULT_ZONES,
+  SQUAD_DEFINITIONS,
+  SQUAD_KEYS,
+  TW_COUNTER_STRATEGIES,
+  isFleetSquad,
+  type SquadKey,
+} from "@/lib/tw-squads";
 
 /**
  * Pure, side-effect-free Territory War planning engine.
@@ -324,6 +331,61 @@ export function computeWorkload(pool: EligiblePlayer[], assignments: AssignmentR
     squads: list.map((a) => a.squadKey),
     overloaded: list.length > 1,
   }));
+}
+
+export type HoldConfidenceLabel = "Strong Hold" | "Likely Hold" | "Contested" | "Vulnerable";
+
+export type HoldConfidence = {
+  /** 0-100. An honest heuristic, not a true win probability — see factors. */
+  score: number;
+  label: HoldConfidenceLabel;
+  factors: string[];
+};
+
+/**
+ * A labeled "hold confidence" estimate for a squad placed in a TW zone.
+ *
+ * This is deliberately NOT a true win probability: Comlink never exposes the
+ * opposing guild's actual defense composition, only locked zone GP totals.
+ * So instead of fabricating a number against data we don't have, this scores
+ * only what we can actually observe — the squad's own known counter
+ * vulnerability (lib/tw-squads.ts TW_COUNTER_STRATEGIES, sourced from
+ * community counter data) and how many other guild members could also field
+ * it as backup (a rough proxy for "is this squad genuinely guild-ready, or
+ * one unlucky disconnect away from an empty zone"). Every caller-facing
+ * label must keep saying "confidence" / "hold", never "win chance".
+ */
+export function computeHoldConfidence(
+  squadKey: SquadKey,
+  pool: EligiblePlayer[],
+  assignedPlayerId?: string
+): HoldConfidence {
+  const def = SQUAD_DEFINITIONS[squadKey];
+  const strategy = TW_COUNTER_STRATEGIES[squadKey];
+  const vulnerability = strategy?.vulnerability ?? "Medium";
+  const baseScore = vulnerability === "Low" ? 72 : vulnerability === "Medium" ? 54 : 36;
+
+  const backups = pool.filter(
+    (p) => p.joined && p.squads[squadKey] && p.playerId !== assignedPlayerId
+  ).length;
+  const depthBonus = Math.min(20, backups * 4);
+
+  const score = Math.max(5, Math.min(95, baseScore + depthBonus));
+
+  let label: HoldConfidenceLabel;
+  if (score >= 75) label = "Strong Hold";
+  else if (score >= 55) label = "Likely Hold";
+  else if (score >= 35) label = "Contested";
+  else label = "Vulnerable";
+
+  const factors = [
+    `${def.label} carries ${vulnerability.toLowerCase()} known counter vulnerability against common counters.`,
+    backups > 0
+      ? `${backups} other joined member${backups === 1 ? "" : "s"} can also field this squad as backup.`
+      : "No other joined members currently show this squad ready — thin backup depth.",
+  ];
+
+  return { score, label, factors };
 }
 
 export function buildDiscordGuildMessage(
