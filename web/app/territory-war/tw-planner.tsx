@@ -215,6 +215,84 @@ const INITIAL_ZONES: ZoneAllocation[] = [
   { id: 10, name: "Zone 10 (Fleet Back)", type: "fleet", description: "Back fleet sector. Guard with Executor or Chimaera blockades.", targetCapacity: 25, allocations: { lordVader: 0, jabba: 0, rey: 0, jmk: 0, reva: 0, malgus: 0, gas: 0, zorii: 0, cere: 0, executor: 0, profundity: 0, leviathan: 0 } },
 ];
 
+function buildAutoAllocation(baseZones: ZoneAllocation[], pool: PlayerDefensiveSquad[]): ZoneAllocation[] {
+  const nextZones = baseZones.map((z) => ({
+    ...z,
+    allocations: { lordVader: 0, jabba: 0, rey: 0, jmk: 0, reva: 0, malgus: 0, gas: 0, zorii: 0, cere: 0, executor: 0, profundity: 0, leviathan: 0 },
+  }));
+
+  const playerPlacements = new Map<string, Set<string>>();
+  pool.forEach((p) => playerPlacements.set(p.playerId, new Set<string>()));
+
+  const tryPlace = (zoneIndex: number, squadKey: SquadKey, player: PlayerDefensiveSquad): boolean => {
+    const placed = playerPlacements.get(player.playerId)!;
+    if (placed.has(squadKey)) return false;
+    if (placed.size >= 3) return false;
+
+    nextZones[zoneIndex].allocations[squadKey]++;
+    placed.add(squadKey);
+    return true;
+  };
+
+  // Fleet Path
+  // Zone 9: Leviathan + Profundity
+  pool.forEach((player) => {
+    const currentCount = nextZones[8].allocations.leviathan + nextZones[8].allocations.profundity;
+    if (currentCount >= nextZones[8].targetCapacity) return;
+    if (player.leviathan) tryPlace(8, "leviathan", player);
+    else if (player.profundity) tryPlace(8, "profundity", player);
+  });
+
+  // Zone 10: Executor
+  pool.forEach((player) => {
+    const currentCount = nextZones[9].allocations.executor;
+    if (currentCount >= nextZones[9].targetCapacity) return;
+    if (player.executor) tryPlace(9, "executor", player);
+  });
+
+  // Ground Top Path
+  // Zone 1: Reva + Lord Vader
+  pool.forEach((player) => {
+    const currentCount = nextZones[0].allocations.reva + nextZones[0].allocations.lordVader;
+    if (currentCount >= nextZones[0].targetCapacity) return;
+    if (player.reva) tryPlace(0, "reva", player);
+    else if (player.lordVader) tryPlace(0, "lordVader", player);
+  });
+
+  // Zone 2: Jabba + Rey
+  pool.forEach((player) => {
+    const currentCount = nextZones[1].allocations.jabba + nextZones[1].allocations.rey;
+    if (currentCount >= nextZones[1].targetCapacity) return;
+    if (player.jabba) tryPlace(1, "jabba", player);
+    else if (player.rey) tryPlace(1, "rey", player);
+  });
+
+  // Zone 3: Malgus + GAS
+  pool.forEach((player) => {
+    const currentCount = nextZones[2].allocations.malgus + nextZones[2].allocations.gas;
+    if (currentCount >= nextZones[2].targetCapacity) return;
+    if (player.malgus) tryPlace(2, "malgus", player);
+    else if (player.gas) tryPlace(2, "gas", player);
+  });
+
+  // Zone 4: Zorii + Cere
+  pool.forEach((player) => {
+    const currentCount = nextZones[3].allocations.zorii + nextZones[3].allocations.cere;
+    if (currentCount >= nextZones[3].targetCapacity) return;
+    if (player.zorii) tryPlace(3, "zorii", player);
+    else if (player.cere) tryPlace(3, "cere", player);
+  });
+
+  // Zone 5: JMK
+  pool.forEach((player) => {
+    const currentCount = nextZones[4].allocations.jmk;
+    if (currentCount >= nextZones[4].targetCapacity) return;
+    if (player.jmk) tryPlace(4, "jmk", player);
+  });
+
+  return nextZones;
+}
+
 export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
   const activePool = useMemo(() => squadsPool.filter((s) => s.joined), [squadsPool]);
   
@@ -246,13 +324,15 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
 
   const [zones, setZones] = useState<ZoneAllocation[]>(() => {
     const initialCap = Math.ceil(joinedCount / 2) || 25;
-    return INITIAL_ZONES.map((z) => ({ ...z, targetCapacity: initialCap }));
+    const baseZones = INITIAL_ZONES.map((z) => ({ ...z, targetCapacity: initialCap }));
+    return activePool.length ? buildAutoAllocation(baseZones, activePool) : baseZones;
   });
 
   const [selectedZoneId, setSelectedZoneId] = useState<number>(1);
   const [globalCapacity, setGlobalCapacity] = useState<number>(() => Math.ceil(joinedCount / 2) || 25);
   const [copied, setCopied] = useState<boolean>(false);
   const [selectedCounterKey, setSelectedCounterKey] = useState<SquadKey | null>(null);
+  const [showAnalysis, setShowAnalysis] = useState<boolean>(false);
 
   const selectedZone = useMemo(() => zones.find((z) => z.id === selectedZoneId)!, [zones, selectedZoneId]);
 
@@ -282,81 +362,7 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
 
   // Auto-allocate heuristic engine
   const handleAutoAllocate = () => {
-    const nextZones = zones.map((z) => ({
-      ...z,
-      allocations: { lordVader: 0, jabba: 0, rey: 0, jmk: 0, reva: 0, malgus: 0, gas: 0, zorii: 0, cere: 0, executor: 0, profundity: 0, leviathan: 0 },
-    }));
-
-    const playerPlacements = new Map<string, Set<string>>();
-    activePool.forEach((p) => playerPlacements.set(p.playerId, new Set<string>()));
-
-    const tryPlace = (zoneIndex: number, squadKey: SquadKey, player: PlayerDefensiveSquad): boolean => {
-      const placed = playerPlacements.get(player.playerId)!;
-      if (placed.has(squadKey)) return false;
-      if (placed.size >= 3) return false;
-
-      nextZones[zoneIndex].allocations[squadKey]++;
-      placed.add(squadKey);
-      return true;
-    };
-
-    // Fleet Path
-    // Zone 9: Leviathan + Profundity
-    activePool.forEach((player) => {
-      const currentCount = nextZones[8].allocations.leviathan + nextZones[8].allocations.profundity;
-      if (currentCount >= nextZones[8].targetCapacity) return;
-      if (player.leviathan) tryPlace(8, "leviathan", player);
-      else if (player.profundity) tryPlace(8, "profundity", player);
-    });
-
-    // Zone 10: Executor
-    activePool.forEach((player) => {
-      const currentCount = nextZones[9].allocations.executor;
-      if (currentCount >= nextZones[9].targetCapacity) return;
-      if (player.executor) tryPlace(9, "executor", player);
-    });
-
-    // Ground Top Path
-    // Zone 1: Reva + Lord Vader
-    activePool.forEach((player) => {
-      const currentCount = nextZones[0].allocations.reva + nextZones[0].allocations.lordVader;
-      if (currentCount >= nextZones[0].targetCapacity) return;
-      if (player.reva) tryPlace(0, "reva", player);
-      else if (player.lordVader) tryPlace(0, "lordVader", player);
-    });
-
-    // Zone 2: Jabba + Rey
-    activePool.forEach((player) => {
-      const currentCount = nextZones[1].allocations.jabba + nextZones[1].allocations.rey;
-      if (currentCount >= nextZones[1].targetCapacity) return;
-      if (player.jabba) tryPlace(1, "jabba", player);
-      else if (player.rey) tryPlace(1, "rey", player);
-    });
-
-    // Zone 3: Malgus + GAS
-    activePool.forEach((player) => {
-      const currentCount = nextZones[2].allocations.malgus + nextZones[2].allocations.gas;
-      if (currentCount >= nextZones[2].targetCapacity) return;
-      if (player.malgus) tryPlace(2, "malgus", player);
-      else if (player.gas) tryPlace(2, "gas", player);
-    });
-
-    // Zone 4: Zorii + Cere
-    activePool.forEach((player) => {
-      const currentCount = nextZones[3].allocations.zorii + nextZones[3].allocations.cere;
-      if (currentCount >= nextZones[3].targetCapacity) return;
-      if (player.zorii) tryPlace(3, "zorii", player);
-      else if (player.cere) tryPlace(3, "cere", player);
-    });
-
-    // Zone 5: JMK
-    activePool.forEach((player) => {
-      const currentCount = nextZones[4].allocations.jmk;
-      if (currentCount >= nextZones[4].targetCapacity) return;
-      if (player.jmk) tryPlace(4, "jmk", player);
-    });
-
-    setZones(nextZones);
+    setZones((prev) => buildAutoAllocation(prev, activePool));
   };
 
   const updateAllocation = (squadKey: SquadKey, increment: boolean) => {
@@ -421,11 +427,20 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
 
   return (
     <div className="tw-planner-outer-container">
+      <div className="tw-flow-intro">
+        <p><strong>Plan it here, send it to Discord.</strong> This board doesn&apos;t touch the game — it just helps you work out squad placement, then hand it off. It&apos;s pre-filled from who&apos;s joined; nothing is final until you post it.</p>
+        <ol className="tw-flow-steps">
+          <li><span>1</span>Pick a zone</li>
+          <li><span>2</span>Fine-tune squads</li>
+          <li><span>3</span>Copy to Discord</li>
+        </ol>
+      </div>
+
       {/* Visual Map Section */}
       <section className="tw-visual-map-section panel">
         <header className="panel-heading">
-          <h2>Territory War Tactical Map</h2>
-          <p className="section-intro">Visual battlefield representation. Click any zone node to allocate squads.</p>
+          <h2><span className="flow-step">1</span>Zone Assignments</h2>
+          <p className="section-intro">Already filled in from your active roster. Click any zone below to fine-tune it.</p>
         </header>
 
         <div className="tw-map-board">
@@ -475,8 +490,8 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
         {/* Editor Controls */}
         <div className="planner-controls-panel panel">
           <header className="panel-heading">
-            <h2>Zone Editor</h2>
-            <p className="section-intro">Configure details for Zone {selectedZone.id}.</p>
+            <h2><span className="flow-step">2</span>Fine-tune Zone {selectedZone.id}</h2>
+            <p className="section-intro">Tap + / − on a squad, or reset everything with Auto-Allocate.</p>
           </header>
 
           <div className="planner-meta-controls">
@@ -530,8 +545,8 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
         {/* Exporter directives */}
         <div className="planner-detail-panel panel">
           <header className="panel-heading">
-            <h2>Command Directives</h2>
-            <p className="section-intro">Direct copy paste values for in-game mail or Discord commands.</p>
+            <h2><span className="flow-step">3</span>Copy to Discord</h2>
+            <p className="section-intro">Updates live as you edit zones above. Paste this into your war channel.</p>
           </header>
           <textarea className="directives-output" readOnly value={compiledDirectives} />
           <button className="copy-directives-btn account-link-button" onClick={handleCopy}>
@@ -540,6 +555,14 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
         </div>
       </div>
 
+      <div className="tw-advanced-toggle">
+        <button className={`advanced-toggle-btn ${showAnalysis ? "active" : ""}`} onClick={() => setShowAnalysis((v) => !v)}>
+          {showAnalysis ? "Hide squad analysis \u25B2" : "Show squad analysis & counters guide \u25BC"}
+        </button>
+      </div>
+
+      {showAnalysis && (
+      <>
       {/* Roster & Balance Analysis Board */}
       <section className="tw-roster-analysis-section panel">
         <header className="panel-heading">
@@ -664,6 +687,8 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
           </div>
         )}
       </section>
+      </>
+      )}
     </div>
   );
 }
