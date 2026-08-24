@@ -1,5 +1,6 @@
 import { getPrisma } from "@/lib/prisma";
 import { getRosterMembers } from "@/lib/members";
+import { SQUAD_DEFINITIONS, SQUAD_KEYS, type SquadKey } from "@/lib/tw-squads";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -60,18 +61,7 @@ export type TerritoryWarRoom = {
 export type PlayerDefensiveSquad = {
   playerId: string;
   joined: boolean;
-  lordVader: boolean;
-  jabba: boolean;
-  rey: boolean;
-  jmk: boolean;
-  reva: boolean;
-  malgus: boolean;
-  gas: boolean;
-  zorii: boolean;
-  cere: boolean;
-  executor: boolean;
-  profundity: boolean;
-  leviathan: boolean;
+  squads: Record<SquadKey, boolean>;
 };
 
 type StoredRosterUnit = {
@@ -295,22 +285,18 @@ export async function getTerritoryWarRoom(): Promise<TerritoryWarRoom> {
       if (!roster) return [];
       
       const rosterMap = new Map(roster.map((unit) => [baseDefinitionId(unit.definitionId), unit]));
-      
+
+      const squads = Object.fromEntries(
+        SQUAD_KEYS.map((key) => {
+          const def = SQUAD_DEFINITIONS[key];
+          return [key, checkUnit(rosterMap, def.leaderDefId, def.minStars, def.minRelic, def.minGear)];
+        })
+      ) as Record<SquadKey, boolean>;
+
       return [{
         playerId: profile.id,
         joined: isJoined,
-        lordVader: checkUnit(rosterMap, "LORDVADER", 7, 7),
-        jabba: checkUnit(rosterMap, "JABBATHEHUTT", 7, 5),
-        rey: checkUnit(rosterMap, "GLREY", 7, 5),
-        jmk: checkUnit(rosterMap, "JEDIMASTERKENOBI", 7, 7),
-        reva: checkUnit(rosterMap, "THIRDSISTER", 7, 7),
-        malgus: checkUnit(rosterMap, "DARTHMALGUS", 7, 5),
-        gas: checkUnit(rosterMap, "GENERALSKYWALKER", 7, 5),
-        zorii: checkUnit(rosterMap, "ZORIIBLISS", 7, 0, 12),
-        cere: checkUnit(rosterMap, "CEREJUNDA", 7, 0, 12),
-        executor: checkUnit(rosterMap, "CAPITALEXECUTOR", 7),
-        profundity: checkUnit(rosterMap, "CAPITALPROFUNDITY", 7),
-        leviathan: checkUnit(rosterMap, "CAPITALLEVIATHAN", 7),
+        squads,
       }];
     });
 

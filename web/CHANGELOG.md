@@ -2,6 +2,16 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.23.0 — 2026-08-24
+
+- **Per-officer attribution**: the Territory War command tool now resolves a best-effort display name off the existing member-link Discord cookie and stamps it as `createdBy`/`updatedBy` on plans, zones, assignments, and attacks, shown as "by \<name\>" throughout the tool. Writes still work even when no name can be resolved (falls back to a generic "Officer" label) — this adds attribution on top of the existing shared officer password, not per-officer accounts.
+- **Strategy templates**: a new Templates mode lets officers save, edit, and apply named zone/squad priority presets (`StrategyTemplate`) to a plan; the recommendation engine now factors the active template's zone-fill order and preferred-squad order into its suggestions. New `/api/officer/tw/templates` route.
+- CI now runs `web`'s lint, typecheck, and test suite on every push and pull request.
+
+## 0.22.0 — 2026-08-24
+
+- **Territory War command tool**: rebuilt `/territory-war` from a themed read-only dashboard into a practical, multi-phase officer planning tool on top of the existing live TW data. Officers now get a persisted, versioned `TerritoryWarPlan` with per-zone setup, exact player → squad → zone assignments (with a full status lifecycle and recommended/manual source tracking), live conflict/warning detection, an offence-reserve health panel, a player workload view, a manually tracked attack board, and a Discord hand-off (guild strategy message + per-player personal messages). An explicit "Generate Recommendations" step proposes assignments for officer review — nothing is auto-committed. Adds 5 new Prisma models, 6 new `/api/officer/tw/*` routes, and 4 new `lib/tw-*.ts` modules; the underlying live registration/battle-map/roster board above the tool is unchanged. See `docs/knowledge-base.md` §5.9.
+
 ## 0.21.0 — 2026-08-21
 
 - **Raid operations** gained real data: `lib/raids.ts` reads Comlink's `recentRaidResult` from the latest guild snapshot and surfaces the last completed attempt for every raid the guild runs, with a searchable, ranked-by-damage participant board (`app/raids/raid-board.tsx`) per raid type.

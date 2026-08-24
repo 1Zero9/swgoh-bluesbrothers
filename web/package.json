@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.21.0",
+  "version": "0.23.0",
   "private": true,
   "engines": {
     "node": ">=22.12.0"
@@ -11,6 +11,8 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test lib/**/*.test.ts",
     "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio"

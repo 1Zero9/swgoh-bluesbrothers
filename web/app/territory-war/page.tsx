@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
+import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { getOfficerIdentity } from "@/lib/officer-identity";
+import { getCurrentTwEventId, getDefaultGuildId, getOrCreateActivePlan, getPlanDetail, listTemplates } from "@/lib/tw-plans";
+import { buildPool } from "@/lib/tw-view";
 import WarRoster from "./war-roster";
-import TwPlanner from "./tw-planner";
+import TwWorkspace, { type WorkspacePlan } from "./tw-workspace";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -53,6 +58,76 @@ export default async function TerritoryWarPage() {
   const capturedLabel = war.capturedAt?.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) ?? "Awaiting first sync";
   const roundEndLabel = war.roundEndsAt?.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
+  const store = await cookies();
+  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+
+  let plan: WorkspacePlan | null = null;
+  let templates: { id: string; name: string; description: string | null; rules: unknown; isBuiltIn: boolean }[] = [];
+  if (isOfficer) {
+    const guildId = await getDefaultGuildId();
+    if (guildId) {
+      const eventId = await getCurrentTwEventId();
+      const officer = await getOfficerIdentity();
+      const record = await getOrCreateActivePlan(guildId, eventId, "Territory War plan", officer);
+      const [detail, templateRecords] = await Promise.all([getPlanDetail(record.id), listTemplates(guildId)]);
+      templates = templateRecords.map((t) => ({
+        id: t.id,
+        name: t.name,
+        description: t.description,
+        rules: t.rules,
+        isBuiltIn: t.isBuiltIn,
+      }));
+      if (detail) {
+        plan = {
+          id: detail.id,
+          name: detail.name,
+          status: detail.status,
+          version: detail.version,
+          templateId: detail.templateId,
+          zonePlans: detail.zonePlans.map((z) => ({
+            id: z.id,
+            zoneId: z.zoneId,
+            purpose: z.purpose,
+            targetCapacity: z.targetCapacity,
+            note: z.note,
+            updatedBy: z.updatedBy,
+          })),
+          assignments: detail.assignments.map((a) => ({
+            id: a.id,
+            zonePlanId: a.zonePlanId,
+            playerId: a.playerId,
+            squadKey: a.squadKey,
+            priority: a.priority,
+            status: a.status,
+            source: a.source,
+            locked: a.locked,
+            officerNote: a.officerNote,
+            createdBy: a.createdBy,
+            updatedBy: a.updatedBy,
+          })),
+          attackAssignments: detail.attackAssignments.map((a) => ({
+            id: a.id,
+            zoneLabel: a.zoneLabel,
+            enemySquad: a.enemySquad,
+            assignedPlayerId: a.assignedPlayerId,
+            status: a.status,
+            note: a.note,
+            updatedBy: a.updatedBy,
+          })),
+        };
+      }
+    }
+  }
+
+  const pool = buildPool(war.squadsPool, war.members);
+  const warSummary = {
+    active: war.active,
+    opponentName: war.opponentName,
+    guildScore: war.guildScore,
+    opponentScore: war.opponentScore,
+    round: war.round,
+  };
+
   return (
     <main className="intel-shell tw-shell">
       <PageHero
@@ -99,7 +174,7 @@ export default async function TerritoryWarPage() {
         </div>
       ) : null}
 
-      <TwPlanner squadsPool={war.squadsPool} joinedCount={war.active ? war.joinedCount : war.members.length} />
+      <TwWorkspace isOfficer={isOfficer} plan={plan} pool={pool} war={warSummary} templates={templates} />
 
       <section className="tw-roster-section">
         <header>

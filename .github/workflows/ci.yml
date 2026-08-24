@@ -42,3 +42,42 @@ jobs:
 
       - name: Check shell syntax
         run: sh -n scripts/run_daily.sh scripts/setup_comlink.sh scripts/start_comlink.sh
+
+  web:
+    name: web (lint, typecheck, test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          # prisma generate (postinstall) only needs a syntactically valid URL, not a live DB.
+          DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci"
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      # `next build` prerenders several pages against the live database
+      # (see docs/knowledge-base.md §13), so a full production build isn't
+      # run here without a real DATABASE_URL. Vercel builds on every push
+      # instead and is the source of truth for build-time failures.

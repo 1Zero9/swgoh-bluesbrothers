@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.14.0 · **Last updated:** 2026-08-22 · tracks site `v0.21.0`
+**Doc version:** 1.16.0 · **Last updated:** 2026-08-24 · tracks site `v0.23.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -183,7 +183,16 @@ Public submissions post to `/api/recipes/submissions`. Required fields and maxim
 ### 5.9 Territory War room (`lib/territory-war.ts`, `app/territory-war/*`)
 Comlink's existing `/guild` response includes guild-specific `territoryWarStatus` and `recentTerritoryWarResult` data; there is no separate TW request. Each active `instanceId` is upserted as a `GuildEvent`, and every hourly capture becomes an `EventSnapshot` containing the complete live TW payload. Recent results populate the event's timing and `finalResult`.
 
-`/territory-war` reads the newest TW data directly from the latest raw `GuildSnapshot` so the page works immediately with captures made before normalization shipped, then falls back to a recent normalized event snapshot. It presents registration/eligibility, locked power, opponent profile, summed zone scores, officer zone commands, defensive zone state, and a searchable member readiness board. Missing full-player profiles are shown as unknown rather than zero. The page does not invent counter recommendations or officer assignments that Comlink has not supplied.
+`/territory-war` reads the newest TW data directly from the latest raw `GuildSnapshot` so the page works immediately with captures made before normalization shipped, then falls back to a recent normalized event snapshot. Above the officer gate it presents registration/eligibility, locked power, opponent profile, summed zone scores, and a searchable member readiness board — all genuinely Comlink-supplied, live or last-synced data. Missing full-player profiles are shown as unknown rather than zero.
+
+Below that, a cookie-gated **Territory War command tool** (`app/territory-war/tw-workspace.tsx` + `tw-prepare.tsx`/`tw-matchup.tsx`/`tw-defence.tsx`/`tw-attack.tsx`/`tw-workload.tsx`/`tw-discord-export.tsx`) lets signed-in officers turn that live data into an explicit, officer-authored defence plan:
+
+- **Persistence.** A guild's plans are `TerritoryWarPlan` records (draft/active/archived, versioned, clonable, optionally linked to a `StrategyTemplate`) owning `ZonePlan` rows (per-zone purpose/target capacity/notes), `PlayerAssignment` rows (player → exact squad → zone, with a `SUGGESTED → ASSIGNED → ACKNOWLEDGED → PLACED / CHANGED / MISSING / EXEMPT` status lifecycle, a `RECOMMENDED`/`MANUAL` source, and an officer lock flag), and `AttackAssignment` rows for manual offence tracking. `page.tsx` calls `getOrCreateActivePlan()` so the current TW event always has an active plan once an officer visits the page. See §6 for the full schema.
+- **Pure engine, computed live.** `lib/tw-squads.ts` (static squad/counter reference data) and `lib/tw-planning-engine.ts` (warning detection, offence-reserve health, workload, Discord message builders, and `generateRecommendations()`) have zero Prisma/React dependencies, so `tw-workspace.tsx` imports them directly and recomputes warnings/reserve/workload/recommendations client-side on every edit — no round trip needed to preview a change. Only actual persistence (creating/updating/deleting an assignment, editing a zone, applying recommendations, posting to Discord, managing templates) goes through the seven `POST`/`PATCH`/`DELETE` routes under `/api/officer/tw/*` (§7), followed by `router.refresh()` to resync from the database. `lib/tw-view.ts` is the pure adapter between the Prisma-persisted shape and the shape the engine expects.
+- **Per-officer attribution.** The officer area is still one shared password/session (§5.4), but `lib/officer-identity.ts` resolves a best-effort display name for `createdBy`/`updatedBy` off the visiting browser's separate member-link (Discord OAuth) cookie when present, falling back to a generic "Officer" label otherwise. Plans, zone setup, assignments, and attack rows all persist and display ("by &lt;name&gt;") this attribution; it never blocks a write when no member session is linked.
+- **Strategy templates.** `StrategyTemplate.rules` (`{ zonePriority?, squadPriority? }`, both optional/partial) lets officers override the engine's default zone-fill order and per-zone preferred-squad order without needing named officer accounts. The Templates mode (`tw-templates.tsx`) is a full CRUD UI — create/edit/delete a template (per-zone priority number + comma-separated preferred squad keys) and apply one to the current plan (`setPlanTemplate`, persisted on `TerritoryWarPlan.templateId`) or fall back to the built-in strategy. `generateRecommendations()` takes the active template's `rules` as an optional 4th argument; `isStrategyTemplateRules()` guards untrusted JSON from the DB before it's trusted.
+- **Seven modes.** Prepare (zone purpose/capacity setup + squad-readiness counts from the pool), Match-up (score/fill overview), Defence (the primary 3-panel workspace — zone list, zone detail with per-assignment status/lock/source controls, and a side panel with live warnings, offence reserve health, and a **"Generate Recommendations"** preview that officers must explicitly apply — nothing is auto-assigned), Attack (manually tracked offence board, clearly separate from defence data), Workload (per-player assignment load / idle members), Discord (builds a guild strategy message and per-player personal messages, concise or detailed, with copy actions and a direct post via `postDiscordAnnouncement`), and Templates (strategy template CRUD + apply-to-plan, described above).
+- **What's genuinely Comlink-supplied vs. officer-entered:** roster membership, galactic power, TW registration/joined status, opponent identity and live zone scores, and squad-readiness checks (whether a player's synced profile shows the leader unit for a given squad) all come from live/synced data. Zone purpose, target capacity, every assignment, attack tracking, recommendation *application*, template rules, and all Discord message text are officer-entered or officer-approved — the tool never silently commits a recommendation or invents an assignment.
 
 ### 5.10 Operations and navigation (`app/operations/page.tsx`, `app/mobile-menu.tsx`)
 `/operations` is the launch deck for Territory War, Territory Battles, raids, and the Guild Arsenal. Each card now links to a dedicated route. `/territory-battles` establishes live guild readiness plus deployment/operation/mission planning areas; `/raids` establishes live ticket pace plus readiness/attempt/score areas. Those pages state their current data boundaries while TB and raid event normalization remain future work. Operations and TW are direct desktop/mobile navigation targets.
@@ -225,6 +234,11 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
 | `Recipe` | Published Soul Food Cantina recipe | Slug, origin, description, JSON ingredient/method lists, JSON beer pairings, visual tone, sort order, publication state |
 | `RecipeSubmission` | Community recipe awaiting review | Bread, filling, toppings, method, optional submitter/beer/story fields, moderation `status` (`PENDING`/`APPROVED`/`REJECTED`) |
+| `StrategyTemplate` | Named, reusable set of TW planning rules for a guild | `name`, `description`, `isBuiltIn`, JSON `rules`; has many `TerritoryWarPlan` |
+| `TerritoryWarPlan` | One officer-authored TW defence plan (draft/active/archived, versioned) | `status` (enum `TwPlanStatus`: `DRAFT`/`ACTIVE`/`ARCHIVED`), `version`, optional `eventId`/`templateId`/`clonedFromId` (self-relation for cloning), `createdBy`; has many `ZonePlan`, `PlayerAssignment`, `AttackAssignment` |
+| `ZonePlan` | Officer setup for one zone within a plan | `zoneId`, `purpose`, `targetCapacity` (default 25), `note`, `updatedBy`; unique per `[planId, zoneId]` |
+| `PlayerAssignment` | One player's exact squad assignment to a zone | `playerId`, `squadKey`, `priority`, `officerNote`, `status` (enum `TwAssignmentStatus`: `SUGGESTED`/`ASSIGNED`/`ACKNOWLEDGED`/`PLACED`/`CHANGED`/`MISSING`/`EXEMPT`), `source` (enum `TwAssignmentSource`: `RECOMMENDED`/`MANUAL`), `locked`, `createdBy`, `updatedBy` |
+| `AttackAssignment` | Manually tracked offence-side attack for a plan | `zoneLabel`, `enemySquad`, optional `assignedPlayerId`, `status` (enum `TwAttackStatus`: `UNASSIGNED`/`ASSIGNED`/`IN_PROGRESS`/`FAILED`/`NEEDS_SPECIALIST`/`CLEARED`/`HOLD`), `note`, `updatedBy` |
 
 ---
 
@@ -242,6 +256,13 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `/api/officer/session` | POST / DELETE | `password` in body (POST) / officer cookie (DELETE) | Officer sign-in / sign-out. |
 | `/api/officer/messages` | POST | officer session cookie | Posts a Guild Wire notice + Discord announcement. `maxDuration = 30`. |
 | `/api/recipes/submissions` | POST | none | Validates and stores a public sandwich submission as pending moderation; includes size limits and honeypot spam handling. |
+| `/api/officer/tw/plan` | POST / PATCH | officer session cookie | Clones a plan (`action: "clone"`) or updates its `status`/`name`. |
+| `/api/officer/tw/zones` | PATCH | officer session cookie | Upserts a `ZonePlan`'s `purpose`/`targetCapacity`/`note`. |
+| `/api/officer/tw/assignments` | POST / PATCH / DELETE | officer session cookie | Creates a manual `PlayerAssignment` (`locked: true`, `source: "MANUAL"`), or updates/removes an existing one. |
+| `/api/officer/tw/recommendations` | POST | officer session cookie | Persists a client-computed `generateRecommendations()` preview as `PlayerAssignment` rows (`source: "RECOMMENDED"`). |
+| `/api/officer/tw/attack` | POST / DELETE | officer session cookie | Creates/updates or removes an `AttackAssignment`. |
+| `/api/officer/tw/discord` | POST | officer session cookie | Posts an officer-composed TW title/message to Discord via `postDiscordAnnouncement`. `maxDuration = 30`. |
+| `/api/officer/tw/templates` | GET / POST / PATCH / DELETE | officer session cookie | Lists/creates/updates/deletes `StrategyTemplate` rows; `PATCH` with a `planId` instead applies (or clears) a template on that plan via `setPlanTemplate`. |
 
 ---
 
@@ -266,8 +287,13 @@ All under `web/app/api/`. All are `runtime = "nodejs"`, `dynamic = "force-dynami
 | `unit-checklist.ts` | Attributed priority-unit definitions adapted from SWGoHBot under MIT |
 | `recipes.ts` | Reads and validates published recipe/beer-pairing JSON, with built-in local fallback recipes |
 | `officer-auth.ts` | Shared-password check + signed officer session cookie |
+| `officer-identity.ts` | Best-effort officer display-name resolver for TW attribution — reads the existing member-link cookie session (if any) and falls back to a generic "Officer" label; never throws or blocks a write |
 | `wall-of-fame.ts` / `wall-of-shame.ts` | Leaderboard/bulletin derivations described in §5.5 |
 | `officer-roster.ts` | Officer-only full guild-history report combining roster stats, membership terms, raid participation, and TW joined status (§5.13) |
+| `tw-squads.ts` | Static TW squad/counter reference data (squad definitions, groups, zone hints, vulnerability ratings) and `DEFAULT_ZONES` (§5.9) |
+| `tw-planning-engine.ts` | Pure, side-effect-free TW planning functions — `generateRecommendations`, `detectWarnings`, `computeOffenceReserve`, `computeWorkload`, Discord message builders. No Prisma/React imports; unit tested via `node:test`, reused server- and client-side (§5.9) |
+| `tw-plans.ts` | Prisma CRUD layer for `TerritoryWarPlan`/`ZonePlan`/`PlayerAssignment`/`AttackAssignment`/`StrategyTemplate`, incl. `getOrCreateActivePlan`, `getPlanDetail`, `getCurrentTwEventId`, `updateTemplate`/`deleteTemplate`/`setPlanTemplate` |
+| `tw-view.ts` | Pure adapter mapping Prisma-persisted TW plan shapes into the plain data shapes `tw-planning-engine.ts` expects (incl. `buildPool`, `buildEffectiveZones`, `buildAssignmentRecords`); no Prisma/React imports |
 
 ---
 
@@ -363,6 +389,8 @@ PRs are merged into `main` automatically — no confirmation needed.
 - **A shared component rendered on every route (e.g. `SiteHeader`) must use `next/link`, not `<a href>`, for internal links** — plain anchors force a full hard browser reload on every navigation even though the rest of the app is client-routed. This was the single biggest cause of "slow page switching" once `SiteHeader` became universal in v0.18.2.
 - **Blanket `dynamic = "force-dynamic"` on every route means zero caching anywhere.** Since guild data only changes on the (Hobby-capped) once-daily cron sync, subpages that don't read cookies are safe to run as `revalidate = 300` ISR instead — cutting DB load and response time with negligible staleness risk. Only pages using `cookies()`/`headers()` (session-dependent) need to stay fully dynamic.
 - **Prisma `include` pulls every scalar column of a relation, including large `Json` columns.** Always use explicit `select` on models with heavy JSON fields (`GuildSnapshot.rawPayload`, `Player.profilePayload`) unless the caller genuinely needs them — several lib functions were unknowingly fetching multi-KB JSON blobs per member on every request.
+- **Syncing a prop into local state without tripping `react-hooks/set-state-in-effect`:** calling `setState` inside a `useEffect(() => setState(prop), [prop])` is flagged because it causes a redundant extra render. React's documented fix is to compare against a shadow "synced" state value **during render** and call `setState` conditionally in the render body itself (not inside an effect) — React de-dupes the resulting re-render. Used in `tw-workspace.tsx` to resync its local plan state after `router.refresh()`.
+- **A pure, dependency-free "engine" module (no Prisma/React imports) can be imported directly into both server code and `"use client"` components.** The TW planning engine (`lib/tw-planning-engine.ts`, `lib/tw-view.ts`) is used this way — client components recompute warnings/recommendations/reserves live from already-fetched data with zero extra network round trips, and only real persistence needs an API route. This removed the need for any GET routes under `/api/officer/tw/*` entirely.
 
 ---
 
@@ -388,14 +416,22 @@ PRs are merged into `main` automatically — no confirmation needed.
 - **Comlink guild-data boundary (confirmed 2026-08-21 against the swgoh-comlink wiki):** the public `/guild` endpoint only returns live status for Territory War (`territoryWarStatus`) plus historical results for TW (`recentTerritoryWarResult`) and raids (`recentRaidResult`, last completed attempt per raid only). `territoryBattleStatus`, `territoryBattleResult`, and `raidStatus` (live) are **not returned** outside the guild's own account — there is no live TB/raid pipeline to build without a member-authenticated data source. Territory Battles stays a live-baseline-only page until that changes; Raids now uses `recentRaidResult` (see `lib/raids.ts`).
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
 - Officer moderation queue for approving/rejecting pending Soul Food Cantina recipe submissions
-- Add officer-owned TW defensive assignments and counter notes on top of the read-only live board; investigate whether Comlink's per-zone `warSquad` field (currently untyped/unused) can drive a deployed-squad composition view once a fuller unit-name map exists (today `lib/unit-checklist.ts` only names ~50 priority units)
-- CI doesn't currently build/lint the `web/` app — worth adding a Next.js job to `ci.yml`
+- ~~Add officer-owned TW defensive assignments and counter notes on top of the read-only live board~~ — done in v0.22.0 (§5.9, the TW command tool). Still open: investigate whether Comlink's per-zone `warSquad` field (currently untyped/unused) can drive a deployed-squad composition view once a fuller unit-name map exists (today `lib/unit-checklist.ts` only names ~50 priority units).
+- ~~Per-officer attribution for the TW command tool~~ — done in v0.23.0: `lib/officer-identity.ts` best-effort-resolves a display name off the member-link cookie for `createdBy`/`updatedBy` on plans, zones, assignments, and attacks (§5.9). Officer *authorization* is still one shared password/session (§5.4) — this only adds attribution on top of it, not per-officer accounts/permissions.
+- ~~Strategy template authoring UI~~ — done in v0.23.0: the Templates mode in the TW command tool CRUDs `StrategyTemplate.rules` and applies one to a plan; `generateRecommendations()` now takes those rules as an optional 4th argument (§5.9).
+- ~~CI doesn't currently build/lint the `web/` app~~ — done: `ci.yml` runs `npm run lint`, `npm run typecheck`, and `npm run test` for `web/` on every push/PR.
 - **Two-way Discord sync.** Today Discord integration is one-way only: `lib/discord.ts` posts announcements via webhook and removes a departed member's role via the bot token (both called from `lib/guild-sync.ts`). There is no listener for Discord → site (e.g. relaying an announcement channel's messages onto the Guild Wire). A real bot presence (gateway websocket) can't run on Vercel's serverless functions — it needs a small always-on worker, similar to how the self-hosted Comlink service is deployed (see §2). Needs a hosting decision before building.
 - **Member lifecycle / access tiers.** `MembershipState` is currently just `ACTIVE`/`LEFT` (see §6, `prisma/schema.prisma`). There's no "recruitment-only" access tier for players who join the in-game guild but never link Discord, and no automated prompt-to-join-Discord flow beyond the static invite link. Needs a schema addition (e.g. an access-level field on `Player` or `MembershipTerm`) plus site-auth gating (`lib/member-auth.ts`) before it can be built.
 
 ---
 
 ## 16. Changelog
+
+### 1.16.0 — 2026-08-24
+- Documented the three roadmap items closed out this pass (§15, §5.9, §6–§8): CI now lints/typechecks/tests `web/` on every push; `lib/officer-identity.ts` gives the TW command tool best-effort per-officer attribution (`createdBy`/`updatedBy` on plans, zones, assignments, attacks, shown as "by &lt;name&gt;" in the UI) off the existing member-link cookie, with a generic fallback so writes are never blocked; and a new Templates mode CRUDs `StrategyTemplate.rules` (`zonePriority`/`squadPriority` overrides) and applies one to a plan, with `generateRecommendations()` taking the active template's rules as an optional 4th argument. New route `/api/officer/tw/templates` and new module `lib/officer-identity.ts`. Tracks site v0.23.0.
+
+### 1.15.0 — 2026-08-24
+- Documented the Territory War command tool rebuild (§5.9): the officer-authored, versioned `TerritoryWarPlan`/`ZonePlan`/`PlayerAssignment`/`AttackAssignment`/`StrategyTemplate` data model (§6), the six new `/api/officer/tw/*` routes (§7), the four new `lib/tw-*.ts` modules including the pure client-and-server planning engine (§8), the render-phase prop-sync and pure-engine-reuse lessons (§13), and closed out the roadmap item this fulfilled while adding two new ones (per-officer attribution, strategy template authoring UI) (§15). Tracks site v0.22.0.
 
 ### 1.14.0 — 2026-08-22
 - Added the officer-only Roster Report (`/officer/roster`, `lib/officer-roster.ts`, §5.13): a filterable/sortable table of the full guild history (active + departed members) with tickets, last-raid participation/damage, TW joined status, tenure, and computed "needs attention" flags. Territory Battle stays a "No data" placeholder column per the documented Comlink boundary. Also fixed the member trading-card `<dialog>` rendering pinned to the top-left instead of centered on screen.
