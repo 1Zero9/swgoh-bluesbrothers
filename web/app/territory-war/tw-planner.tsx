@@ -25,6 +25,44 @@ const SQUAD_LABELS = {
 
 type SquadKey = keyof typeof SQUAD_LABELS;
 
+const SQUAD_CODE: Record<SquadKey, string> = {
+  lordVader: "LV",
+  jabba: "JB",
+  rey: "RY",
+  jmk: "JMK",
+  reva: "RV",
+  malgus: "MG",
+  gas: "GS",
+  zorii: "ZR",
+  cere: "CM",
+  executor: "EX",
+  profundity: "PF",
+  leviathan: "LE",
+};
+
+const SQUAD_GROUP: Record<SquadKey, "gl" | "elite" | "fleet"> = {
+  lordVader: "gl",
+  jabba: "gl",
+  rey: "gl",
+  jmk: "gl",
+  reva: "elite",
+  malgus: "elite",
+  gas: "elite",
+  zorii: "elite",
+  cere: "elite",
+  executor: "fleet",
+  profundity: "fleet",
+  leviathan: "fleet",
+};
+
+function SquadBadge({ squadKey, size = "md" }: { squadKey: SquadKey; size?: "sm" | "md" }) {
+  return (
+    <i className={`squad-badge squad-${SQUAD_GROUP[squadKey]}${size === "sm" ? " squad-badge-sm" : ""}`} title={SQUAD_LABELS[squadKey]}>
+      {SQUAD_CODE[squadKey]}
+    </i>
+  );
+}
+
 const SQUAD_METRICS: Record<SquadKey, { label: string; recommendation: string; defaultRole: "Defense" | "Offense" }> = {
   lordVader: { label: "Lord Vader GL", recommendation: "Excellent defense anchor. Pair with Maul/Royal Guard. Minimum Relic 7.", defaultRole: "Defense" },
   jabba: { label: "Jabba the Hutt GL", recommendation: "Extremely tough defense wall. Heavy hold potential. Target Relic 5+.", defaultRole: "Defense" },
@@ -391,107 +429,44 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
         </header>
 
         <div className="tw-map-board">
-          {/* Top Path */}
-          <div className="tw-map-lane top-lane">
-            <span className="lane-label">Top Path (Ground)</span>
-            <div className="lane-nodes">
-              {topPathZones.map((z) => {
-                const assigned = Object.values(z.allocations).reduce((a, b) => a + b, 0);
-                const percent = Math.min(100, Math.round((assigned / z.targetCapacity) * 100));
-                const activeSquads = Object.entries(z.allocations)
-                  .filter(([, val]) => val > 0)
-                  .map(([k]) => k.slice(0, 3).toUpperCase());
+          {[
+            { key: "top", label: "Top Path (Ground)", zones: topPathZones, fleet: false, empty: "Filler only" },
+            { key: "fleet", label: "Middle Path (Fleets)", zones: fleetPathZones, fleet: true, empty: "No fleets" },
+            { key: "bottom", label: "Bottom Path (Ground)", zones: bottomPathZones, fleet: false, empty: "Filler only" },
+          ].map((lane) => (
+            <div className={`tw-map-lane ${lane.key}-lane`} key={lane.key}>
+              <span className="lane-label">{lane.label}</span>
+              <div className={`lane-nodes${lane.fleet ? " centered-nodes" : ""}`}>
+                {lane.zones.map((z) => {
+                  const assigned = Object.values(z.allocations).reduce((a, b) => a + b, 0);
+                  const percent = Math.min(100, Math.round((assigned / z.targetCapacity) * 100));
+                  const activeSquadKeys = (Object.keys(z.allocations) as SquadKey[]).filter((k) => z.allocations[k] > 0);
 
-                return (
-                  <button
-                    key={z.id}
-                    className={`map-node-card ${selectedZoneId === z.id ? "active" : ""}`}
-                    onClick={() => setSelectedZoneId(z.id)}
-                  >
-                    <div className="node-badge">Z{z.id}</div>
-                    <div className="node-body">
-                      <strong>{z.name.split(" ")[0]} {z.name.match(/\((.*?)\)/)?.[0]}</strong>
-                      <span className="node-allocation-summary">
-                        {activeSquads.join(", ") || "Filler only"}
-                      </span>
-                    </div>
-                    <div className="node-footer">
-                      <span>{assigned}/{z.targetCapacity}</span>
-                      <div className="node-progress"><div style={{ width: `${percent}%` }} /></div>
-                    </div>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={z.id}
+                      className={`map-node-card ${lane.fleet ? "fleet-node" : ""} ${selectedZoneId === z.id ? "active" : ""}`}
+                      onClick={() => setSelectedZoneId(z.id)}
+                    >
+                      <div className={`node-badge${lane.fleet ? " fleet-badge" : ""}`}>Z{z.id}</div>
+                      <div className="node-body">
+                        <strong>{z.name.split(" ")[0]} {z.name.match(/\((.*?)\)/)?.[0]}</strong>
+                        <span className="node-squad-icons">
+                          {activeSquadKeys.length
+                            ? activeSquadKeys.map((k) => <SquadBadge squadKey={k} size="sm" key={k} />)
+                            : <em>{lane.empty}</em>}
+                        </span>
+                      </div>
+                      <div className="node-footer">
+                        <span>{assigned}/{z.targetCapacity}</span>
+                        <div className="node-progress"><div style={{ width: `${percent}%` }} /></div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-
-          {/* Fleet Path */}
-          <div className="tw-map-lane fleet-lane">
-            <span className="lane-label">Middle Path (Fleets)</span>
-            <div className="lane-nodes centered-nodes">
-              {fleetPathZones.map((z) => {
-                const assigned = Object.values(z.allocations).reduce((a, b) => a + b, 0);
-                const percent = Math.min(100, Math.round((assigned / z.targetCapacity) * 100));
-                const activeSquads = Object.entries(z.allocations)
-                  .filter(([, val]) => val > 0)
-                  .map(([k]) => k.slice(0, 3).toUpperCase());
-
-                return (
-                  <button
-                    key={z.id}
-                    className={`map-node-card fleet-node ${selectedZoneId === z.id ? "active" : ""}`}
-                    onClick={() => setSelectedZoneId(z.id)}
-                  >
-                    <div className="node-badge fleet-badge">Z{z.id}</div>
-                    <div className="node-body">
-                      <strong>{z.name.split(" ")[0]} {z.name.match(/\((.*?)\)/)?.[0]}</strong>
-                      <span className="node-allocation-summary">
-                        {activeSquads.join(", ") || "No fleets"}
-                      </span>
-                    </div>
-                    <div className="node-footer">
-                      <span>{assigned}/{z.targetCapacity}</span>
-                      <div className="node-progress"><div style={{ width: `${percent}%` }} /></div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Bottom Path */}
-          <div className="tw-map-lane bottom-lane">
-            <span className="lane-label">Bottom Path (Ground)</span>
-            <div className="lane-nodes">
-              {bottomPathZones.map((z) => {
-                const assigned = Object.values(z.allocations).reduce((a, b) => a + b, 0);
-                const percent = Math.min(100, Math.round((assigned / z.targetCapacity) * 100));
-                const activeSquads = Object.entries(z.allocations)
-                  .filter(([, val]) => val > 0)
-                  .map(([k]) => k.slice(0, 3).toUpperCase());
-
-                return (
-                  <button
-                    key={z.id}
-                    className={`map-node-card ${selectedZoneId === z.id ? "active" : ""}`}
-                    onClick={() => setSelectedZoneId(z.id)}
-                  >
-                    <div className="node-badge">Z{z.id}</div>
-                    <div className="node-body">
-                      <strong>{z.name.split(" ")[0]} {z.name.match(/\((.*?)\)/)?.[0]}</strong>
-                      <span className="node-allocation-summary">
-                        {activeSquads.join(", ") || "Filler only"}
-                      </span>
-                    </div>
-                    <div className="node-footer">
-                      <span>{assigned}/{z.targetCapacity}</span>
-                      <div className="node-progress"><div style={{ width: `${percent}%` }} /></div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -521,7 +496,7 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
             </button>
           </div>
 
-          <div className="allocation-editor-grid-vertical">
+          <div className="squad-tile-grid">
             {Object.keys(SQUAD_LABELS).map((key) => {
               const squadKey = key as SquadKey;
               const isFleetSquad = ["executor", "profundity", "leviathan"].includes(squadKey);
@@ -535,10 +510,11 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
               const exceedsPool = allocatedGlobal > poolTotal;
 
               return (
-                <div key={squadKey} className={`squad-editor-row ${exceedsPool ? "exceeds-limit" : ""}`}>
-                  <div className="squad-editor-row-info">
+                <div key={squadKey} className={`squad-tile ${allocatedHere > 0 ? "is-filled" : ""} ${exceedsPool ? "exceeds-limit" : ""}`}>
+                  <SquadBadge squadKey={squadKey} />
+                  <div className="squad-tile-info">
                     <strong>{SQUAD_LABELS[squadKey]}</strong>
-                    <span>Zone: {allocatedHere} | Total: {allocatedGlobal}/{poolTotal}</span>
+                    <span>{allocatedGlobal}/{poolTotal} deployed</span>
                   </div>
                   <div className="counter-controls">
                     <button onClick={() => updateAllocation(squadKey, false)} disabled={allocatedHere <= 0}>-</button>
@@ -571,39 +547,45 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
           <p className="section-intro">Analysis of joined roster, current defensive allocation, and remaining offensive headroom.</p>
         </header>
 
-        <div className="rr-table-wrap">
-          <table className="rr-table">
-            <thead>
-              <tr>
-                <th>Squad Archetype</th>
-                <th>Joined Total</th>
-                <th>On Defense</th>
-                <th>Offense Headroom</th>
-                <th>Tactical Placement recommendation</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(SQUAD_LABELS).map((key) => {
-                const squadKey = key as SquadKey;
-                const poolTotal = poolTotals[squadKey];
-                const onDefense = totalAllocated[squadKey];
-                const onOffense = Math.max(0, poolTotal - onDefense);
-                const metric = SQUAD_METRICS[squadKey];
+        <div className="balance-chart">
+          {Object.keys(SQUAD_LABELS).map((key) => {
+            const squadKey = key as SquadKey;
+            const poolTotal = poolTotals[squadKey];
+            const onDefense = totalAllocated[squadKey];
+            const onOffense = Math.max(0, poolTotal - onDefense);
+            const metric = SQUAD_METRICS[squadKey];
+            const defensePct = poolTotal > 0 ? Math.min(100, Math.round((onDefense / poolTotal) * 100)) : 0;
+            const offensePct = poolTotal > 0 ? Math.max(0, 100 - defensePct) : 0;
 
-                return (
-                  <tr key={squadKey}>
-                    <td><strong>{metric.label}</strong></td>
-                    <td>{poolTotal}</td>
-                    <td className={onDefense > 0 ? "rr-pill-good" : ""}>{onDefense}</td>
-                    <td className="rr-member">
-                      <i className="status-dot">{onOffense}</i>
-                    </td>
-                    <td><small>{metric.recommendation}</small></td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            return (
+              <div className="balance-row" key={squadKey}>
+                <div className="balance-row-label">
+                  <SquadBadge squadKey={squadKey} />
+                  <div className="balance-row-info">
+                    <strong>{metric.label}</strong>
+                    <small>{metric.recommendation}</small>
+                  </div>
+                </div>
+                <div className="balance-row-figures">
+                  <span className="balance-total">{poolTotal}<small>joined</small></span>
+                  <div className="balance-bar-track" title={`${onDefense} on defense · ${onOffense} offense headroom`}>
+                    {poolTotal > 0 ? (
+                      <>
+                        <div className="balance-bar-segment defense" style={{ width: `${defensePct}%` }} />
+                        <div className="balance-bar-segment offense" style={{ width: `${offensePct}%` }} />
+                      </>
+                    ) : (
+                      <div className="balance-bar-empty" />
+                    )}
+                  </div>
+                  <div className="balance-legend">
+                    <span className="balance-pill defense"><i />{onDefense} defense</span>
+                    <span className="balance-pill offense"><i />{onOffense} headroom</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -626,10 +608,13 @@ export default function TwPlanner({ squadsPool, joinedCount }: TwPlannerProps) {
                 className={`counter-tab-btn ${isSelected ? "active" : ""}`}
                 onClick={() => setSelectedCounterKey(isSelected ? null : squadKey)}
               >
-                <span>{label}</span>
-                <small className={`vulnerability-badge ${strategy.vulnerability.toLowerCase()}`}>
-                  Vulnerability: {strategy.vulnerability}
-                </small>
+                <SquadBadge squadKey={squadKey} size="sm" />
+                <span className="counter-tab-info">
+                  <span>{label}</span>
+                  <small className={`vulnerability-badge ${strategy.vulnerability.toLowerCase()}`}>
+                    Vulnerability: {strategy.vulnerability}
+                  </small>
+                </span>
               </button>
             );
           })}
