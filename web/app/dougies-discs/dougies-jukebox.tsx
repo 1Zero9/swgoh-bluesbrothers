@@ -14,7 +14,7 @@ declare global {
   interface Window {
     YT?: {
       Player: new (
-        elementId: string | HTMLElement,
+        element: string | HTMLElement,
         config: {
           videoId?: string;
           playerVars?: Record<string, unknown>;
@@ -64,10 +64,11 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [queue, setQueue] = useState<DiscTrack[]>([]);
   const [currentTrack, setCurrentTrack] = useState<DiscTrack>(initialDiscs[0]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [hasStartedPlayback, setHasStartedPlayback] = useState<boolean>(false);
   const [playerMode, setPlayerMode] = useState<"vinyl" | "video">("vinyl");
   const [activeCategory, setActiveCategory] = useState<DiscCategory>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [volume, setVolume] = useState<number>(85);
+  const [volume, setVolume] = useState<number>(100);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [repeatMode, setRepeatMode] = useState<"off" | "all" | "one">("all");
   const [isShuffle, setIsShuffle] = useState<boolean>(false);
@@ -81,10 +82,10 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [soundboardQuote, setSoundboardQuote] = useState<string | null>(null);
   const [toasts, setToasts] = useState<ToastState[]>([]);
 
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
-  const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const suggestDialogRef = useRef<HTMLDialogElement | null>(null);
+  const consoleRef = useRef<HTMLDivElement | null>(null);
 
   function showToast(text: string, kind: "success" | "info" | "error" = "success") {
     const id = Date.now();
@@ -130,45 +131,82 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   }, [queue]);
 
-  // Initialize YouTube IFrame API
+  // Direct postMessage helper to send commands to YouTube IFrame
+  const postToYT = (func: string, args: unknown[] = []) => {
+    if (iframeRef.current?.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: "command", func, args }),
+          "*"
+        );
+      } catch {
+        // Ignore cross-origin error
+      }
+    }
+  };
+
+  // Listen to messages from YouTube iframe to track state
+  useEffect(() => {
+    const handleYTMessage = (event: MessageEvent) => {
+      try {
+        if (typeof event.data !== "string") return;
+        const data = JSON.parse(event.data) as { event?: string; info?: number | Record<string, unknown> };
+        if (data.event === "onStateChange" && typeof data.info === "number") {
+          if (data.info === 1) {
+            // PLAYING
+            setIsPlaying(true);
+            setHasStartedPlayback(true);
+          } else if (data.info === 2) {
+            // PAUSED
+            setIsPlaying(false);
+          } else if (data.info === 0) {
+            // ENDED
+            handleTrackEnded();
+          }
+        }
+      } catch {
+        // Ignore non-JSON messages
+      }
+    };
+
+    window.addEventListener("message", handleYTMessage);
+    return () => window.removeEventListener("message", handleYTMessage);
+  });
+
+  // Initialize YT API wrapper when script loads
   useEffect(() => {
     let isCancelled = false;
 
     function initYT() {
-      if (!window.YT || !window.YT.Player || isCancelled) return;
-
-      if (!ytPlayerRef.current) {
-        ytPlayerRef.current = new window.YT.Player("dougies-yt-player", {
-          videoId: currentTrack?.youtubeId || "EHV0ZsAKoqI",
-          playerVars: {
-            autoplay: 0,
-            controls: 1,
-            modestbranding: 1,
-            rel: 0,
-            playsinline: 1,
-            origin: typeof window !== "undefined" ? window.location.origin : "",
-          },
-          events: {
-            onReady: (event) => {
-              if (isCancelled) return;
-              event.target.setVolume(volume);
-              if (isMuted) event.target.mute();
+      if (!window.YT || !window.YT.Player || !iframeRef.current || isCancelled) return;
+      try {
+        if (!ytPlayerRef.current) {
+          ytPlayerRef.current = new window.YT.Player(iframeRef.current, {
+            events: {
+              onReady: (event) => {
+                if (isCancelled) return;
+                event.target.setVolume(volume);
+                if (isMuted) event.target.mute();
+                if (hasStartedPlayback && isPlaying) {
+                  event.target.playVideo();
+                }
+              },
+              onStateChange: (event) => {
+                if (isCancelled) return;
+                if (event.data === 1) {
+                  setIsPlaying(true);
+                  setHasStartedPlayback(true);
+                } else if (event.data === 2) {
+                  setIsPlaying(false);
+                } else if (event.data === 0) {
+                  handleTrackEnded();
+                }
+              },
             },
-            onStateChange: (event) => {
-              if (isCancelled) return;
-              if (event.data === 1) {
-                // PLAYING
-                setIsPlaying(true);
-              } else if (event.data === 2) {
-                // PAUSED
-                setIsPlaying(false);
-              } else if (event.data === 0) {
-                // ENDED
-                handleTrackEnded();
-              }
-            },
-          },
-        });
+          });
+        }
+      } catch {
+        // Fallback to postMessage
       }
     }
 
@@ -192,12 +230,14 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [currentTrack]);
 
   // Handle track ending -> advance queue or loop
   function handleTrackEnded() {
     if (repeatMode === "one") {
-      ytPlayerRef.current?.playVideo();
+      postToYT("seekTo", [0, true]);
+      postToYT("playVideo");
+      if (ytPlayerRef.current) ytPlayerRef.current.playVideo();
       return;
     }
 
@@ -205,9 +245,8 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       const next = queue[0];
       setQueue((prev) => prev.slice(1));
       playTrack(next);
-      showToast(`Now spinning: "${next.title}" by ${next.artist}`, "info");
+      showToast(`Now spinning: "${next.title}"`, "info");
     } else if (autoAdvance) {
-      // Pick next in catalog
       const currentIndex = catalog.findIndex((d) => d.id === currentTrack.id);
       let nextIndex = 0;
       if (isShuffle) {
@@ -230,27 +269,42 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   }
 
-  // Play specific track
+  // Play specific track with guaranteed iframe trigger
   function playTrack(track: DiscTrack) {
     setCurrentTrack(track);
     setIsPlaying(true);
+    setHasStartedPlayback(true);
+
     if (ytPlayerRef.current) {
-      ytPlayerRef.current.loadVideoById(track.youtubeId);
-      ytPlayerRef.current.playVideo();
+      try {
+        ytPlayerRef.current.loadVideoById(track.youtubeId);
+        ytPlayerRef.current.playVideo();
+      } catch {
+        postToYT("loadVideoById", [track.youtubeId]);
+        postToYT("playVideo");
+      }
+    } else {
+      // Direct postMessage + reload if needed
+      postToYT("loadVideoById", [track.youtubeId]);
+      postToYT("playVideo");
     }
   }
 
   function togglePlayPause() {
-    if (!ytPlayerRef.current) {
-      setIsPlaying(!isPlaying);
+    if (!hasStartedPlayback) {
+      setHasStartedPlayback(true);
+      playTrack(currentTrack);
       return;
     }
+
     if (isPlaying) {
-      ytPlayerRef.current.pauseVideo();
       setIsPlaying(false);
+      postToYT("pauseVideo");
+      if (ytPlayerRef.current) ytPlayerRef.current.pauseVideo();
     } else {
-      ytPlayerRef.current.playVideo();
       setIsPlaying(true);
+      postToYT("playVideo");
+      if (ytPlayerRef.current) ytPlayerRef.current.playVideo();
     }
   }
 
@@ -293,30 +347,29 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
 
   function handleVolumeChange(newVol: number) {
     setVolume(newVol);
+    postToYT("setVolume", [newVol]);
     if (ytPlayerRef.current) {
       ytPlayerRef.current.setVolume(newVol);
-      if (newVol > 0 && isMuted) {
-        ytPlayerRef.current.unMute();
-        setIsMuted(false);
-      }
+    }
+    if (newVol > 0 && isMuted) {
+      postToYT("unMute");
+      if (ytPlayerRef.current) ytPlayerRef.current.unMute();
+      setIsMuted(false);
     }
   }
 
   function toggleMute() {
-    if (ytPlayerRef.current) {
-      if (isMuted) {
-        ytPlayerRef.current.unMute();
-        setIsMuted(false);
-      } else {
-        ytPlayerRef.current.mute();
-        setIsMuted(true);
-      }
+    if (isMuted) {
+      postToYT("unMute");
+      if (ytPlayerRef.current) ytPlayerRef.current.unMute();
+      setIsMuted(false);
     } else {
-      setIsMuted(!isMuted);
+      postToYT("mute");
+      if (ytPlayerRef.current) ytPlayerRef.current.mute();
+      setIsMuted(true);
     }
   }
 
-  // Queue helper functions
   function addToQueue(track: DiscTrack, playNext: boolean = false) {
     if (playNext) {
       setQueue((prev) => [track, ...prev]);
@@ -347,7 +400,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     showToast("Jukebox queue cleared", "info");
   }
 
-  // Filtered crate catalog
   const filteredDiscs = useMemo(() => {
     return catalog.filter((disc) => {
       const matchesCategory = activeCategory === "all" || disc.category === activeCategory;
@@ -364,14 +416,12 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     });
   }, [catalog, activeCategory, searchQuery]);
 
-  // YouTube URL preview updater in modal
   function handleSuggestUrlChange(val: string) {
     setSuggestInputUrl(val);
     const parsedId = parseYouTubeId(val);
     setSuggestPreviewId(parsedId);
   }
 
-  // Submit new song
   async function submitTrack(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -395,8 +445,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       }
 
       const newTrack = data.track;
-
-      // Add to catalog & save to localStorage
       setCatalog((prev) => [newTrack, ...prev]);
       try {
         const existing = JSON.parse(localStorage.getItem("dougies-custom-discs") || "[]") as DiscTrack[];
@@ -405,9 +453,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         // Ignore
       }
 
-      // Add to queue and optionally play immediately
       addToQueue(newTrack, true);
-
       setSuggestStatus({ kind: "success", msg: data.message || "Disc dropped into the jukebox!" });
       showToast(`Added "${newTrack.title}" to Dougie's Jukebox!`, "success");
 
@@ -418,7 +464,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       setTimeout(() => {
         setIsSuggestOpen(false);
         setSuggestStatus({ kind: "idle", msg: "" });
-      }, 1500);
+      }, 1200);
     } catch (err) {
       setSuggestStatus({
         kind: "error",
@@ -429,7 +475,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   }
 
-  // Synthesized Soundboard Sound FX (Web Audio API)
   function playSoundbite(label: string, quote: string, type: "horn" | "engine" | "crackle" | "bell") {
     setSoundboardQuote(quote);
     setTimeout(() => setSoundboardQuote(null), 3500);
@@ -445,10 +490,8 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       }
 
       const now = ctx.currentTime;
-
       if (type === "horn") {
-        // Brass chord flourish (Blues Brothers horn section burst)
-        const freqs = [220, 277.18, 329.63, 440]; // A major / blues chord
+        const freqs = [220, 277.18, 329.63, 440];
         freqs.forEach((f) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -462,7 +505,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           osc.stop(now + 0.6);
         });
       } else if (type === "engine") {
-        // Bluesmobile rev / siren synth
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "triangle";
@@ -476,7 +518,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         osc.start(now);
         osc.stop(now + 0.8);
       } else if (type === "crackle") {
-        // Vinyl needle drop crackle
         const bufferSize = ctx.sampleRate * 0.5;
         const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -492,7 +533,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         gain.connect(ctx.destination);
         noise.start(now);
       } else if (type === "bell") {
-        // Cash register / nickel drop in jukebox slot
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
@@ -506,13 +546,14 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         osc.stop(now + 0.7);
       }
     } catch {
-      // AudioContext unavailable
+      // AudioContext fallback
     }
   }
 
+  const iframeSrc = `https://www.youtube-nocookie.com/embed/${currentTrack.youtubeId}?enablejsapi=1&autoplay=${hasStartedPlayback ? 1 : 0}&rel=0&playsinline=1`;
+
   return (
     <section className="dougies-discs-container" aria-label="Dougie's Discs Jukebox Console">
-      {/* Background Star Ambient Atmosphere */}
       <div className="jukebox-stars" aria-hidden="true" />
 
       {/* Floating Notification Toasts */}
@@ -527,42 +568,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         </aside>
       )}
 
-      {/* Jukebox Heading & Top Stats */}
-      <header className="jukebox-header">
-        <div>
-          <p className="eyebrow">Outer Rim Speakeasy · 33⅓ &amp; 45 RPM</p>
-          <h2>
-            Dougie&apos;s Discs.<br />
-            <em>Drop a credit. Spin the blues.</em>
-          </h2>
-          <div className="jukebox-frequency">
-            <span>BB-45</span>
-            Chicago Blues &amp; Soul Transmission
-          </div>
-        </div>
-
-        <div className="jukebox-stats-card">
-          <div className="status-indicator">
-            <span className={`live-bulb${isPlaying ? " is-pulsing" : ""}`} />
-            <strong>Jukebox Online</strong>
-          </div>
-          <div className="stats-breakdown">
-            <span><b>{catalog.length}</b> records in the crate</span>
-            <span><b>{queue.length}</b> in queue</span>
-          </div>
-          <button
-            type="button"
-            className="suggest-trigger-btn"
-            onClick={() => {
-              setIsSuggestOpen(true);
-              playSoundbite("Nickel", "Drop a nickel in the slot!", "bell");
-            }}
-          >
-            <span aria-hidden="true">🪙</span> Drop a Record in the Slot
-          </button>
-        </div>
-      </header>
-
       {/* Speech bubble for Soundboard quotes */}
       {soundboardQuote && (
         <div className="soundboard-shout" aria-live="assertive">
@@ -571,85 +576,96 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         </div>
       )}
 
-      {/* MAIN JUKEBOX CONSOLE */}
-      <div className="jukebox-console">
-        {/* LEFT / CENTER: TURNTABLE & PLAYER STAGE */}
-        <div className="jukebox-deck-stage">
-          {/* Deck Header & View Mode Switcher */}
-          <div className="deck-mode-bar">
-            <div className="deck-station-info">
-              <span className="station-led" />
-              <strong>DECK A · {currentTrack.album} ({currentTrack.year})</strong>
-            </div>
+      {/* COMPACT JUKEBOX CHASSIS & COCKPIT */}
+      <div className="jukebox-cockpit-wrapper" ref={consoleRef}>
+        {/* Cockpit Top Bar */}
+        <div className="cockpit-top-bar">
+          <div className="cockpit-station">
+            <span className={`live-bulb${isPlaying ? " is-pulsing" : ""}`} />
+            <strong>DOUGIE&apos;S HI-FI JUKEBOX</strong>
+            <span className="station-code">FREQ BB-45</span>
+          </div>
 
-            <div className="deck-mode-toggles">
+          <div className="cockpit-top-actions">
+            <div className="cockpit-mode-pills">
               <button
                 type="button"
                 className={playerMode === "vinyl" ? "active" : ""}
                 onClick={() => setPlayerMode("vinyl")}
-                title="Spinning Turntable View"
               >
-                <span>💿</span> Turntable Deck
+                <span>💿</span> Turntable
               </button>
               <button
                 type="button"
                 className={playerMode === "video" ? "active" : ""}
                 onClick={() => setPlayerMode("video")}
-                title="YouTube Video Clip View"
               >
-                <span>📺</span> Video Stage
+                <span>📺</span> Video Clip
               </button>
             </div>
-          </div>
 
-          {/* TURNTABLE / VIDEO DISPLAY AREA */}
-          <div className="deck-viewport" ref={playerContainerRef}>
-            {/* HIDDEN / EMBEDDED YOUTUBE PLAYER CONTAINER */}
-            <div
-              className={`yt-embed-wrap${playerMode === "video" ? " is-visible" : " is-background"}`}
-              aria-label="YouTube Music Player"
+            <button
+              type="button"
+              className="cockpit-drop-record-btn"
+              onClick={() => {
+                setIsSuggestOpen(true);
+                playSoundbite("Nickel", "Drop a nickel in the slot!", "bell");
+              }}
             >
-              <div id="dougies-yt-player" />
+              <span aria-hidden="true">🪙</span> Drop a Record
+            </button>
+          </div>
+        </div>
+
+        {/* Cockpit Main Stage: Compact Turntable + Integrated LED Readout & Controls */}
+        <div className="cockpit-main-deck">
+          {/* LEFT: COMPACT TURNTABLE OR DIRECT VIDEO */}
+          <div className={`cockpit-stage-display${playerMode === "video" ? " is-video-active" : ""}`}>
+            {/* EMBEDDED YOUTUBE IFRAME (Always active in DOM so sound NEVER gets throttled) */}
+            <div className={`active-yt-container${playerMode === "video" ? " is-full-view" : " is-audio-docked"}`}>
+              <iframe
+                ref={iframeRef}
+                id="dougies-yt-iframe"
+                src={iframeSrc}
+                title="YouTube Video Player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </div>
 
-            {/* REALISTIC SPINNING VINYL DECK VIEW */}
+            {/* REALISTIC ROTATING VINYL DECK (Visible in Vinyl mode) */}
             {playerMode === "vinyl" && (
-              <div className="vinyl-deck-container" aria-hidden="false">
-                <div className={`turntable-platter platter-${currentTrack.vinylColor}`}>
-                  {/* Glowing Platter Neon Rim */}
-                  <div className={`platter-rim-glow${isPlaying ? " is-active" : ""}`} />
+              <div className="compact-turntable-card">
+                <div className={`compact-platter platter-${currentTrack.vinylColor}`}>
+                  <div className={`compact-platter-glow${isPlaying ? " is-active" : ""}`} />
 
-                  {/* Grooved Vinyl Disc */}
-                  <div className={`vinyl-disc${isPlaying ? " is-spinning" : ""}`}>
-                    <div className="vinyl-groove-ring ring-1" />
-                    <div className="vinyl-groove-ring ring-2" />
-                    <div className="vinyl-groove-ring ring-3" />
-                    <div className="vinyl-groove-ring ring-4" />
-                    <div className="vinyl-groove-ring ring-5" />
+                  {/* Spinning Disc */}
+                  <div className={`compact-vinyl-disc${isPlaying ? " is-spinning" : ""}`}>
+                    <div className="compact-groove-ring ring-1" />
+                    <div className="compact-groove-ring ring-2" />
+                    <div className="compact-groove-ring ring-3" />
 
-                    {/* Center Record Label */}
-                    <div className={`vinyl-center-label label-${currentTrack.vinylColor}`}>
-                      <div className="label-top">DOUGIE&apos;S 45 RPM</div>
-                      <div className="label-hole" />
-                      <div className="label-track-title">{currentTrack.title}</div>
-                      <div className="label-artist">{currentTrack.artist}</div>
-                      <div className="label-bot">STEREOPHONIC · BLUES BROTHERS REC</div>
+                    {/* Center 45 RPM Label */}
+                    <div className={`compact-center-label label-${currentTrack.vinylColor}`}>
+                      <span className="compact-label-tag">45 RPM</span>
+                      <div className="compact-spindle-hole" />
+                      <strong className="compact-label-title">{currentTrack.title}</strong>
+                      <small className="compact-label-artist">{currentTrack.artist}</small>
                     </div>
                   </div>
 
-                  {/* Realistic Tonearm */}
-                  <div className={`turntable-tonearm${isPlaying ? " arm-cued" : " arm-parked"}`}>
-                    <div className="tonearm-base" />
-                    <div className="tonearm-pivot" />
-                    <div className="tonearm-wand" />
-                    <div className="tonearm-cartridge">
-                      <span className="stylus-led" />
+                  {/* Tonearm */}
+                  <div className={`compact-tonearm${isPlaying ? " arm-cued" : " arm-parked"}`}>
+                    <div className="c-tonearm-base" />
+                    <div className="c-tonearm-wand" />
+                    <div className="c-tonearm-cartridge">
+                      <span className="c-stylus-light" />
                     </div>
                   </div>
                 </div>
 
-                {/* Animated Neon Audio Spectrum Equalizer */}
-                <div className={`audio-equalizer${isPlaying ? " is-pulsing" : ""}`} aria-label="Audio Visualizer">
+                {/* Pulsing Audio Spectrum Equalizer */}
+                <div className={`compact-equalizer${isPlaying ? " is-pulsing" : ""}`} aria-label="Audio Visualizer">
                   <span className="eq-bar bar-1" />
                   <span className="eq-bar bar-2" />
                   <span className="eq-bar bar-3" />
@@ -660,255 +676,240 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   <span className="eq-bar bar-8" />
                   <span className="eq-bar bar-9" />
                   <span className="eq-bar bar-10" />
-                  <span className="eq-bar bar-11" />
-                  <span className="eq-bar bar-12" />
                 </div>
               </div>
             )}
           </div>
 
-          {/* RETRO LED READOUT / NOW PLAYING DISPLAY */}
-          <div className="jukebox-readout-panel">
-            <div className="readout-eyebrow">
-              <span className="pulse-dot" />
-              <strong>{isPlaying ? "NOW SPINNING ON THE TURNTABLE" : "JUKEBOX PAUSED · SELECT A RECORD"}</strong>
-              <span className="readout-badge">{currentTrack.categoryLabel}</span>
-              <span className="readout-tempo">{currentTrack.tempo}</span>
-            </div>
-
-            <div className="readout-main">
-              <div className="readout-titles">
-                <h3 className="track-title-led">{currentTrack.title}</h3>
-                <p className="track-artist-led">{currentTrack.artist}</p>
+          {/* CENTER: NOW PLAYING READOUT & INTEGRATED CONTROLS */}
+          <div className="cockpit-center-console">
+            {/* LED Status Display */}
+            <div className="cockpit-led-screen">
+              <div className="screen-header">
+                <div className="screen-indicator">
+                  <span className="pulse-dot" />
+                  <strong>{isPlaying ? "NOW SPINNING" : "JUKEBOX READY"}</strong>
+                </div>
+                <div className="screen-badges">
+                  <span className="badge-cat">{currentTrack.categoryLabel}</span>
+                  <span className="badge-tempo">{currentTrack.tempo}</span>
+                </div>
               </div>
-              <div className="readout-meta">
-                <span className="meta-album">{currentTrack.album}</span>
-                <span className="meta-duration">{currentTrack.duration}</span>
+
+              <div className="screen-track-info">
+                <h3 className="screen-title">{currentTrack.title}</h3>
+                <p className="screen-artist">{currentTrack.artist}</p>
+              </div>
+
+              <div className="screen-metadata">
+                <span>{currentTrack.album} ({currentTrack.year})</span>
+                <span className="screen-duration">{currentTrack.duration}</span>
                 {currentTrack.addedBy && (
-                  <span className="meta-addedby">Queued by: <strong>{currentTrack.addedBy}</strong></span>
+                  <span className="screen-contributor">Queued by: <b>{currentTrack.addedBy}</b></span>
                 )}
               </div>
+
+              <p className="screen-vibe">&ldquo;{currentTrack.vibe}&rdquo;</p>
             </div>
 
-            <p className="readout-vibe">&ldquo;{currentTrack.vibe}&rdquo;</p>
-          </div>
+            {/* TIGHT INTEGRATED PLAYBACK CONTROLS (Right below the screen) */}
+            <div className="cockpit-controls-row">
+              {/* Primary Buttons */}
+              <div className="cockpit-playback-group">
+                <button
+                  type="button"
+                  className="c-btn btn-prev"
+                  onClick={skipPrev}
+                  title="Previous Track"
+                  aria-label="Previous Track"
+                >
+                  ⏮
+                </button>
 
-          {/* JUKEBOX CONTROLS BAR */}
-          <div className="jukebox-controls-bar">
-            {/* Playback Controls */}
-            <div className="playback-button-group">
-              <button
-                type="button"
-                className="control-btn btn-secondary"
-                onClick={skipPrev}
-                title="Previous Track"
-                aria-label="Previous Track"
-              >
-                ⏮
-              </button>
+                <button
+                  type="button"
+                  className={`c-btn btn-main-play${isPlaying ? " is-playing" : ""}`}
+                  onClick={togglePlayPause}
+                  title={isPlaying ? "Pause Track" : "Play Track"}
+                  aria-label={isPlaying ? "Pause Track" : "Play Track"}
+                >
+                  {isPlaying ? "⏸ PAUSE" : "▶ SPIN"}
+                </button>
 
-              <button
-                type="button"
-                className={`control-btn btn-primary${isPlaying ? " is-playing" : ""}`}
-                onClick={togglePlayPause}
-                title={isPlaying ? "Pause Track" : "Play Track"}
-                aria-label={isPlaying ? "Pause Track" : "Play Track"}
-              >
-                {isPlaying ? "⏸ PAUSE" : "▶ SPIN"}
-              </button>
+                <button
+                  type="button"
+                  className="c-btn btn-next"
+                  onClick={skipNext}
+                  title="Next Track"
+                  aria-label="Next Track"
+                >
+                  ⏭
+                </button>
 
-              <button
-                type="button"
-                className="control-btn btn-secondary"
-                onClick={skipNext}
-                title="Next Track"
-                aria-label="Next Track"
-              >
-                ⏭
-              </button>
+                <button
+                  type="button"
+                  className={`c-btn btn-icon${isShuffle ? " is-active" : ""}`}
+                  onClick={() => {
+                    setIsShuffle(!isShuffle);
+                    showToast(isShuffle ? "Shuffle disabled" : "Shuffle crate enabled", "info");
+                  }}
+                  title={isShuffle ? "Shuffle: ON" : "Shuffle: OFF"}
+                  aria-pressed={isShuffle}
+                >
+                  🔀
+                </button>
 
-              <button
-                type="button"
-                className={`control-btn btn-toggle${isShuffle ? " is-active" : ""}`}
-                onClick={() => {
-                  setIsShuffle(!isShuffle);
-                  showToast(isShuffle ? "Shuffle disabled" : "Shuffle crate enabled", "info");
-                }}
-                title={isShuffle ? "Shuffle On" : "Shuffle Off"}
-                aria-pressed={isShuffle}
-              >
-                🔀
-              </button>
-
-              <button
-                type="button"
-                className={`control-btn btn-toggle${repeatMode !== "off" ? " is-active" : ""}`}
-                onClick={() => {
-                  const nextMode = repeatMode === "off" ? "all" : repeatMode === "all" ? "one" : "off";
-                  setRepeatMode(nextMode);
-                  showToast(`Repeat: ${nextMode.toUpperCase()}`, "info");
-                }}
-                title={`Repeat: ${repeatMode}`}
-              >
-                {repeatMode === "one" ? "🔂" : "🔁"}
-              </button>
-            </div>
-
-            {/* Volume & Audio Controls */}
-            <div className="volume-control-group">
-              <button
-                type="button"
-                className="mute-btn"
-                onClick={toggleMute}
-                title={isMuted ? "Unmute" : "Mute"}
-                aria-label={isMuted ? "Unmute" : "Mute"}
-              >
-                {isMuted || volume === 0 ? "🔇" : volume < 50 ? "🔉" : "🔊"}
-              </button>
-              <label className="volume-slider-label">
-                <span className="sr-only">Volume</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={isMuted ? 0 : volume}
-                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                  className="volume-slider"
-                />
-              </label>
-              <span className="volume-percentage">{isMuted ? 0 : volume}%</span>
-            </div>
-
-            {/* Queue Toggle Button */}
-            <button
-              type="button"
-              className={`queue-toggle-btn${isQueueOpen ? " is-open" : ""}`}
-              onClick={() => setIsQueueOpen(!isQueueOpen)}
-              aria-expanded={isQueueOpen}
-              aria-controls="jukebox-queue-drawer"
-            >
-              <span>📋</span>
-              <strong>Queue</strong>
-              <span className="queue-count-badge">{queue.length}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* RIGHT: THE UP NEXT QUEUE DRAWER / PANEL */}
-        <aside
-          className={`jukebox-queue-panel${isQueueOpen ? " is-expanded" : ""}`}
-          id="jukebox-queue-drawer"
-          aria-label="Up Next Queue"
-        >
-          <div className="queue-panel-header">
-            <div>
-              <h4>Up Next in the Slot</h4>
-              <p>{queue.length === 0 ? "Queue is empty · Autoplaying crate" : `${queue.length} track(s) ready to spin`}</p>
-            </div>
-            {queue.length > 0 && (
-              <button type="button" className="clear-queue-btn" onClick={clearQueue}>
-                Clear
-              </button>
-            )}
-          </div>
-
-          {/* Queue Auto-advance toggle */}
-          <div className="queue-settings-bar">
-            <label className="auto-advance-toggle">
-              <input
-                type="checkbox"
-                checked={autoAdvance}
-                onChange={(e) => setAutoAdvance(e.target.checked)}
-              />
-              <span>Autoplay crate when queue ends</span>
-            </label>
-          </div>
-
-          {/* Queue Track List */}
-          <div className="queue-items-list">
-            {queue.length === 0 ? (
-              <div className="queue-empty-state">
-                <span className="empty-icon">💿</span>
-                <p>The queue slot is open.</p>
-                <small>Click <strong>＋ Queue</strong> on any record below or drop your own YouTube link into the jukebox.</small>
+                <button
+                  type="button"
+                  className={`c-btn btn-icon${repeatMode !== "off" ? " is-active" : ""}`}
+                  onClick={() => {
+                    const nextMode = repeatMode === "off" ? "all" : repeatMode === "all" ? "one" : "off";
+                    setRepeatMode(nextMode);
+                    showToast(`Repeat: ${nextMode.toUpperCase()}`, "info");
+                  }}
+                  title={`Repeat: ${repeatMode}`}
+                >
+                  {repeatMode === "one" ? "🔂" : "🔁"}
+                </button>
               </div>
-            ) : (
-              queue.map((track, idx) => (
-                <article className="queue-track-row" key={`${track.id}-${idx}`}>
-                  <span className="queue-track-number">#{idx + 1}</span>
-                  <div className="queue-track-info">
-                    <strong>{track.title}</strong>
-                    <small>{track.artist} · {track.duration}</small>
-                  </div>
-                  <div className="queue-track-actions">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setQueue((prev) => prev.filter((_, i) => i !== idx));
-                        playTrack(track);
-                      }}
-                      title="Play right now"
-                      className="q-action-btn play"
-                    >
-                      ▶
-                    </button>
-                    {idx > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => moveQueueItem(idx, idx - 1)}
-                        title="Move Up"
-                        className="q-action-btn"
-                      >
-                        ▲
-                      </button>
-                    )}
-                    {idx < queue.length - 1 && (
-                      <button
-                        type="button"
-                        onClick={() => moveQueueItem(idx, idx + 1)}
-                        title="Move Down"
-                        className="q-action-btn"
-                      >
-                        ▼
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => removeFromQueue(idx)}
-                      title="Remove from queue"
-                      className="q-action-btn remove"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </article>
-              ))
-            )}
+
+              {/* Volume & Queue Button */}
+              <div className="cockpit-secondary-group">
+                <div className="cockpit-volume-slider-wrap">
+                  <button
+                    type="button"
+                    className="c-vol-mute-btn"
+                    onClick={toggleMute}
+                    title={isMuted ? "Unmute" : "Mute"}
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? "🔇" : volume < 50 ? "🔉" : "🔊"}
+                  </button>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={isMuted ? 0 : volume}
+                    onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                    className="cockpit-volume-input"
+                    aria-label="Volume Slider"
+                  />
+                  <span className="cockpit-vol-number">{isMuted ? 0 : volume}%</span>
+                </div>
+
+                <button
+                  type="button"
+                  className={`cockpit-queue-btn${isQueueOpen ? " is-active" : ""}`}
+                  onClick={() => setIsQueueOpen(!isQueueOpen)}
+                  aria-expanded={isQueueOpen}
+                  aria-controls="cockpit-queue-drawer"
+                >
+                  <span>📋</span>
+                  <strong>Queue</strong>
+                  <span className="queue-pill">{queue.length}</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </aside>
+
+          {/* RIGHT: UP NEXT QUEUE DRAWER */}
+          <aside
+            className={`cockpit-queue-drawer${isQueueOpen ? " is-open" : ""}`}
+            id="cockpit-queue-drawer"
+            aria-label="Up Next Queue"
+          >
+            <div className="queue-head">
+              <div>
+                <h4>Up Next in the Slot</h4>
+                <small>{queue.length === 0 ? "Autoplaying crate catalog" : `${queue.length} track(s) in line`}</small>
+              </div>
+              {queue.length > 0 && (
+                <button type="button" className="q-clear-btn" onClick={clearQueue}>
+                  Clear
+                </button>
+              )}
+            </div>
+
+            <div className="queue-toggle-row">
+              <label className="q-auto-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoAdvance}
+                  onChange={(e) => setAutoAdvance(e.target.checked)}
+                />
+                <span>Continuous crate autoplay</span>
+              </label>
+            </div>
+
+            <div className="queue-list-scroll">
+              {queue.length === 0 ? (
+                <div className="queue-empty-box">
+                  <span className="q-empty-disc">💿</span>
+                  <p>Slot is open.</p>
+                  <small>Click <strong>＋ Queue</strong> on any track in the crate below.</small>
+                </div>
+              ) : (
+                queue.map((track, idx) => (
+                  <article className="queue-item-card" key={`${track.id}-${idx}`}>
+                    <span className="q-num">#{idx + 1}</span>
+                    <div className="q-text">
+                      <strong>{track.title}</strong>
+                      <small>{track.artist} · {track.duration}</small>
+                    </div>
+                    <div className="q-btns">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQueue((prev) => prev.filter((_, i) => i !== idx));
+                          playTrack(track);
+                        }}
+                        title="Spin now"
+                        className="q-btn-play"
+                      >
+                        ▶
+                      </button>
+                      {idx > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => moveQueueItem(idx, idx - 1)}
+                          title="Move up"
+                          className="q-btn-move"
+                        >
+                          ▲
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeFromQueue(idx)}
+                        title="Remove"
+                        className="q-btn-del"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
+          </aside>
+        </div>
       </div>
 
-      {/* SOUNDBOARD: FAMOUS BLUES BROTHERS SOUNDBITES */}
+      {/* QUICK SOUNDBOARD: BLUES BROTHERS SOUNDBITES */}
       <section className="soundboard-section" aria-labelledby="soundboard-heading">
         <div className="signature-heading">
           <div>
             <span>01</span>
-            <h3 id="soundboard-heading">Dougie&apos;s Speakeasy Drops &amp; Quotes</h3>
+            <h3 id="soundboard-heading">Speakeasy Quotes &amp; Analog Drops</h3>
           </div>
-          <p>Hit a button for classic movie lines and analog atmosphere.</p>
+          <p>Instant movie quotes &amp; needle-drop atmosphere.</p>
         </div>
 
         <div className="soundboard-grid">
           <button
             type="button"
             className="soundbite-card"
-            onClick={() =>
-              playSoundbite(
-                "Mission",
-                "We're on a mission from God.",
-                "bell"
-              )
-            }
+            onClick={() => playSoundbite("Mission", "We're on a mission from God.", "bell")}
           >
             <span className="sound-icon">✝️</span>
             <strong>&ldquo;On a mission from God&rdquo;</strong>
@@ -934,13 +935,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           <button
             type="button"
             className="soundbite-card"
-            onClick={() =>
-              playSoundbite(
-                "Horns",
-                "Play it Steve! Take it out to the street!",
-                "horn"
-              )
-            }
+            onClick={() => playSoundbite("Horns", "Play it Steve! Take it out to the street!", "horn")}
           >
             <span className="sound-icon">🎺</span>
             <strong>&ldquo;Play It, Steve!&rdquo;</strong>
@@ -950,29 +945,23 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           <button
             type="button"
             className="soundbite-card"
-            onClick={() =>
-              playSoundbite(
-                "Needle Drop",
-                "Spinning 45 RPM analogue vinyl directly from Chess Records.",
-                "crackle"
-              )
-            }
+            onClick={() => playSoundbite("Needle Drop", "Spinning 45 RPM analogue vinyl directly from Chess Records.", "crackle")}
           >
             <span className="sound-icon">📻</span>
-            <strong>&ldquo;Needle Drop &amp; Vinyl Crackle&rdquo;</strong>
+            <strong>&ldquo;Needle Drop &amp; Crackle&rdquo;</strong>
             <small>33⅓ / 45 RPM stylus drop</small>
           </button>
         </div>
       </section>
 
-      {/* CRATE DIGGING: CATALOG OF VINYL DISCS */}
+      {/* CRATE DIGGING: FULL CATALOG */}
       <section className="crate-catalog-section" aria-labelledby="crate-heading">
         <div className="signature-heading">
           <div>
             <span>02</span>
             <h3 id="crate-heading">Digging in Dougie&apos;s Vinyl Crate</h3>
           </div>
-          <p>Browse Chicago blues legends, Stax soul, and movie soundtracks.</p>
+          <p>29 verified Chicago blues legends, Stax soul anthems, and movie soundtracks.</p>
         </div>
 
         {/* Filter Pills & Search Bar */}
@@ -1033,7 +1022,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           </div>
         ) : (
           <div className="vinyl-grid">
-            {filteredDiscs.map((disc, idx) => {
+            {filteredDiscs.map((disc) => {
               const isCurrent = currentTrack.id === disc.id;
               const queuePosition = queue.findIndex((q) => q.id === disc.id);
               const inQueue = queuePosition !== -1;
@@ -1065,7 +1054,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                       </div>
                     </div>
 
-                    {/* Sliding Vinyl Record Edge */}
+                    {/* Sliding Vinyl Record */}
                     <div className={`sliding-vinyl disc-${disc.vinylColor}${isCurrent && isPlaying ? " is-spinning-fast" : ""}`}>
                       <div className="inner-label">
                         <span />
@@ -1084,7 +1073,12 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                       <button
                         type="button"
                         className={`btn-spin-now${isCurrent && isPlaying ? " is-active" : ""}`}
-                        onClick={() => playTrack(disc)}
+                        onClick={() => {
+                          playTrack(disc);
+                          if (consoleRef.current) {
+                            consoleRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                          }
+                        }}
                         aria-label={`Spin ${disc.title}`}
                       >
                         {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin Now"}
@@ -1107,7 +1101,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
         )}
       </section>
 
-      {/* SUGGESTION / DROP A NICKEL MODAL DIALOG */}
+      {/* SUGGESTION / DROP A RECORD MODAL */}
       {isSuggestOpen && (
         <div className="modal-backdrop" onClick={() => setIsSuggestOpen(false)}>
           <div
@@ -1222,7 +1216,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   />
                 </label>
 
-                {/* Anti-bot Honeypot */}
                 <label className="cafe-honeypot" aria-hidden="true">
                   <span>Website</span>
                   <input name="website" tabIndex={-1} autoComplete="off" />

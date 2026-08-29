@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.26.1 — 2026-08-29
+
+- **Tightened Cockpit & Above-the-Fold Controls (`/dougies-discs`)**: streamlined Dougie's Discs page hero and integrated the turntable, LED Now Playing readout, tactile playback buttons (⏮, ▶ SPIN / ⏸ PAUSE, ⏭, 🔀, 🔁, Volume slider, Mute, Queue), and Up Next list into a unified compact cockpit so controls are immediately reachable without scrolling.
+- **Direct YouTube Audio Playback & Catalog Fix**: verified and updated all 29 track YouTube IDs with live 200 OK embeds across the Blues Brothers and Chicago blues catalog, resolved background media power throttling on audio playback, and added direct postMessage + iframe playback hooks.
+
 ## 0.26.0 — 2026-08-29
 
 - **Dougie's Discs galactic Jukebox (`/dougies-discs`)**: new interactive music lounge with custom tavern header art (`/dougies-discs.png`), Blues Brothers movie hits, Chicago blues, Stax soul, and community suggestions.

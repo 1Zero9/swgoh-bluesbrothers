@@ -49,7 +49,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "The Blues Brothers",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "EHV0ZsAKoqI",
+    youtubeId: "EHV0zs0kVGg",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "3:24",
@@ -63,7 +63,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "The Blues Brothers",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "YnaSRhMB_qo",
+    youtubeId: "FTWH1Fdkjow",
     album: "Briefcase Full of Blues",
     year: 1978,
     duration: "3:02",
@@ -77,7 +77,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "The Blues Brothers",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "9hB3S9y2Xh8",
+    youtubeId: "euJ22UqLD5Y",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "7:56",
@@ -91,7 +91,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Aretha Franklin & The Blues Brothers Band",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "Vet6AH74xRY",
+    youtubeId: "RTXszRHc0qs",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "3:15",
@@ -105,7 +105,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Ray Charles & The Blues Brothers Band",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "0fG_Yn1cQ34",
+    youtubeId: "qdbrIrFxas0",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "2:49",
@@ -119,7 +119,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Cab Calloway & The Blues Brothers Band",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "zZ5gCGJorK8",
+    youtubeId: "250MMq0fTrU",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "3:23",
@@ -133,11 +133,11 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "John Lee Hooker",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "wSnQ0bdHW0s",
+    youtubeId: "Ig90UsFv1Wc",
     album: "The Blues Brothers (Maxwell Street Scene)",
     year: 1980,
     duration: "3:38",
-    vibe: "Filmed live on Maxwell Street in Chicago outside the Soul Food Cafe. Boom boom boom boom, I'm gonna shoot you right down.",
+    vibe: "Filmed live on Maxwell Street in Chicago outside the Soul Food Cafe. Boom boom boom boom!",
     vinylColor: "rust",
     tempo: "Midtempo Groove",
   },
@@ -147,11 +147,11 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Muddy Waters",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "w5IOou6qN1o",
+    youtubeId: "bSfqNEvykv0",
     album: "Hard Again",
     year: 1977,
     duration: "5:23",
-    vibe: "The undisputed godfather of electric Chicago blues. Everything, everything, everything's gonna be alright this mornin'.",
+    vibe: "The undisputed godfather of electric Chicago blues. Everything's gonna be alright this mornin'.",
     vinylColor: "amber",
     tempo: "Driving Shuffle",
   },
@@ -161,7 +161,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Muddy Waters",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "8hEYwk0bypY",
+    youtubeId: "-SBmury81Ws",
     album: "At Newport 1960 (Chess Records)",
     year: 1960,
     duration: "4:08",
@@ -175,7 +175,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Howlin' Wolf",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "9Ri7TcukAJ8",
+    youtubeId: "VMUt8KdDtTY",
     album: "Moanin' in the Moonlight (Chess Records)",
     year: 1956,
     duration: "3:07",
@@ -189,7 +189,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Junior Wells & Buddy Guy",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "jMXXnUzM_OI",
+    youtubeId: "cWTieCjUhVw",
     album: "Hoodoo Man Blues",
     year: 1965,
     duration: "2:54",
@@ -203,7 +203,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Buddy Guy",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "kyXz6U1ea3w",
+    youtubeId: "QUKC-RHuJhQ",
     album: "Damn Right, I've Got the Blues",
     year: 1991,
     duration: "4:30",
@@ -217,7 +217,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Koko Taylor",
     category: "chicago-blues",
     categoryLabel: "Chicago Blues",
-    youtubeId: "dOtz2xLhL_Q",
+    youtubeId: "qyUHkY0K8HE",
     album: "Koko Taylor (Chess Records)",
     year: 1965,
     duration: "3:00",
@@ -231,7 +231,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Sam & Dave",
     category: "stax-soul",
     categoryLabel: "Stax & Soul",
-    youtubeId: "6r7pQeA_jK4",
+    youtubeId: "6JElrEbAcwY",
     album: "Hold On, I'm Comin' (Stax Records)",
     year: 1966,
     duration: "2:36",
@@ -270,14 +270,14 @@ export const CURATED_DISCS: DiscTrack[] = [
   {
     id: "disc-born-under-a-bad-sign",
     title: "Born Under a Bad Sign",
-    artist: "Albert King",
+    artist: "Albert King & Stevie Ray Vaughan",
     category: "stax-soul",
     categoryLabel: "Stax & Soul",
-    youtubeId: "2Py37G9vR4U",
-    album: "Born Under a Bad Sign (Stax Records)",
-    year: 1967,
-    duration: "2:47",
-    vibe: "If it wasn't for bad luck, I wouldn't have no luck at all. Albert King's Flying V guitar bends upside down.",
+    youtubeId: "SeLddbrzsHk",
+    album: "In Session (Stax Records)",
+    year: 1983,
+    duration: "4:15",
+    vibe: "If it wasn't for bad luck, I wouldn't have no luck at all. Legendary dual blues summit.",
     vinylColor: "purple",
     tempo: "Driving Shuffle",
   },
@@ -287,7 +287,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "B.B. King",
     category: "stax-soul",
     categoryLabel: "Stax & Soul",
-    youtubeId: "oica5jG7FpU",
+    youtubeId: "SgXSomPE_FY",
     album: "Completely Well",
     year: 1969,
     duration: "5:26",
@@ -301,7 +301,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Etta James",
     category: "stax-soul",
     categoryLabel: "Stax & Soul",
-    youtubeId: "u9sq3ME0JHQ",
+    youtubeId: "Bcus42ihkTI",
     album: "Tell Mama (Chess Records)",
     year: 1968,
     duration: "2:35",
@@ -315,8 +315,8 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "Stevie Ray Vaughan & Double Trouble",
     category: "delta-roots",
     categoryLabel: "Delta & Roots",
-    youtubeId: "0vo23H9J8LE",
-    album: "Texas Flood",
+    youtubeId: "kfjXp4KTTY8",
+    album: "Texas Flood (Live at Montreux)",
     year: 1983,
     duration: "3:39",
     vibe: "Unrelenting Texas shuffle with heavy gauge strings and blistering Strat tone inspired by Chicago legends.",
@@ -329,7 +329,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "The Blues Brothers",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "2uO4Q-vQkX4",
+    youtubeId: "o5xexv-dMrM",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "4:10",
@@ -343,7 +343,7 @@ export const CURATED_DISCS: DiscTrack[] = [
     artist: "The Blues Brothers Band",
     category: "blues-brothers",
     categoryLabel: "Blues Brothers",
-    youtubeId: "jK8pXp0i0sU",
+    youtubeId: "9DgFOsEs-kE",
     album: "The Blues Brothers (Original Soundtrack)",
     year: 1980,
     duration: "3:19",
@@ -365,32 +365,104 @@ export const CURATED_DISCS: DiscTrack[] = [
     vinylColor: "rust",
     tempo: "Driving Shuffle",
   },
+  {
+    id: "disc-gimme-some-lovin",
+    title: "Gimme Some Lovin'",
+    artist: "The Blues Brothers",
+    category: "blues-brothers",
+    categoryLabel: "Blues Brothers",
+    youtubeId: "-aqZmPInK3o",
+    album: "The Blues Brothers (Original Soundtrack)",
+    year: 1980,
+    duration: "3:06",
+    vibe: "Steve Cropper's guitar rhythm and the horn section in top gear.",
+    vinylColor: "gold",
+    tempo: "High Energy",
+  },
+  {
+    id: "disc-jailhouse-rock",
+    title: "Jailhouse Rock",
+    artist: "The Blues Brothers",
+    category: "blues-brothers",
+    categoryLabel: "Blues Brothers",
+    youtubeId: "hjLruk4uZzQ",
+    album: "The Blues Brothers (End Credits)",
+    year: 1980,
+    duration: "3:17",
+    vibe: "The prison yard finale with the entire band and inmates jumping to the beat.",
+    vinylColor: "cyan",
+    tempo: "High Energy",
+  },
+  {
+    id: "disc-flip-flop-fly",
+    title: "Flip, Flop & Fly",
+    artist: "The Blues Brothers",
+    category: "blues-brothers",
+    categoryLabel: "Blues Brothers",
+    youtubeId: "zkXf41oH0dI",
+    album: "Briefcase Full of Blues",
+    year: 1978,
+    duration: "3:35",
+    vibe: "Jump blues classic with Jake's full-throttle vocals and blazing harmonica solo.",
+    vinylColor: "crimson",
+    tempo: "Jumping Stomp",
+  },
+  {
+    id: "disc-born-in-chicago",
+    title: "Born in Chicago",
+    artist: "The Paul Butterfield Blues Band",
+    category: "chicago-blues",
+    categoryLabel: "Chicago Blues",
+    youtubeId: "nNkNuVRhkks",
+    album: "The Paul Butterfield Blues Band",
+    year: 1965,
+    duration: "3:10",
+    vibe: "I was born in Chicago, 1941. Mike Bloomfield's blistering electric guitar and Butterfield's harp.",
+    vinylColor: "emerald",
+    tempo: "Driving Shuffle",
+  },
+  {
+    id: "disc-my-babe",
+    title: "My Babe",
+    artist: "Little Walter",
+    category: "chicago-blues",
+    categoryLabel: "Chicago Blues",
+    youtubeId: "duRp_avXtMM",
+    album: "The Best of Little Walter (Chess Records)",
+    year: 1955,
+    duration: "2:40",
+    vibe: "The defining amplified Chicago blues harmonica track written by Willie Dixon.",
+    vinylColor: "purple",
+    tempo: "Midtempo Groove",
+  },
+  {
+    id: "disc-cross-road-blues",
+    title: "Cross Road Blues",
+    artist: "Robert Johnson",
+    category: "delta-roots",
+    categoryLabel: "Delta & Roots",
+    youtubeId: "Kxi4XkIVWLQ",
+    album: "King of the Delta Blues Singers",
+    year: 1936,
+    duration: "2:41",
+    vibe: "The mythical midnight meeting at the crossroads that gave birth to modern blues and rock.",
+    vinylColor: "rust",
+    tempo: "Slow & Smoky",
+  },
 ];
 
-/**
- * Extract standard 11-char YouTube Video ID from any input:
- * - https://www.youtube.com/watch?v=dQw4w9WgXcQ
- * - https://youtu.be/dQw4w9WgXcQ
- * - https://www.youtube.com/embed/dQw4w9WgXcQ
- * - https://www.youtube.com/shorts/dQw4w9WgXcQ
- * - https://music.youtube.com/watch?v=dQw4w9WgXcQ
- * - Raw 11-character video ID
- */
 export function parseYouTubeId(input: string): string | null {
   if (!input) return null;
   const trimmed = input.trim();
 
-  // If it's already a clean 11-character alphanumeric/dash/underscore ID
   if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
     return trimmed;
   }
 
   try {
-    // Try standard URL parsing
     const url = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
     const hostname = url.hostname.toLowerCase();
 
-    // youtu.be/<id>
     if (hostname.includes("youtu.be")) {
       const pathname = url.pathname.slice(1).split("/")[0]?.split("?")[0];
       if (pathname && /^[a-zA-Z0-9_-]{11}$/.test(pathname)) {
@@ -398,15 +470,12 @@ export function parseYouTubeId(input: string): string | null {
       }
     }
 
-    // youtube.com
-    if (hostname.includes("youtube.com")) {
-      // /watch?v=<id>
+    if (hostname.includes("youtube.com") || hostname.includes("youtube-nocookie.com")) {
       const v = url.searchParams.get("v");
       if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) {
         return v;
       }
 
-      // /embed/<id> or /v/<id> or /shorts/<id>
       const parts = url.pathname.split("/").filter(Boolean);
       if (parts[0] === "embed" || parts[0] === "v" || parts[0] === "shorts") {
         const id = parts[1]?.split("?")[0];
@@ -416,8 +485,7 @@ export function parseYouTubeId(input: string): string | null {
       }
     }
   } catch {
-    // Fallback regex scan for 11-char YouTube ID pattern
-    const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/i);
+    const match = trimmed.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/i);
     if (match?.[1]) {
       return match[1];
     }
