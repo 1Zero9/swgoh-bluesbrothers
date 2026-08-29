@@ -26,23 +26,25 @@ export default function PageHero({
   syncLabel,
 }: PageHeroProps) {
   return (
-    <section className={`page-hero ${className}`.trim()}>
-      <Image
-        className="page-hero-image"
-        src={image}
-        alt={imageAlt}
-        fill
-        priority={priority}
-        sizes="100vw"
-      />
-      <div className="page-hero-shade" />
+    <>
       <SiteHeader homeHref="/" syncLabel={syncLabel} />
-      <div className="page-hero-copy">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        {children}
-      </div>
-    </section>
+      <section className={`page-hero ${className}`.trim()}>
+        <Image
+          className="page-hero-image"
+          src={image}
+          alt={imageAlt}
+          fill
+          priority={priority}
+          sizes="100vw"
+        />
+        <div className="page-hero-shade" />
+        <div className="page-hero-copy">
+          <p className="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          <p>{description}</p>
+          {children}
+        </div>
+      </section>
+    </>
   );
 }

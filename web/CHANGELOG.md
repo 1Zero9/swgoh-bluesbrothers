@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.26.3 — 2026-08-29
+
+- **Page Scroll & Stacking Polish (`/dougies-discs` & Site-wide)**:
+  - Fixed site header stacking and clipping by moving `SiteHeader` outside isolated hero containers and increasing fixed navbar z-index to `800` with an opaque, blurred backdrop (`rgba(5, 8, 14, 0.94)`).
+  - Added a **Persistent Floating Mini-Player Bar** at the bottom of the screen when scrolled past the turntable deck, complete with mini spinning vinyl, track details, playback buttons, volume control, Up Next counter, and an **`↑ Turntable`** smooth jump button.
+  - Added a **Crate View Switcher** (`▦ Sleeves` vs `☰ Compact`) allowing users to switch between the 3D retro vinyl sleeve gallery and a sleek, high-density table view with inline spin/queue actions.
+  - Added clean scroll margins (`scroll-margin-top: 88px`) and jump buttons (`📂 Dig in Crate (29)`) for effortless navigation.
+
 ## 0.26.2 — 2026-08-29
 
 - **Enhanced Up Next Queue & Playlist Management (`/dougies-discs`)**:

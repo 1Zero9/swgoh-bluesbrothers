@@ -27,8 +27,8 @@ const projects = [
 export default function CreditsPage() {
   return (
     <main className="intel-shell credits-shell">
+      <SiteHeader homeHref="/" />
       <section className="credits-hero">
-        <SiteHeader homeHref="/" />
         <div className="credits-hero-copy">
           <p className="eyebrow">Open-source credits</p>
           <h1>Built with help from<br /><em>the wider holotable.</em></h1>

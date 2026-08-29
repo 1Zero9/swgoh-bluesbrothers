@@ -67,6 +67,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [hasStartedPlayback, setHasStartedPlayback] = useState<boolean>(false);
   const [playerMode, setPlayerMode] = useState<"vinyl" | "video">("vinyl");
   const [activeCategory, setActiveCategory] = useState<DiscCategory>("all");
+  const [crateViewMode, setCrateViewMode] = useState<"grid" | "compact">("grid");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [volume, setVolume] = useState<number>(100);
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -74,6 +75,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [isShuffle, setIsShuffle] = useState<boolean>(false);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
   const [isQueueOpen, setIsQueueOpen] = useState<boolean>(false);
+  const [showStickyBar, setShowStickyBar] = useState<boolean>(false);
   const [quickAddSearch, setQuickAddSearch] = useState<string>("");
   const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
   const [isSuggestOpen, setIsSuggestOpen] = useState<boolean>(false);
@@ -88,6 +90,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const consoleRef = useRef<HTMLDivElement | null>(null);
+  const crateRef = useRef<HTMLElement | null>(null);
 
   // Live state refs to prevent any closure capture / stale state in YT event callbacks
   const queueRef = useRef<DiscTrack[]>(queue);
@@ -136,6 +139,19 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     } catch {
       // Ignore localStorage errors
     }
+  }, []);
+
+  // Track cockpit visibility to show floating bottom player bar when scrolled past
+  useEffect(() => {
+    if (!consoleRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(consoleRef.current);
+    return () => observer.disconnect();
   }, []);
 
   // Save queue to localStorage when it changes
@@ -603,6 +619,14 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   }
 
+  function scrollToDeck() {
+    consoleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function scrollToCrate() {
+    crateRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const iframeSrc = `https://www.youtube-nocookie.com/embed/${currentTrack.youtubeId}?enablejsapi=1&autoplay=${hasStartedPlayback ? 1 : 0}&rel=0&playsinline=1`;
 
   const nextTrackPreview = queue.length > 0 ? queue[0] : null;
@@ -632,7 +656,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       )}
 
       {/* COMPACT JUKEBOX CHASSIS & COCKPIT */}
-      <div className="jukebox-cockpit-wrapper" ref={consoleRef}>
+      <div className="jukebox-cockpit-wrapper" ref={consoleRef} id="jukebox-deck">
         {/* Cockpit Top Bar */}
         <div className="cockpit-top-bar">
           <div className="cockpit-station">
@@ -647,6 +671,15 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           </div>
 
           <div className="cockpit-top-actions">
+            <button
+              type="button"
+              className="cockpit-scroll-down-btn"
+              onClick={scrollToCrate}
+              title="Jump down to dig in crate"
+            >
+              <span>📂</span> Dig in Crate ({catalog.length})
+            </button>
+
             <div className="cockpit-mode-pills">
               <button
                 type="button"
@@ -1093,7 +1126,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       </div>
 
       {/* QUICK SOUNDBOARD: BLUES BROTHERS SOUNDBITES */}
-      <section className="soundboard-section" aria-labelledby="soundboard-heading">
+      <section className="soundboard-section" id="soundboard" aria-labelledby="soundboard-heading">
         <div className="signature-heading">
           <div>
             <span>01</span>
@@ -1152,13 +1185,37 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       </section>
 
       {/* CRATE DIGGING: FULL CATALOG */}
-      <section className="crate-catalog-section" aria-labelledby="crate-heading">
+      <section className="crate-catalog-section" id="crate-catalog" ref={crateRef} aria-labelledby="crate-heading">
         <div className="signature-heading">
           <div>
             <span>02</span>
             <h3 id="crate-heading">Digging in Dougie&apos;s Vinyl Crate</h3>
           </div>
-          <p>29 verified Chicago blues legends, Stax soul anthems, and movie soundtracks.</p>
+          <div className="crate-heading-actions">
+            <span className="crate-count-chip">{filteredDiscs.length} of {catalog.length} records</span>
+            <div className="crate-view-switcher" role="radiogroup" aria-label="Crate view mode">
+              <button
+                type="button"
+                className={crateViewMode === "grid" ? "active" : ""}
+                onClick={() => setCrateViewMode("grid")}
+                title="Sleeve Grid View"
+                aria-checked={crateViewMode === "grid"}
+                role="radio"
+              >
+                <span>▦</span> Sleeves
+              </button>
+              <button
+                type="button"
+                className={crateViewMode === "compact" ? "active" : ""}
+                onClick={() => setCrateViewMode("compact")}
+                title="Compact List View"
+                aria-checked={crateViewMode === "compact"}
+                role="radio"
+              >
+                <span>☰</span> Compact
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Filter Pills & Search Bar */}
@@ -1209,7 +1266,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           </div>
         </div>
 
-        {/* GRID OF VINYL RECORD CARDS */}
+        {/* COMPACT LIST VIEW MODE */}
         {filteredDiscs.length === 0 ? (
           <div className="no-records-card">
             <p>No records found matching &ldquo;{searchQuery}&rdquo;.</p>
@@ -1217,7 +1274,74 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               Reset filters
             </button>
           </div>
+        ) : crateViewMode === "compact" ? (
+          <div className="compact-crate-table-card">
+            <div className="compact-table-head">
+              <span>#</span>
+              <span>Title &amp; Artist</span>
+              <span className="hide-mobile">Album &amp; Year</span>
+              <span>Duration</span>
+              <span className="hide-mobile">Vibe</span>
+              <span className="th-actions">Actions</span>
+            </div>
+            <div className="compact-table-body">
+              {filteredDiscs.map((disc, i) => {
+                const isCurrent = currentTrack.id === disc.id;
+                const queuePosition = queue.findIndex((q) => q.id === disc.id);
+                const inQueue = queuePosition !== -1;
+
+                return (
+                  <div
+                    key={disc.id}
+                    className={`compact-table-row row-${disc.vinylColor}${isCurrent ? " is-current" : ""}`}
+                  >
+                    <span className="row-num">{i + 1}</span>
+                    <div className="row-title-col">
+                      <span className={`vinyl-dot dot-${disc.vinylColor}`} />
+                      <div>
+                        <strong>{disc.title}</strong>
+                        <small>{disc.artist}</small>
+                      </div>
+                    </div>
+                    <div className="row-album-col hide-mobile">
+                      <span>{disc.album}</span>
+                      <small>{disc.year} · {disc.categoryLabel}</small>
+                    </div>
+                    <span className="row-duration">{disc.duration}</span>
+                    <p className="row-vibe hide-mobile">&ldquo;{disc.vibe}&rdquo;</p>
+                    <div className="row-actions">
+                      <button
+                        type="button"
+                        className={`tbl-btn-spin${isCurrent && isPlaying ? " is-playing" : ""}`}
+                        onClick={() => playTrack(disc)}
+                        title="Spin immediately"
+                      >
+                        {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin"}
+                      </button>
+                      <button
+                        type="button"
+                        className="tbl-btn-next"
+                        onClick={() => addToQueue(disc, true)}
+                        title="Play next after current song"
+                      >
+                        ⚡ Next
+                      </button>
+                      <button
+                        type="button"
+                        className={`tbl-btn-queue${inQueue ? " in-queue" : ""}`}
+                        onClick={() => addToQueue(disc, false)}
+                        title={inQueue ? `In queue at #${queuePosition + 1}` : "Add to queue"}
+                      >
+                        {inQueue ? `✓ #${queuePosition + 1}` : "＋ Queue"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         ) : (
+          /* RICH SLEEVES GRID VIEW MODE */
           <div className="vinyl-grid">
             {filteredDiscs.map((disc) => {
               const isCurrent = currentTrack.id === disc.id;
@@ -1271,12 +1395,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                       <button
                         type="button"
                         className={`btn-spin-now${isCurrent && isPlaying ? " is-active" : ""}`}
-                        onClick={() => {
-                          playTrack(disc);
-                          if (consoleRef.current) {
-                            consoleRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                          }
-                        }}
+                        onClick={() => playTrack(disc)}
                         aria-label={`Spin ${disc.title}`}
                       >
                         {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin"}
@@ -1307,6 +1426,100 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           </div>
         )}
       </section>
+
+      {/* PERSISTENT FLOATING STICKY MINI-PLAYER (Visible when scrolled past main cockpit) */}
+      {showStickyBar && (
+        <aside className="jukebox-floating-bar" aria-label="Persistent Mini Jukebox Controller">
+          <div className="floating-inner">
+            {/* Left: Mini Spinning Vinyl + Track info */}
+            <div className="floating-track-info" onClick={scrollToDeck} title="Click to jump to Turntable Deck">
+              <div className={`floating-mini-disc disc-${currentTrack.vinylColor}${isPlaying ? " is-spinning" : ""}`}>
+                <div className="mini-disc-hole" />
+              </div>
+              <div className="floating-text">
+                <strong>{currentTrack.title}</strong>
+                <small>{currentTrack.artist} · {currentTrack.duration}</small>
+              </div>
+            </div>
+
+            {/* Center: Playback buttons */}
+            <div className="floating-controls">
+              <button
+                type="button"
+                className="fl-btn"
+                onClick={skipPrev}
+                title="Previous Track"
+                aria-label="Previous Track"
+              >
+                ⏮
+              </button>
+
+              <button
+                type="button"
+                className={`fl-btn-play${isPlaying ? " is-playing" : ""}`}
+                onClick={togglePlayPause}
+                title={isPlaying ? "Pause Track" : "Play Track"}
+                aria-label={isPlaying ? "Pause Track" : "Play Track"}
+              >
+                {isPlaying ? "⏸" : "▶"}
+              </button>
+
+              <button
+                type="button"
+                className="fl-btn"
+                onClick={skipNext}
+                title={queue.length > 0 ? `Next: ${queue[0].title}` : "Next Track"}
+                aria-label="Next Track"
+              >
+                ⏭
+              </button>
+
+              {/* Volume Slider in Mini-bar */}
+              <div className="floating-volume">
+                <button
+                  type="button"
+                  className="fl-vol-btn"
+                  onClick={toggleMute}
+                  title={isMuted ? "Unmute" : "Mute"}
+                >
+                  {isMuted || volume === 0 ? "🔇" : "🔊"}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={isMuted ? 0 : volume}
+                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                  className="fl-vol-slider"
+                  aria-label="Floating Volume"
+                />
+              </div>
+            </div>
+
+            {/* Right: Up Next Pill + Jump to Top Deck */}
+            <div className="floating-actions">
+              <button
+                type="button"
+                className="fl-queue-pill"
+                onClick={scrollToDeck}
+                title="View Up Next queue in Cockpit"
+              >
+                <span>📋 Up Next</span>
+                <span className="fl-queue-num">{queue.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className="fl-jump-deck-btn"
+                onClick={scrollToDeck}
+                title="Scroll back up to Turntable Deck"
+              >
+                ↑ Turntable
+              </button>
+            </div>
+          </div>
+        </aside>
+      )}
 
       {/* SUGGESTION / DROP A RECORD MODAL */}
       {isSuggestOpen && (
