@@ -74,6 +74,8 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [isShuffle, setIsShuffle] = useState<boolean>(false);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
   const [isQueueOpen, setIsQueueOpen] = useState<boolean>(false);
+  const [quickAddSearch, setQuickAddSearch] = useState<string>("");
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
   const [isSuggestOpen, setIsSuggestOpen] = useState<boolean>(false);
   const [suggestPreviewId, setSuggestPreviewId] = useState<string | null>(null);
   const [suggestInputUrl, setSuggestInputUrl] = useState<string>("");
@@ -86,6 +88,20 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const consoleRef = useRef<HTMLDivElement | null>(null);
+
+  // Live state refs to prevent any closure capture / stale state in YT event callbacks
+  const queueRef = useRef<DiscTrack[]>(queue);
+  queueRef.current = queue;
+  const catalogRef = useRef<DiscTrack[]>(catalog);
+  catalogRef.current = catalog;
+  const currentTrackRef = useRef<DiscTrack>(currentTrack);
+  currentTrackRef.current = currentTrack;
+  const repeatModeRef = useRef(repeatMode);
+  repeatModeRef.current = repeatMode;
+  const autoAdvanceRef = useRef(autoAdvance);
+  autoAdvanceRef.current = autoAdvance;
+  const isShuffleRef = useRef(isShuffle);
+  isShuffleRef.current = isShuffle;
 
   function showToast(text: string, kind: "success" | "info" | "error" = "success") {
     const id = Date.now();
@@ -145,6 +161,46 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   };
 
+  // Handle track ending -> advance queue or loop (always reads live refs)
+  function handleTrackEnded() {
+    if (repeatModeRef.current === "one") {
+      postToYT("seekTo", [0, true]);
+      postToYT("playVideo");
+      if (ytPlayerRef.current) ytPlayerRef.current.playVideo();
+      return;
+    }
+
+    const currentQ = queueRef.current;
+    if (currentQ.length > 0) {
+      const next = currentQ[0];
+      setQueue(currentQ.slice(1));
+      playTrack(next);
+      showToast(`Now spinning from queue: "${next.title}"`, "info");
+    } else if (autoAdvanceRef.current) {
+      const cat = catalogRef.current;
+      const current = currentTrackRef.current;
+      const currentIndex = cat.findIndex((d) => d.id === current.id);
+      let nextIndex = 0;
+      if (isShuffleRef.current) {
+        nextIndex = Math.floor(Math.random() * cat.length);
+      } else if (currentIndex >= 0 && currentIndex < cat.length - 1) {
+        nextIndex = currentIndex + 1;
+      } else if (repeatModeRef.current === "all") {
+        nextIndex = 0;
+      } else {
+        setIsPlaying(false);
+        return;
+      }
+      const nextTrack = cat[nextIndex];
+      if (nextTrack) {
+        playTrack(nextTrack);
+        showToast(`Auto-advancing: "${nextTrack.title}"`, "info");
+      }
+    } else {
+      setIsPlaying(false);
+    }
+  }
+
   // Listen to messages from YouTube iframe to track state
   useEffect(() => {
     const handleYTMessage = (event: MessageEvent) => {
@@ -160,7 +216,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             // PAUSED
             setIsPlaying(false);
           } else if (data.info === 0) {
-            // ENDED
+            // ENDED -> Trigger track transition
             handleTrackEnded();
           }
         }
@@ -171,7 +227,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
 
     window.addEventListener("message", handleYTMessage);
     return () => window.removeEventListener("message", handleYTMessage);
-  });
+  }, []);
 
   // Initialize YT API wrapper when script loads
   useEffect(() => {
@@ -232,43 +288,6 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     };
   }, [currentTrack]);
 
-  // Handle track ending -> advance queue or loop
-  function handleTrackEnded() {
-    if (repeatMode === "one") {
-      postToYT("seekTo", [0, true]);
-      postToYT("playVideo");
-      if (ytPlayerRef.current) ytPlayerRef.current.playVideo();
-      return;
-    }
-
-    if (queue.length > 0) {
-      const next = queue[0];
-      setQueue((prev) => prev.slice(1));
-      playTrack(next);
-      showToast(`Now spinning: "${next.title}"`, "info");
-    } else if (autoAdvance) {
-      const currentIndex = catalog.findIndex((d) => d.id === currentTrack.id);
-      let nextIndex = 0;
-      if (isShuffle) {
-        nextIndex = Math.floor(Math.random() * catalog.length);
-      } else if (currentIndex >= 0 && currentIndex < catalog.length - 1) {
-        nextIndex = currentIndex + 1;
-      } else if (repeatMode === "all") {
-        nextIndex = 0;
-      } else {
-        setIsPlaying(false);
-        return;
-      }
-      const nextTrack = catalog[nextIndex];
-      if (nextTrack) {
-        playTrack(nextTrack);
-        showToast(`Auto-advancing: "${nextTrack.title}"`, "info");
-      }
-    } else {
-      setIsPlaying(false);
-    }
-  }
-
   // Play specific track with guaranteed iframe trigger
   function playTrack(track: DiscTrack) {
     setCurrentTrack(track);
@@ -309,22 +328,24 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   }
 
   function skipNext() {
-    if (queue.length > 0) {
-      const next = queue[0];
-      setQueue((prev) => prev.slice(1));
+    const currentQ = queueRef.current;
+    if (currentQ.length > 0) {
+      const next = currentQ[0];
+      setQueue(currentQ.slice(1));
       playTrack(next);
       showToast(`Next in queue: "${next.title}"`, "info");
     } else {
-      const currentIndex = catalog.findIndex((d) => d.id === currentTrack.id);
+      const cat = catalogRef.current;
+      const currentIndex = cat.findIndex((d) => d.id === currentTrack.id);
       let nextIndex = 0;
       if (isShuffle) {
-        nextIndex = Math.floor(Math.random() * catalog.length);
-      } else if (currentIndex >= 0 && currentIndex < catalog.length - 1) {
+        nextIndex = Math.floor(Math.random() * cat.length);
+      } else if (currentIndex >= 0 && currentIndex < cat.length - 1) {
         nextIndex = currentIndex + 1;
       } else {
         nextIndex = 0;
       }
-      const nextTrack = catalog[nextIndex];
+      const nextTrack = cat[nextIndex];
       if (nextTrack) {
         playTrack(nextTrack);
         showToast(`Spun: "${nextTrack.title}"`, "info");
@@ -333,12 +354,13 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   }
 
   function skipPrev() {
-    const currentIndex = catalog.findIndex((d) => d.id === currentTrack.id);
-    let prevIndex = catalog.length - 1;
+    const cat = catalogRef.current;
+    const currentIndex = cat.findIndex((d) => d.id === currentTrack.id);
+    let prevIndex = cat.length - 1;
     if (currentIndex > 0) {
       prevIndex = currentIndex - 1;
     }
-    const prevTrack = catalog[prevIndex];
+    const prevTrack = cat[prevIndex];
     if (prevTrack) {
       playTrack(prevTrack);
       showToast(`Previous: "${prevTrack.title}"`, "info");
@@ -370,14 +392,33 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
     }
   }
 
+  // Enhanced Queue Helpers
   function addToQueue(track: DiscTrack, playNext: boolean = false) {
     if (playNext) {
       setQueue((prev) => [track, ...prev]);
-      showToast(`Queued next: "${track.title}"`, "success");
+      showToast(`⚡ Set as Up Next (#1): "${track.title}"`, "success");
     } else {
       setQueue((prev) => [...prev, track]);
-      showToast(`Added to queue (${queue.length + 1}): "${track.title}"`, "success");
+      showToast(`Added to queue (#${queue.length + 1}): "${track.title}"`, "success");
     }
+  }
+
+  function queueCategory(catId: DiscCategory) {
+    const tracksToAdd =
+      catId === "all"
+        ? catalog
+        : catalog.filter((d) => d.category === catId);
+
+    setQueue((prev) => [...prev, ...tracksToAdd]);
+    const label = DISC_CATEGORIES.find((c) => c.id === catId)?.label || catId;
+    showToast(`Added ${tracksToAdd.length} tracks from "${label}" to the queue!`, "success");
+  }
+
+  function queueRandomHits(count: number = 5) {
+    const shuffled = [...catalog].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, count);
+    setQueue((prev) => [...prev, ...selected]);
+    showToast(`Queued ${selected.length} random crate cuts into the slot!`, "success");
   }
 
   function removeFromQueue(index: number) {
@@ -415,6 +456,18 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
       );
     });
   }, [catalog, activeCategory, searchQuery]);
+
+  // Quick-Add filter options
+  const quickAddOptions = useMemo(() => {
+    if (!quickAddSearch.trim()) return catalog.slice(0, 8);
+    const q = quickAddSearch.toLowerCase();
+    return catalog.filter(
+      (d) =>
+        d.title.toLowerCase().includes(q) ||
+        d.artist.toLowerCase().includes(q) ||
+        d.categoryLabel.toLowerCase().includes(q)
+    ).slice(0, 10);
+  }, [catalog, quickAddSearch]);
 
   function handleSuggestUrlChange(val: string) {
     setSuggestInputUrl(val);
@@ -552,6 +605,8 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
 
   const iframeSrc = `https://www.youtube-nocookie.com/embed/${currentTrack.youtubeId}?enablejsapi=1&autoplay=${hasStartedPlayback ? 1 : 0}&rel=0&playsinline=1`;
 
+  const nextTrackPreview = queue.length > 0 ? queue[0] : null;
+
   return (
     <section className="dougies-discs-container" aria-label="Dougie's Discs Jukebox Console">
       <div className="jukebox-stars" aria-hidden="true" />
@@ -584,6 +639,11 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             <span className={`live-bulb${isPlaying ? " is-pulsing" : ""}`} />
             <strong>DOUGIE&apos;S HI-FI JUKEBOX</strong>
             <span className="station-code">FREQ BB-45</span>
+            {queue.length > 0 && (
+              <span className="station-queue-badge">
+                ⚡ {queue.length} in Up Next
+              </span>
+            )}
           </div>
 
           <div className="cockpit-top-actions">
@@ -710,6 +770,23 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               </div>
 
               <p className="screen-vibe">&ldquo;{currentTrack.vibe}&rdquo;</p>
+
+              {/* Up Next Preview Banner */}
+              {nextTrackPreview && (
+                <div className="screen-up-next-preview">
+                  <span className="up-next-tag">Up Next:</span>
+                  <strong>{nextTrackPreview.title}</strong>
+                  <span className="up-next-artist">({nextTrackPreview.artist})</span>
+                  <button
+                    type="button"
+                    className="up-next-quick-skip"
+                    onClick={skipNext}
+                    title="Skip immediately to this queued track"
+                  >
+                    ▶ Spin Next
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* TIGHT INTEGRATED PLAYBACK CONTROLS (Right below the screen) */}
@@ -740,7 +817,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   type="button"
                   className="c-btn btn-next"
                   onClick={skipNext}
-                  title="Next Track"
+                  title={queue.length > 0 ? `Next in Queue: ${queue[0].title}` : "Next Track"}
                   aria-label="Next Track"
                 >
                   ⏭
@@ -805,14 +882,14 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   aria-controls="cockpit-queue-drawer"
                 >
                   <span>📋</span>
-                  <strong>Queue</strong>
+                  <strong>Up Next</strong>
                   <span className="queue-pill">{queue.length}</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: UP NEXT QUEUE DRAWER */}
+          {/* RIGHT: UP NEXT QUEUE DRAWER WITH QUICK-ADD & PRESETS */}
           <aside
             className={`cockpit-queue-drawer${isQueueOpen ? " is-open" : ""}`}
             id="cockpit-queue-drawer"
@@ -825,9 +902,119 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               </div>
               {queue.length > 0 && (
                 <button type="button" className="q-clear-btn" onClick={clearQueue}>
-                  Clear
+                  Clear All
                 </button>
               )}
+            </div>
+
+            {/* INLINE QUICK-ADD SEARCH & DROP BAR */}
+            <div className="queue-quick-add-wrap">
+              <div className="quick-add-input-row">
+                <input
+                  type="text"
+                  placeholder="⚡ Quick add track to queue…"
+                  value={quickAddSearch}
+                  onFocus={() => setIsQuickAddOpen(true)}
+                  onChange={(e) => {
+                    setQuickAddSearch(e.target.value);
+                    setIsQuickAddOpen(true);
+                  }}
+                  className="quick-add-input"
+                  aria-label="Quick add track"
+                />
+                {quickAddSearch && (
+                  <button
+                    type="button"
+                    className="quick-add-clear"
+                    onClick={() => {
+                      setQuickAddSearch("");
+                      setIsQuickAddOpen(false);
+                    }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Quick-add Dropdown Suggestions */}
+              {isQuickAddOpen && (
+                <div className="quick-add-dropdown">
+                  <div className="quick-add-dropdown-header">
+                    <span>Click to add to queue:</span>
+                    <button
+                      type="button"
+                      className="quick-add-close"
+                      onClick={() => setIsQuickAddOpen(false)}
+                    >
+                      Done
+                    </button>
+                  </div>
+                  <div className="quick-add-items">
+                    {quickAddOptions.map((opt) => (
+                      <div key={opt.id} className="quick-add-option-row">
+                        <div className="opt-meta">
+                          <strong>{opt.title}</strong>
+                          <small>{opt.artist} · {opt.duration}</small>
+                        </div>
+                        <div className="opt-actions">
+                          <button
+                            type="button"
+                            className="opt-btn-next"
+                            onClick={() => {
+                              addToQueue(opt, true);
+                              setQuickAddSearch("");
+                              setIsQuickAddOpen(false);
+                            }}
+                            title="Play right after current song"
+                          >
+                            ⚡ Play Next
+                          </button>
+                          <button
+                            type="button"
+                            className="opt-btn-add"
+                            onClick={() => {
+                              addToQueue(opt, false);
+                              setQuickAddSearch("");
+                              setIsQuickAddOpen(false);
+                            }}
+                            title="Add to end of queue"
+                          >
+                            ＋ Queue
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* QUICK-FILL PRESET SHORTCUTS */}
+            <div className="queue-preset-shortcuts">
+              <button
+                type="button"
+                className="q-preset-chip"
+                onClick={() => queueCategory("blues-brothers")}
+                title="Queue all 10 Blues Brothers anthems"
+              >
+                🕶️ +Blues Brothers
+              </button>
+              <button
+                type="button"
+                className="q-preset-chip"
+                onClick={() => queueCategory("chicago-blues")}
+                title="Queue all Chicago Blues legends"
+              >
+                🎷 +Chicago Blues
+              </button>
+              <button
+                type="button"
+                className="q-preset-chip"
+                onClick={() => queueRandomHits(5)}
+                title="Queue 5 random hits from the crate"
+              >
+                🎲 +5 Random
+              </button>
             </div>
 
             <div className="queue-toggle-row">
@@ -846,7 +1033,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 <div className="queue-empty-box">
                   <span className="q-empty-disc">💿</span>
                   <p>Slot is open.</p>
-                  <small>Click <strong>＋ Queue</strong> on any track in the crate below.</small>
+                  <small>Use <strong>⚡ Quick Add</strong> above, or click <strong>＋ Queue</strong> on any track in the crate below.</small>
                 </div>
               ) : (
                 queue.map((track, idx) => (
@@ -866,7 +1053,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         title="Spin now"
                         className="q-btn-play"
                       >
-                        ▶
+                        ▶ Spin
                       </button>
                       {idx > 0 && (
                         <button
@@ -876,6 +1063,16 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                           className="q-btn-move"
                         >
                           ▲
+                        </button>
+                      )}
+                      {idx < queue.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={() => moveQueueItem(idx, idx + 1)}
+                          title="Move down"
+                          className="q-btn-move"
+                        >
+                          ▼
                         </button>
                       )}
                       <button
@@ -1069,7 +1266,8 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                       <span className="card-contributor">Drop by: <strong>{disc.addedBy}</strong></span>
                     )}
 
-                    <div className="card-actions">
+                    {/* Multi-action Queue Buttons */}
+                    <div className="card-actions-row">
                       <button
                         type="button"
                         className={`btn-spin-now${isCurrent && isPlaying ? " is-active" : ""}`}
@@ -1081,14 +1279,23 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         }}
                         aria-label={`Spin ${disc.title}`}
                       >
-                        {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin Now"}
+                        {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin"}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-play-next"
+                        onClick={() => addToQueue(disc, true)}
+                        title="Play right after current track"
+                      >
+                        ⚡ Next
                       </button>
 
                       <button
                         type="button"
                         className={`btn-queue-add${inQueue ? " in-queue" : ""}`}
-                        onClick={() => addToQueue(disc)}
-                        title={inQueue ? `In queue at #${queuePosition + 1}` : "Add to Jukebox queue"}
+                        onClick={() => addToQueue(disc, false)}
+                        title={inQueue ? `In queue at #${queuePosition + 1}` : "Add to end of queue"}
                       >
                         {inQueue ? `✓ #${queuePosition + 1}` : "＋ Queue"}
                       </button>

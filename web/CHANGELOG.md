@@ -2,6 +2,16 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.26.2 — 2026-08-29
+
+- **Enhanced Up Next Queue & Playlist Management (`/dougies-discs`)**:
+  - Fixed asynchronous queue transition and auto-advance by synchronizing live refs for `queue`, `currentTrack`, `catalog`, and playback modes across YouTube iframe state callbacks.
+  - Added an inline **⚡ Quick Add** search input with live autocomplete dropdown right inside the Up Next drawer.
+  - Added one-click **Crate Preset buttons** (`🕶️ +Blues Brothers`, `🎷 +Chicago Blues`, `🎲 +5 Random`) to fill the queue in one click.
+  - Added multi-action buttons on every vinyl card: **▶ Spin**, **⚡ Next** (places track at position #1 to play right after the current song), and **＋ Queue** (appends to end).
+  - Added live **"Up Next: [Track]" preview banner** with **▶ Spin Next** button inside the Now Playing LED display.
+  - Added per-item controls in Up Next: **▶ Spin**, **▲ Move Up**, **▼ Move Down**, and **✕ Remove**.
+
 ## 0.26.1 — 2026-08-29
 
 - **Tightened Cockpit & Above-the-Fold Controls (`/dougies-discs`)**: streamlined Dougie's Discs page hero and integrated the turntable, LED Now Playing readout, tactile playback buttons (⏮, ▶ SPIN / ⏸ PAUSE, ⏭, 🔀, 🔁, Volume slider, Mute, Queue), and Up Next list into a unified compact cockpit so controls are immediately reachable without scrolling.

@@ -3223,6 +3223,18 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   font-weight: 600;
 }
 
+.station-queue-badge {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(52, 211, 153, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34d399;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  animation: toast-in 0.3s ease-out;
+}
+
 .live-bulb {
   width: 8px;
   height: 8px;
@@ -3303,7 +3315,7 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
 /* Cockpit Main Stage: Side-by-side Turntable / Center Console / Queue */
 .cockpit-main-deck {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr 310px;
   align-items: stretch;
   background: radial-gradient(circle at 30% 50%, rgba(30, 41, 59, 0.4) 0%, rgba(5, 8, 14, 0.96) 80%);
 }
@@ -3615,6 +3627,62 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   font-style: italic;
 }
 
+/* Up Next Preview on LED Screen */
+.screen-up-next-preview {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.up-next-tag {
+  font: 9px var(--font-geist-mono);
+  text-transform: uppercase;
+  color: #38bdf8;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.screen-up-next-preview strong {
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.up-next-artist {
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.up-next-quick-skip {
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  background: rgba(56, 189, 248, 0.16);
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.up-next-quick-skip:hover {
+  background: #0284c7;
+  color: #fff;
+  border-color: #38bdf8;
+}
+
 /* TIGHT CONTROLS ROW (Right below LED screen) */
 .cockpit-controls-row {
   display: flex;
@@ -3764,11 +3832,11 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   font-weight: 700;
 }
 
-/* RIGHT: UP NEXT QUEUE DRAWER */
+/* RIGHT: UP NEXT QUEUE DRAWER WITH QUICK-ADD & PRESETS */
 .cockpit-queue-drawer {
-  width: 280px;
+  width: 310px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(5, 8, 14, 0.7);
+  background: rgba(5, 8, 14, 0.75);
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
@@ -3778,16 +3846,16 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(0, 0, 0, 0.3);
 }
 
 .queue-head h4 { margin: 0; font-size: 13px; font-weight: 600; color: #f8fafc; }
-.queue-head small { font-size: 10px; color: #94a3b8; display: block; margin-top: 2px; }
+.queue-head small { font-size: 10px; color: #94a3b8; display: block; margin-top: 1px; }
 
 .q-clear-btn {
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   border: 1px solid rgba(248, 113, 113, 0.3);
   background: rgba(248, 113, 113, 0.12);
@@ -3797,69 +3865,269 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   cursor: pointer;
 }
 
-.queue-toggle-row {
-  padding: 8px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+/* Quick Add Search & Dropdown */
+.queue-quick-add-wrap {
+  position: relative;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quick-add-input-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.quick-add-input {
+  width: 100%;
+  padding: 6px 24px 6px 10px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #f8fafc;
+  font-size: 11px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.quick-add-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}
+
+.quick-add-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.quick-add-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 8px;
+  right: 8px;
+  z-index: 50;
+  border-radius: 8px;
+  background: rgba(9, 14, 22, 0.98);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  max-height: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-add-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.quick-add-close {
+  border: 0;
+  background: transparent;
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quick-add-items {
+  overflow-y: auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-add-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.12s ease;
+}
+
+.quick-add-option-row:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.opt-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.opt-meta strong {
+  display: block;
+  font-size: 11px;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.opt-meta small {
+  display: block;
+  font-size: 9px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.opt-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.opt-btn-next {
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.opt-btn-add {
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Quick Fill Presets */
+.queue-preset-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
   background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  overflow-x: auto;
+}
+
+.q-preset-chip {
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.q-preset-chip:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+.queue-toggle-row {
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .q-auto-toggle {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 10px;
   color: #cbd5e1;
   cursor: pointer;
 }
 
 .queue-list-scroll {
-  padding: 10px;
+  padding: 8px 10px;
   overflow-y: auto;
-  max-height: 250px;
+  max-height: 220px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .queue-empty-box {
-  padding: 24px 12px;
+  padding: 20px 10px;
   text-align: center;
   color: #94a3b8;
 }
 
-.q-empty-disc { font-size: 24px; display: block; margin-bottom: 6px; opacity: 0.5; }
-.queue-empty-box p { margin: 0 0 4px; color: #e2e8f0; font-weight: 500; font-size: 12px; }
-.queue-empty-box small { display: block; font-size: 10px; line-height: 1.4; }
+.q-empty-disc { font-size: 20px; display: block; margin-bottom: 4px; opacity: 0.5; }
+.queue-empty-box p { margin: 0 0 3px; color: #e2e8f0; font-weight: 500; font-size: 11px; }
+.queue-empty-box small { display: block; font-size: 9.5px; line-height: 1.35; }
 
 .queue-item-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.q-num { font: 10px var(--font-geist-mono); color: #fbbf24; font-weight: 700; min-width: 18px; }
+.q-num { font: 9px var(--font-geist-mono); color: #fbbf24; font-weight: 700; min-width: 16px; }
 .q-text { flex: 1; min-width: 0; }
-.q-text strong { display: block; font-size: 12px; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.q-text small { display: block; font-size: 10px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.q-text strong { display: block; font-size: 11px; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.q-text small { display: block; font-size: 9px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .q-btns { display: flex; align-items: center; gap: 3px; }
-.q-btn-play, .q-btn-move, .q-btn-del {
-  width: 20px;
-  height: 20px;
+.q-btn-play {
+  padding: 2px 6px;
   border-radius: 4px;
+  border: 0;
+  background: rgba(2, 132, 199, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.q-btn-play:hover { background: #0284c7; color: #fff; }
+
+.q-btn-move, .q-btn-del {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
   border: 0;
   background: rgba(255, 255, 255, 0.06);
   color: #94a3b8;
-  font-size: 9px;
+  font-size: 8px;
   cursor: pointer;
   display: grid;
   place-items: center;
 }
-.q-btn-play:hover { background: #0284c7; color: #fff; }
+.q-btn-move:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
 .q-btn-del:hover { background: #ef4444; color: #fff; }
 
 /* ==========================================================================
@@ -4157,10 +4425,15 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
 .card-contributor { font-size: 10px; color: #94a3b8; }
 .card-contributor strong { color: #38bdf8; }
 
-.card-actions { display: flex; gap: 6px; margin-top: auto; }
+.card-actions-row {
+  display: flex;
+  gap: 5px;
+  margin-top: auto;
+}
+
 .btn-spin-now {
   flex: 1;
-  padding: 8px 10px;
+  padding: 7px 8px;
   border-radius: 6px;
   border: 1px solid rgba(56, 189, 248, 0.4);
   background: rgba(56, 189, 248, 0.12);
@@ -4169,13 +4442,33 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-spin-now:hover { background: #0284c7; color: #fff; border-color: #38bdf8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
 .btn-spin-now.is-active { background: #d97706; color: #fff; border-color: #fbbf24; }
 
+.btn-play-next {
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-play-next:hover {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: #fbbf24;
+  color: #fff;
+}
+
 .btn-queue-add {
-  padding: 8px 10px;
+  padding: 7px 8px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
@@ -4184,6 +4477,7 @@ html[data-theme="light"] .twc-recommendation-list li { color: #1e293b; }
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-queue-add:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
