@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.26.0 — 2026-08-29
+
+- **Dougie's Discs galactic Jukebox (`/dougies-discs`)**: new interactive music lounge with custom tavern header art (`/dougies-discs.png`), Blues Brothers movie hits, Chicago blues, Stax soul, and community suggestions.
+- **Turntable & Video Stage**: photorealistic 33⅓ RPM rotating vinyl record with color-coded center labels, dynamic tonearm, 12-band pulsing spectrum equalizer, and seamless toggle to full YouTube video stage.
+- **Interactive Queue & Crate Digging**: live queue manager with reordering/removal, crate search & category filters (*Blues Brothers*, *Chicago Blues*, *Stax & Soul*, *Delta & Roots*, *Guild Picks*), and local storage persistence.
+- **Song Submissions & Soundboard**: guild members can suggest any YouTube track via an instant live-thumbnail validator (`/api/discs/submissions`) and drop synthesized Blues Brothers quotes & needle-drop drops.
+
 ## 0.25.0 — 2026-08-24
 
 - **Command-based TW defence assignment**: replaced per-player drag-and-drop with named, reusable squad+kit presets ("Commands") that officers assign directly to a zone — pick a zone, pick a Command (e.g. "GL Vader + Datacron"), done. Every guild gets 12 built-in Commands for free (one per known TW squad) plus fully custom ones officers create inline. New `/api/officer/tw/commands` route and `TwCommand` model.

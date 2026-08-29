@@ -16,6 +16,7 @@ export const SITE_NAVIGATION = [
   { label: "Territory War", mark: "TW", href: "/territory-war" },
   { label: "Members", mark: "MB", href: "/members" },
   { label: "Cantina", mark: "SF", href: "/cantina" },
+  { label: "Dougie's Discs", mark: "DD", href: "/dougies-discs" },
   { label: "Officer Roster", mark: "OR", href: "/officer/roster" },
 ];
 

@@ -23,7 +23,13 @@ export default async function CantinaPage() {
         priority
       />
       <SoulFoodCafe recipes={recipes} />
-      <footer className="intel-footer"><span>Recipes from the guild cantina databank.</span><Link href="/">Back to guild command →</Link></footer>
+      <footer className="intel-footer">
+        <span>Recipes from the guild cantina databank.</span>
+        <div className="intel-footer-nav">
+          <Link href="/dougies-discs">Drop in at Dougie&apos;s Discs Jukebox →</Link>
+          <Link href="/">Back to guild command →</Link>
+        </div>
+      </footer>
     </main>
   );
 }

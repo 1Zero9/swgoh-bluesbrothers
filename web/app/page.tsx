@@ -332,7 +332,7 @@ export default async function Home() {
 
         <footer>
           <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
-          <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/credits">Sources &amp; credits</Link></span>
+          <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/dougies-discs">Dougie&apos;s Discs</Link><Link href="/credits">Sources &amp; credits</Link></span>
         </footer>
         </div>
       </section>
