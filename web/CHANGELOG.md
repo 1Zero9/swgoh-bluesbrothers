@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.27.1 — 2026-08-29
+
+- **Header & Hero Polish (Desktop & Mobile)**:
+  - Resolved hero copy clearance on Dougie's Discs (`/dougies-discs`), preventing overlap with the fixed top navigation and brand logo on desktop screens.
+  - Adjusted main nav gap and font scaling across intermediate desktop resolutions (1024px–1440px) for clean spacing with 8 navigation routes.
+  - Redesigned mobile hero padding and alignment across all pages (`/dougies-discs`, `/territory-war`, `/datacrons`, `/operations`, `/members`, `/cantina`), guaranteeing safe clearance below the mobile logo and hamburger menu button.
+  - Tested across responsive viewports in browser subagents.
+
 ## 0.27.0 — 2026-08-29
 
 - **New Feature: Datacrons Vault & Active Meta Codex (`/datacrons`)**:
