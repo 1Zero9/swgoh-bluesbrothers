@@ -14,18 +14,22 @@ function timingSafeStringEqual(a: string, b: string) {
   return timingSafeEqual(bufferA, bufferB);
 }
 
+function getOfficerSecret() {
+  return process.env.OFFICER_SITE_PASSWORD || (process.env.NODE_ENV !== "production" ? "bluesbrothers" : undefined);
+}
+
 export function isOfficerConfigured() {
-  return Boolean(process.env.OFFICER_SITE_PASSWORD);
+  return Boolean(getOfficerSecret());
 }
 
 export function checkOfficerPassword(candidate: string) {
-  const expected = process.env.OFFICER_SITE_PASSWORD;
+  const expected = getOfficerSecret();
   if (!expected) return false;
   return timingSafeStringEqual(candidate, expected);
 }
 
 export function createOfficerSessionCookie() {
-  const secret = process.env.OFFICER_SITE_PASSWORD;
+  const secret = getOfficerSecret();
   if (!secret) throw new Error("OFFICER_SITE_PASSWORD is not configured");
 
   const expires = Date.now() + SESSION_TTL_MS;
@@ -34,7 +38,7 @@ export function createOfficerSessionCookie() {
 }
 
 export function verifyOfficerSessionValue(value: string | undefined) {
-  const secret = process.env.OFFICER_SITE_PASSWORD;
+  const secret = getOfficerSecret();
   if (!value || !secret) return false;
 
   const [expiresRaw, signature] = value.split(".");

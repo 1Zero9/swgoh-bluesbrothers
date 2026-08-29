@@ -61,7 +61,13 @@ export default async function OfficerRosterPage() {
         </section>
       )}
 
-      <footer className="intel-footer"><span>Roster data refreshes through the scheduled guild sync.</span><Link href="/operations">Back to Operations →</Link></footer>
+      <footer className="intel-footer">
+        <span>Roster data refreshes through the scheduled guild sync.</span>
+        <div className="intel-footer-nav">
+          <Link href="/officer/discord-sync">Open Discord Sync Governance →</Link>
+          <Link href="/operations">Back to Operations →</Link>
+        </div>
+      </footer>
     </main>
   );
 }

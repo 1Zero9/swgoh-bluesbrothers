@@ -39,6 +39,29 @@ export async function postDiscordAnnouncement(announcement: Announcement) {
   return true;
 }
 
+export async function addDiscordRole(discordUserId: string | null, roleId: string | undefined) {
+  const token = process.env.DISCORD_BOT_TOKEN;
+  const guildId = process.env.DISCORD_GUILD_ID;
+  if (!discordUserId || !token || !guildId || !roleId) return false;
+
+  const response = await fetch(
+    `https://discord.com/api/v10/guilds/${guildId}/members/${discordUserId}/roles/${roleId}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bot ${token}`,
+        "X-Audit-Log-Reason": "Blues Brothers site role assignment",
+      },
+      signal: AbortSignal.timeout(15_000),
+    },
+  );
+
+  if (!response.ok && response.status !== 204) {
+    throw new Error(`Discord role assignment returned HTTP ${response.status}`);
+  }
+  return true;
+}
+
 export async function removeDiscordMemberRole(discordUserId: string | null) {
   const token = process.env.DISCORD_BOT_TOKEN;
   const guildId = process.env.DISCORD_GUILD_ID;
@@ -57,8 +80,18 @@ export async function removeDiscordMemberRole(discordUserId: string | null) {
     },
   );
 
-  if (!response.ok && response.status !== 404) {
+  if (!response.ok && response.status !== 404 && response.status !== 204) {
     throw new Error(`Discord role removal returned HTTP ${response.status}`);
+  }
+  return true;
+}
+
+export async function demoteDiscordMemberOnDeparture(discordUserId: string | null) {
+  if (!discordUserId) return false;
+  const publicRoleId = process.env.DISCORD_PUBLIC_ROLE_ID;
+  await removeDiscordMemberRole(discordUserId);
+  if (publicRoleId) {
+    await addDiscordRole(discordUserId, publicRoleId);
   }
   return true;
 }

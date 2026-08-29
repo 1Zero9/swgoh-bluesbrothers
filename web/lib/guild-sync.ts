@@ -4,7 +4,7 @@ import {
   fetchPlayerProfileById,
   summarizePlayerProfile,
 } from "@/lib/comlink";
-import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole } from "@/lib/discord";
+import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 
 type PendingAnnouncement = {
@@ -274,7 +274,7 @@ export async function syncGuildRoster() {
         color: isWelcome ? 0x3c83ff : 0xe49b4d,
         websiteUrl: process.env.SITE_URL,
       });
-      const removed = !isWelcome && await removeDiscordMemberRole(announcement.discordUserId);
+      const removed = !isWelcome && await demoteDiscordMemberOnDeparture(announcement.discordUserId);
       if (posted) delivered += 1;
       if (removed) accessRemoved += 1;
 

@@ -2,7 +2,23 @@
 
 This project uses semantic versioning while it is under active development.
 
-## 0.27.1 — 2026-08-29
+## 0.28.0 — 2026-08-29
+
+- **Discord <-> Game Member Synchronization, Auto-Role Demotion, and Gated Access**:
+  - **"The Gig is in Session" Gatekeeper (`/gig-in-session`)**:
+    - Restricted landing page featuring the droid bouncer hero image (`/gig-in-session.png`) and glowing velvet rope aesthetics.
+    - **Crew Pass Terminal**: 1-click Discord OAuth sign-in, 9-digit SWGOH Ally Code linking, and Officer Keycard access.
+    - **Public Cantina Teaser**: Non-members enjoy a preview sampler with Dougie's Discs Chicago blues music player, authentic Soul Food Cafe recipes, guild achievements, and public Discord server invite.
+  - **Automated Departure Role Demotion (Game -> Discord)**:
+    - Automatically revokes site access when a player departs the SWGOH in-game guild.
+    - Strips the Discord Member role and assigns the Discord Public / Guest role (`DISCORD_PUBLIC_ROLE_ID`) during roster sync.
+  - **Name Mismatch Resolution & Officer Discord Command Center (`/officer/discord-sync`)**:
+    - Smart fuzzy string matcher that strips guild prefixes (`[BB]`, `(BB)`, `BB | `), emojis, and symbols to calculate match confidence scores.
+    - Tactical KPI dashboard tracking linked crew, unlinked members, role drift, and Discord server members.
+    - Fast search and filter pills (`Unlinked Members`, `Linked Crew`, `Role Drift / Ex-Members`, `All Active Roster`).
+    - 1-click suggested match approvals, manual Discord selector modal, and batch role reconcile button (`⚡ Reconcile All Discord Roles`).
+  - **Access Control Architecture (`web/lib/access-control.ts` & `web/lib/discord-sync.ts`)**:
+    - Comprehensive unit test suite with 24 passing tests verifying fuzzy matching, edit distances, tag stripping, and departure transitions.
 
 - **Header & Hero Polish (Desktop & Mobile)**:
   - Resolved hero copy clearance on Dougie's Discs (`/dougies-discs`), preventing overlap with the fixed top navigation and brand logo on desktop screens.

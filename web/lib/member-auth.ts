@@ -7,8 +7,12 @@ export const OAUTH_STATE_COOKIE_NAME = "bb_oauth_state";
 const LINK_TTL_MS = 10 * 60 * 1000;
 const MEMBER_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
+function getAuthSecret() {
+  return process.env.AUTH_SESSION_SECRET || (process.env.NODE_ENV !== "production" ? "bluesbrothers-dev-session-secret-key-32-chars" : undefined);
+}
+
 function sign(payload: string) {
-  const secret = process.env.AUTH_SESSION_SECRET;
+  const secret = getAuthSecret();
   if (!secret) throw new Error("AUTH_SESSION_SECRET is not configured");
   return createHmac("sha256", secret).update(payload).digest("hex");
 }

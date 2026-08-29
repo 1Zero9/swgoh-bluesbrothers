@@ -30,6 +30,7 @@ export default async function OperationsPage() {
         <div className="operation-quicklinks" aria-label="Operation shortcuts">
           <Link href="/territory-war"><span>TW</span><strong>Territory War</strong></Link>
           <Link href="/datacrons"><span>DC</span><strong>Datacrons</strong></Link>
+          <Link href="/officer/discord-sync"><span>DS</span><strong>Discord Sync</strong></Link>
           <Link href="/territory-battles"><span>TB</span><strong>Territory Battles</strong></Link>
           <Link href="/raids"><span>RD</span><strong>Raids</strong></Link>
           <Link href="/arsenal"><span>AR</span><strong>Guild Arsenal</strong></Link>
