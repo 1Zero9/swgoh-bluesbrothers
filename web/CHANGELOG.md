@@ -2,6 +2,30 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.29.0 — 2026-08-29
+
+- **Categorized Navigation Dropdowns & Field Guides Hub (`/guides`)**:
+  - **Categorized Header Navigation (Dropdown Menus)**:
+    - Transformed the flat 8+ link navbar into 6 clean, organized dropdown menus with hover/click flyout menus:
+      - **Guild Wire** (`/#guild-wire`)
+      - **Operations ▾** (Territory War, Datacrons, Territory Battles, Raids, Guild Arsenal, Ops Deck)
+      - **Roster ▾** (Member Roster, Wall of Shame)
+      - **Cantina & Music ▾** (Dougie's Discs, Soul Food Cafe & Lore)
+      - **Officer Deck ▾** (Officer Roster, Discord Sync Governance)
+      - **Field Guides ▾** (Account Linking, TW Orders, Datacrons, All Guides)
+    - Full keyboard navigation (Tab, Enter, Escape) and smooth blur glassmorphism.
+  - **Mobile Menu Accordions**:
+    - Reorganized the mobile drawer into collapsible accordion sections with icons and sub-item descriptions.
+  - **Field Guides & Simple Instructions Hub (`/guides`)**:
+    - Interactive 2-column guide reader with real-time keyword search, category filters, and step-by-step checklists.
+    - Added 5 comprehensive, easy-to-follow field guides:
+      1. *How to Link Your Account & Enter the Site* (Discord + 9-digit Ally Code)
+      2. *Territory War (TW) Member Playbook* (Preview, Defence placement, Attack phase)
+      3. *Datacron Mastery: Upgrading, Perks & Rerolls* (Level 9 character perks, faction perks, and stat priorities)
+      4. *Dougie's Discs: Turntable Controls & Song Requests* (Turntable controls and custom YouTube queuing)
+      5. *Officer Guide: Discord Sync & Roster Governance* (1-click match linking and role reconciliation)
+    - Interactive checkable step checkboxes, pro-tip callouts, direct tool launch buttons, FAQ cards, and shareable guide links.
+
 ## 0.28.0 — 2026-08-29
 
 - **Discord <-> Game Member Synchronization, Auto-Role Demotion, and Gated Access**:

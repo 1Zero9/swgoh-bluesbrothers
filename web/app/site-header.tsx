@@ -10,15 +10,78 @@ import ScrollTracker from "./scroll-tracker";
 
 export const APP_VERSION = `v${packageInfo.version}`;
 
-export const SITE_NAVIGATION = [
-  { label: "Guild Wire", mark: "GW", href: "/#guild-wire" },
-  { label: "Operations", mark: "OP", href: "/operations" },
-  { label: "Territory War", mark: "TW", href: "/territory-war" },
-  { label: "Datacrons", mark: "DC", href: "/datacrons" },
-  { label: "Members", mark: "MB", href: "/members" },
-  { label: "Cantina", mark: "SF", href: "/cantina" },
-  { label: "Dougie's Discs", mark: "DD", href: "/dougies-discs" },
-  { label: "Officer Roster", mark: "OR", href: "/officer/roster" },
+export type NavSubItem = {
+  label: string;
+  mark: string;
+  href: string;
+  description?: string;
+  icon?: string;
+};
+
+export type NavCategoryItem = {
+  label: string;
+  mark: string;
+  href: string;
+  children?: NavSubItem[];
+};
+
+export const SITE_NAVIGATION: NavCategoryItem[] = [
+  {
+    label: "Guild Wire",
+    mark: "GW",
+    href: "/#guild-wire",
+  },
+  {
+    label: "Operations",
+    mark: "OP",
+    href: "/operations",
+    children: [
+      { label: "Territory War", mark: "TW", href: "/territory-war", description: "Live war room, zones & defence assignments", icon: "⚔️" },
+      { label: "Datacrons Vault", mark: "DC", href: "/datacrons", description: "Guild Level 9 weapons & active seasonal sets", icon: "💎" },
+      { label: "Territory Battles", mark: "TB", href: "/territory-battles", description: "RotE platoons & mission readiness", icon: "🪐" },
+      { label: "Raids", mark: "RD", href: "/raids", description: "Speeder & Naboo guild raid tracking", icon: "💥" },
+      { label: "Guild Arsenal", mark: "AR", href: "/arsenal", description: "Relic squads & counter power", icon: "🛡️" },
+      { label: "All Operations Deck", mark: "OP", href: "/operations", description: "Central mission launchpad", icon: "🚀" },
+    ],
+  },
+  {
+    label: "Roster",
+    mark: "MB",
+    href: "/members",
+    children: [
+      { label: "Member Roster", mark: "MB", href: "/members", description: "50-member profiles, GP & GL counts", icon: "👥" },
+      { label: "Wall of Shame", mark: "WS", href: "/wall-of-shame", description: "Inactive members & missed tickets", icon: "⚠️" },
+    ],
+  },
+  {
+    label: "Cantina & Music",
+    mark: "DD",
+    href: "/dougies-discs",
+    children: [
+      { label: "Dougie's Discs", mark: "DD", href: "/dougies-discs", description: "Turntable jukebox & custom requests", icon: "🎵" },
+      { label: "Soul Food Cafe", mark: "SF", href: "/cantina", description: "Chicago blues lore & menu specials", icon: "🥘" },
+    ],
+  },
+  {
+    label: "Officer Deck",
+    mark: "OR",
+    href: "/officer/roster",
+    children: [
+      { label: "Officer Roster Report", mark: "OR", href: "/officer/roster", description: "Participation & guild history table", icon: "📋" },
+      { label: "Discord Sync Governance", mark: "DS", href: "/officer/discord-sync", description: "Role reconciliation & name mismatches", icon: "🤖" },
+    ],
+  },
+  {
+    label: "Field Guides",
+    mark: "FG",
+    href: "/guides",
+    children: [
+      { label: "All Field Guides", mark: "FG", href: "/guides", description: "Step-by-step instructions hub", icon: "📖" },
+      { label: "Account Linking", mark: "AL", href: "/guides#account-linking", description: "2-step Discord & Ally Code access", icon: "⚡" },
+      { label: "TW Battle Orders", mark: "TW", href: "/guides#territory-war-orders", description: "Defence & Attack phase rules", icon: "⚔️" },
+      { label: "Datacron Optimization", mark: "DC", href: "/guides#datacron-optimization", description: "Level 9 perks & stat rerolls", icon: "💎" },
+    ],
+  },
 ];
 
 function formatSyncedAgo(date: Date) {

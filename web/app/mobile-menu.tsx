@@ -1,13 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import type { NavCategoryItem } from "./site-header";
 import ThemeToggle from "./theme-toggle";
 
 type MobileMenuProps = {
-  items: Array<{ label: string; mark: string; href: string }>;
+  items: NavCategoryItem[];
   version: string;
   discordUrl: string;
   syncLabel: string;
@@ -16,15 +17,27 @@ type MobileMenuProps = {
 
 export default function MobileMenu({ items, version, discordUrl, syncLabel, live = false }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState<Record<string, boolean>>({
+    Operations: true,
+    Roster: false,
+    "Cantina & Music": false,
+    "Officer Deck": false,
+    "Field Guides": true,
+  });
   const pathname = usePathname();
 
-  function isActive(href: string) {
-    if (href === "/#guild-wire") {
-      return pathname === "/";
-    }
+  function isChildActive(href: string) {
+    if (href === "/#guild-wire") return pathname === "/";
     const cleanHref = href.split("#")[0].split("?")[0];
     if (!cleanHref) return false;
     return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
+  }
+
+  function toggleAccordion(label: string) {
+    setOpenAccordion((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
   }
 
   useEffect(() => {
@@ -43,6 +56,11 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [open]);
+
+  // Close drawer on navigation
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <div className="mobile-menu">
@@ -71,18 +89,62 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
 
             <nav className="drawer-nav" aria-label="Drawer navigation">
               {items.map((item) => {
-                const active = isActive(item.href);
+                const hasChildren = Boolean(item.children && item.children.length > 0);
+                const isAccordionOpen = Boolean(openAccordion[item.label]);
+
+                if (!hasChildren) {
+                  const active = isChildActive(item.href);
+                  return (
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      key={item.label}
+                      className={`drawer-single-link${active ? " active" : ""}`}
+                    >
+                      <span className="drawer-mark">{item.mark}</span>
+                      <strong>{item.label}</strong>
+                      <b aria-hidden="true">→</b>
+                    </Link>
+                  );
+                }
+
                 return (
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    key={item.label}
-                    className={active ? "active" : ""}
-                  >
-                    <span>{item.mark}</span>
-                    <strong>{item.label}</strong>
-                    <b aria-hidden="true">→</b>
-                  </Link>
+                  <div key={item.label} className="drawer-section">
+                    <button
+                      type="button"
+                      className={`drawer-section-toggle${isAccordionOpen ? " is-open" : ""}`}
+                      onClick={() => toggleAccordion(item.label)}
+                    >
+                      <div className="drawer-sec-title">
+                        <span className="drawer-mark">{item.mark}</span>
+                        <strong>{item.label}</strong>
+                      </div>
+                      <span className="drawer-chevron">{isAccordionOpen ? "▴" : "▾"}</span>
+                    </button>
+
+                    {isAccordionOpen && item.children && (
+                      <div className="drawer-sub-list">
+                        {item.children.map((child) => {
+                          const childActive = isChildActive(child.href);
+                          return (
+                            <Link
+                              key={child.label}
+                              href={child.href}
+                              onClick={() => setOpen(false)}
+                              className={`drawer-sub-item${childActive ? " active" : ""}`}
+                            >
+                              <span className="drawer-sub-icon">{child.icon || "◈"}</span>
+                              <div className="drawer-sub-text">
+                                <strong>{child.label}</strong>
+                                {child.description && <small>{child.description}</small>}
+                              </div>
+                              <span className="drawer-sub-mark">{child.mark}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </nav>
