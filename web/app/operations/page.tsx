@@ -29,6 +29,7 @@ export default async function OperationsPage() {
       >
         <div className="operation-quicklinks" aria-label="Operation shortcuts">
           <Link href="/territory-war"><span>TW</span><strong>Territory War</strong></Link>
+          <Link href="/datacrons"><span>DC</span><strong>Datacrons</strong></Link>
           <Link href="/territory-battles"><span>TB</span><strong>Territory Battles</strong></Link>
           <Link href="/raids"><span>RD</span><strong>Raids</strong></Link>
           <Link href="/arsenal"><span>AR</span><strong>Guild Arsenal</strong></Link>
@@ -43,6 +44,15 @@ export default async function OperationsPage() {
           <p>Registration, locked power, opponent scores, zone state and member readiness in one live board.</p>
           <dl><div><dt>Joined</dt><dd>{war.active ? `${war.joinedCount}/${war.members.length}` : "—"}</dd></div><div><dt>Guild GP</dt><dd>{summary.live ? power(summary.guildPower) : "—"}</dd></div></dl>
           <Link href="/territory-war">Open Territory War <span>→</span></Link>
+        </article>
+
+        <article className="operation-card operation-datacrons" id="datacrons">
+          <header><span>Datacron intelligence</span><i>Live</i></header>
+          <div className="operation-mark">DC</div>
+          <h2>Datacron Vault</h2>
+          <p>Guild Level 9 character super-weapons, active SWGOH seasonal sets, and Territory War squad synergies.</p>
+          <dl><div><dt>Coverage</dt><dd>Active Sets</dd></div><div><dt>Source</dt><dd>Comlink</dd></div></dl>
+          <Link href="/datacrons">Open Datacron Vault <span>→</span></Link>
         </article>
 
         <article className="operation-card" id="territory-battles">

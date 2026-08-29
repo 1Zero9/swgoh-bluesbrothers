@@ -14,6 +14,7 @@ export const SITE_NAVIGATION = [
   { label: "Guild Wire", mark: "GW", href: "/#guild-wire" },
   { label: "Operations", mark: "OP", href: "/operations" },
   { label: "Territory War", mark: "TW", href: "/territory-war" },
+  { label: "Datacrons", mark: "DC", href: "/datacrons" },
   { label: "Members", mark: "MB", href: "/members" },
   { label: "Cantina", mark: "SF", href: "/cantina" },
   { label: "Dougie's Discs", mark: "DD", href: "/dougies-discs" },

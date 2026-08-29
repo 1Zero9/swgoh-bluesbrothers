@@ -2,6 +2,16 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.27.0 — 2026-08-29
+
+- **New Feature: Datacrons Vault & Active Meta Codex (`/datacrons`)**:
+  - Created a dedicated Datacrons Hub aggregating live member datacrons and active SWGOH seasonal sets.
+  - **Guild Datacron Vault**: Search and filter guild datacrons by Tier (Level 9 Character, Level 6 Faction, Level 3 Alignment), Set, Member, or Rolled Stats. Includes a Member Leaderboard and Signature Character Weapon Roster.
+  - **Active Sets & Meta Codex**: Full tactical guide to active SWGOH seasons (Set 20 Imperial/Rebel, Set 19 Republic/Separatist, Set 18 Mando/Sith) with complete breakdowns of Tier 9, Tier 6, and Tier 3 abilities, recommended squad lineups, and TW ratings.
+  - **Territory War Command Synergies**: Strategic guide linking high-impact datacrons directly to TW Frontline Defence and Offence nuke assignments.
+  - **Reroll & Farming Advisor**: Optimization guide on material thresholds, stat priorities, and Conquest energy investment.
+  - Added Datacrons (`DC`) to the top site navigation (`SITE_NAVIGATION`) and Operations launch deck.
+
 ## 0.26.3 — 2026-08-29
 
 - **Page Scroll & Stacking Polish (`/dougies-discs` & Site-wide)**:
