@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Datacrons · Guild Vault & Meta Codex",
     description:
       "Full guild datacron inventory, active set abilities, Level 9 character super-weapons, and Territory War defense assignments.",
-    images: ["/ops-banner.webp"],
+    images: ["/dataron-header.png"],
   },
 };
 
@@ -24,8 +24,8 @@ export default async function DatacronsPage() {
   return (
     <main className="intel-shell destination-shell datacrons-page">
       <PageHero
-        image="/ops-banner.webp"
-        imageAlt="Star Wars holographic datacron research lab and tactical war room"
+        image="/dataron-header.png"
+        imageAlt="The Blues Brothers examining glowing holographic datacrons with a technician in a galactic workshop"
         eyebrow="Datacrons · Guild Vault &amp; Active Meta Codex"
         title={
           <>
