@@ -4,6 +4,7 @@ import MemberDeparture from "@/app/member-departures";
 import MemberDirectory from "@/app/member-directory";
 import MemberWelcomeTicker from "@/app/member-welcome-ticker";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getRosterChanges, getRosterMembers } from "@/lib/members";
 
 export const revalidate = 300;
@@ -52,7 +53,9 @@ export default async function MembersPage() {
       <MemberWelcomeTicker members={newMembers} />
       <MemberDirectory members={members} />
       <MemberDeparture members={departedMembers} />
-      <footer className="intel-footer"><span>Roster data refreshes through the scheduled guild sync.</span><Link href="/territory-war">Open TW room →</Link></footer>
+      <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
+        <Link href="/territory-war">Open TW room →</Link>
+      </IntelFooter>
     </main>
   );
 }

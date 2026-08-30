@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getTerritoryWarRoom } from "@/lib/territory-war";
 
@@ -84,7 +85,9 @@ export default async function OperationsPage() {
         </article>
       </section>
 
-      <footer className="intel-footer"><span>More operational tools can now grow without extending the homepage.</span><Link href="/members">Open member directory →</Link></footer>
+      <IntelFooter message="More operational tools can now grow without extending the homepage.">
+        <Link href="/members">Open member directory →</Link>
+      </IntelFooter>
     </main>
   );
 }

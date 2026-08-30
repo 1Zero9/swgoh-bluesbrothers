@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
 
@@ -23,13 +24,10 @@ export default async function CantinaPage() {
         priority
       />
       <SoulFoodCafe recipes={recipes} />
-      <footer className="intel-footer">
-        <span>Recipes from the guild cantina databank.</span>
-        <div className="intel-footer-nav">
-          <Link href="/dougies-discs">Drop in at Dougie&apos;s Discs Jukebox →</Link>
-          <Link href="/">Back to guild command →</Link>
-        </div>
-      </footer>
+      <IntelFooter message="Recipes from the guild cantina databank.">
+        <Link href="/dougies-discs">Drop in at Dougie&apos;s Discs Jukebox →</Link>
+        <Link href="/">Back to guild command →</Link>
+      </IntelFooter>
     </main>
   );
 }

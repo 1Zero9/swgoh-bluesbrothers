@@ -18,12 +18,10 @@ export default function NavLinks({ items }: { items: NavCategoryItem[] }) {
 
     if (item.children?.length) {
       return item.children.some((child) => {
+        if (child.href.startsWith("/#")) return false;
         const cleanHref = child.href.split("#")[0].split("?")[0];
-        if (cleanHref === "/" && pathname === "/") return true;
-        if (cleanHref !== "/" && (pathname === cleanHref || pathname.startsWith(cleanHref + "/"))) {
-          return true;
-        }
-        return false;
+        if (!cleanHref) return false;
+        return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
       });
     }
 
@@ -33,7 +31,7 @@ export default function NavLinks({ items }: { items: NavCategoryItem[] }) {
   }
 
   function isChildActive(href: string) {
-    if (href === "/#guild-wire") return pathname === "/";
+    if (href.startsWith("/#")) return false;
     const cleanHref = href.split("#")[0].split("?")[0];
     if (!cleanHref) return false;
     return pathname === cleanHref || pathname.startsWith(cleanHref + "/");

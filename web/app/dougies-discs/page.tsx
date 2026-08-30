@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import DougiesJukebox from "./dougies-jukebox";
 import { getDiscsCatalog } from "@/lib/discs";
 
@@ -39,13 +40,10 @@ export default async function DougiesDiscsPage() {
 
       <DougiesJukebox initialDiscs={discs} />
 
-      <footer className="intel-footer">
-        <span>Curated vinyl and transmissions from Dougie&apos;s Speakeasy databank.</span>
-        <div className="intel-footer-nav">
-          <Link href="/cantina">Visit Soul Food Cantina →</Link>
-          <Link href="/">Back to guild command →</Link>
-        </div>
-      </footer>
+      <IntelFooter message="Curated vinyl and transmissions from Dougie's Speakeasy databank.">
+        <Link href="/cantina">Visit Soul Food Cantina →</Link>
+        <Link href="/">Back to guild command →</Link>
+      </IntelFooter>
     </main>
   );
 }

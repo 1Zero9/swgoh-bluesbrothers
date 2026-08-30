@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/app/site-header";
+import IntelFooter from "@/app/intel-footer";
+import { OneZeroNineLogo } from "@/app/built-by-badge";
 
 export const metadata: Metadata = {
   title: "Sources & Credits · Blues Brothers",
-  description: "Open-source acknowledgements and third-party notices for Blues Brothers Guild Command.",
+  description: "Open-source acknowledgements and studio attribution for Blues Brothers Guild Command.",
 };
 
 const projects = [
@@ -30,12 +32,26 @@ export default function CreditsPage() {
       <SiteHeader homeHref="/" />
       <section className="credits-hero">
         <div className="credits-hero-copy">
-          <p className="eyebrow">Open-source credits</p>
+          <p className="eyebrow">Studio &amp; Open-source credits</p>
           <h1>Built with help from<br /><em>the wider holotable.</em></h1>
-          <p>We keep borrowed code and data visible, attributed, and inside the permissions granted by each project.</p>
+          <p>Designed and built at 1Zero9 Studio, with live data sync and borrowed code visible, attributed, and inside the permissions granted by each project.</p>
         </div>
       </section>
-      <section className="credit-list" aria-label="Open-source projects used by the site">
+      <section className="credit-list" aria-label="Studio attribution and open-source projects used by the site">
+        <article className="credit-card studio-credit-card">
+          <div className="studio-credit-head">
+            <span className="studio-pill">Design &amp; Architecture</span>
+            <div className="studio-title-row">
+              <OneZeroNineLogo className="studio-card-logo" />
+              <h2>1Zero9 Studio</h2>
+            </div>
+            <p>Stephen Cranfield · 1zero9.com</p>
+          </div>
+          <p>Product thinking, custom interface design, live Comlink sync architecture, and high-performance guild operations platform.</p>
+          <a href="https://1zero9.com" target="_blank" rel="noreferrer" className="studio-visit-link">
+            Visit 1zero9.com <span>↗</span>
+          </a>
+        </article>
         {projects.map((project) => (
           <article className="credit-card" key={project.name}>
             <div><span>{project.licence}</span><h2>{project.name}</h2><p>{project.author}</p></div>
@@ -48,10 +64,9 @@ export default function CreditsPage() {
         <h2>Star Wars and game assets</h2>
         <p>Star Wars: Galaxy of Heroes and related names, characters, imagery and marks belong to their respective owners. This is an independent guild utility and is not affiliated with or endorsed by Electronic Arts, Capital Games, Lucasfilm or Disney.</p>
       </section>
-      <footer className="intel-footer">
-        <span>Full notices are kept in THIRD_PARTY_NOTICES.md.</span>
+      <IntelFooter message="Full notices are kept in THIRD_PARTY_NOTICES.md.">
         <Link href="/arsenal">Open Guild Arsenal →</Link>
-      </footer>
+      </IntelFooter>
     </main>
   );
 }

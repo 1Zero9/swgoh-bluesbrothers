@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getGuildArsenal } from "@/lib/guild-arsenal";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 import ArsenalInteractive from "./arsenal-interactive";
@@ -49,10 +50,9 @@ export default async function ArsenalPage() {
         </section>
       )}
 
-      <footer className="intel-footer">
-        <span>Checklist adapted from SWGoHBot under the MIT licence.</span>
+      <IntelFooter message="Checklist adapted from SWGoHBot under the MIT licence.">
         <Link href="/credits">Sources &amp; credits →</Link>
-      </footer>
+      </IntelFooter>
     </main>
   );
 }

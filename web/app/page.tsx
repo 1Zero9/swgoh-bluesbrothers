@@ -10,6 +10,7 @@ import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import { getRosterChanges } from "@/lib/members";
 import AccountLink from "./account-link";
+import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
 import SiteHeader, { APP_VERSION } from "./site-header";
 import WallOfFameBoard from "./wall-of-fame-board";
@@ -261,7 +262,7 @@ export default async function Home() {
                 <ul className="standing-list watch-list">
                   {wallOfShame.map((entry) => (
                     <li key={entry.playerId}>
-                      <a href={`#member-${entry.playerId}`}>
+                      <a href={`/members#member-${entry.playerId}`}>
                         <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
                         <span className="standing-member"><strong>{entry.name}</strong><small>{entry.reasons.join(" · ")}</small></span>
                         <span className="standing-value"><strong>{entry.raidTickets}</strong><small>tickets</small></span>
@@ -331,7 +332,10 @@ export default async function Home() {
         </div>
 
         <footer>
-          <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
+          <div className="footer-left">
+            <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
+            <BuiltByBadge />
+          </div>
           <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/dougies-discs">Dougie&apos;s Discs</Link><Link href="/credits">Sources &amp; credits</Link></span>
         </footer>
         </div>

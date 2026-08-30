@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getDiscordSyncReport } from "@/lib/discord-sync";
 import DiscordSyncInteractive from "./discord-sync-interactive";
@@ -62,9 +63,7 @@ export default async function OfficerDiscordSyncPage() {
 
       <DiscordSyncInteractive initialReport={report} />
 
-      <footer className="intel-footer">
-        <span>Blues Brothers Discord Synchronization Engine · Powered by Discord REST API &amp; Comlink.</span>
-      </footer>
+      <IntelFooter message="Blues Brothers Discord Synchronization Engine · Powered by Discord REST API & Comlink." />
     </main>
   );
 }

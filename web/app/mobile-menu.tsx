@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavCategoryItem } from "./site-header";
 import ThemeToggle from "./theme-toggle";
+import { BuiltByBadge } from "./built-by-badge";
 
 type MobileMenuProps = {
   items: NavCategoryItem[];
@@ -27,9 +28,9 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
   const pathname = usePathname();
 
   function isChildActive(href: string) {
-    if (href === "/#guild-wire") return pathname === "/";
+    if (href.startsWith("/#")) return false;
     const cleanHref = href.split("#")[0].split("?")[0];
-    if (!cleanHref) return false;
+    if (!cleanHref || cleanHref === "/") return pathname === "/";
     return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
   }
 
@@ -150,9 +151,15 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
             </nav>
 
             <div className="drawer-footer">
-              <div><span>Colour mode</span><ThemeToggle /></div>
+              <div className="drawer-footer-controls">
+                <span>Colour mode</span>
+                <ThemeToggle />
+              </div>
               <a className="drawer-discord" href={discordUrl} target="_blank" rel="noreferrer"><span aria-hidden="true">◈</span> Open Discord</a>
-              <p className={live ? "is-live" : ""}><i aria-hidden="true" /> {syncLabel}</p>
+              <div className="drawer-footer-bottom">
+                <BuiltByBadge />
+                <p className={live ? "is-live" : ""}><i aria-hidden="true" /> {syncLabel}</p>
+              </div>
             </div>
           </aside>
         </div>

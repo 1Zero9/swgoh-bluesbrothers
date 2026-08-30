@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import DatacronsInteractive from "./datacrons-interactive";
 import { getGuildDatacronVault } from "@/lib/datacrons";
 
@@ -39,14 +40,11 @@ export default async function DatacronsPage() {
 
       <DatacronsInteractive initialData={data} />
 
-      <footer className="intel-footer">
-        <span>Active Datacron intelligence and guild inventory aggregated from player Comlink syncs.</span>
-        <div className="intel-footer-nav">
-          <Link href="/territory-war">Open Territory War Command →</Link>
-          <Link href="/arsenal">Review Guild Arsenal →</Link>
-          <Link href="/">Back to Command Centre →</Link>
-        </div>
-      </footer>
+      <IntelFooter message="Active Datacron intelligence and guild inventory aggregated from player Comlink syncs.">
+        <Link href="/territory-war">Open Territory War Command →</Link>
+        <Link href="/arsenal">Review Guild Arsenal →</Link>
+        <Link href="/">Back to Command Centre →</Link>
+      </IntelFooter>
     </main>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getOfficerIdentity } from "@/lib/officer-identity";
@@ -222,10 +223,9 @@ export default async function TerritoryWarPage() {
         <p>Comlink supplies guild-specific TW registration, locked rosters, opponent profile, commands, zone state and squads through the existing <code>/guild</code> call. The sync now stores every active war as a <code>GuildEvent</code> with hourly <code>EventSnapshot</code> history; no opponent counters or officer assignments are invented when the game does not provide them.</p>
       </aside>
 
-      <footer className="intel-footer">
-        <span>Live data from the guild’s self-hosted SWGOH Comlink service.</span>
+      <IntelFooter message="Live data from the guild’s self-hosted SWGOH Comlink service.">
         <Link href="/arsenal">Open guild arsenal →</Link>
-      </footer>
+      </IntelFooter>
     </main>
   );
 }

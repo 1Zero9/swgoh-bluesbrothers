@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import { getOfficerRosterReport } from "@/lib/officer-roster";
 import OfficerRosterLogin from "@/app/officer-roster-login";
@@ -61,13 +62,10 @@ export default async function OfficerRosterPage() {
         </section>
       )}
 
-      <footer className="intel-footer">
-        <span>Roster data refreshes through the scheduled guild sync.</span>
-        <div className="intel-footer-nav">
-          <Link href="/officer/discord-sync">Open Discord Sync Governance →</Link>
-          <Link href="/operations">Back to Operations →</Link>
-        </div>
-      </footer>
+      <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
+        <Link href="/officer/discord-sync">Open Discord Sync Governance →</Link>
+        <Link href="/operations">Back to Operations →</Link>
+      </IntelFooter>
     </main>
   );
 }

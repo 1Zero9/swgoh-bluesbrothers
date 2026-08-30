@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import GuidesInteractive from "./guides-interactive";
 
 export const metadata: Metadata = {
@@ -41,13 +42,10 @@ export default function GuidesPage() {
 
       <GuidesInteractive />
 
-      <footer className="intel-footer">
-        <span>Blues Brothers Guild Operations Field Manuals · Updated for active SWGOH seasons.</span>
-        <div className="intel-footer-nav">
-          <Link href="/operations">Open Operations Deck →</Link>
-          <Link href="/territory-war">Open Territory War →</Link>
-        </div>
-      </footer>
+      <IntelFooter message="Blues Brothers Guild Operations Field Manuals · Updated for active SWGOH seasons.">
+        <Link href="/operations">Open Operations Deck →</Link>
+        <Link href="/territory-war">Open Territory War →</Link>
+      </IntelFooter>
     </main>
   );
 }

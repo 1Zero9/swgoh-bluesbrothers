@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getViewerAccess } from "@/lib/access-control";
 import { getDiscordUrl } from "@/lib/discord";
 import { isMemberAuthConfigured } from "@/lib/member-auth";
@@ -51,9 +52,7 @@ export default async function GigInSessionPage() {
         playerName={access.playerName}
       />
 
-      <footer className="intel-footer">
-        <span>The Blues Brothers SWGOH Guild Command Deck · Powered by Comlink &amp; Discord.</span>
-      </footer>
+      <IntelFooter message="The Blues Brothers SWGOH Guild Command Deck · Powered by Comlink & Discord." />
     </main>
   );
 }

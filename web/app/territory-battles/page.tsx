@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRosterMembers } from "@/lib/members";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
@@ -150,10 +151,9 @@ export default async function TerritoryBattlesPage() {
         </p>
       </aside>
 
-      <footer className="intel-footer">
-        <span>Territory Battle allocations are calculated using synced guild snapshots.</span>
+      <IntelFooter message="Territory Battle allocations are calculated using synced guild snapshots.">
         <Link href="/operations">Back to Operations →</Link>
-      </footer>
+      </IntelFooter>
     </main>
   );
 }

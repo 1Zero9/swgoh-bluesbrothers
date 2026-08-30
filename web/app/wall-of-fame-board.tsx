@@ -27,7 +27,7 @@ export default function WallOfFameBoard({ categories }: { categories: WallOfFame
       <ol className="standing-list fame-list">
         {category.entries.map((entry) => (
           <li key={entry.playerId}>
-            <a href={`#member-${entry.playerId}`}>
+            <a href={`/members#member-${entry.playerId}`}>
               <span className="standing-rank">{entry.rank}</span>
               <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
               <span className="standing-member"><strong>{entry.name}</strong><small>{entry.badge || `Top ${category.label.toLowerCase()}`}</small></span>

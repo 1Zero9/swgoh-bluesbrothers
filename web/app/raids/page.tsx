@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
+import IntelFooter from "@/app/intel-footer";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRaidRoom } from "@/lib/raids";
 import RaidBoard from "./raid-board";
@@ -61,7 +62,9 @@ export default async function RaidsPage() {
         <p>SWGOH&apos;s public Comlink guild data does not expose live raid progress (<code>raidStatus</code>) to tools outside the guild&apos;s own account — only <code>recentRaidResult</code>, the last completed attempt per raid, is available. That&apos;s what powers this board. Live in-progress leaderboards and multi-attempt history aren&apos;t possible without deeper account access.</p>
       </aside>
 
-      <footer className="intel-footer"><span>Raid operations now surface real results, not just ticket pace.</span><Link href="/operations">Back to Operations →</Link></footer>
+      <IntelFooter message="Raid operations now surface real results, not just ticket pace.">
+        <Link href="/operations">Back to Operations →</Link>
+      </IntelFooter>
     </main>
   );
 }

@@ -50,7 +50,8 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     href: "/members",
     children: [
       { label: "Member Roster", mark: "MB", href: "/members", description: "50-member profiles, GP & GL counts", icon: "👥" },
-      { label: "Wall of Shame", mark: "WS", href: "/wall-of-shame", description: "Inactive members & missed tickets", icon: "⚠️" },
+      { label: "Wall of Fame", mark: "WF", href: "/#wall-of-fame", description: "Top rankings across power & tickets", icon: "★" },
+      { label: "Wall of Shame", mark: "WS", href: "/#wall-of-shame", description: "Inactive members & missed tickets", icon: "⚠️" },
     ],
   },
   {

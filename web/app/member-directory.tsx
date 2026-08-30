@@ -83,6 +83,23 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
   const [loadedAt, setLoadedAt] = useState<number>(0);
 
   useEffect(() => {
+    function checkHash() {
+      if (typeof window === "undefined") return;
+      const hash = window.location.hash;
+      if (hash.startsWith("#member-")) {
+        const playerId = hash.replace("#member-", "");
+        const target = members.find((m) => m.playerId === playerId);
+        if (target) {
+          setSelected(target);
+        }
+      }
+    }
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, [members]);
+
+  useEffect(() => {
     const dialog = dialogRef.current;
     if (selected && dialog && !dialog.open) {
       dialog.showModal();
