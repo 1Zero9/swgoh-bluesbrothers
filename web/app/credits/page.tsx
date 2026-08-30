@@ -45,7 +45,7 @@ export default function CreditsPage() {
               <OneZeroNineLogo className="studio-card-logo" />
               <h2>1Zero9 Studio</h2>
             </div>
-            <p>Stephen Cranfield · 1zero9.com</p>
+            <p>1zero9.com</p>
           </div>
           <p>Product thinking, custom interface design, live Comlink sync architecture, and high-performance guild operations platform.</p>
           <a href="https://1zero9.com" target="_blank" rel="noreferrer" className="studio-visit-link">
