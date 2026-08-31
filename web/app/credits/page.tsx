@@ -61,8 +61,12 @@ export default function CreditsPage() {
         ))}
       </section>
       <section className="credit-note">
-        <h2>Star Wars and game assets</h2>
-        <p>Star Wars: Galaxy of Heroes and related names, characters, imagery and marks belong to their respective owners. This is an independent guild utility and is not affiliated with or endorsed by Electronic Arts, Capital Games, Lucasfilm or Disney.</p>
+        <h2>Mission From God</h2>
+        <p>The planned guild mini-game is an original, limited-access, non-commercial production inspired by classic short-run economic trading games, including Dope Wars / Drug Wars. No source code, artwork, writing, data or audio from those games is copied.</p>
+      </section>
+      <section className="credit-note">
+        <h2>Property and asset notice</h2>
+        <p>Star Wars: Galaxy of Heroes, Star Wars, The Blues Brothers, and related names, characters, imagery and marks belong to their respective owners. This independent fan-made guild utility is not sold, separately distributed, affiliated with, sponsored by or endorsed by Electronic Arts, Capital Games, Lucasfilm, Disney, or the owners of The Blues Brothers.</p>
       </section>
       <IntelFooter message="Full notices are kept in THIRD_PARTY_NOTICES.md.">
         <Link href="/arsenal">Open Guild Arsenal →</Link>

@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.29.1 — 2026-08-31
+
+- Added the staged product and implementation specification for the planned `Mission From God` guild trading game.
+- Resolved payment, Daily attempt, persistence, deterministic RNG, server-authority and release-scope rules before implementation begins.
+- Recorded the game's creative inspirations, non-commercial fan-project status and property acknowledgement in the public Credits page and retained third-party notices.
+
 ## 0.29.0 — 2026-08-29
 
 - **Categorized Navigation Dropdowns & Field Guides Hub (`/guides`)**:
