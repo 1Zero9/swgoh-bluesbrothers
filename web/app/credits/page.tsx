@@ -62,7 +62,7 @@ export default function CreditsPage() {
       </section>
       <section className="credit-note">
         <h2>Mission From God</h2>
-        <p>The planned guild mini-game is an original, limited-access, non-commercial production inspired by classic short-run economic trading games, including Dope Wars / Drug Wars. No source code, artwork, writing, data or audio from those games is copied.</p>
+        <p>The guild mini-game is an original, limited-access, non-commercial production inspired by classic short-run economic trading games, including Dope Wars / Drug Wars. No source code, artwork, writing, data or audio from those games is copied.</p>
       </section>
       <section className="credit-note">
         <h2>Property and asset notice</h2>

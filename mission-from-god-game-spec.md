@@ -9,7 +9,7 @@
 
 **Tagline:** *A Blues Brothers Galactic Trading Game*
 
-**Implementation status:** Phase 1 deterministic core engine and balance simulator complete in site `v0.30.0`; playable UI, encounters and persistence remain staged work.
+**Implementation status:** Phase 1 deterministic core engine and balance simulator complete in site `v0.30.0`; Phase 2 Free Play UI, 12 launch encounters, Galactic News and versioned device-local autosave complete in site `v0.31.0`. Server persistence and competitive Daily play remain staged work.
 **Primary Goal:** Create a highly replayable guild mini-game inspired by classic trading games such as Dope Wars, combining SWGOH economics, Star Wars encounters, Blues Brothers humour, daily competition, achievements, and persistent progression.
 
 ---

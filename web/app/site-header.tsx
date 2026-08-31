@@ -61,6 +61,7 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     children: [
       { label: "Dougie's Discs", mark: "DD", href: "/dougies-discs", description: "Turntable jukebox & custom requests", icon: "🎵" },
       { label: "Soul Food Cafe", mark: "SF", href: "/cantina", description: "Chicago blues lore & menu specials", icon: "🥘" },
+      { label: "Mission From God", mark: "MG", href: "/mission-from-god", description: "Thirty-day galactic trading run", icon: "🕶️" },
     ],
   },
   {

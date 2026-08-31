@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.18.0 · **Last updated:** 2026-08-31 · tracks site `v0.30.0`
+**Doc version:** 1.19.0 · **Last updated:** 2026-08-31 · tracks site `v0.31.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -230,12 +230,16 @@ The planned `/mission-from-god` module is an original, limited-access, non-comme
 
 Game definitions remain version-controlled configuration while runs, actions, results and achievements will live in PostgreSQL. The specification makes original code/presentation and attribution mandatory. Creative inspirations and property acknowledgements are recorded in `web/THIRD_PARTY_NOTICES.md` and exposed on `/credits`; any later third-party library, asset or substantial data source must be added to both before release.
 
-### 5.16 Mission From God Phase 1 engine (`lib/game/*`)
+### 5.16 Mission From God game (`lib/game/*`, `app/mission-from-god/*`)
 The first game milestone is an isolated, UI-independent TypeScript rules engine. `lib/game/data` defines Jake/Elwood, five planets and six commodities; `lib/game/engine/rng.ts` provides coordinate-based deterministic streams; `economy.ts` creates bounded per-seed/day/planet prices with a bid/ask spread; and `game.ts` owns immutable run creation, trading, cargo, travel, the 30-day limit, Day 15 Jabba demand and final payment. Credits remain safe integers, cargo cannot exceed capacity, inventory cannot become negative, and only liquid Credits can pay Jabba.
 
 The initial balance uses 18,000 Credits, 100 cargo for Jake and 110 for Elwood. Jake receives the configured 5% sale advantage after the market's sell markdown; Elwood pays a small merchant penalty in return for cargo space. Day 15 is a blocking decision: a paid demand deducts 250,000 from both cash and debt, while a missed demand activates the initial bounty state. Travelling from Day 30 closes an unpaid run without creating a Day 31.
 
-`lib/game/simulation.ts` supplies deterministic random, conservative and future-aware oracle agents. A 6,000-run fixed-seed balance pass (2,000 per agent) produced 0%, 60.15% and 100% win rates respectively. Random is the expected losing floor, conservative sits inside the specification's experienced-player target, and oracle is a mathematical upper-bound detector rather than a player model. Run the repeatable report with `npm run game:simulate -- 2000`. `lib/game/game.test.ts` covers reproducibility, character differences, trade/cargo invariants, travel, Jabba and balance ordering. No database or public route is introduced in this phase.
+`lib/game/simulation.ts` supplies deterministic random, conservative and future-aware oracle agents. A 6,000-run fixed-seed balance pass (2,000 per agent) produced 0%, 60.15% and 100% win rates respectively. Random is the expected losing floor, conservative sits inside the specification's experienced-player target, and oracle is a mathematical upper-bound detector rather than a player model. Run the repeatable report with `npm run game:simulate -- 2000`. `lib/game/game.test.ts` covers reproducibility, character differences, trade/cargo invariants, travel, Jabba and balance ordering.
+
+Phase 2 exposes the engine at `/mission-from-god` as an interactive client island inside a normal server-rendered route. Free Play includes Jake/Elwood selection, the complete market/cargo/travel loop, Daily News, 12 configured choice encounters, bounty escalation with a recurring Boba Fett chase, the blocking Day 15 demand, settlement/end screens and a compact road log. The responsive terminal UI is implemented with a route-scoped CSS Module and is linked from the shared desktop dropdown/mobile drawer.
+
+Free Play saves a versioned JSON envelope under `bb-mission-from-god-free-play-v1` in browser `localStorage`; it contains the engine version, game state, pending encounter and recent log. Saves with a mismatched engine version are discarded rather than migrated silently. This storage is convenience-only and deliberately untrusted: there is still no database write, account identity, public score or leaderboard. Phase 3 must move competitive state and mutations to the server before Daily results can count.
 
 ---
 
@@ -457,6 +461,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.19.0 — 2026-08-31
+- Documented the Mission From God Phase 2 Free Play route, responsive client UI, deterministic news/encounters and versioned local autosave introduced in site v0.31.0.
 
 ### 1.18.0 — 2026-08-31
 - Documented the deterministic Mission From God Phase 1 engine, invariants, initial balance and 6,000-run simulation results introduced in site v0.30.0.
