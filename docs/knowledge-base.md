@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.20.0 · **Last updated:** 2026-08-31 · tracks site `v0.32.0`
+**Doc version:** 1.21.0 · **Last updated:** 2026-08-31 · tracks site `v0.33.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -241,6 +241,8 @@ Phase 2 exposes the engine at `/mission-from-god` as an interactive client islan
 
 The active run is presented as one original **BB–1138 Mission Datapad** rather than a set of unrelated dashboard cards. Mission status and the nav computer form its upper console; current feedback and Galactic News share a transmission strip; and the lower console pairs the exchange with a live Bluesmobile manifest, capacity gauge and road log. Desktop uses a dense split-console layout, tablet stacks the major console banks, and phone collapses destinations and market rows into full-width touch targets. This borrows only the broad information hierarchy of classic trading games—no third-party window chrome, visual assets, text or source code is reproduced.
 
+Runner choice now controls presentation as well as mechanics: Jake carries the electric-blue console identity and Elwood switches selection and gameplay to a warm amber/red system. A first-run `How to Play` dialog is tracked locally with `bb-mission-from-god-guide-seen-v1` and can always be reopened from character selection or the datapad footer. It deliberately reduces the game to four actions—buy low, jump, sell high, pay Jabba—and tells beginners that Net Worth, News and Bounty can be ignored until the core loop is comfortable. Market labels use plain transactional language (`You own`, `Pay`, `Receive`, `How many`, `Paid avg`).
+
 Free Play saves a versioned JSON envelope under `bb-mission-from-god-free-play-v1` in browser `localStorage`; it contains the engine version, game state, pending encounter and recent log. Saves with a mismatched engine version are discarded rather than migrated silently. This storage is convenience-only and deliberately untrusted: there is still no database write, account identity, public score or leaderboard. Phase 3 must move competitive state and mutations to the server before Daily results can count.
 
 ---
@@ -463,6 +465,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.21.0 — 2026-08-31
+- Documented runner-specific visual identities, first-run help persistence and simplified beginner language introduced in site v0.33.0.
 
 ### 1.20.0 — 2026-08-31
 - Documented the unified responsive Mission Datapad interface introduced in site v0.32.0 and its explicit original-design boundary.

@@ -32,6 +32,7 @@ import {
 import styles from "./mission.module.css";
 
 const SAVE_KEY = "bb-mission-from-god-free-play-v1";
+const GUIDE_KEY = "bb-mission-from-god-guide-seen-v1";
 type LogEntry = { day: number; text: string; tone?: "good" | "bad" };
 type SavedRun = { engineVersion: string; state: GameState; encounter: Encounter | null; log: LogEntry[] };
 
@@ -46,6 +47,7 @@ export default function MissionGame() {
   const [notice, setNotice] = useState<string>("");
   const [quantity, setQuantity] = useState<Record<CommodityId, number>>(() => Object.fromEntries(COMMODITY_IDS.map((id) => [id, 1])) as Record<CommodityId, number>);
   const [saveFound, setSaveFound] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -56,6 +58,11 @@ export default function MissionGame() {
         queueMicrotask(() => { setGame(saved.state); setEncounter(saved.encounter); setLog(saved.log || []); setSaveFound(true); });
       } else localStorage.removeItem(SAVE_KEY);
     } catch { localStorage.removeItem(SAVE_KEY); }
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem(GUIDE_KEY)) return;
+    queueMicrotask(() => setGuideOpen(true));
   }, []);
 
   useEffect(() => {
@@ -78,6 +85,11 @@ export default function MissionGame() {
 
   function resetRun() {
     localStorage.removeItem(SAVE_KEY); setGame(null); setEncounter(null); setLog([]); setNotice(""); setSaveFound(false);
+  }
+
+  function closeGuide() {
+    localStorage.setItem(GUIDE_KEY, "seen");
+    setGuideOpen(false);
   }
 
   function act(action: () => GameState, success: string) {
@@ -107,7 +119,7 @@ export default function MissionGame() {
   }
 
   if (!game) return (
-    <section className={styles.intro} aria-labelledby="mission-title">
+    <section className={styles.intro} data-runner={selectedCharacter} aria-labelledby="mission-title">
       <div className={styles.introGlow} />
       <div className={styles.introCopy}>
         <p className={styles.kicker}>Free play · local save</p>
@@ -118,9 +130,10 @@ export default function MissionGame() {
       <div className={styles.characterPanel}>
         <p className={styles.panelLabel}>01 · Choose your brother</p>
         <div className={styles.characterGrid}>
-          {(Object.keys(CHARACTERS) as CharacterId[]).map((id) => <button key={id} type="button" className={`${styles.characterCard} ${selectedCharacter === id ? styles.selected : ""}`} onClick={() => setSelectedCharacter(id)}><span>{id === "jake" ? "JB" : "EB"}</span><strong>{CHARACTERS[id].name}</strong><em>{CHARACTERS[id].ability}</em><small>{id === "jake" ? "+5% sale price" : "+10 cargo capacity"}</small></button>)}
+          {(Object.keys(CHARACTERS) as CharacterId[]).map((id) => <button key={id} type="button" data-runner={id} className={`${styles.characterCard} ${selectedCharacter === id ? styles.selected : ""}`} onClick={() => setSelectedCharacter(id)}><span>{id === "jake" ? "JB" : "EB"}</span><strong>{CHARACTERS[id].name}</strong><em>{CHARACTERS[id].ability}</em><small>{id === "jake" ? "Better sale prices" : "Larger cargo hold"}</small></button>)}
         </div>
-        <button className={styles.startButton} type="button" onClick={startRun}>{saveFound ? "Start a new run" : "Start the Bluesmobile"} <span>→</span></button>
+        <div className={styles.introActions}><button className={styles.guideButton} type="button" onClick={() => setGuideOpen(true)}>How to play</button><button className={styles.startButton} type="button" onClick={startRun}>{saveFound ? "Start a new run" : "Start the Bluesmobile"} <span>→</span></button></div>
+        {guideOpen && <QuickGuide onClose={closeGuide} />}
       </div>
     </section>
   );
@@ -130,7 +143,7 @@ export default function MissionGame() {
   const active = game.status === "active";
   const carriedItems = COMMODITY_IDS.filter((id) => game.inventory[id].quantity > 0);
   return (
-    <section className={styles.gameShell}>
+    <section className={styles.gameShell} data-runner={game.character}>
       <div className={styles.datapad}>
         <div className={styles.padTopbar}><div><i aria-hidden="true" /><strong>BB–1138 Mission Datapad</strong></div><span>Free Play // Local Memory</span><b aria-hidden="true">● ● ●</b></div>
 
@@ -160,8 +173,8 @@ export default function MissionGame() {
           <section className={styles.marketPanel} aria-labelledby="market-title">
             <div className={styles.sectionHeading}><div><p className={styles.panelLabel}>02 · Trade terminal</p><h2 id="market-title">Available cargo</h2></div><span>Prices reset after travel</span></div>
             <div className={styles.marketTable}>
-              <div className={styles.marketHead}><span>Commodity</span><span>Hold</span><span>Buy</span><span>Sell</span><span>Quantity</span><span>Actions</span></div>
-              {COMMODITY_IDS.map((id) => { const item = game.inventory[id]; const quote = market![id]; return <div className={styles.marketRow} key={id}><div className={styles.commodity}><i>{id.slice(0, 2).toUpperCase()}</i><span><strong>{COMMODITIES[id].name}</strong><small>Avg {item.averagePurchasePrice ? credits(item.averagePurchasePrice) : "—"}</small></span></div><span data-label="Hold">{item.quantity}</span><span data-label="Buy">{credits(quote.buyPrice)}</span><span data-label="Sell">{credits(quote.sellPrice)}</span><label><span className={styles.mobileLabel}>Qty</span><input aria-label={`${COMMODITIES[id].name} quantity`} type="number" min="1" max="100" value={quantity[id]} onChange={(event) => setQuantity((current) => ({ ...current, [id]: Math.max(1, Number(event.target.value)) }))} /></label><div className={styles.tradeActions}><button type="button" disabled={!active || game.interimPaymentStatus === "pending"} onClick={() => trade("buy", id)}>Buy</button><button type="button" disabled={!active || item.quantity === 0 || game.interimPaymentStatus === "pending"} onClick={() => trade("sell", id)}>Sell</button></div></div>; })}
+              <div className={styles.marketHead}><span>Commodity</span><span>You own</span><span>Pay</span><span>Receive</span><span>How many</span><span>Trade</span></div>
+              {COMMODITY_IDS.map((id) => { const item = game.inventory[id]; const quote = market![id]; return <div className={styles.marketRow} key={id}><div className={styles.commodity}><i>{id.slice(0, 2).toUpperCase()}</i><span><strong>{COMMODITIES[id].name}</strong><small>Paid avg {item.averagePurchasePrice ? credits(item.averagePurchasePrice) : "—"}</small></span></div><span data-label="You own">{item.quantity}</span><span data-label="Pay">{credits(quote.buyPrice)}</span><span data-label="Receive">{credits(quote.sellPrice)}</span><label><span className={styles.mobileLabel}>How many</span><input aria-label={`${COMMODITIES[id].name} quantity`} type="number" min="1" max="100" value={quantity[id]} onChange={(event) => setQuantity((current) => ({ ...current, [id]: Math.max(1, Number(event.target.value)) }))} /></label><div className={styles.tradeActions}><button type="button" disabled={!active || game.interimPaymentStatus === "pending"} onClick={() => trade("buy", id)}>Buy</button><button type="button" disabled={!active || item.quantity === 0 || game.interimPaymentStatus === "pending"} onClick={() => trade("sell", id)}>Sell</button></div></div>; })}
             </div>
           </section>
 
@@ -173,12 +186,17 @@ export default function MissionGame() {
           </aside>
         </div>
 
-        <footer className={styles.gameFooter}><div><strong>{CHARACTERS[game.character].name}</strong><span>{CHARACTERS[game.character].ability}</span></div><div className={styles.footerActions}>{active && <button type="button" onClick={() => act(() => payJabba(game), "Jabba has been paid. The orphanage is safe.")}>Pay Jabba</button>}<button type="button" onClick={resetRun}>New run</button></div></footer>
+        <footer className={styles.gameFooter}><div><strong>{CHARACTERS[game.character].name}</strong><span>{CHARACTERS[game.character].ability}</span></div><div className={styles.footerActions}><button type="button" onClick={() => setGuideOpen(true)}>How to play</button>{active && <button type="button" onClick={() => act(() => payJabba(game), "Jabba has been paid. The orphanage is safe.")}>Pay Jabba</button>}<button type="button" onClick={resetRun}>New run</button></div></footer>
       </div>
 
       {game.interimPaymentStatus === "pending" && <div className={styles.modalLayer}><div className={styles.modal}><p className={styles.panelLabel}>Incoming transmission · Day 15</p><h2>Jabba wants 250,000 Credits.</h2><p>Pay now to reduce the final debt, or refuse and put Boba Fett on your trail.</p><div><button type="button" disabled={game.credits < 250_000} onClick={() => act(() => payInterimDemand(game), "Interim payment made. Jabba's debt is reduced.")}>Pay 250,000</button><button type="button" onClick={() => act(() => missInterimDemand(game), "Payment refused. Boba Fett is hunting the Bluesmobile.")}>Refuse payment</button></div></div></div>}
       {encounter && <div className={styles.modalLayer}><div className={`${styles.modal} ${styles.encounterModal}`}><p className={styles.panelLabel}>{encounter.category} encounter</p><h2>{encounter.title}</h2><p>{encounter.description}</p><div>{encounter.choices.map((choice) => <button key={choice.id} type="button" onClick={() => choose(choice.id)}><strong>{choice.label}</strong><small>{choice.hint}</small></button>)}</div></div></div>}
       {!active && <div className={styles.modalLayer}><div className={styles.modal}><p className={styles.panelLabel}>Run complete</p><h2>{game.status === "won" ? "The band made it." : "The mission is over."}</h2><p>{game.outcome}</p><dl><div><dt>Final Credits</dt><dd>{credits(game.credits)}</dd></div><div><dt>Trade profit</dt><dd>{credits(game.stats.totalProfit)}</dd></div><div><dt>Jumps</dt><dd>{game.stats.hyperspaceJumps}</dd></div></dl><div><button type="button" onClick={resetRun}>Start another run</button></div></div></div>}
+      {guideOpen && <QuickGuide onClose={closeGuide} />}
     </section>
   );
+}
+
+function QuickGuide({ onClose }: { onClose: () => void }) {
+  return <div className={styles.guideLayer} role="dialog" aria-modal="true" aria-labelledby="quick-guide-title"><div className={styles.guideModal}><button className={styles.guideClose} type="button" onClick={onClose} aria-label="Close how to play guide">×</button><p className={styles.panelLabel}>Quick guide · about one minute</p><h2 id="quick-guide-title">Buy low. Jump. Sell high.</h2><p className={styles.guideLead}>That is the whole game. Make enough Credits to clear Jabba&apos;s debt before Day 30.</p><ol><li><span>1</span><div><strong>Buy cheap cargo</strong><p>Choose a quantity, then press Buy. Your cargo space is limited.</p></div></li><li><span>2</span><div><strong>Jump to another planet</strong><p>Every jump advances one day and changes the prices.</p></div></li><li><span>3</span><div><strong>Sell for more than you paid</strong><p>Compare “Receive” with the “Paid avg” shown under the item.</p></div></li><li><span>4</span><div><strong>Pay Jabba</strong><p>You need liquid Credits—not cargo value—to clear the debt.</p></div></li></ol><div className={styles.guideSimple}><strong>Keep it simple</strong><p>Start with Corellian Ale or Omega Materials. Ignore Net Worth, News and Bounty until the basic buy → jump → sell loop feels comfortable.</p></div><button className={styles.guideStart} type="button" onClick={onClose}>Got it — start trading</button></div></div>;
 }
