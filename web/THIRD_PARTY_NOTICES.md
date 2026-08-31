@@ -33,3 +33,20 @@ SOFTWARE.
 Live guild and player data is retrieved through
 [`swgoh-utils/swgoh-comlink`](https://github.com/swgoh-utils/swgoh-comlink).
 No swgoh-comlink source code is copied into this repository.
+
+## Mission From God — creative inspirations and property notice
+
+`Mission From God` is an original, limited-access, non-commercial guild
+mini-game. Its short-run economic trading and risk mechanics are inspired by
+the wider genre, including *Dope Wars* / *Drug Wars*. No source code, artwork,
+writing, data, or audio from those games is copied into this repository.
+
+The planned game uses original code, interface work, and game-specific writing
+by Blues Brothers Guild Command / 1Zero9 Studio. It makes fan-created references
+to *Star Wars*, *Star Wars: Galaxy of Heroes*, and *The Blues Brothers*.
+
+Those properties and their related names, characters, imagery, and marks belong
+to their respective rights holders. This project is not sold or separately
+distributed and is not affiliated with, sponsored by, or endorsed by those
+rights holders. Any future third-party library, asset, or substantial data
+source adopted for the game must be added to this notice before release.

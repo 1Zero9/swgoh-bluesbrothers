@@ -116,29 +116,39 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
 
   // Load custom tracks and queue from localStorage on mount
   useEffect(() => {
-    try {
-      const savedCustom = localStorage.getItem("dougies-custom-discs");
-      if (savedCustom) {
-        const parsed = JSON.parse(savedCustom) as DiscTrack[];
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setCatalog((prev) => {
-            const existingIds = new Set(prev.map((d) => d.id));
-            const fresh = parsed.filter((d) => !existingIds.has(d.id));
-            return [...fresh, ...prev];
-          });
-        }
-      }
+    let active = true;
 
-      const savedQueue = localStorage.getItem("dougies-queue");
-      if (savedQueue) {
-        const parsedQ = JSON.parse(savedQueue) as DiscTrack[];
-        if (Array.isArray(parsedQ) && parsedQ.length > 0) {
-          setQueue(parsedQ);
+    queueMicrotask(() => {
+      if (!active) return;
+
+      try {
+        const savedCustom = localStorage.getItem("dougies-custom-discs");
+        if (savedCustom) {
+          const parsed = JSON.parse(savedCustom) as DiscTrack[];
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCatalog((prev) => {
+              const existingIds = new Set(prev.map((d) => d.id));
+              const fresh = parsed.filter((d) => !existingIds.has(d.id));
+              return [...fresh, ...prev];
+            });
+          }
         }
+
+        const savedQueue = localStorage.getItem("dougies-queue");
+        if (savedQueue) {
+          const parsedQ = JSON.parse(savedQueue) as DiscTrack[];
+          if (Array.isArray(parsedQ) && parsedQ.length > 0) {
+            setQueue(parsedQ);
+          }
+        }
+      } catch {
+        // Ignore localStorage errors
       }
-    } catch {
-      // Ignore localStorage errors
-    }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Track cockpit visibility to show floating bottom player bar when scrolled past

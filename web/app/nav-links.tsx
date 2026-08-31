@@ -51,11 +51,6 @@ export default function NavLinks({ items }: { items: NavCategoryItem[] }) {
     }, 180);
   }
 
-  // Close dropdown on route change or Escape
-  useEffect(() => {
-    setOpenDropdown(null);
-  }, [pathname]);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpenDropdown(null);

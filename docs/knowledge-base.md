@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.17.0 · **Last updated:** 2026-08-24 · tracks site `v0.25.0`
+**Doc version:** 1.17.1 · **Last updated:** 2026-08-31 · tracks site `v0.29.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -225,6 +225,11 @@ Mirroring the TW Command redesign (§5.9) and the same direct officer feedback (
 - **Routes.** `POST`/`PATCH /api/officer/tb/plan` creates/ensures the active plan and updates its status; `POST`/`PATCH`/`DELETE /api/officer/tb/planets` upserts or removes a `PlanetPlan` row (both POST and PATCH delegate to one shared `upsertPlanetPlan()` call in `lib/tw-plans.ts`, keyed on whether an `id` is supplied). Same officer-cookie auth and `{ ok, error? }` response convention as the TW routes (§7).
 - **What's genuinely Comlink-supplied vs. officer-entered:** the suggested planet/zone names come from static, hand-maintained ROTE reference data (not a live Comlink signal — see §15, Comlink exposes no live TB participation data outside the guild's own account). Strategy choice, Command assignment, notes, and priority are entirely officer-entered.
 
+### 5.15 Mission From God game specification (`../mission-from-god-game-spec.md`)
+The planned `/mission-from-god` module is an original, limited-access, non-commercial guild trading game. Its specification now separates the deterministic TypeScript engine from the React interface, defines a staged Free Play → persistence → Daily competition rollout, and fixes the previously ambiguous payment, Daily reset, autosave, scoring, RNG and server-authority rules. Scored play will use the existing authenticated active `Player` identity; competitive mutations will be transactional, idempotent and retained in an append-only action ledger.
+
+Game definitions remain version-controlled configuration while runs, actions, results and achievements will live in PostgreSQL. The specification makes original code/presentation and attribution mandatory. Creative inspirations and property acknowledgements are recorded in `web/THIRD_PARTY_NOTICES.md` and exposed on `/credits`; any later third-party library, asset or substantial data source must be added to both before release.
+
 ---
 
 ## 6. Data model
@@ -445,6 +450,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.17.1 — 2026-08-31
+- Documented the staged Mission From God specification, resolved competitive-game rules, and public/retained attribution introduced with site v0.29.1.
 
 ### 1.17.0 — 2026-08-24
 - Replaced the TW command tool's per-player drag-and-drop defence assignment with a **Command**-based workflow, per direct officer feedback that the old flow was too fiddly. Officers now pick a zone and assign a named, reusable squad+kit preset (`TwCommand`; 12 built-in presets seeded per guild plus fully custom ones) instead of placing individual players. Added an honestly-labeled **hold-confidence** heuristic (`computeHoldConfidence()`) — a 0–100 score/label derived from squad counter-vulnerability and roster backup depth — explicitly *not* a fabricated true win percentage, since Comlink doesn't expose opponent defense composition. Extended the same Command concept to a brand-new **Territory Battle command tool** (§5.14) on `/territory-battles`, letting officers set a pre-load / push-3★ / hold / skip strategy (and optional Command) per planet, per phase (Day 1–6), using real ROTE planet names for suggestions. New models `TwCommand`, `TerritoryBattlePlan`, `PlanetPlan` (+ `TbStrategy` enum, reused `TwPlanStatus`); new routes `/api/officer/tw/commands`, `/api/officer/tb/plan`, `/api/officer/tb/planets`; new modules `lib/tw-commands.ts`, `app/territory-battles/tb-workspace.tsx`. Tracks site v0.25.0.
