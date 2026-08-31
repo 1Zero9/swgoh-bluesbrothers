@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.33.0 — 2026-08-31
+
+- Added distinct runner identities: Jake uses an electric-blue datapad theme, while Elwood uses a warm amber/red theme from character selection through the active run.
+- Added a first-run **How to Play** popup and persistent help action explaining the game in four steps: buy low, jump, sell high and pay Jabba.
+- Simplified market language (`You own`, `Pay`, `Receive`, `How many`, `Paid avg`) and beginner guidance so players can ignore advanced signals until they understand the basic loop.
+
 ## 0.32.0 — 2026-08-31
 
 - Rebuilt the active Mission From God screen as one original, self-contained **BB–1138 Mission Datapad**, taking only broad interaction inspiration from classic trading games.
