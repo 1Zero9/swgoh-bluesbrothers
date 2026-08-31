@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.31.0 — 2026-08-31
+
+- Launched the playable `/mission-from-god` Free Play route with Jake/Elwood selection, six-commodity trading, cargo management, five destinations, Jabba debt tracking and the full 30-day loop.
+- Added deterministic Galactic News, 12 original decision encounters, bounty escalation and a recurring Boba Fett chase, plus the Day 15 demand and clear win/loss summaries.
+- Added versioned device-local autosave/resume, a recent-transmission road log and a responsive retro terminal interface for desktop, tablet and mobile.
+- Added Mission From God to the shared desktop and mobile navigation while retaining the existing public credits and fan-project property notice.
+
 ## 0.30.0 — 2026-08-31
 
 - Added the isolated Phase 1 `Mission From God` TypeScript engine with Jake/Elwood abilities, five planetary markets, six commodities and deterministic seeded pricing.

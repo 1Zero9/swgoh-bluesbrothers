@@ -1,4 +1,4 @@
-export const ENGINE_VERSION = "1.0.0";
+export const ENGINE_VERSION = "1.1.0";
 
 export type CharacterId = "jake" | "elwood";
 export type PlanetId = "tatooine" | "coruscant" | "cantonica" | "corellia" | "kessel";
@@ -72,6 +72,33 @@ export type MarketQuote = {
 };
 
 export type Market = Record<CommodityId, MarketQuote>;
+
+export type NewsItem = {
+  id: string;
+  tone: "up" | "down" | "alert" | "signal";
+  headline: string;
+};
+
+export type EncounterChoice = {
+  id: string;
+  label: string;
+  hint: string;
+};
+
+export type Encounter = {
+  id: string;
+  title: string;
+  description: string;
+  category: "bounty" | "imperial" | "mechanical" | "cantina" | "opportunity";
+  choices: EncounterChoice[];
+};
+
+export type EncounterResult = {
+  state: GameState;
+  title: string;
+  message: string;
+  tone: "good" | "bad" | "neutral";
+};
 
 export type RuleErrorCode =
   | "INVALID_QUANTITY"

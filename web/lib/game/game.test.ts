@@ -5,6 +5,8 @@ import {
   createGame,
   GameRuleError,
   getMarket,
+  getDailyNews,
+  getTravelEncounter,
   getNetWorth,
   getUsedCargo,
   missInterimDemand,
@@ -12,6 +14,7 @@ import {
   payJabba,
   sellCommodity,
   travel,
+  resolveEncounter,
 } from "./index";
 import { simulateBatch, simulateRun } from "./simulation";
 
@@ -24,6 +27,23 @@ test("market generation is deterministic and separated by day and planet", () =>
   assert.deepEqual(first, getMarket("same-seed", 4, "corellia", "jake"));
   assert.notDeepEqual(first, getMarket("same-seed", 5, "corellia", "jake"));
   assert.notDeepEqual(first, getMarket("same-seed", 4, "kessel", "jake"));
+});
+
+test("daily news and travel encounters are deterministic", () => {
+  const state = travel(createGame("news-and-events", "jake"), "corellia");
+  assert.deepEqual(getDailyNews(state), getDailyNews(state));
+  assert.deepEqual(getTravelEncounter(state), getTravelEncounter(state));
+  assert.equal(getDailyNews(state).length, 3);
+});
+
+test("encounter choices produce deterministic bounded results", () => {
+  const state = { ...createGame("boba", "jake"), bountyLevel: 2, bountyHunterActive: true };
+  const encounter = { id: "boba-chase", title: "Boba", description: "", category: "bounty" as const, choices: [] };
+  const first = resolveEncounter(state, encounter, "pay-bounty");
+  assert.deepEqual(first, resolveEncounter(state, encounter, "pay-bounty"));
+  assert.equal(first.state.credits, 6_000);
+  assert.equal(first.state.bountyLevel, 1);
+  assert.ok(first.state.credits >= 0);
 });
 
 test("Jake sells higher while Elwood starts with more cargo", () => {
