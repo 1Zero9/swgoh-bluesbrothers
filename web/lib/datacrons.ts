@@ -744,7 +744,7 @@ export async function getGuildDatacronVault(): Promise<{
   activeSets: DatacronSetDefinition[];
   syncedMemberCount: number;
 }> {
-  let liveDatacrons: GuildDatacron[] = [];
+  const liveDatacrons: GuildDatacron[] = [];
   let syncedMemberCount = 0;
 
   if (process.env.DATABASE_URL) {

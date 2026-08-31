@@ -58,11 +58,6 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
     };
   }, [open]);
 
-  // Close drawer on navigation
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   return (
     <div className="mobile-menu">
       <button
