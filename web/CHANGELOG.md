@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.32.0 — 2026-08-31
+
+- Rebuilt the active Mission From God screen as one original, self-contained **BB–1138 Mission Datapad**, taking only broad interaction inspiration from classic trading games.
+- Consolidated mission status, destination controls, incoming transmissions, Galactic News, the commodity exchange, Bluesmobile cargo manifest and road log into a denser game-console hierarchy.
+- Added tactile navigation/trading controls, CRT-like numeric accents, cargo-capacity gauge and responsive console layouts without copying third-party artwork, window chrome or source material.
+
 ## 0.31.0 — 2026-08-31
 
 - Launched the playable `/mission-from-god` Free Play route with Jake/Elwood selection, six-commodity trading, cargo management, five destinations, Jabba debt tracking and the full 30-day loop.

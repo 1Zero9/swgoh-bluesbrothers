@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.19.0 · **Last updated:** 2026-08-31 · tracks site `v0.31.0`
+**Doc version:** 1.20.0 · **Last updated:** 2026-08-31 · tracks site `v0.32.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -239,6 +239,8 @@ The initial balance uses 18,000 Credits, 100 cargo for Jake and 110 for Elwood. 
 
 Phase 2 exposes the engine at `/mission-from-god` as an interactive client island inside a normal server-rendered route. Free Play includes Jake/Elwood selection, the complete market/cargo/travel loop, Daily News, 12 configured choice encounters, bounty escalation with a recurring Boba Fett chase, the blocking Day 15 demand, settlement/end screens and a compact road log. The responsive terminal UI is implemented with a route-scoped CSS Module and is linked from the shared desktop dropdown/mobile drawer.
 
+The active run is presented as one original **BB–1138 Mission Datapad** rather than a set of unrelated dashboard cards. Mission status and the nav computer form its upper console; current feedback and Galactic News share a transmission strip; and the lower console pairs the exchange with a live Bluesmobile manifest, capacity gauge and road log. Desktop uses a dense split-console layout, tablet stacks the major console banks, and phone collapses destinations and market rows into full-width touch targets. This borrows only the broad information hierarchy of classic trading games—no third-party window chrome, visual assets, text or source code is reproduced.
+
 Free Play saves a versioned JSON envelope under `bb-mission-from-god-free-play-v1` in browser `localStorage`; it contains the engine version, game state, pending encounter and recent log. Saves with a mismatched engine version are discarded rather than migrated silently. This storage is convenience-only and deliberately untrusted: there is still no database write, account identity, public score or leaderboard. Phase 3 must move competitive state and mutations to the server before Daily results can count.
 
 ---
@@ -461,6 +463,9 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+### 1.20.0 — 2026-08-31
+- Documented the unified responsive Mission Datapad interface introduced in site v0.32.0 and its explicit original-design boundary.
 
 ### 1.19.0 — 2026-08-31
 - Documented the Mission From God Phase 2 Free Play route, responsive client UI, deterministic news/encounters and versioned local autosave introduced in site v0.31.0.
