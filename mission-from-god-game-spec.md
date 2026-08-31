@@ -8,6 +8,8 @@
 **Working Title:** **MISSION FROM GOD**
 
 **Tagline:** *A Blues Brothers Galactic Trading Game*
+
+**Implementation status:** Phase 1 deterministic core engine and balance simulator complete in site `v0.30.0`; playable UI, encounters and persistence remain staged work.
 **Primary Goal:** Create a highly replayable guild mini-game inspired by classic trading games such as Dope Wars, combining SWGOH economics, Star Wars encounters, Blues Brothers humour, daily competition, achievements, and persistent progression.
 
 ---
@@ -125,6 +127,7 @@ Possible final options:
 ## Resolved Run Rules
 
 - The opening debt is exactly 1,000,000 Credits.
+- The initial Phase 1 balance uses 18,000 starting Credits, subject to later play-test tuning.
 - A successful Day 15 interim payment leaves 750,000 Credits of debt.
 - The game ends immediately when the remaining debt is paid.
 - Unsold inventory is valued at the current market price for final net worth and scoring only.

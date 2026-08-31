@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "private": true,
   "engines": {
     "node": ">=22.12.0"
@@ -13,6 +13,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "tsx --test lib/**/*.test.ts",
+    "game:simulate": "tsx scripts/simulate-game.mts",
     "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio"

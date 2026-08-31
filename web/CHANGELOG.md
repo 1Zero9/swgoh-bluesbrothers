@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.30.0 — 2026-08-31
+
+- Added the isolated Phase 1 `Mission From God` TypeScript engine with Jake/Elwood abilities, five planetary markets, six commodities and deterministic seeded pricing.
+- Implemented integer-only trading, weighted-average inventory cost, cargo validation, travel/day progression, Day 15 Jabba resolution and liquid-Credits-only victory/failure rules.
+- Added pure deterministic RNG streams, 10 focused engine tests and random/conservative/oracle simulation agents for repeatable economy balancing.
+- Tuned the 18,000-Credit starting economy over 6,000 fixed-seed runs: random 0%, conservative 60.15%, future-aware oracle 100% win rates.
+
 ## 0.29.1 — 2026-08-31
 
 - Added the staged product and implementation specification for the planned `Mission From God` guild trading game.
