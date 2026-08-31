@@ -128,36 +128,53 @@ export default function MissionGame() {
   const usedCargo = getUsedCargo(game);
   const daysLeft = FINAL_DAY - game.day;
   const active = game.status === "active";
+  const carriedItems = COMMODITY_IDS.filter((id) => game.inventory[id].quantity > 0);
   return (
     <section className={styles.gameShell}>
-      <header className={styles.gameHeader}>
-        <div><p className={styles.kicker}>Mission From God</p><h1>{PLANETS[game.planetId].name}</h1><span>{PLANETS[game.planetId].profile}</span></div>
-        <div className={styles.dayDial}><small>Day</small><strong>{game.day}<i>/30</i></strong><span>{daysLeft} days remain</span></div>
-      </header>
+      <div className={styles.datapad}>
+        <div className={styles.padTopbar}><div><i aria-hidden="true" /><strong>BB–1138 Mission Datapad</strong></div><span>Free Play // Local Memory</span><b aria-hidden="true">● ● ●</b></div>
 
-      <div className={styles.statStrip}>
-        <div><span>Credits</span><strong>{credits(game.credits)}</strong></div><div><span>Jabba debt</span><strong>{credits(game.jabbaDebt)}</strong></div><div><span>Net worth</span><strong>{credits(getNetWorth(game))}</strong></div><div><span>Cargo</span><strong>{usedCargo} / {game.cargoCapacity}</strong></div><div><span>Bounty</span><strong className={styles.bounty}>{"★".repeat(game.bountyLevel)}{"☆".repeat(5 - game.bountyLevel)}</strong></div>
-      </div>
+        <div className={styles.padUpper}>
+          <section className={styles.statusPanel} aria-label="Mission status">
+            <header className={styles.gameHeader}>
+              <div><p className={styles.kicker}>Mission From God</p><h1>{PLANETS[game.planetId].name}</h1><span>{PLANETS[game.planetId].profile}</span></div>
+              <div className={styles.dayDial}><small>Day</small><strong>{game.day}<i>/30</i></strong><span>{daysLeft} days remain</span></div>
+            </header>
+            <div className={styles.statStrip}>
+              <div><span>Credits</span><strong>{credits(game.credits)}</strong></div><div><span>Jabba debt</span><strong>{credits(game.jabbaDebt)}</strong></div><div><span>Net worth</span><strong>{credits(getNetWorth(game))}</strong></div><div><span>Cargo hold</span><strong>{usedCargo} / {game.cargoCapacity}</strong></div><div><span>Bounty</span><strong className={styles.bounty}>{"★".repeat(game.bountyLevel)}{"☆".repeat(5 - game.bountyLevel)}</strong></div>
+            </div>
+          </section>
 
-      {notice && <div className={styles.notice} role="status"><span>COMLINK</span>{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss message">×</button></div>}
+          <section className={styles.travelPanel}><div className={styles.sectionHeading}><div><p className={styles.panelLabel}>01 · Nav computer</p><h2>Jump from {PLANETS[game.planetId].name}</h2></div><span>+1 day</span></div><div className={styles.planetList}>{PLANET_IDS.filter((id) => id !== game.planetId).map((id) => <button key={id} type="button" disabled={!active || game.interimPaymentStatus === "pending" || Boolean(encounter)} onClick={() => jump(id)}><span>{PLANETS[id].name}</span><small>{PLANETS[id].profile}</small><b>→</b></button>)}</div></section>
+        </div>
 
-      <div className={styles.dashboard}>
-        <section className={styles.marketPanel} aria-labelledby="market-title">
-          <div className={styles.sectionHeading}><div><p className={styles.panelLabel}>02 · Trade terminal</p><h2 id="market-title">Local exchange</h2></div><span>Market refreshes after travel</span></div>
-          <div className={styles.marketTable}>
-            <div className={styles.marketHead}><span>Commodity</span><span>Hold</span><span>Buy</span><span>Sell</span><span>Quantity</span><span>Actions</span></div>
-            {COMMODITY_IDS.map((id) => { const item = game.inventory[id]; const quote = market![id]; return <div className={styles.marketRow} key={id}><div className={styles.commodity}><i>{id.slice(0, 2).toUpperCase()}</i><span><strong>{COMMODITIES[id].name}</strong><small>Avg {item.averagePurchasePrice ? credits(item.averagePurchasePrice) : "—"}</small></span></div><span data-label="Hold">{item.quantity}</span><span data-label="Buy">{credits(quote.buyPrice)}</span><span data-label="Sell">{credits(quote.sellPrice)}</span><label><span className={styles.mobileLabel}>Qty</span><input aria-label={`${COMMODITIES[id].name} quantity`} type="number" min="1" max="100" value={quantity[id]} onChange={(event) => setQuantity((current) => ({ ...current, [id]: Math.max(1, Number(event.target.value)) }))} /></label><div className={styles.tradeActions}><button type="button" disabled={!active || game.interimPaymentStatus === "pending"} onClick={() => trade("buy", id)}>Buy</button><button type="button" disabled={!active || item.quantity === 0 || game.interimPaymentStatus === "pending"} onClick={() => trade("sell", id)}>Sell</button></div></div>; })}
+        <section className={styles.transmissionPanel} aria-label="Incoming transmissions">
+          <div className={styles.transmissionHeader}><span><i aria-hidden="true" /> Incoming transmission</span><b>GNN // Day {game.day}</b></div>
+          <div className={styles.transmissionBody}>
+            <div className={styles.currentTransmission} role="status"><strong>{notice || log[0]?.text || "The road is quiet. Watch the market."}</strong>{notice && <button type="button" onClick={() => setNotice("")} aria-label="Dismiss message">×</button>}</div>
+            <div className={styles.newsTicker}>{news.map((item) => <p key={item.id} data-tone={item.tone}><i>{item.tone === "up" ? "▲" : item.tone === "down" ? "▼" : item.tone === "alert" ? "!" : "●"}</i>{item.headline}</p>)}</div>
           </div>
         </section>
 
-        <aside className={styles.sideRail}>
-          <section className={styles.newsPanel}><div className={styles.sectionHeading}><div><p className={styles.panelLabel}>Galactic News Network</p><h2>Signals</h2></div><span>Day {game.day}</span></div>{news.map((item) => <p key={item.id} data-tone={item.tone}><i>{item.tone === "up" ? "▲" : item.tone === "down" ? "▼" : item.tone === "alert" ? "!" : "●"}</i>{item.headline}</p>)}</section>
-          <section className={styles.travelPanel}><div className={styles.sectionHeading}><div><p className={styles.panelLabel}>03 · Hyperspace</p><h2>Next stop</h2></div></div><div className={styles.planetList}>{PLANET_IDS.filter((id) => id !== game.planetId).map((id) => <button key={id} type="button" disabled={!active || game.interimPaymentStatus === "pending" || Boolean(encounter)} onClick={() => jump(id)}><span>{PLANETS[id].name}</span><small>{PLANETS[id].profile}</small><b>→</b></button>)}</div></section>
-          <section className={styles.logPanel}><div className={styles.sectionHeading}><div><p className={styles.panelLabel}>Road log</p><h2>Last transmissions</h2></div></div>{log.slice(0, 5).map((entry, index) => <p key={`${entry.day}-${index}`} data-tone={entry.tone}><span>D{entry.day}</span>{entry.text}</p>)}</section>
-        </aside>
-      </div>
+        <div className={styles.padLower}>
+          <section className={styles.marketPanel} aria-labelledby="market-title">
+            <div className={styles.sectionHeading}><div><p className={styles.panelLabel}>02 · Trade terminal</p><h2 id="market-title">Available cargo</h2></div><span>Prices reset after travel</span></div>
+            <div className={styles.marketTable}>
+              <div className={styles.marketHead}><span>Commodity</span><span>Hold</span><span>Buy</span><span>Sell</span><span>Quantity</span><span>Actions</span></div>
+              {COMMODITY_IDS.map((id) => { const item = game.inventory[id]; const quote = market![id]; return <div className={styles.marketRow} key={id}><div className={styles.commodity}><i>{id.slice(0, 2).toUpperCase()}</i><span><strong>{COMMODITIES[id].name}</strong><small>Avg {item.averagePurchasePrice ? credits(item.averagePurchasePrice) : "—"}</small></span></div><span data-label="Hold">{item.quantity}</span><span data-label="Buy">{credits(quote.buyPrice)}</span><span data-label="Sell">{credits(quote.sellPrice)}</span><label><span className={styles.mobileLabel}>Qty</span><input aria-label={`${COMMODITIES[id].name} quantity`} type="number" min="1" max="100" value={quantity[id]} onChange={(event) => setQuantity((current) => ({ ...current, [id]: Math.max(1, Number(event.target.value)) }))} /></label><div className={styles.tradeActions}><button type="button" disabled={!active || game.interimPaymentStatus === "pending"} onClick={() => trade("buy", id)}>Buy</button><button type="button" disabled={!active || item.quantity === 0 || game.interimPaymentStatus === "pending"} onClick={() => trade("sell", id)}>Sell</button></div></div>; })}
+            </div>
+          </section>
 
-      <footer className={styles.gameFooter}><div><strong>{CHARACTERS[game.character].name}</strong><span>{CHARACTERS[game.character].ability}</span></div><div className={styles.footerActions}>{active && <button type="button" onClick={() => act(() => payJabba(game), "Jabba has been paid. The orphanage is safe.")}>Pay Jabba</button>}<button type="button" onClick={resetRun}>End run</button></div></footer>
+          <aside className={styles.cargoPanel}>
+            <div className={styles.sectionHeading}><div><p className={styles.panelLabel}>03 · Bluesmobile</p><h2>Cargo manifest</h2></div><span>{usedCargo}/{game.cargoCapacity}</span></div>
+            <div className={styles.cargoGauge}><i style={{ width: `${Math.min(100, (usedCargo / game.cargoCapacity) * 100)}%` }} /><span>{game.cargoCapacity - usedCargo} spaces free</span></div>
+            <div className={styles.cargoList}>{carriedItems.length ? carriedItems.map((id) => <div key={id}><span><i>{id.slice(0, 2).toUpperCase()}</i><strong>{COMMODITIES[id].name}</strong></span><b>{game.inventory[id].quantity}</b><small>{credits(game.inventory[id].quantity * market![id].sellPrice)}</small></div>) : <p>The hold is empty.<br /><span>Buy low. Jump. Sell high.</span></p>}</div>
+            <div className={styles.roadLog}><header><span>Road log</span><b>{log.length} entries</b></header>{log.slice(0, 4).map((entry, index) => <p key={`${entry.day}-${index}`} data-tone={entry.tone}><span>D{entry.day}</span>{entry.text}</p>)}</div>
+          </aside>
+        </div>
+
+        <footer className={styles.gameFooter}><div><strong>{CHARACTERS[game.character].name}</strong><span>{CHARACTERS[game.character].ability}</span></div><div className={styles.footerActions}>{active && <button type="button" onClick={() => act(() => payJabba(game), "Jabba has been paid. The orphanage is safe.")}>Pay Jabba</button>}<button type="button" onClick={resetRun}>New run</button></div></footer>
+      </div>
 
       {game.interimPaymentStatus === "pending" && <div className={styles.modalLayer}><div className={styles.modal}><p className={styles.panelLabel}>Incoming transmission · Day 15</p><h2>Jabba wants 250,000 Credits.</h2><p>Pay now to reduce the final debt, or refuse and put Boba Fett on your trail.</p><div><button type="button" disabled={game.credits < 250_000} onClick={() => act(() => payInterimDemand(game), "Interim payment made. Jabba's debt is reduced.")}>Pay 250,000</button><button type="button" onClick={() => act(() => missInterimDemand(game), "Payment refused. Boba Fett is hunting the Bluesmobile.")}>Refuse payment</button></div></div></div>}
       {encounter && <div className={styles.modalLayer}><div className={`${styles.modal} ${styles.encounterModal}`}><p className={styles.panelLabel}>{encounter.category} encounter</p><h2>{encounter.title}</h2><p>{encounter.description}</p><div>{encounter.choices.map((choice) => <button key={choice.id} type="button" onClick={() => choose(choice.id)}><strong>{choice.label}</strong><small>{choice.hint}</small></button>)}</div></div></div>}
