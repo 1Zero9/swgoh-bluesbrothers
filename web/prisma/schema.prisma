@@ -95,6 +95,7 @@ model Player {
   snapshots        MemberSnapshot[]
   automationEvents AutomationEvent[]
   profileSnapshots PlayerProfileSnapshot[]
+  wins             GuildWin[]
   twAssignments    PlayerAssignment[]
   twAttackAssignments AttackAssignment[]
 }
@@ -425,4 +426,17 @@ model PlanetPlan {
 
   @@index([planId, phase])
   @@index([commandId])
+}
+
+model GuildWin {
+  id         String   @id @default(cuid())
+  playerId   String
+  kind       String
+  subject    String   @default("")
+  value      Int
+  occurredAt DateTime
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, kind, subject, value])
+  @@index([occurredAt])
 }

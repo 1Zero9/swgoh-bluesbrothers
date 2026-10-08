@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.34.0 — 2026-10-08
+
+- Added **The Wins** (`/wins`): a public feed of Galactic Legend and Ultimate unlocks, relic level-ups, new units and datacrons, spotted by diffing each member's previous and latest profile during guild sync. Headline wins are highlighted; small upgrades by one member in a day collapse into one line.
+- New `GuildWin` table (idempotent on player + kind + unit + value). Migration backfills the 17 Galactic Legend and 15 Ultimate unlocks already visible in profile history (count only; new wins carry unit names).
+- Profile refresh batch raised from 2 to 6 players per sync run so wins surface within about two days, since GitHub's scheduled runs fire only a few times a day.
+- Fixed `npm test` so it runs every `lib/**/*.test.ts` (the unquoted glob only ran `lib/game`, 12 of 44 tests).
+
 ## 0.33.0 — 2026-08-31
 
 - Added distinct runner identities: Jake uses an electric-blue datapad theme, while Elwood uses a warm amber/red theme from character selection through the active run.
