@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.37.0 — 2026-10-08
+
+- Officer Discord Sync: new **Link N exact matches** button links every unlinked member whose in-game name exactly matches one Discord account, after showing the full list for confirmation. Ambiguous matches (one Discord account matching two players, or already linked) are skipped.
+- "Are you a Blues Brother?" nudge on `/wins` and the TB callouts, shown only to visitors who haven't linked (`/api/members/me`).
+- Linked members are now tagged by Discord mention in the weekly wins post and in the "closest to ready" list of Discord-posted TB callouts. Mentions only ping members who are linked, and Discord ids never reach the browser.
+
 ## 0.36.0 — 2026-10-08
 
 - Added **TB callouts** at the top of `/territory-battles`: officers post "we need this unit at this level" (min stars, min relic, how many needed, phase/planet, a note) and the page shows live progress, who is ready, and who is closest with the exact gap (e.g. `R5 → R7`), matched against synced member rosters.

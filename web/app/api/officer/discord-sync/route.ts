@@ -8,6 +8,7 @@ import {
   fetchDiscordGuildMembers,
   getDiscordSyncReport,
 } from "@/lib/discord-sync";
+import { selectBulkLinkCandidates } from "@/lib/discord-link-match";
 import { addDiscordRole, removeDiscordMemberRole } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json().catch(() => null)) as {
-    action?: "link" | "unlink" | "reconcile_roles" | "demote_user";
+    action?: "link" | "unlink" | "reconcile_roles" | "demote_user" | "bulk_link_exact";
     playerId?: string;
     discordUserId?: string;
   } | null;
@@ -39,6 +40,17 @@ export async function POST(request: Request) {
       }
       const success = await linkPlayerToDiscord(body.playerId, body.discordUserId);
       return NextResponse.json({ ok: success });
+    }
+
+    if (body.action === "bulk_link_exact") {
+      // Recomputed from a fresh report so the client can't link anything we wouldn't suggest.
+      const report = await getDiscordSyncReport();
+      const candidates = selectBulkLinkCandidates(report.activePlayers);
+      let linked = 0;
+      for (const candidate of candidates) {
+        if (await linkPlayerToDiscord(candidate.playerId, candidate.discordUserId).catch(() => false)) linked += 1;
+      }
+      return NextResponse.json({ ok: true, linked, attempted: candidates.length });
     }
 
     if (body.action === "unlink") {

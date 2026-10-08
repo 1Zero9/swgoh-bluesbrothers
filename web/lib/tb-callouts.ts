@@ -32,7 +32,7 @@ function num(value: unknown) {
 async function loadRosters(): Promise<CalloutRoster[]> {
   const snapshot = await getPrisma().guildSnapshot.findFirst({
     orderBy: { capturedAt: "desc" },
-    select: { members: { select: { player: { select: { currentName: true, profilePayload: true } } } } },
+    select: { members: { select: { player: { select: { currentName: true, discordUserId: true, profilePayload: true } } } } },
   });
   if (!snapshot) return [];
 
@@ -41,14 +41,14 @@ async function loadRosters(): Promise<CalloutRoster[]> {
     const roster = payload && typeof payload === "object" && !Array.isArray(payload)
       ? (payload as { rosterUnit?: unknown }).rosterUnit
       : null;
-    if (!Array.isArray(roster)) return { playerName: player.currentName, units: null };
+    if (!Array.isArray(roster)) return { playerName: player.currentName, discordUserId: player.discordUserId, units: null };
 
     const units = new Map<string, { stars: number; relic: number }>();
     for (const unit of roster as RawUnit[]) {
       const id = String(unit?.definitionId ?? "").split(":")[0];
       if (id) units.set(id, { stars: num(unit.currentRarity), relic: Math.max(0, num(unit.relic?.currentTier) - 2) });
     }
-    return { playerName: player.currentName, units };
+    return { playerName: player.currentName, discordUserId: player.discordUserId, units };
   });
 }
 
@@ -111,11 +111,12 @@ export async function postCalloutToDiscord(callout: CalloutView) {
   const { progress } = callout;
   const siteUrl = process.env.SITE_URL || "https://swgoh-bluesbrothers.vercel.app";
 
+  const closest = progress.close.slice(0, 8);
   const lines = [
     `**${progress.readyCount}${callout.needed ? ` of ${callout.needed}` : ""}** ready so far.`,
     callout.note ?? "",
     progress.close.length
-      ? `**Closest to ready:**\n${progress.close.slice(0, 8).map((m) => `• ${m.name} (${m.gap})`).join("\n")}`
+      ? `**Closest to ready:**\n${closest.map((m) => `• ${m.discordUserId ? `<@${m.discordUserId}>` : m.name} (${m.gap})`).join("\n")}`
       : "",
     `Full list: ${siteUrl}/territory-battles#callouts`,
   ].filter(Boolean);
@@ -127,6 +128,7 @@ export async function postCalloutToDiscord(callout: CalloutView) {
       color: 0x38bdf8,
       websiteUrl: `${siteUrl}/territory-battles#callouts`,
       footer: "Blues Brothers · TB callouts",
+      mentionUserIds: closest.flatMap((m) => (m.discordUserId ? [m.discordUserId] : [])),
     },
     webhookUrl,
   );
