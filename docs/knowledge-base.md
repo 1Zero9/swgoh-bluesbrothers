@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.25.1 · **Last updated:** 2026-10-08 · tracks site `v0.37.1`
+**Doc version:** 1.25.2 · **Last updated:** 2026-10-08 · tracks site `v0.37.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -471,6 +471,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.25.2 — 2026-10-08**: Discord Sync surfaces the real error when the member list is empty. Listing guild members needs the bot's privileged **Server Members Intent** enabled in the Developer Portal; without it Discord refuses and the matcher has nothing to match.
 - **1.25.1 — 2026-10-08**: wins feed and digest restricted to players with an ACTIVE membership term. A departed member's `discordUserId` link is kept (sync only demotes their Discord role), so a rejoin picks it back up.
 - **1.25.0 — 2026-10-08**: bulk exact-match Discord linking for officers (`lib/discord-link-match.ts`, `bulk_link_exact` action); link nudge; Discord mentions of linked members in the weekly digest and TB callouts (`mentionUserIds` — only message `content` pings, embeds never do).
 - **1.24.0 — 2026-10-08**: TB callouts (`TbCallout`, `lib/tb-callouts.ts`, `/api/officer/tb/callouts`, `DISCORD_CALLOUTS_WEBHOOK_URL`).

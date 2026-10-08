@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.37.2 — 2026-10-08
+
+- Discord Sync now shows *why* the Discord member list is empty (token rejected, missing Server Members Intent, wrong server ID, or network failure) instead of always saying "Bot connected & active". Previously every failure was swallowed and looked like an empty server.
+
 ## 0.37.1 — 2026-10-08
 
 - The Wins feed and weekly Discord digest now only include members currently in the guild, so someone who has just left is neither celebrated nor tagged.
