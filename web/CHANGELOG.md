@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.35.0 — 2026-10-08
+
+- Added the weekly **"This week for the Blues Brothers"** Discord post: headline wins (Galactic Legends, ultimates, Relic 7+) named, smaller upgrades summarised, linking back to `/wins`.
+- New protected route `/api/cron/weekly-digest` (Vercel Cron, Sundays 17:00 UTC; `?dry=1` previews without posting). Posts at most once per week and nothing when there are no wins.
+- Posts to its own channel via `DISCORD_WINS_WEBHOOK_URL`; if unset, nothing is posted.
+
 ## 0.34.0 — 2026-10-08
 
 - Added **The Wins** (`/wins`): a public feed of Galactic Legend and Ultimate unlocks, relic level-ups, new units and datacrons, spotted by diffing each member's previous and latest profile during guild sync. Headline wins are highlighted; small upgrades by one member in a day collapse into one line.

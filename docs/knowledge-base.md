@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.22.0 · **Last updated:** 2026-10-08 · tracks site `v0.34.0`
+**Doc version:** 1.23.0 · **Last updated:** 2026-10-08 · tracks site `v0.35.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -356,6 +356,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_GUILD_ID` | The Discord server ID |
 | `DISCORD_MEMBER_ROLE_ID` / `DISCORD_OFFICER_ROLE_ID` | Roles granted/removed by automation |
 | `DISCORD_WELCOME_CHANNEL_ID` / `DISCORD_OFFICER_CHANNEL_ID` | Channels automation posts into |
+| `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
 | `OFFICER_SITE_PASSWORD` | Shared officer login password |
@@ -468,6 +469,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.23.0 — 2026-10-08**: weekly wins digest to Discord (`DISCORD_WINS_WEBHOOK_URL`, `/api/cron/weekly-digest`).
 - **1.22.0 — 2026-10-08**: added The Wins feed (`GuildWin` model, `lib/wins.ts`, `/wins`); profile batch 2→6; corrected the sync-cadence claims (§5.1); `npm test` glob fixed.
 
 ### 1.21.0 — 2026-08-31
