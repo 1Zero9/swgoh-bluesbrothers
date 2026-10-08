@@ -50,7 +50,7 @@ export async function runWeeklyDigest({ dryRun = false }: { dryRun?: boolean } =
   const since = new Date(Date.now() - 7 * 86_400_000);
 
   const rows = await prisma.guildWin.findMany({
-    where: { occurredAt: { gte: since } },
+    where: { occurredAt: { gte: since }, player: { membershipTerms: { some: { state: "ACTIVE" } } } },
     include: { player: { select: { currentName: true, discordUserId: true } } },
   });
   const digest = buildWeeklyDigest(rows.map((row) => ({

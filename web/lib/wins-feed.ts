@@ -30,7 +30,7 @@ export async function getWinsFeed(): Promise<WinsFeed> {
   try {
     const since = new Date(Date.now() - FEED_DAYS * 86_400_000);
     const rows = await getPrisma().guildWin.findMany({
-      where: { occurredAt: { gte: since } },
+      where: { occurredAt: { gte: since }, player: { membershipTerms: { some: { state: "ACTIVE" } } } },
       orderBy: { occurredAt: "desc" },
       include: { player: { select: { currentName: true } } },
     });
