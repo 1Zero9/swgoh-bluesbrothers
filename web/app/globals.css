@@ -8363,3 +8363,13 @@ html[data-theme="light"] .step-instruction {
 
 
 
+
+/* The Wins feed */
+.wins-feed { display: grid; gap: 28px; }
+.wins-day h3 { margin: 0 0 10px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.win-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 8px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.win-item p { margin: 0; color: var(--text); font-size: 15px; line-height: 1.45; }
+.win-item small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+.win-icon { width: 26px; flex: none; color: var(--blue); font-size: 18px; text-align: center; }
+.win-headline { border-color: rgba(251,191,36,.45); background: linear-gradient(90deg, rgba(251,191,36,.10), var(--panel)); }
+.win-headline .win-icon { color: var(--amber); }

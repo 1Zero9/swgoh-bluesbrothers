@@ -6,6 +6,7 @@ import {
 } from "@/lib/comlink";
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
+import { detectWins } from "@/lib/wins";
 
 type PendingAnnouncement = {
   eventId: string;
@@ -15,7 +16,7 @@ type PendingAnnouncement = {
   discordUserId: string | null;
 };
 
-const PROFILE_BATCH_SIZE = 2;
+const PROFILE_BATCH_SIZE = 6;
 const PROFILE_REFRESH_MS = 20 * 60 * 60 * 1000;
 
 function comlinkDate(value: string | number | undefined) {
@@ -39,7 +40,7 @@ async function enrichStalePlayerProfiles(playerIds: string[], capturedAt: Date) 
   const prisma = getPrisma();
   const players = await prisma.player.findMany({
     where: { id: { in: playerIds } },
-    select: { id: true, profileSyncedAt: true },
+    select: { id: true, profileSyncedAt: true, profilePayload: true },
   });
   const staleBefore = capturedAt.getTime() - PROFILE_REFRESH_MS;
   const selected = players
@@ -54,6 +55,7 @@ async function enrichStalePlayerProfiles(playerIds: string[], capturedAt: Date) 
     const portraitId = profile.selectedPlayerPortrait?.id || undefined;
     const titleId = profile.selectedPlayerTitle?.id || undefined;
     const lifetimeSeasonScore = BigInt(Math.trunc(Number(profile.lifetimeSeasonScore ?? 0)));
+    const wins = detectWins(player.profilePayload as Parameters<typeof detectWins>[0], profile);
 
     await prisma.$transaction([
       prisma.player.update({
@@ -74,6 +76,10 @@ async function enrichStalePlayerProfiles(playerIds: string[], capturedAt: Date) 
           ...summary,
           lifetimeSeasonScore,
         },
+      }),
+      prisma.guildWin.createMany({
+        data: wins.map((win) => ({ playerId: player.id, ...win, occurredAt: capturedAt })),
+        skipDuplicates: true,
       }),
     ]);
   }));

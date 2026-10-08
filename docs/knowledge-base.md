@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.21.0 · **Last updated:** 2026-08-31 · tracks site `v0.33.0`
+**Doc version:** 1.22.0 · **Last updated:** 2026-10-08 · tracks site `v0.34.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -142,7 +142,8 @@ Two codebases:
 3. Inside one Prisma transaction (`timeout: 60_000ms` — see [§13](#13-lessons-learned--gotchas)): upserts `Player`/`PlayerName` records, opens/closes `MembershipTerm`s to detect joins/departures, writes a `GuildSnapshot` (+ per-member `MemberSnapshot`s with the complete raw member payload), normalizes Territory War status/results into event history, and records `AutomationEvent`s.
 4. Joins/departures produce a shared automation event shown in the site's **Guild Wire** and pushed to Discord. The very first sync is a **baseline** — no join/departure events fire, since there's nothing to compare against yet.
 5. Departure automation only removes `DISCORD_MEMBER_ROLE_ID` when the player has a **verified** `discordUserId` (never matched by display name).
-6. After the roster transaction, up to two stale players are enriched through Comlink `/player`. This rotating batch stores the complete latest profile and a compact historical aggregate; a 50-member guild is fully refreshed in roughly 25 hourly runs without putting the cron route under a 50-request burst.
+6. After the roster transaction, up to six stale players are enriched through Comlink `/player`. This rotating batch stores the complete latest profile and a compact historical aggregate; a 50-member guild is fully refreshed in roughly 9 runs. GitHub's `schedule` trigger actually fires only a few times a day (observed 2026-10), so expect about two days per full refresh, not hours.
+7. During that enrichment `lib/wins.ts#detectWins` diffs the player's previous stored `profilePayload` against the new profile (new GLs/units, ultimates, relic levels, datacrons) and inserts `GuildWin` rows (unique on player + kind + unit + value, so reruns are safe). No previous profile means no wins. They feed `/wins` via `lib/wins-feed.ts`.
 
 ### 5.2 Comlink signing (`lib/comlink.ts`)
 Every request to the Comlink instance is HMAC-SHA256 signed:
@@ -260,6 +261,7 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `GuildSnapshot` | Point-in-time guild-wide stats from a sync | `memberCount`, `galacticPower`, `characterPower`, `shipPower`, `raidTickets`, raw Comlink `rawPayload` |
 | `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | Total/character/ship GP, tickets, activity, player level, guild role, squad power, season score, league, guild XP, and the complete raw guild-member payload |
 | `PlayerProfileSnapshot` | Lightweight history from rotating full-profile enrichment | Galactic Legends, unlocked ultimates, relic units, roster-unit count, datacrons, and lifetime season score |
+| `GuildWin` | A detected member achievement shown on `/wins` | `kind` (`GL_UNLOCK`/`ULTIMATE`/`RELIC`/`UNIT_UNLOCK`/`DATACRON`), `subject` (unit id, empty when unknown), `value`; unique per player+kind+subject+value |
 | `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult`; Territory Wars are populated by guild sync |
 | `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, complete raw `payload`; active Territory Wars are captured hourly |
 | `AutomationEvent` | Auditable record of every automated/officer action | `kind`, `status` (enum `AutomationStatus`), `discordChannelId`/`discordMessageId`, `sentAt` — backs the Guild Wire feed |
@@ -465,6 +467,8 @@ PRs are merged into `main` automatically — no confirmation needed.
 ---
 
 ## 16. Changelog
+
+- **1.22.0 — 2026-10-08**: added The Wins feed (`GuildWin` model, `lib/wins.ts`, `/wins`); profile batch 2→6; corrected the sync-cadence claims (§5.1); `npm test` glob fixed.
 
 ### 1.21.0 — 2026-08-31
 - Documented runner-specific visual identities, first-run help persistence and simplified beginner language introduced in site v0.33.0.
