@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.37.1 — 2026-10-08
+
+- The Wins feed and weekly Discord digest now only include members currently in the guild, so someone who has just left is neither celebrated nor tagged.
+
 ## 0.37.0 — 2026-10-08
 
 - Officer Discord Sync: new **Link N exact matches** button links every unlinked member whose in-game name exactly matches one Discord account, after showing the full list for confirmation. Ambiguous matches (one Discord account matching two players, or already linked) are skipped.
