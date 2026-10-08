@@ -7,11 +7,12 @@ export type CalloutRequirement = {
 
 export type CalloutRoster = {
   playerName: string;
+  discordUserId?: string | null;
   /** null when the member's profile hasn't synced yet. */
   units: Map<string, { stars: number; relic: number }> | null;
 };
 
-export type CalloutMember = { name: string; stars: number; relic: number; gap: string };
+export type CalloutMember = { name: string; discordUserId?: string | null; stars: number; relic: number; gap: string };
 
 export type CalloutProgress = {
   ready: CalloutMember[];
@@ -52,7 +53,7 @@ export function evaluateCallout(need: CalloutRequirement, rosters: CalloutRoster
       continue;
     }
     const size = gapSize(have, need);
-    const member = { name: roster.playerName, stars: have.stars, relic: have.relic, gap: size ? describeGap(have, need) : "" };
+    const member = { name: roster.playerName, discordUserId: roster.discordUserId, stars: have.stars, relic: have.relic, gap: size ? describeGap(have, need) : "" };
     if (size === 0) ready.push(member);
     else close.push({ ...member, size });
   }
@@ -63,7 +64,7 @@ export function evaluateCallout(need: CalloutRequirement, rosters: CalloutRoster
 
   return {
     ready,
-    close: close.map((entry) => ({ name: entry.name, stars: entry.stars, relic: entry.relic, gap: entry.gap })),
+    close: close.map((entry) => ({ name: entry.name, discordUserId: entry.discordUserId, stars: entry.stars, relic: entry.relic, gap: entry.gap })),
     missing,
     unsynced,
     readyCount: ready.length,

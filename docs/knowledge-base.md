@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.24.0 · **Last updated:** 2026-10-08 · tracks site `v0.36.0`
+**Doc version:** 1.25.0 · **Last updated:** 2026-10-08 · tracks site `v0.37.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -471,6 +471,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.25.0 — 2026-10-08**: bulk exact-match Discord linking for officers (`lib/discord-link-match.ts`, `bulk_link_exact` action); link nudge; Discord mentions of linked members in the weekly digest and TB callouts (`mentionUserIds` — only message `content` pings, embeds never do).
 - **1.24.0 — 2026-10-08**: TB callouts (`TbCallout`, `lib/tb-callouts.ts`, `/api/officer/tb/callouts`, `DISCORD_CALLOUTS_WEBHOOK_URL`).
 - **1.23.0 — 2026-10-08**: weekly wins digest to Discord (`DISCORD_WINS_WEBHOOK_URL`, `/api/cron/weekly-digest`).
 - **1.22.0 — 2026-10-08**: added The Wins feed (`GuildWin` model, `lib/wins.ts`, `/wins`); profile batch 2→6; corrected the sync-cadence claims (§5.1); `npm test` glob fixed.

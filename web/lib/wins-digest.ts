@@ -2,7 +2,7 @@ import { getPrisma } from "@/lib/prisma";
 import { postDiscordAnnouncement } from "@/lib/discord";
 import { describeWin, type WinKind } from "@/lib/wins";
 
-export type DigestWin = { who: string; kind: WinKind; subject: string; value: number };
+export type DigestWin = { who: string; discordUserId?: string | null; kind: WinKind; subject: string; value: number };
 
 const MAX_LINES = 12;
 
@@ -23,7 +23,7 @@ export function buildWeeklyDigest(wins: DigestWin[]) {
   const lines = headlines
     .sort((a, b) => (order[a.tag] ?? 9) - (order[b.tag] ?? 9))
     .slice(0, MAX_LINES)
-    .map((item) => `${item.icon} **${item.win.who}** ${item.text}`);
+    .map((item) => `${item.icon} ${item.win.discordUserId ? `<@${item.win.discordUserId}>` : `**${item.win.who}**`} ${item.text}`);
   const hidden = headlines.length - lines.length;
 
   const parts = [
@@ -33,7 +33,10 @@ export function buildWeeklyDigest(wins: DigestWin[]) {
     `**${members} member${members === 1 ? "" : "s"}** moved the guild forward this week. Every win, in full: ${siteUrl()}/wins`,
   ].filter(Boolean);
 
+  const mentionUserIds = [...new Set(headlines.slice(0, MAX_LINES).flatMap((item) => (item.win.discordUserId ? [item.win.discordUserId] : [])))];
+
   return {
+    mentionUserIds,
     title: "This week for the Blues Brothers",
     description: parts.join("\n\n"),
     color: 0xfbbf24,
@@ -48,10 +51,11 @@ export async function runWeeklyDigest({ dryRun = false }: { dryRun?: boolean } =
 
   const rows = await prisma.guildWin.findMany({
     where: { occurredAt: { gte: since } },
-    include: { player: { select: { currentName: true } } },
+    include: { player: { select: { currentName: true, discordUserId: true } } },
   });
   const digest = buildWeeklyDigest(rows.map((row) => ({
     who: row.player.currentName,
+    discordUserId: row.player.discordUserId,
     kind: row.kind as WinKind,
     subject: row.subject,
     value: row.value,

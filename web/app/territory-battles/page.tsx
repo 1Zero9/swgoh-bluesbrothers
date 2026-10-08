@@ -16,6 +16,7 @@ import {
   listCommands,
 } from "@/lib/tw-plans";
 import { calloutHeadline, getCalloutUnitOptions, listCallouts } from "@/lib/tb-callouts";
+import LinkNudge from "@/app/link-nudge";
 import TbCallouts from "./tb-callouts";
 import TbPlanner from "./tb-planner";
 import TbWorkspace, { type TbWorkspacePlan } from "./tb-workspace";
@@ -25,6 +26,11 @@ export const metadata: Metadata = {
   title: "Territory Battles · Blues Brothers",
   description: "Rise of the Empire (ROTE) star optimizer and deployment allocation strategy planner.",
 };
+
+/** Discord ids stay on the server; the browser only needs names and levels. */
+function publicMember(member: { name: string; stars: number; relic: number; gap: string }) {
+  return { name: member.name, stars: member.stars, relic: member.relic, gap: member.gap };
+}
 
 function power(value: bigint) {
   const amount = Number(value);
@@ -53,7 +59,11 @@ export default async function TerritoryBattlesPage() {
     status: callout.status,
     createdBy: callout.createdBy,
     createdLabel: callout.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" }),
-    progress: callout.progress,
+    progress: {
+      ...callout.progress,
+      ready: callout.progress.ready.map(publicMember),
+      close: callout.progress.close.map(publicMember),
+    },
   }));
 
   let tbPlan: TbWorkspacePlan | null = null;
@@ -130,6 +140,7 @@ export default async function TerritoryBattlesPage() {
           </div>
           <span>Matched against live member rosters</span>
         </div>
+        <LinkNudge reason="Link your account and a callout can tag you when you are one of the closest to ready." />
         <TbCallouts callouts={calloutCards} units={calloutUnits} isOfficer={isOfficer} />
       </section>
 

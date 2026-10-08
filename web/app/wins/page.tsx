@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
+import LinkNudge from "@/app/link-nudge";
 import { getWinsFeed, type FeedWin } from "@/lib/wins-feed";
 
 export const revalidate = 300;
@@ -61,6 +62,8 @@ export default async function WinsPage() {
           <div><strong>{feed.weekly.members}</strong><small>Members levelled up</small></div>
         </div>
       </PageHero>
+
+      <LinkNudge reason="Link your account and the weekly Discord post can tag you by name when you land a win." />
 
       <section className="tw-roster-section">
         <header>

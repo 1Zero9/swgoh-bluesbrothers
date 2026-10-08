@@ -8,6 +8,7 @@ import type {
   PlayerDiscordStatus,
   MatchSuggestion,
 } from "@/lib/discord-sync";
+import { selectBulkLinkCandidates } from "@/lib/discord-link-match";
 
 type Props = {
   initialReport: DiscordSyncReport;
@@ -27,6 +28,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
   const summary = report.summary;
 
   // Filtered active players list
+  const bulkCandidates = selectBulkLinkCandidates(report.activePlayers);
   const filteredPlayers = report.activePlayers.filter((player) => {
     if (filterMode === "UNLINKED" && player.linkedDiscordUser) return false;
     if (filterMode === "LINKED" && !player.linkedDiscordUser) return false;
@@ -90,6 +92,12 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
 
   async function handleDemoteExMember(discordUserId: string) {
     await executeAction({ action: "demote_user", discordUserId });
+  }
+
+  async function handleBulkLinkExact() {
+    const names = bulkCandidates.map((c) => `• ${c.playerName} → ${c.discordLabel}`).join("\n");
+    if (!confirm(`Link these ${bulkCandidates.length} members to their exact-match Discord accounts? Each also gets the Member role.\n\n${names}`)) return;
+    await executeAction({ action: "bulk_link_exact" });
   }
 
   async function handleReconcileAllRoles() {
@@ -187,6 +195,12 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+
+          {bulkCandidates.length > 0 ? (
+            <button type="button" className="btn-ds-reconcile" onClick={handleBulkLinkExact} disabled={isProcessing}>
+              🔗 Link {bulkCandidates.length} exact match{bulkCandidates.length === 1 ? "" : "es"}
+            </button>
+          ) : null}
 
           <button
             type="button"

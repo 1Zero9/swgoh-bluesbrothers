@@ -4,6 +4,8 @@ type Announcement = {
   color: number;
   websiteUrl?: string;
   footer?: string;
+  /** Discord user ids to ping; nobody else can be mentioned by the post. */
+  mentionUserIds?: string[];
 };
 
 export function getDiscordUrl() {
@@ -22,7 +24,9 @@ export async function postDiscordAnnouncement(announcement: Announcement, webhoo
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       username: "Blues Brothers Droid",
-      allowed_mentions: { parse: [] },
+      // Mentions inside an embed render but never notify; only message content pings.
+      content: announcement.mentionUserIds?.length ? announcement.mentionUserIds.slice(0, 100).map((id) => `<@${id}>`).join(" ") : undefined,
+      allowed_mentions: { parse: [], users: announcement.mentionUserIds?.slice(0, 100) ?? [] },
       embeds: [{
         title: announcement.title,
         description: announcement.description,
