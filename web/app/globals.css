@@ -8373,3 +8373,35 @@ html[data-theme="light"] .step-instruction {
 .win-icon { width: 26px; flex: none; color: var(--blue); font-size: 18px; text-align: center; }
 .win-headline { border-color: rgba(251,191,36,.45); background: linear-gradient(90deg, rgba(251,191,36,.10), var(--panel)); }
 .win-headline .win-icon { color: var(--amber); }
+
+/* TB callouts */
+.callouts { display: grid; gap: 14px; }
+.callout-card { padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.callout-card.is-complete { border-color: rgba(52,211,153,.5); }
+.callout-card.is-closed { opacity: .65; }
+.callout-card header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.callout-card h3 { margin: 0; color: var(--text); font-size: 18px; }
+.callout-card header small { color: var(--muted); font-size: 12px; }
+.callout-count { display: grid; text-align: right; color: var(--amber); font-size: 28px; line-height: 1; }
+.callout-count span { color: var(--muted); font-size: 18px; }
+.callout-count small { margin-top: 4px; font-size: 11px; font-weight: 400; }
+.callout-bar { height: 6px; margin: 14px 0; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; }
+.callout-bar span { display: block; height: 100%; background: var(--blue); }
+.callout-note { margin: 10px 0; color: var(--text); font-size: 14px; }
+.callout-done { margin: 8px 0; color: #34d399; font-size: 13px; font-weight: 700; }
+.callout-line, .callout-foot { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.callout-line span, .callout-close > span { display: block; margin-bottom: 3px; color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.callout-close { margin-top: 12px; }
+.callout-close ul { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--text); }
+.callout-close em { color: var(--muted); font-style: normal; }
+.callout-actions { display: flex; gap: 8px; margin-top: 14px; }
+.callout-actions button, .callout-form button { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--text); cursor: pointer; }
+.callout-form { display: grid; gap: 12px; padding: 20px; border: 1px dashed rgba(151,174,199,.25); border-radius: 16px; }
+.callout-form h3 { margin: 0; color: var(--text); }
+.callout-form label { display: grid; gap: 4px; color: var(--muted); font-size: 12px; }
+.callout-form input, .callout-form textarea { padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: rgba(0,0,0,.25); color: var(--text); font: inherit; }
+.callout-form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+.callout-check { display: flex !important; align-items: center; gap: 8px; }
+.callout-form button[type=submit] { justify-self: start; background: var(--blue-soft); }
+.callout-message { margin: 0; color: var(--muted); font-size: 13px; }
+.callout-closed summary { cursor: pointer; color: var(--muted); font-size: 13px; margin-bottom: 10px; }

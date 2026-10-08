@@ -76,6 +76,7 @@ model Guild {
   twPlans          TerritoryWarPlan[]
   twCommands       TwCommand[]
   tbPlans          TerritoryBattlePlan[]
+  tbCallouts       TbCallout[]
 }
 
 model Player {
@@ -439,4 +440,24 @@ model GuildWin {
 
   @@unique([playerId, kind, subject, value])
   @@index([occurredAt])
+}
+
+model TbCallout {
+  id         String    @id @default(cuid())
+  guildId    String
+  unitId     String
+  unitName   String
+  minStars   Int       @default(7)
+  minRelic   Int       @default(0)
+  needed     Int?
+  phase      Int?
+  planetName String?
+  note       String?
+  status     String    @default("OPEN")
+  createdBy  String?
+  createdAt  DateTime  @default(now())
+  closedAt   DateTime?
+  guild      Guild     @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, status])
 }
