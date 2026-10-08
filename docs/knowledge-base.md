@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.23.0 · **Last updated:** 2026-10-08 · tracks site `v0.35.0`
+**Doc version:** 1.24.0 · **Last updated:** 2026-10-08 · tracks site `v0.36.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -261,6 +261,7 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `GuildSnapshot` | Point-in-time guild-wide stats from a sync | `memberCount`, `galacticPower`, `characterPower`, `shipPower`, `raidTickets`, raw Comlink `rawPayload` |
 | `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | Total/character/ship GP, tickets, activity, player level, guild role, squad power, season score, league, guild XP, and the complete raw guild-member payload |
 | `PlayerProfileSnapshot` | Lightweight history from rotating full-profile enrichment | Galactic Legends, unlocked ultimates, relic units, roster-unit count, datacrons, and lifetime season score |
+| `TbCallout` | An officer's "we need this unit at this level" request on `/territory-battles` | `unitId`, `minStars`, `minRelic`, `needed`, `phase`, `status` (`OPEN`/`CLOSED`); progress is computed live from stored rosters by `lib/tb-callout-match.ts`, never stored |
 | `GuildWin` | A detected member achievement shown on `/wins` | `kind` (`GL_UNLOCK`/`ULTIMATE`/`RELIC`/`UNIT_UNLOCK`/`DATACRON`), `subject` (unit id, empty when unknown), `value`; unique per player+kind+subject+value |
 | `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult`; Territory Wars are populated by guild sync |
 | `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, complete raw `payload`; active Territory Wars are captured hourly |
@@ -357,6 +358,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_MEMBER_ROLE_ID` / `DISCORD_OFFICER_ROLE_ID` | Roles granted/removed by automation |
 | `DISCORD_WELCOME_CHANNEL_ID` / `DISCORD_OFFICER_CHANNEL_ID` | Channels automation posts into |
 | `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
+| `DISCORD_CALLOUTS_WEBHOOK_URL` | Optional webhook for new TB callouts; falls back to `DISCORD_WINS_WEBHOOK_URL`, and nothing posts if neither is set |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
 | `OFFICER_SITE_PASSWORD` | Shared officer login password |
@@ -469,6 +471,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.24.0 — 2026-10-08**: TB callouts (`TbCallout`, `lib/tb-callouts.ts`, `/api/officer/tb/callouts`, `DISCORD_CALLOUTS_WEBHOOK_URL`).
 - **1.23.0 — 2026-10-08**: weekly wins digest to Discord (`DISCORD_WINS_WEBHOOK_URL`, `/api/cron/weekly-digest`).
 - **1.22.0 — 2026-10-08**: added The Wins feed (`GuildWin` model, `lib/wins.ts`, `/wins`); profile batch 2→6; corrected the sync-cadence claims (§5.1); `npm test` glob fixed.
 

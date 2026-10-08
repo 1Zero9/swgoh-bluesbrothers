@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.36.0 — 2026-10-08
+
+- Added **TB callouts** at the top of `/territory-battles`: officers post "we need this unit at this level" (min stars, min relic, how many needed, phase/planet, a note) and the page shows live progress, who is ready, and who is closest with the exact gap (e.g. `R5 → R7`), matched against synced member rosters.
+- Officers can mark callouts finished, reopen or delete them, and optionally post a new callout to Discord (`DISCORD_CALLOUTS_WEBHOOK_URL`, falling back to the wins webhook; nothing posts if neither is set).
+- New `TbCallout` table and matching module with unit tests.
+
 ## 0.35.0 — 2026-10-08
 
 - Added the weekly **"This week for the Blues Brothers"** Discord post: headline wins (Galactic Legends, ultimates, Relic 7+) named, smaller upgrades summarised, linking back to `/wins`.

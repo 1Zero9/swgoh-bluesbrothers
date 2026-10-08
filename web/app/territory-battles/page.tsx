@@ -15,6 +15,8 @@ import {
   getTbPlanDetail,
   listCommands,
 } from "@/lib/tw-plans";
+import { calloutHeadline, getCalloutUnitOptions, listCallouts } from "@/lib/tb-callouts";
+import TbCallouts from "./tb-callouts";
 import TbPlanner from "./tb-planner";
 import TbWorkspace, { type TbWorkspacePlan } from "./tb-workspace";
 
@@ -40,6 +42,19 @@ export default async function TerritoryBattlesPage() {
 
   const store = await cookies();
   const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+
+  const [callouts, calloutUnits] = await Promise.all([listCallouts(), isOfficer ? getCalloutUnitOptions() : Promise.resolve([])]);
+  const calloutCards = callouts.map((callout) => ({
+    id: callout.id,
+    headline: calloutHeadline(callout),
+    unitName: callout.unitName,
+    needed: callout.needed,
+    note: callout.note,
+    status: callout.status,
+    createdBy: callout.createdBy,
+    createdLabel: callout.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" }),
+    progress: callout.progress,
+  }));
 
   let tbPlan: TbWorkspacePlan | null = null;
   let commands: import("@/lib/tw-view").CommandSummary[] = [];
@@ -107,7 +122,18 @@ export default async function TerritoryBattlesPage() {
         </div>
       </PageHero>
 
-      <section className="tb-section">
+      <section className="tb-section" id="callouts">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Callouts</p>
+            <h2>What the guild needs from you</h2>
+          </div>
+          <span>Matched against live member rosters</span>
+        </div>
+        <TbCallouts callouts={calloutCards} units={calloutUnits} isOfficer={isOfficer} />
+      </section>
+
+      <section className="tb-section margin-top-20">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Rise of the Empire</p>
