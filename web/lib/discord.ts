@@ -3,6 +3,7 @@ type Announcement = {
   description: string;
   color: number;
   websiteUrl?: string;
+  footer?: string;
 };
 
 export function getDiscordUrl() {
@@ -10,11 +11,10 @@ export function getDiscordUrl() {
     || (process.env.DISCORD_GUILD_ID ? `https://discord.com/channels/${process.env.DISCORD_GUILD_ID}` : "https://discord.com/");
 }
 
-export async function postDiscordAnnouncement(announcement: Announcement) {
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+export async function postDiscordAnnouncement(announcement: Announcement, webhookUrl = process.env.DISCORD_WEBHOOK_URL) {
   if (!webhookUrl) return false;
   if (!webhookUrl.startsWith("https://discord.com/api/webhooks/")) {
-    throw new Error("DISCORD_WEBHOOK_URL is not a Discord webhook URL");
+    throw new Error("Discord webhook URL is not a Discord webhook URL");
   }
 
   const response = await fetch(`${webhookUrl}?wait=true`, {
@@ -28,7 +28,7 @@ export async function postDiscordAnnouncement(announcement: Announcement) {
         description: announcement.description,
         color: announcement.color,
         url: announcement.websiteUrl,
-        footer: { text: "Blues Brothers Guild Wire" },
+        footer: { text: announcement.footer ?? "Blues Brothers Guild Wire" },
         timestamp: new Date().toISOString(),
       }],
     }),
