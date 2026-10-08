@@ -37,6 +37,8 @@ export type DiscordSyncSummary = {
   unlinkedMembersCount: number;
   exMembersWithMemberRoleCount: number;
   botConfigured: boolean;
+  /** Why the Discord member list came back empty, when Discord refused or the call failed. */
+  discordError: string | null;
   memberRoleIdConfigured: boolean;
   publicRoleIdConfigured: boolean;
 };
@@ -168,10 +170,22 @@ export function calculateMatchScore(
 /**
  * Fetch all members of the configured Discord guild via the Discord Bot REST API.
  */
+export function explainDiscordStatus(status: number) {
+  if (status === 401) return "Discord rejected the bot token (HTTP 401). Check DISCORD_BOT_TOKEN.";
+  if (status === 403) return "Discord refused to list members (HTTP 403). Enable the Server Members Intent for the bot in the Discord Developer Portal, and check the bot has access to the server.";
+  if (status === 404) return "Discord can't find that server (HTTP 404). Check DISCORD_GUILD_ID and that the bot has been added to the server.";
+  return `Discord returned HTTP ${status} when listing members.`;
+}
+
 export async function fetchDiscordGuildMembers(): Promise<DiscordGuildMember[]> {
+  return (await fetchDiscordGuildMembersDetailed()).members;
+}
+
+export async function fetchDiscordGuildMembersDetailed(): Promise<{ members: DiscordGuildMember[]; error: string | null }> {
   const token = process.env.DISCORD_BOT_TOKEN;
   const guildId = process.env.DISCORD_GUILD_ID;
-  if (!token || !guildId) return [];
+  if (!token) return { members: [], error: "DISCORD_BOT_TOKEN is not set." };
+  if (!guildId) return { members: [], error: "DISCORD_GUILD_ID is not set." };
 
   try {
     const members: DiscordGuildMember[] = [];
@@ -186,7 +200,7 @@ export async function fetchDiscordGuildMembers(): Promise<DiscordGuildMember[]> 
       });
 
       if (!response.ok) {
-        break;
+        return { members, error: explainDiscordStatus(response.status) };
       }
 
       const data = (await response.json()) as Array<{
@@ -222,9 +236,9 @@ export async function fetchDiscordGuildMembers(): Promise<DiscordGuildMember[]> 
       }
     }
 
-    return members;
+    return { members, error: members.length ? null : "Discord returned an empty member list. The Server Members Intent is probably not enabled for the bot." };
   } catch {
-    return [];
+    return { members: [], error: "Could not reach Discord (network error or timeout)." };
   }
 }
 
@@ -359,6 +373,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
         unlinkedMembersCount: samplePlayers.filter((p) => !p.linkedDiscordUser).length,
         exMembersWithMemberRoleCount: 0,
         botConfigured: Boolean(process.env.DISCORD_BOT_TOKEN),
+        discordError: null,
         memberRoleIdConfigured: Boolean(memberRoleId),
         publicRoleIdConfigured: Boolean(publicRoleId),
       },
@@ -395,7 +410,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
   });
 
   // 2. Fetch Discord members
-  const discordMembers = await fetchDiscordGuildMembers();
+  const { members: discordMembers, error: discordError } = await fetchDiscordGuildMembersDetailed();
   const discordMemberMap = new Map(discordMembers.map((m) => [m.id, m]));
 
   const linkedDiscordUserIds = new Set<string>();
@@ -483,6 +498,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
       unlinkedMembersCount: activePlayers.filter((p) => !p.linkedDiscordUser).length,
       exMembersWithMemberRoleCount: departedWithMemberRole.length,
       botConfigured: Boolean(process.env.DISCORD_BOT_TOKEN),
+      discordError,
       memberRoleIdConfigured: Boolean(memberRoleId),
       publicRoleIdConfigured: Boolean(publicRoleId),
     },

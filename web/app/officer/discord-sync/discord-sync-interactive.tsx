@@ -142,7 +142,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
             <span className="ds-kpi-mark">◈</span>
           </div>
           <strong>{summary.totalDiscordMembers}</strong>
-          <p>{summary.botConfigured ? "Bot connected & active" : "Bot token pending setup"}</p>
+          <p>{summary.discordError ?? (summary.botConfigured ? "Bot connected & active" : "Bot token pending setup")}</p>
         </article>
       </section>
 
