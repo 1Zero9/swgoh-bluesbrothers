@@ -137,3 +137,11 @@ export function slotsOpenPost(input: {
     color: BLUE,
   };
 }
+
+export function promptPost(prompt: { text: string }): CuratedPost {
+  return {
+    title: "Question of the week",
+    description: `${prompt.text}\n\nAnswer in here. One line is plenty.`,
+    color: BLUE,
+  };
+}

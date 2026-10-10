@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.39.0 · **Last updated:** 2026-10-08 · tracks site `v0.51.0`
+**Doc version:** 1.40.0 · **Last updated:** 2026-10-08 · tracks site `v0.52.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -361,6 +361,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
 | `DISCORD_CALLOUTS_WEBHOOK_URL` | Optional webhook for new TB callouts; falls back to `DISCORD_WINS_WEBHOOK_URL`, and nothing posts if neither is set |
 | `DISCORD_GENERAL_WEBHOOK_URL` / `DISCORD_PUBLIC_WEBHOOK_URL` (or `DISCORD_WELCOME_WEBHOOK_URL`) | Webhooks for #general (members) and the public channel; curated posts (`lib/curated-posts.ts`, wording in `lib/curated-messages.ts`) go here and nothing posts to a channel without one. General also receives welcomes/farewells in place of `DISCORD_WEBHOOK_URL`, and TW results |
+| `CURATED_PROMPTS` | Set to `off` to stop the weekly #general conversation prompt (`postWeeklyPromptIfDue`, prompts in `lib/prompts.ts`) |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
 | `OFFICER_SITE_PASSWORD` | Shared officer login password |
@@ -473,6 +474,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.40.0 — 2026-10-10**: weekly conversation prompt for #general (`lib/prompts.ts`, `postWeeklyPromptIfDue` called from the sync; once per week in a Wed 16:00–Thu 22:00 UK window; `WEEKLY_PROMPT` events record which prompt was used so none repeats until all 46 are spent).
 - **1.39.0 — 2026-10-10**: weekly public stats (`runWeeklyPublicStats`, triggered by the existing Sunday `/api/cron/weekly-digest` call — Vercel Hobby allows only two crons so no third was added) and the vacancy post (`postSlotsOpenIfNeeded`, called at the end of `syncGuildRoster`, state derived from snapshot member counts and `SLOTS_OPEN` events). Public channel = `DISCORD_PUBLIC_WEBHOOK_URL` (#gig_in_session); numbers only.
 - **1.38.1 — 2026-10-10**: public channel webhook accepts `DISCORD_WELCOME_WEBHOOK_URL` as an alias. Also noted: the legacy Python reporter's launchd job (`com.bluesbrothers.guild-droid`) was still running daily on the maintainer's Mac and posting failure alerts to #bot-lab (Comlink 403); it is superseded by the web sync and should be unloaded.
 - **1.38.0 — 2026-10-10**: curated Discord posts — channel routing, fresh-only TW result announcements (`TW_RESULT` automation events guard against repeats), warmer welcome/farewell wording. Public channel gets numbers only, never names.

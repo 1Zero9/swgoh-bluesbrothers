@@ -1,6 +1,7 @@
 import { postDiscordAnnouncement } from "@/lib/discord";
-import { slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
+import { promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
 import { getDashboardSummary } from "@/lib/dashboard";
+import { isPromptWindow, pickPrompt, PROMPTS } from "@/lib/prompts";
 import { JOIN_REQUIREMENTS } from "@/lib/requirements";
 import { getPrisma } from "@/lib/prisma";
 
@@ -205,6 +206,51 @@ export async function postSlotsOpenIfNeeded() {
     return sent;
   } catch (error) {
     console.error("slots open post failed", error);
+    await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
+    return false;
+  }
+}
+
+/**
+ * One conversation starter a week in #general, in the Wednesday-evening/Thursday window. It stands aside if
+ * anything else was posted to #general in the last 20 hours, and is switched off with CURATED_PROMPTS=off.
+ */
+export async function postWeeklyPromptIfDue(now = new Date()) {
+  if (process.env.CURATED_PROMPTS === "off") return false;
+  if (!channelWebhook("general") || !isPromptWindow(now)) return false;
+
+  const prisma = getPrisma();
+  const [past, busy] = await Promise.all([
+    prisma.automationEvent.findMany({ where: { kind: "WEEKLY_PROMPT" }, orderBy: { occurredAt: "desc" }, select: { occurredAt: true, metadata: true } }),
+    prisma.automationEvent.findFirst({
+      where: {
+        kind: { in: ["TW_RESULT", "MEMBER_WELCOME", "MEMBER_DEPARTURE"] },
+        status: "SENT",
+        sentAt: { gte: new Date(now.getTime() - 20 * 3_600_000) },
+      },
+      select: { id: true },
+    }),
+  ]);
+  if (past[0] && now.getTime() - past[0].occurredAt.getTime() < 6 * 86_400_000) return false;
+  if (busy) return false;
+
+  const usedIds = past.flatMap((event) => {
+    const id = (event.metadata as { promptId?: unknown } | null)?.promptId;
+    return typeof id === "string" ? [id] : [];
+  });
+  const prompt = pickPrompt(usedIds, PROMPTS);
+
+  const guild = await prisma.guild.findFirst({ select: { id: true } });
+  if (!guild) return false;
+  const record = await prisma.automationEvent.create({
+    data: { guildId: guild.id, kind: "WEEKLY_PROMPT", status: "PENDING", summary: prompt.text, metadata: { promptId: prompt.id } },
+  });
+  try {
+    const sent = await postToChannel("general", promptPost(prompt), "Blues Brothers · Question of the week");
+    await prisma.automationEvent.update({ where: { id: record.id }, data: { status: sent ? "SENT" : "FAILED", sentAt: sent ? new Date() : null } });
+    return sent;
+  } catch (error) {
+    console.error("weekly prompt failed", error);
     await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
     return false;
   }
