@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AccountMenu from "./account-menu";
+import { OPEN_INSTALL_EVENT } from "./install-prompt";
 import { signOutEverywhere } from "./sign-out";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
@@ -132,6 +133,14 @@ export default function MobileMenu({ discordUrl }: MobileMenuProps) {
                     </div>
                   ))}
                 </nav>
+
+                <button
+                  type="button"
+                  className="drawer-install"
+                  onClick={() => { setOpen(false); window.dispatchEvent(new Event(OPEN_INSTALL_EVENT)); }}
+                >
+                  Add to home screen
+                </button>
 
                 <div className="drawer-simple-foot">
                   <a href={discordUrl} target="_blank" rel="noreferrer">Open Discord</a>

@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.36.2 · **Last updated:** 2026-10-08 · tracks site `v0.48.2`
+**Doc version:** 1.37.0 · **Last updated:** 2026-10-08 · tracks site `v0.49.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.37.0 — 2026-10-10**: PWA install — `app/manifest.ts`, icons in `public/icons/` and `app/apple-icon.png`, `appleWebApp`/`viewport.themeColor` in the root layout, `app/install-prompt.tsx` (+ `lib/install-platform.ts`) shown on phones only, reopened from the mobile menu. No service worker (nothing is cached offline). Gotcha: an installed iPhone web app has its own cookie storage, so members sign in again inside it, and Discord's app can pull the sign-in out into Safari.
 - **1.36.2 — 2026-10-10**: visible Sign out in the mobile drawer; shared `signOutEverywhere()` in `app/sign-out.ts`.
 - **1.36.1 — 2026-10-10**: mobile drawer width is 75vw (clamped 280–430px) with a CSS grid background (`.drawer-simple` in `globals.css`).
 - **1.36.0 — 2026-10-10**: mobile drawer rewritten (`app/mobile-menu.tsx`) as a portal into `document.body` with a short role-aware flat list (`app/use-viewer.ts`). Gotcha: never render a `position: fixed` overlay inside `.site-header` — once scrolled the header has `backdrop-filter`, which makes WebKit size fixed children against the header.
