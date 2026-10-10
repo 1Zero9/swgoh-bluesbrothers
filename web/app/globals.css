@@ -8501,3 +8501,14 @@ html[data-theme="light"] .step-instruction {
 .drawer-simple-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(223,196,154,.16); }
 .drawer-simple-foot > a { padding: 10px 16px; border: 1px solid rgba(60,131,255,.4); border-radius: 10px; color: #dceeff; background: rgba(24,77,169,.2); font-size: 13px; text-decoration: none; }
 html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
+
+/* Mobile drawer: three-quarter width with a faint blueprint grid */
+.drawer-simple {
+  width: min(max(75vw, 280px), 430px);
+  background:
+    linear-gradient(rgba(120, 170, 255, .08) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(120, 170, 255, .08) 1px, transparent 1px) 0 0 / 28px 28px,
+    radial-gradient(circle at 90% 5%, rgba(33, 112, 255, .16), transparent 26%),
+    linear-gradient(165deg, #11161d, #080a0d 58%, #17130f);
+}
+.drawer-simple-group.is-grid a { padding-inline: 6px; font-size: 14.5px; line-height: 1.25; }
