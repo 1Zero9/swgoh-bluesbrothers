@@ -1,10 +1,11 @@
 import { postDiscordAnnouncement } from "@/lib/discord";
-import { promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
+import { anniversaryPost, milestonePost, promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { isPromptWindow, pickPrompt, PROMPTS } from "@/lib/prompts";
 import { JOIN_REQUIREMENTS } from "@/lib/requirements";
 import { getPrisma } from "@/lib/prisma";
 import { siteUrl } from "@/lib/site-url";
+import { unitName } from "@/lib/wins";
 
 export type CuratedChannel = "general" | "public";
 
@@ -23,10 +24,10 @@ export function channelWebhook(channel: CuratedChannel) {
 }
 
 /** Posts to one of the curated channels; does nothing (returns false) when that channel has no webhook. */
-export async function postToChannel(channel: CuratedChannel, post: CuratedPost, footer = "Blues Brothers") {
+export async function postToChannel(channel: CuratedChannel, post: CuratedPost, footer = "Blues Brothers", mentionUserIds: string[] = []) {
   const webhook = channelWebhook(channel);
   if (!webhook) return false;
-  await postDiscordAnnouncement({ ...post, websiteUrl: siteUrl(), footer }, webhook);
+  await postDiscordAnnouncement({ ...post, websiteUrl: siteUrl(), footer, mentionUserIds }, webhook);
   return true;
 }
 
@@ -251,4 +252,122 @@ export async function postWeeklyPromptIfDue(now = new Date(), { force = false }:
     await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
     return false;
   }
+}
+
+/** Celebration posts (milestones, anniversaries) share a small daily allowance so #general is never flooded. */
+const CELEBRATIONS_PER_DAY = 2;
+
+async function celebrationsLeft(now: Date) {
+  const used = await getPrisma().automationEvent.count({
+    where: { kind: { in: ["MILESTONE", "ANNIVERSARY"] }, occurredAt: { gte: new Date(now.getTime() - 20 * 3_600_000) } },
+  });
+  return Math.max(0, CELEBRATIONS_PER_DAY - used);
+}
+
+function londonParts(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(date);
+  const get = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? 0);
+  return { year: get("year"), month: get("month"), day: get("day"), hour: get("hour") };
+}
+
+/** Personal milestones from the last day and a half: a first Relic 9, and a 5th or 10th Galactic Legend. */
+export async function postMilestonesIfAny(now = new Date()) {
+  if (!channelWebhook("general")) return 0;
+  const { hour } = londonParts(now);
+  if (hour < 8 || hour >= 22) return 0;
+
+  const prisma = getPrisma();
+  let allowance = await celebrationsLeft(now);
+  if (allowance === 0) return 0;
+
+  const wins = await prisma.guildWin.findMany({
+    where: {
+      occurredAt: { gte: new Date(now.getTime() - 36 * 3_600_000) },
+      subject: { not: "" },
+      player: { membershipTerms: { some: { state: "ACTIVE" } } },
+      OR: [{ kind: "FIRST_R9" }, { kind: "GL_UNLOCK", value: { in: [5, 10] } }],
+    },
+    orderBy: { occurredAt: "asc" },
+    include: { player: { select: { currentName: true, discordUserId: true } } },
+  });
+
+  let posted = 0;
+  for (const win of wins) {
+    if (allowance === 0) break;
+    const done = await prisma.automationEvent.findFirst({ where: { kind: "MILESTONE", metadata: { path: ["winId"], equals: win.id } }, select: { id: true } });
+    if (done) continue;
+
+    const guild = await prisma.guild.findFirst({ select: { id: true } });
+    if (!guild) break;
+    const record = await prisma.automationEvent.create({
+      data: { guildId: guild.id, playerId: win.playerId, kind: "MILESTONE", status: "PENDING", summary: `${win.kind} milestone for ${win.player.currentName}`, metadata: { winId: win.id } },
+    });
+    allowance -= 1;
+    try {
+      const kind = win.kind === "FIRST_R9" ? "FIRST_R9" : win.value === 10 ? "GL_10" : "GL_5";
+      const discordId = win.player.discordUserId;
+      const sent = await postToChannel(
+        "general",
+        milestonePost({ name: win.player.currentName, mention: discordId ? `<@${discordId}>` : undefined, kind, unitName: unitName(win.subject) }),
+        "Blues Brothers · Milestone",
+        discordId ? [discordId] : [],
+      );
+      await prisma.automationEvent.update({ where: { id: record.id }, data: { status: sent ? "SENT" : "FAILED", sentAt: sent ? new Date() : null } });
+      if (sent) posted += 1;
+    } catch (error) {
+      console.error("milestone post failed", error);
+      await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
+    }
+  }
+  return posted;
+}
+
+/** "N years with the band" on a member's joining anniversary, in daylight, once per member per year. */
+export async function postAnniversariesIfDue(now = new Date()) {
+  if (!channelWebhook("general")) return 0;
+  const today = londonParts(now);
+  if (today.hour < 8 || today.hour >= 22) return 0;
+
+  const prisma = getPrisma();
+  let allowance = await celebrationsLeft(now);
+  if (allowance === 0) return 0;
+
+  const terms = await prisma.membershipTerm.findMany({
+    where: { state: "ACTIVE" },
+    select: { playerId: true, joinedAt: true, guildId: true, player: { select: { currentName: true, discordUserId: true } } },
+  });
+
+  let posted = 0;
+  for (const term of terms) {
+    if (allowance === 0) break;
+    const joined = londonParts(term.joinedAt);
+    const years = today.year - joined.year;
+    if (years < 1 || joined.month !== today.month || joined.day !== today.day) continue;
+
+    const done = await prisma.automationEvent.findFirst({
+      where: { kind: "ANNIVERSARY", AND: [{ metadata: { path: ["playerId"], equals: term.playerId } }, { metadata: { path: ["year"], equals: today.year } }] },
+      select: { id: true },
+    });
+    if (done) continue;
+
+    const record = await prisma.automationEvent.create({
+      data: { guildId: term.guildId, playerId: term.playerId, kind: "ANNIVERSARY", status: "PENDING", summary: `${years} year anniversary: ${term.player.currentName}`, metadata: { playerId: term.playerId, year: today.year } },
+    });
+    allowance -= 1;
+    try {
+      const discordId = term.player.discordUserId;
+      const sent = await postToChannel(
+        "general",
+        anniversaryPost({ name: term.player.currentName, mention: discordId ? `<@${discordId}>` : undefined, years }),
+        "Blues Brothers · Anniversary",
+        discordId ? [discordId] : [],
+      );
+      await prisma.automationEvent.update({ where: { id: record.id }, data: { status: sent ? "SENT" : "FAILED", sentAt: sent ? new Date() : null } });
+      if (sent) posted += 1;
+    } catch (error) {
+      console.error("anniversary post failed", error);
+      await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
+    }
+  }
+  return posted;
 }

@@ -24,9 +24,9 @@ test("a newly unlocked Galactic Legend is named and counted", () => {
 test("relic level-ups report the new level once per unit", () => {
   const wins = detectWins(
     { rosterUnit: [unit("GENERALKENOBI", 9)] },
-    { rosterUnit: [unit("GENERALKENOBI", 11)] },
+    { rosterUnit: [unit("GENERALKENOBI", 10)] },
   );
-  assert.deepEqual(wins, [{ kind: "RELIC", subject: "GENERALKENOBI", value: 9 }]);
+  assert.deepEqual(wins, [{ kind: "RELIC", subject: "GENERALKENOBI", value: 8 }]);
 });
 
 test("a unit dropping out of the roster or losing relic levels is not a win", () => {
@@ -49,4 +49,19 @@ test("ultimates and datacrons are detected", () => {
 test("unknown units get a readable fallback name", () => {
   assert.equal(unitName("SOMENEWUNIT"), "Somenewunit");
   assert.equal(unitName(""), null);
+});
+
+test("a member's first Relic 9 is flagged once, and not when they already had one", () => {
+  const first = detectWins(
+    { rosterUnit: [unit("GENERALKENOBI", 10)] },
+    { rosterUnit: [unit("GENERALKENOBI", 11)] },
+  );
+  assert.deepEqual(first.map((w) => w.kind).sort(), ["FIRST_R9", "RELIC"]);
+  assert.equal(describeWin(first.find((w) => w.kind === "FIRST_R9")!).tier, "headline");
+
+  const again = detectWins(
+    { rosterUnit: [unit("GENERALKENOBI", 11), unit("REY", 10)] },
+    { rosterUnit: [unit("GENERALKENOBI", 11), unit("REY", 11)] },
+  );
+  assert.deepEqual(again.map((w) => w.kind), ["RELIC"]);
 });

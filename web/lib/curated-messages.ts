@@ -145,3 +145,35 @@ export function promptPost(prompt: { text: string }): CuratedPost {
     color: BLUE,
   };
 }
+
+export function milestonePost(input: { name: string; mention?: string; kind: "FIRST_R9" | "GL_5" | "GL_10"; unitName?: string | null }): CuratedPost {
+  const who = input.mention ?? `**${input.name}**`;
+  if (input.kind === "FIRST_R9") {
+    return {
+      title: "A first Relic 9",
+      description: `${who} just took ${input.unitName ?? "a unit"} to **Relic 9**, their first ever. Take a bow.\n\nWhat's the next one on the list?`,
+      color: GREEN,
+    };
+  }
+  if (input.kind === "GL_5") {
+    return {
+      title: "Five Galactic Legends",
+      description: `${who} has unlocked their **5th Galactic Legend**${input.unitName ? `: ${input.unitName}` : ""}. That's the entry bar for new recruits, cleared.\n\nWhich one are they chasing next?`,
+      color: GREEN,
+    };
+  }
+  return {
+    title: "Ten Galactic Legends",
+    description: `${who} has unlocked their **10th Galactic Legend**${input.unitName ? `: ${input.unitName}` : ""}. Double figures. Absolute legend.`,
+    color: GREEN,
+  };
+}
+
+export function anniversaryPost(input: { name: string; mention?: string; years: number }): CuratedPost {
+  const who = input.mention ?? `**${input.name}**`;
+  return {
+    title: input.years === 1 ? "One year with the band" : `${input.years} years with the band`,
+    description: `${who} joined the Blues Brothers ${input.years === 1 ? "a year" : `${input.years} years`} ago today. Thanks for turning up.\n\nWhat's your best memory from the guild?`,
+    color: BLUE,
+  };
+}
