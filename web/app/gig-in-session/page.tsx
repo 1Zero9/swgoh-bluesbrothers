@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import { getViewerAccess } from "@/lib/access-control";
@@ -25,6 +26,9 @@ export default async function GigInSessionPage() {
     getViewerAccess(),
     Promise.resolve(getDiscordUrl()),
   ]);
+
+  // Already in: nothing to do at the door.
+  if (access.isMember || access.isOfficer) redirect("/");
 
   return (
     <main className="intel-shell destination-shell gig-in-session-page">

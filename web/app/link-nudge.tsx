@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 /** Invites unlinked visitors to link their account; renders nothing for linked members. */
 export default function LinkNudge({ reason }: { reason: string }) {
   const [linked, setLinked] = useState<boolean | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     let cancelled = false;
@@ -24,7 +25,7 @@ export default function LinkNudge({ reason }: { reason: string }) {
         <strong>Are you a Blues Brother?</strong>
         <p>{reason}</p>
       </div>
-      <Link href="/gig-in-session">Link your account →</Link>
+      <a href={`/api/auth/discord?next=${encodeURIComponent(pathname)}`}>Sign in with Discord →</a>
     </aside>
   );
 }
