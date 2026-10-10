@@ -7,7 +7,7 @@ on:
       what:
         description: "Which posts"
         type: choice
-        options: [both, public-stats, prompt]
+        options: [both, public-stats, prompt, news]
         default: both
       dry:
         description: "Preview only, post nothing"

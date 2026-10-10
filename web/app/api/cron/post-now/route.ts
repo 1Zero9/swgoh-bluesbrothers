@@ -1,4 +1,5 @@
-import { channelWebhook, postWeeklyPromptIfDue, runWeeklyPublicStats } from "@/lib/curated-posts";
+import { channelWebhook, postWeeklyNewsIfDue, postWeeklyPromptIfDue, runWeeklyPublicStats } from "@/lib/curated-posts";
+import { getStarWarsNews } from "@/lib/news";
 import { pickPrompt, PROMPTS } from "@/lib/prompts";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +8,7 @@ export const maxDuration = 60;
 
 /**
  * Manual "post now" for the curated posts, behind the cron secret and run from the "Post now" GitHub workflow.
- * ?what=public-stats | prompt | both   ?dry=1 previews without posting (and reports which channels are wired).
+ * ?what=public-stats | prompt | news | both   ?dry=1 previews without posting (and reports which channels are wired).
  * The once-a-week guards still apply, so pressing it twice never double-posts.
  */
 export async function GET(request: Request) {
@@ -32,6 +33,11 @@ export async function GET(request: Request) {
       result.prompt = dryRun
         ? { posted: false, reason: "dry run", preview: pickPrompt([], PROMPTS).text }
         : { posted: await postWeeklyPromptIfDue(new Date(), { force: true }) };
+    }
+    if (what === "news") {
+      result.news = dryRun
+        ? { posted: false, reason: "dry run", preview: (await getStarWarsNews(5, 600)).map((item) => `${item.game ? "[game] " : ""}${item.title} (${item.source})`) }
+        : { posted: await postWeeklyNewsIfDue(new Date(), { force: true }) };
     }
     return Response.json({ ok: true, dryRun, ...result });
   } catch (error) {

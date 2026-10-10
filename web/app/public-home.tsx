@@ -4,6 +4,7 @@ import IntelFooter from "@/app/intel-footer";
 import PageHero from "@/app/page-hero";
 import CheckStats from "@/app/check-stats";
 import { getDiscordUrl } from "@/lib/discord";
+import type { NewsItem } from "@/lib/news";
 import type { PublicHomeData } from "@/lib/public-stats";
 import { JOIN_REQUIREMENTS } from "@/lib/requirements";
 
@@ -13,7 +14,7 @@ function millions(value: bigint) {
 }
 
 /** The front door: what the guild is, whether there's room, what we ask, and how to join. No member data. */
-export default function PublicHome({ data, linking }: { data: PublicHomeData; linking?: ReactNode }) {
+export default function PublicHome({ data, linking, news = [] }: { data: PublicHomeData; linking?: ReactNode; news?: NewsItem[] }) {
   const discordUrl = getDiscordUrl();
   const full = data.spaces === 0;
 
@@ -98,6 +99,24 @@ export default function PublicHome({ data, linking }: { data: PublicHomeData; li
           </>
         ) : null}
       </section>
+
+      {news.length ? (
+        <section className="public-block" id="news">
+          <header>
+            <p className="eyebrow">Star Wars news</p>
+            <h2>What&apos;s happening in the galaxy</h2>
+          </header>
+          <ul className="news-list">
+            {news.map((item) => (
+              <li key={item.link}>
+                <a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a>
+                <span>{item.game ? <b>Game</b> : null}{item.source}{item.publishedAt ? ` · ${item.publishedAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" })}` : ""}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="news-credit">Headlines via Google News, linking to the original outlets.</p>
+        </section>
+      ) : null}
 
       <section className="public-block" id="guides">
         <header>

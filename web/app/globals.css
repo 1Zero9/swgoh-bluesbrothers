@@ -8532,3 +8532,12 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
 .drawer-install { width: 100%; margin-top: 8px; padding: 12px; border: 1px solid rgba(120,170,255,.3); border-radius: 10px; background: rgba(56,189,248,.08); color: #dceeff; font-size: 14px; cursor: pointer; }
 .advice-ready { margin-top: 14px; }
 .public-block > header > p:not(.eyebrow) { max-width: 560px; }
+
+/* Star Wars news */
+.news-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.news-list li { display: grid; gap: 3px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.news-list a { color: var(--text); font-size: 15px; line-height: 1.35; text-decoration: none; }
+.news-list a:hover { color: var(--blue); }
+.news-list span { color: var(--muted); font-size: 12px; }
+.news-list b { margin-right: 8px; padding: 1px 7px; border-radius: 99px; background: var(--blue-soft); color: var(--blue); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.news-credit { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
