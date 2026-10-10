@@ -6,6 +6,8 @@ import {
 } from "@/lib/comlink";
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
+import { farewellPost, welcomePost } from "@/lib/curated-messages";
+import { channelWebhook, postNewTwResults } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { detectWins } from "@/lib/wins";
 
@@ -15,6 +17,8 @@ type PendingAnnouncement = {
   kind: "MEMBER_WELCOME" | "MEMBER_DEPARTURE";
   playerName: string;
   discordUserIds: string[];
+  galacticPower?: number;
+  tenureDays?: number;
 };
 
 const PROFILE_BATCH_SIZE = 6;
@@ -205,7 +209,7 @@ export async function syncGuildRoster() {
               summary: `${member.name} joined the Blues Brothers. Welcome to the band!`,
             },
           });
-          pending.push({ eventId: event.id, membershipId: membership.id, kind: "MEMBER_WELCOME", playerName: member.name, discordUserIds: [] });
+          pending.push({ eventId: event.id, membershipId: membership.id, kind: "MEMBER_WELCOME", playerName: member.name, discordUserIds: [], galacticPower: Number(member.galacticPower) });
         }
       }
     }
@@ -221,7 +225,7 @@ export async function syncGuildRoster() {
           summary: `${term.player.currentName} has left the Blues Brothers. Their time with the guild remains in the archive.`,
         },
       });
-      pending.push({ eventId: event.id, membershipId: term.id, kind: "MEMBER_DEPARTURE", playerName: term.player.currentName, discordUserIds: [term.player.discordUserId, ...term.player.extraDiscordAccounts.map((row) => row.discordUserId)].filter((id): id is string => Boolean(id)) });
+      pending.push({ eventId: event.id, membershipId: term.id, kind: "MEMBER_DEPARTURE", playerName: term.player.currentName, tenureDays: Math.max(0, Math.round((capturedAt.getTime() - term.joinedAt.getTime()) / 86_400_000)), discordUserIds: [term.player.discordUserId, ...term.player.extraDiscordAccounts.map((row) => row.discordUserId)].filter((id): id is string => Boolean(id)) });
     }
 
     await tx.guildSnapshot.create({
@@ -273,14 +277,14 @@ export async function syncGuildRoster() {
   for (const announcement of announcements) {
     try {
       const isWelcome = announcement.kind === "MEMBER_WELCOME";
-      const posted = await postDiscordAnnouncement({
-        title: isWelcome ? "New arrival at the cantina" : "Until the next gig",
-        description: isWelcome
-          ? `Welcome **${announcement.playerName}** to the Blues Brothers. The band just got stronger.`
-          : `**${announcement.playerName}** has left the guild. Their membership history remains on the Guild Wire.`,
-        color: isWelcome ? 0x3c83ff : 0xe49b4d,
-        websiteUrl: process.env.SITE_URL,
-      });
+      // Welcomes and farewells go to #general when it has a webhook, otherwise to the original webhook.
+      const post = isWelcome
+        ? welcomePost({ name: announcement.playerName, galacticPower: announcement.galacticPower ?? 0 })
+        : farewellPost({ name: announcement.playerName, tenureDays: announcement.tenureDays ?? 0 });
+      const posted = await postDiscordAnnouncement(
+        { ...post, websiteUrl: process.env.SITE_URL },
+        channelWebhook("general") ?? process.env.DISCORD_WEBHOOK_URL,
+      );
       const removed = !isWelcome && (await Promise.all(announcement.discordUserIds.map((id) => demoteDiscordMemberOnDeparture(id)))).some(Boolean);
       if (posted) delivered += 1;
       if (removed) accessRemoved += 1;
@@ -317,7 +321,14 @@ export async function syncGuildRoster() {
     return { added: 0, removed: 0, failed: 0, skipped: "error" };
   });
 
+  // Announce a Territory War result once, shortly after it ends. Never let this fail the roster sync.
+  const twResultsPosted = await postNewTwResults().catch((error) => {
+    console.error("TW result posting failed", error);
+    return 0;
+  });
+
   return {
+    twResultsPosted,
     officerRoles,
     guild: roster.name,
     members: roster.members.length,
