@@ -1,11 +1,10 @@
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import { getRosterChanges } from "@/lib/members";
@@ -80,16 +79,15 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, officerStore, memberContext, changes] = await Promise.all([
+  const [guildWire, summary, wallOfShame, wallOfFame, memberContext, changes] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfShame(),
     getWallOfFame(),
-    cookies(),
     getMemberContext(),
     getRosterChanges(),
   ]);
-  const isOfficer = verifyOfficerSessionValue(officerStore.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
   const discordUrl = getDiscordUrl();
   const discordGuildId = process.env.DISCORD_GUILD_ID;
   const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);

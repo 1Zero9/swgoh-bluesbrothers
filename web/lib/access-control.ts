@@ -5,7 +5,7 @@ import {
   verifyLinkCookieValue,
   verifyMemberCookieValue,
 } from "@/lib/member-auth";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getPrisma } from "@/lib/prisma";
 
 export type ViewerRole = "LEADER" | "OFFICER" | "MEMBER" | "PUBLIC";
@@ -34,8 +34,7 @@ export async function getViewerAccess(): Promise<ViewerAccess> {
     const store = await cookies();
 
     // 1. Check Officer status
-    const officerCookie = store.get(OFFICER_COOKIE_NAME)?.value;
-    const isOfficer = verifyOfficerSessionValue(officerCookie);
+    const isOfficer = await isOfficerRequest();
 
     // 2. Check Member status
     const memberCookie = store.get(MEMBER_COOKIE_NAME)?.value;

@@ -35,6 +35,7 @@ export default function OfficerRosterLogin() {
   return (
     <form className="officer-form officer-gate" onSubmit={handleLogin}>
       <p className="officer-hint">Officers only, past the beaded curtain.</p>
+      <p className="officer-hint">In-game officers are let in automatically once they <a href="/api/auth/discord?next=/officer/roster">sign in with Discord</a>.</p>
       <input
         type="password"
         placeholder="Officer password"

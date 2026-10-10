@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import {
   linkPlayerToDiscord,
   linkExtraDiscordAccount,
@@ -18,8 +17,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const store = await cookies();
-  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
 
   if (!isOfficer) {
     return NextResponse.json({ ok: false, error: "Unauthorized officer session required." }, { status: 401 });

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerIdentity } from "@/lib/officer-identity";
 import {
   ensureBuiltInCommands,
@@ -67,8 +66,7 @@ export default async function TerritoryWarPage() {
   const capturedLabel = war.capturedAt?.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) ?? "Awaiting first sync";
   const roundEndLabel = war.roundEndsAt?.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-  const store = await cookies();
-  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
 
   let plan: WorkspacePlan | null = null;
   let templates: { id: string; name: string; description: string | null; rules: unknown; isBuiltIn: boolean }[] = [];

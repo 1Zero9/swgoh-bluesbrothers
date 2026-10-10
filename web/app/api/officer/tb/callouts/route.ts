@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerIdentity } from "@/lib/officer-identity";
 import { getPrisma } from "@/lib/prisma";
 import { getDefaultGuildId } from "@/lib/tw-plans";
@@ -9,8 +8,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 async function isOfficerSession() {
-  const store = await cookies();
-  return verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  return isOfficerRequest();
 }
 
 function fail(error: string, status: number) {
