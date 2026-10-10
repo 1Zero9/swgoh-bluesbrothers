@@ -269,6 +269,21 @@ export async function fetchPlayerProfileById(playerId: string): Promise<ComlinkP
   return postComlink<ComlinkPlayerProfile>("/player", { playerId });
 }
 
+export async function fetchPlayerProfileByAllyCode(allyCode: string): Promise<ComlinkPlayerProfile | null> {
+  const clean = sanitizeAllyCode(allyCode);
+  if (!clean) return null;
+  const profile = await postComlink<ComlinkPlayerProfile>("/player", { allyCode: clean });
+  return profile.playerId ? profile : null;
+}
+
+/** Total Galactic Power from a player profile's stats (character + ship if the total isn't listed). */
+export function profileGalacticPower(profile: ComlinkPlayerProfile) {
+  const stats = Array.isArray(profile.profileStat) ? (profile.profileStat as { nameKey?: string; value?: string | number }[]) : [];
+  const value = (key: string) => numberValue(stats.find((stat) => stat.nameKey === key)?.value);
+  const total = value("STAT_GALACTIC_POWER_ACQUIRED_NAME");
+  return total || value("STAT_CHARACTER_GALACTIC_POWER_ACQUIRED_NAME") + value("STAT_SHIP_GALACTIC_POWER_ACQUIRED_NAME");
+}
+
 export function sanitizeAllyCode(input: string) {
   const digits = input.replace(/\D/g, "");
   return digits.length === 9 ? digits : null;
