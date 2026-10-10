@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useOfficerPasswordEnabled } from "@/app/use-officer-password";
 
 export default function OfficerDesk({ signedIn }: { signedIn: boolean }) {
   const router = useRouter();
+  const passwordEnabled = useOfficerPasswordEnabled();
   const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -68,6 +70,15 @@ export default function OfficerDesk({ signedIn }: { signedIn: boolean }) {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (!signedIn && passwordEnabled !== true) {
+    return (
+      <div className="officer-form">
+        <p className="officer-hint">Officers only. In-game officers are let in automatically once they sign in with Discord.</p>
+        <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
+      </div>
+    );
   }
 
   if (!signedIn) {
