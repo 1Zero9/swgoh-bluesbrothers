@@ -1,6 +1,6 @@
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
-export type WinKind = "GL_UNLOCK" | "ULTIMATE" | "RELIC" | "UNIT_UNLOCK" | "DATACRON";
+export type WinKind = "GL_UNLOCK" | "ULTIMATE" | "RELIC" | "UNIT_UNLOCK" | "DATACRON" | "FIRST_R9";
 
 export type WinDraft = {
   kind: WinKind;
@@ -76,6 +76,17 @@ export function detectWins(previous: Profile | null | undefined, next: Profile):
     if (level > relicLevel(prior)) wins.push({ kind: "RELIC", subject: id, value: level });
   }
 
+  // A member's first ever Relic 9 unit is a milestone in its own right.
+  const nineBefore = [...before.values()].filter((unit) => relicLevel(unit) >= 9).length;
+  if (nineBefore === 0) {
+    for (const [id, unit] of after) {
+      if (relicLevel(unit) >= 9 && before.has(id)) {
+        wins.push({ kind: "FIRST_R9", subject: id, value: 1 });
+        break;
+      }
+    }
+  }
+
   // Count-based values only make sense when the count actually moved forward.
   return wins.filter((win) => {
     if (win.kind === "GL_UNLOCK") return glCount > glBefore;
@@ -125,5 +136,10 @@ export function describeWin(win: WinDraft): { text: string; tag: string; icon: s
       return { text: `unlocked ${unit ?? "a new unit"}`, tag: "New unit", icon: "＋", tier: "standard" };
     case "DATACRON":
       return { text: `reached ${win.value} datacrons`, tag: "Datacrons", icon: "✦", tier: "standard" };
+    case "FIRST_R9":
+      return {
+        text: `took ${unit ?? "a unit"} to Relic 9 — their first ever`,
+        tag: "First Relic 9", icon: "◆", tier: "headline",
+      };
   }
 }

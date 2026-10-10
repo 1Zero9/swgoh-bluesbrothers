@@ -7,7 +7,7 @@ import {
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
-import { channelWebhook, postNewTwResults, postSlotsOpenIfNeeded, postWeeklyPromptIfDue } from "@/lib/curated-posts";
+import { channelWebhook, postNewTwResults, postAnniversariesIfDue, postMilestonesIfAny, postSlotsOpenIfNeeded, postWeeklyPromptIfDue } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { siteUrl } from "@/lib/site-url";
 import { detectWins } from "@/lib/wins";
@@ -340,7 +340,19 @@ export async function syncGuildRoster() {
     return false;
   });
 
+  // Member milestones and joining anniversaries for #general, within a small daily allowance.
+  const milestonesPosted = await postMilestonesIfAny().catch((error) => {
+    console.error("milestone check failed", error);
+    return 0;
+  });
+  const anniversariesPosted = await postAnniversariesIfDue().catch((error) => {
+    console.error("anniversary check failed", error);
+    return 0;
+  });
+
   return {
+    milestonesPosted,
+    anniversariesPosted,
     promptPosted,
     slotsOpenPosted,
     twResultsPosted,

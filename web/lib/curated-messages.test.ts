@@ -72,3 +72,16 @@ test("the weekly prompt is the question plus a light nudge", () => {
   assert.match(post.description, /Jake or Elwood/);
   assert.match(post.description, /Answer in here/);
 });
+
+import { anniversaryPost, milestonePost } from "./curated-messages";
+
+test("milestone posts celebrate the member and use a mention when given", () => {
+  assert.match(milestonePost({ name: "Hesstan", kind: "FIRST_R9", unitName: "General Kenobi" }).description, /\*\*Hesstan\*\* just took General Kenobi to \*\*Relic 9\*\*/);
+  assert.match(milestonePost({ name: "Hesstan", mention: "<@1>", kind: "GL_5" }).description, /<@1> has unlocked their \*\*5th Galactic Legend/);
+  assert.equal(milestonePost({ name: "x", kind: "GL_10" }).title, "Ten Galactic Legends");
+});
+
+test("anniversaries count years", () => {
+  assert.equal(anniversaryPost({ name: "Bro", years: 1 }).title, "One year with the band");
+  assert.match(anniversaryPost({ name: "Bro", years: 5 }).description, /5 years ago today/);
+});
