@@ -7,7 +7,7 @@ import {
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
-import { channelWebhook, postNewTwResults, postAnniversariesIfDue, postMilestonesIfAny, postSlotsOpenIfNeeded, postWeeklyPromptIfDue } from "@/lib/curated-posts";
+import { channelWebhook, postNewTwResults, postAnniversariesIfDue, postMilestonesIfAny, postSlotsOpenIfNeeded, postWeeklyNewsIfDue, postWeeklyPromptIfDue } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { siteUrl } from "@/lib/site-url";
 import { detectWins } from "@/lib/wins";
@@ -340,6 +340,12 @@ export async function syncGuildRoster() {
     return false;
   });
 
+  // A short Star Wars headlines post on Friday afternoons.
+  const newsPosted = await postWeeklyNewsIfDue().catch((error) => {
+    console.error("weekly news check failed", error);
+    return false;
+  });
+
   // Member milestones and joining anniversaries for #general, within a small daily allowance.
   const milestonesPosted = await postMilestonesIfAny().catch((error) => {
     console.error("milestone check failed", error);
@@ -351,6 +357,7 @@ export async function syncGuildRoster() {
   });
 
   return {
+    newsPosted,
     milestonesPosted,
     anniversariesPosted,
     promptPosted,

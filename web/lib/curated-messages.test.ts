@@ -85,3 +85,16 @@ test("anniversaries count years", () => {
   assert.equal(anniversaryPost({ name: "Bro", years: 1 }).title, "One year with the band");
   assert.match(anniversaryPost({ name: "Bro", years: 5 }).description, /5 years ago today/);
 });
+
+import { newsPost } from "./curated-messages";
+
+test("the news post links each headline and credits the outlet", () => {
+  const post = newsPost([
+    { title: "Darth Jar Jar Brings Chaos", link: "https://example.test/a", source: "Laughing Place", game: true },
+    { title: "Lightsaber up for auction", link: "https://example.test/b", source: "The Guardian", game: false },
+  ]);
+  assert.equal(post.title, "Star Wars news this week");
+  assert.match(post.description, /\*\*Game:\*\* \[Darth Jar Jar Brings Chaos\]\(https:\/\/example.test\/a\) · Laughing Place/);
+  assert.match(post.description, /\[Lightsaber up for auction\]\(https:\/\/example.test\/b\) · The Guardian/);
+  assert.match(post.description, /hyped for/);
+});

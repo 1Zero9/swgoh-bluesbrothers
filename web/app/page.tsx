@@ -1,6 +1,7 @@
 import PublicHome from "./public-home";
 import { getViewerAccess } from "@/lib/access-control";
 import { getPublicHomeData } from "@/lib/public-stats";
+import { getStarWarsNews } from "@/lib/news";
 import Image from "next/image";
 import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard";
@@ -85,8 +86,8 @@ export default async function Home() {
   // Visitors get the public front page; the command centre is for signed-in members and officers.
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) {
-    const [data, context] = await Promise.all([getPublicHomeData(), getMemberContext()]);
-    return <PublicHome data={data} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
+    const [data, context, news] = await Promise.all([getPublicHomeData(), getMemberContext(), getStarWarsNews(5)]);
+    return <PublicHome data={data} news={news} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
   }
 
   const [guildWire, summary, wallOfFame, memberContext, changes] = await Promise.all([

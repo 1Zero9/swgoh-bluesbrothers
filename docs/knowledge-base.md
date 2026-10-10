@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.42.0 · **Last updated:** 2026-10-08 · tracks site `v0.54.0`
+**Doc version:** 1.43.0 · **Last updated:** 2026-10-08 · tracks site `v0.55.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -361,6 +361,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
 | `DISCORD_CALLOUTS_WEBHOOK_URL` | Optional webhook for new TB callouts; falls back to `DISCORD_WINS_WEBHOOK_URL`, and nothing posts if neither is set |
 | `DISCORD_GENERAL_WEBHOOK_URL` / `DISCORD_PUBLIC_WEBHOOK_URL` (or `DISCORD_WELCOME_WEBHOOK_URL`) | Webhooks for #general (members) and the public channel; curated posts (`lib/curated-posts.ts`, wording in `lib/curated-messages.ts`) go here and nothing posts to a channel without one. General also receives welcomes/farewells in place of `DISCORD_WEBHOOK_URL`, and TW results |
+| `CURATED_NEWS` | Set to `off` to stop the Friday Star Wars news post in #general (`postWeeklyNewsIfDue`; headlines from `lib/news.ts`) |
 | `CURATED_PROMPTS` | Set to `off` to stop the weekly #general conversation prompt (`postWeeklyPromptIfDue`, prompts in `lib/prompts.ts`) |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
@@ -475,6 +476,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.43.0 — 2026-10-10**: Star Wars news (`lib/news.ts`): Google News RSS search (no official Star Wars/EA/SWGOH feed exists — starwars.com and ea.com return 404, swgoh.gg blocks bots, the Feedburner feed is stale since 2024, Reddit rate-limits servers). Public front-page section + Friday #general post. Risk: Google can change or throttle the feed; both places degrade to nothing (the section hides, the post is skipped under 3 stories).
 - **1.42.0 — 2026-10-10**: roster advice (`lib/roster-advice.ts`) on `/me` — squad readiness from `lib/tw-squads.ts` leaders against stored rosters (`loadRosters` in `lib/tb-callouts.ts`, now carrying `playerId`). Leader-only check, as elsewhere.
 - **1.41.1 — 2026-10-10**: documented that live Territory War status is absent from `/guild` snapshots (see §15), so TW reminders are not feasible.
 - **1.41.0 — 2026-10-10**: milestone and anniversary posts (`postMilestonesIfAny`, `postAnniversariesIfDue`, wording in `lib/curated-messages.ts`); new `FIRST_R9` win kind from `detectWins`; `MILESTONE`/`ANNIVERSARY` automation events dedupe by `winId` / `playerId`+`year`; shared limit of 2 celebrations per 20h.

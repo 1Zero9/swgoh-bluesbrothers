@@ -1,6 +1,7 @@
 import { postDiscordAnnouncement } from "@/lib/discord";
-import { anniversaryPost, milestonePost, promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
+import { anniversaryPost, milestonePost, newsPost, promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
 import { getDashboardSummary } from "@/lib/dashboard";
+import { getStarWarsNews } from "@/lib/news";
 import { isPromptWindow, pickPrompt, PROMPTS } from "@/lib/prompts";
 import { JOIN_REQUIREMENTS } from "@/lib/requirements";
 import { getPrisma } from "@/lib/prisma";
@@ -370,4 +371,38 @@ export async function postAnniversariesIfDue(now = new Date()) {
     }
   }
   return posted;
+}
+
+function isNewsWindow(now: Date) {
+  const weekday = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", weekday: "short" }).format(now);
+  const { hour } = londonParts(now);
+  return weekday === "Fri" && hour >= 12 && hour < 20;
+}
+
+/** A short Star Wars headlines post for #general on Friday afternoons, once a week. CURATED_NEWS=off switches it off. */
+export async function postWeeklyNewsIfDue(now = new Date(), { force = false }: { force?: boolean } = {}) {
+  if (process.env.CURATED_NEWS === "off") return false;
+  if (!channelWebhook("general") || (!force && !isNewsWindow(now))) return false;
+
+  const prisma = getPrisma();
+  const last = await prisma.automationEvent.findFirst({ where: { kind: "WEEKLY_NEWS" }, orderBy: { occurredAt: "desc" }, select: { occurredAt: true } });
+  if (last && now.getTime() - last.occurredAt.getTime() < 6 * 86_400_000) return false;
+
+  const items = await getStarWarsNews(5, 600);
+  if (items.length < 3) return false;
+
+  const guild = await prisma.guild.findFirst({ select: { id: true } });
+  if (!guild) return false;
+  const record = await prisma.automationEvent.create({
+    data: { guildId: guild.id, kind: "WEEKLY_NEWS", status: "PENDING", summary: `Star Wars news: ${items.length} headlines`, metadata: { count: items.length } },
+  });
+  try {
+    const sent = await postToChannel("general", newsPost(items), "Blues Brothers · Star Wars news");
+    await prisma.automationEvent.update({ where: { id: record.id }, data: { status: sent ? "SENT" : "FAILED", sentAt: sent ? new Date() : null } });
+    return sent;
+  } catch (error) {
+    console.error("weekly news failed", error);
+    await prisma.automationEvent.update({ where: { id: record.id }, data: { status: "FAILED" } });
+    return false;
+  }
 }

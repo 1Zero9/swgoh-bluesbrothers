@@ -177,3 +177,12 @@ export function anniversaryPost(input: { name: string; mention?: string; years: 
     color: BLUE,
   };
 }
+
+export function newsPost(items: { title: string; link: string; source: string; game: boolean }[]): CuratedPost {
+  const lines = items.slice(0, 5).map((item) => `• ${item.game ? "**Game:** " : ""}[${item.title}](${item.link}) · ${item.source}`);
+  return {
+    title: "Star Wars news this week",
+    description: `${lines.join("\n")}\n\nAnything you're hyped for?`,
+    color: BLUE,
+  };
+}
