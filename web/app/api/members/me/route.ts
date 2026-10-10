@@ -1,12 +1,19 @@
-import { cookies } from "next/headers";
-import { MEMBER_COOKIE_NAME, verifyMemberCookieValue } from "@/lib/member-auth";
+import { getViewerAccess } from "@/lib/access-control";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** Cheap "is this visitor a linked member?" check so statically cached pages can adapt on the client. */
+/** Who is looking? Lets statically cached pages (like the header) show the right sign-in state on the client. */
 export async function GET() {
-  const store = await cookies();
-  const linked = Boolean(verifyMemberCookieValue(store.get(MEMBER_COOKIE_NAME)?.value));
-  return Response.json({ linked }, { headers: { "Cache-Control": "private, no-store" } });
+  const access = await getViewerAccess();
+  const signedIn = access.isMember || access.isOfficer;
+  return Response.json(
+    {
+      linked: access.isMember,
+      signedIn,
+      role: access.isOfficer ? "OFFICER" : access.isMember ? "MEMBER" : "PUBLIC",
+      name: access.playerName ?? null,
+    },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 }

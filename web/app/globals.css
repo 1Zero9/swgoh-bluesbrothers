@@ -8418,3 +8418,16 @@ html[data-theme="light"] .step-instruction {
 .ds-extra-accounts small { color: var(--muted); font-size: 11px; }
 .ds-extra-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 4px 2px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: var(--text); }
 .ds-extra-chip button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 6px; }
+
+/* Account menu */
+.account-menu { position: relative; }
+.account-menu-button { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.05); color: var(--text); font-size: 12px; cursor: pointer; }
+.account-menu-avatar { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: #04121c; font-weight: 800; font-size: 13px; }
+.account-menu-name { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu-panel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; min-width: 180px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: #0d1117; box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.account-menu-panel p { display: grid; margin: 0 0 10px; color: var(--text); font-size: 14px; }
+.account-menu-panel small { color: var(--muted); font-size: 11px; }
+.account-menu-panel button { width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--text); cursor: pointer; }
+.account-menu-signin { display: inline-flex; align-items: center; padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); font-size: 12px; font-weight: 700; text-decoration: none; background: rgba(255,255,255,.05); }
+.account-menu.drawer, .account-menu-signin.drawer { margin-bottom: 10px; }
+.account-menu.drawer .account-menu-panel { position: static; margin-top: 8px; box-shadow: none; }

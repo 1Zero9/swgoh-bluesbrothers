@@ -12,7 +12,7 @@ export default function LinkNudge({ reason }: { reason: string }) {
     let cancelled = false;
     fetch("/api/members/me")
       .then((response) => response.json())
-      .then((data: { linked?: boolean }) => { if (!cancelled) setLinked(Boolean(data.linked)); })
+      .then((data: { signedIn?: boolean }) => { if (!cancelled) setLinked(Boolean(data.signedIn)); })
       .catch(() => { if (!cancelled) setLinked(null); });
     return () => { cancelled = true; };
   }, []);

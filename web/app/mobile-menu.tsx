@@ -1,5 +1,6 @@
 "use client";
 
+import AccountMenu from "./account-menu";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -150,6 +151,7 @@ export default function MobileMenu({ items, version, discordUrl, syncLabel, live
                 <span>Colour mode</span>
                 <ThemeToggle />
               </div>
+              <AccountMenu variant="drawer" />
               <a className="drawer-discord" href={discordUrl} target="_blank" rel="noreferrer"><span aria-hidden="true">◈</span> Open Discord</a>
               <div className="drawer-footer-bottom">
                 <BuiltByBadge />
