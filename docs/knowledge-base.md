@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.29.2 · **Last updated:** 2026-10-08 · tracks site `v0.41.2`
+**Doc version:** 1.30.0 · **Last updated:** 2026-10-08 · tracks site `v0.42.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.30.0 — 2026-10-10**: header account menu (`app/account-menu.tsx`), `POST /api/auth/signout` clears member, link and officer cookies; `/api/members/me` returns `{signedIn, role, name}`.
 - **1.29.2 — 2026-10-10**: `/gig-in-session` redirects signed-in members/officers to `/`; the gate's Discord button no longer passes `next`; `LinkNudge` links straight to `/api/auth/discord?next=<current page>`.
 - **1.29.1 — 2026-10-10**: Discord OAuth uses `prompt=none` first (skips the approval screen for returning users) and retries with `prompt=consent` on Discord's refusal; the member session cookie (`bb_member`, 90 days) is unchanged.
 - **1.29.0 — 2026-10-10**: officer access derives from the in-game rank (`MemberSnapshot.memberRole` Officer/Leader) via `isOfficerRequest()`; every officer check goes through it; shared password kept as fallback. Self-serve linking blocked for officers and requires Discord server membership (`isInDiscordServer`).

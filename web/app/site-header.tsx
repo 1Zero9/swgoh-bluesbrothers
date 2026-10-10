@@ -4,6 +4,7 @@ import packageInfo from "../package.json";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import MobileMenu from "./mobile-menu";
+import AccountMenu from "./account-menu";
 import ThemeToggle from "./theme-toggle";
 import NavLinks from "./nav-links";
 import ScrollTracker from "./scroll-tracker";
@@ -125,6 +126,7 @@ export default async function SiteHeader({
         </span>
         <span className="version-label">{APP_VERSION}</span>
         <ThemeToggle />
+        <AccountMenu />
         <a className="discord-button" href={discordUrl} target="_blank" rel="noreferrer" aria-label="Open Blues Brothers Discord">
           <span aria-hidden="true">◈</span><b>Open Discord</b>
         </a>
