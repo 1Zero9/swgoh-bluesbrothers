@@ -91,16 +91,25 @@ export default function PublicHome({ data, linking }: { data: PublicHomeData; li
             <h3 className="record-sub">Fresh from the roster</h3>
             <ul className="highlight-list">
               {data.highlights.map((item, index) => (
-                <li key={`${item.who}-${index}`}><span aria-hidden="true">{item.icon}</span><strong>{item.who}</strong> {item.text}</li>
+                <li key={index}><span aria-hidden="true">{item.icon}</span><strong>A Blues Brother</strong> {item.text}</li>
               ))}
             </ul>
-            <p><Link href="/wins">See every win →</Link></p>
+            <p>Members can see who, and every win, once signed in.</p>
           </>
         ) : null}
       </section>
 
+      <section className="public-block" id="guides">
+        <header>
+          <p className="eyebrow">Field guides</p>
+          <h2>New here? Start with these.</h2>
+          <p>Plain-English guides to how the guild works: linking your account, Territory War orders, datacrons and more. Open to everyone.</p>
+        </header>
+        <p><Link className="btn-discord-gate" href="/guides">Read the field guides</Link></p>
+      </section>
+
       <IntelFooter message="Already in the guild? Use Sign in at the top to see the members' area.">
-        <Link href="/wins">The Wins →</Link>
+        <Link href="/guides">Field guides →</Link>
       </IntelFooter>
     </main>
   );

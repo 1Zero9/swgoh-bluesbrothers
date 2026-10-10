@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.32.0 · **Last updated:** 2026-10-08 · tracks site `v0.44.0`
+**Doc version:** 1.33.0 · **Last updated:** 2026-10-08 · tracks site `v0.45.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.33.0 — 2026-10-10**: privacy pass — /wins and /raids join the members-only gate; public highlights are anonymous and names aren't passed to the public page. Public: /, /guides, game, cantina, credits. Rule: any page that lists members by name must call `canViewMembersArea()`.
 - **1.32.0 — 2026-10-10**: `/` is the public front page for visitors (`app/public-home.tsx`, `lib/public-stats.ts`) and the command centre for signed-in members/officers; `POST /api/public/check-stats` (public profile by ally code, best-effort per-IP rate limit, headline figures only); join requirements in `lib/requirements.ts` (10M GP, 5 GL); Wall of Shame officers-only. Known limit: Territory Battle results aren't available from Comlink, so the public record shows Territory War only.
 - **1.31.0 — 2026-10-10**: members-only gate (`lib/member-gate.ts`, `app/members-only.tsx`) on /members, /arsenal, /datacrons, /territory-war, /territory-battles and `/api/members/progression`. Public: /, /wins, guides, game, cantina. Open item: the home page still shows the Wall of Shame (named members with missed tickets) publicly.
 - **1.30.0 — 2026-10-10**: header account menu (`app/account-menu.tsx`), `POST /api/auth/signout` clears member, link and officer cookies; `/api/members/me` returns `{signedIn, role, name}`.
