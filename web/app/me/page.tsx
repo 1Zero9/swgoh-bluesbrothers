@@ -5,6 +5,7 @@ import MembersOnly from "@/app/members-only";
 import PageHero from "@/app/page-hero";
 import { getViewerAccess } from "@/lib/access-control";
 import { getMyPage } from "@/lib/my-page";
+import { getSquadAdvice } from "@/lib/roster-advice";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -25,7 +26,9 @@ export default async function MyPage() {
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) return <MembersOnly path="/me" area="Your page" />;
 
-  const data = access.playerId ? await getMyPage(access.playerId) : null;
+  const [data, advice] = access.playerId
+    ? await Promise.all([getMyPage(access.playerId), getSquadAdvice(access.playerId)])
+    : [null, null];
 
   if (!data) {
     return (
@@ -65,6 +68,33 @@ export default async function MyPage() {
           <div><strong>{data.datacrons}</strong><small>datacrons</small></div>
         </div>
       </PageHero>
+
+      {advice ? (
+        <section className="public-block">
+          <header>
+            <p className="eyebrow">Roster advice</p>
+            <h2>Where you can help most</h2>
+            <p>Based on the squads the guild builds Territory War around, checked against your own roster. We look at the squad leader.</p>
+          </header>
+          {advice.close.length ? (
+            <ul className="my-list">
+              {advice.close.slice(0, 4).map((item) => (
+                <li key={item.key}>
+                  <strong>{item.label}: {item.gap}</strong>
+                  <span>
+                    {item.thin ? `The guild is thin here: only ${item.qualifiers} member${item.qualifiers === 1 ? "" : "s"} can field it.` : `${item.qualifiers} members can field it.`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="my-empty">You&apos;re not close to any squad you can&apos;t already field. Nice.</p>
+          )}
+          {advice.ready.length ? (
+            <p className="my-line advice-ready"><strong>You can field:</strong> {advice.ready.map((item) => `${item.label}${item.thin ? " (rare)" : ""}`).join(", ")}</p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="public-block">
         <header><p className="eyebrow">Where the guild could use you</p><h2>Your callouts</h2></header>
