@@ -1,5 +1,6 @@
 import { getPrisma } from "@/lib/prisma";
 import { postDiscordAnnouncement } from "@/lib/discord";
+import { siteUrl } from "@/lib/site-url";
 import { evaluateCallout, type CalloutProgress, type CalloutRoster } from "@/lib/tb-callout-match";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 import { unitName } from "@/lib/wins";
@@ -109,7 +110,7 @@ export async function postCalloutToDiscord(callout: CalloutView) {
   const webhookUrl = process.env.DISCORD_CALLOUTS_WEBHOOK_URL || process.env.DISCORD_WINS_WEBHOOK_URL;
   if (!webhookUrl) return false;
   const { progress } = callout;
-  const siteUrl = process.env.SITE_URL || "https://swgoh-bluesbrothers.vercel.app";
+  const baseUrl = siteUrl();
 
   const closest = progress.close.slice(0, 8);
   const lines = [
@@ -118,7 +119,7 @@ export async function postCalloutToDiscord(callout: CalloutView) {
     progress.close.length
       ? `**Closest to ready:**\n${closest.map((m) => `• ${m.discordUserId ? `<@${m.discordUserId}>` : m.name} (${m.gap})`).join("\n")}`
       : "",
-    `Full list: ${siteUrl}/territory-battles#callouts`,
+    `Full list: ${baseUrl}/territory-battles#callouts`,
   ].filter(Boolean);
 
   await postDiscordAnnouncement(
@@ -126,7 +127,7 @@ export async function postCalloutToDiscord(callout: CalloutView) {
       title: `TB callout: ${calloutHeadline(callout)}`,
       description: lines.join("\n\n"),
       color: 0x38bdf8,
-      websiteUrl: `${siteUrl}/territory-battles#callouts`,
+      websiteUrl: `${baseUrl}/territory-battles#callouts`,
       footer: "Blues Brothers · TB callouts",
       mentionUserIds: closest.flatMap((m) => (m.discordUserId ? [m.discordUserId] : [])),
     },

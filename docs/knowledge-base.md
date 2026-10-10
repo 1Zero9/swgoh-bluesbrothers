@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.40.1 · **Last updated:** 2026-10-08 · tracks site `v0.52.1`
+**Doc version:** 1.40.2 · **Last updated:** 2026-10-08 · tracks site `v0.52.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -474,6 +474,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.40.2 — 2026-10-10**: `lib/site-url.ts#siteUrl()` strips trailing slashes from `SITE_URL`; use it for every link built from the site address.
 - **1.40.1 — 2026-10-10**: manual "Post now" — `.github/workflows/post-now.yml` (workflow_dispatch; inputs what + dry) calls `GET /api/cron/post-now` with the cron secret. Use dry first: it previews the text and reports which channel webhooks are set.
 - **1.40.0 — 2026-10-10**: weekly conversation prompt for #general (`lib/prompts.ts`, `postWeeklyPromptIfDue` called from the sync; once per week in a Wed 16:00–Thu 22:00 UK window; `WEEKLY_PROMPT` events record which prompt was used so none repeats until all 46 are spent).
 - **1.39.0 — 2026-10-10**: weekly public stats (`runWeeklyPublicStats`, triggered by the existing Sunday `/api/cron/weekly-digest` call — Vercel Hobby allows only two crons so no third was added) and the vacancy post (`postSlotsOpenIfNeeded`, called at the end of `syncGuildRoster`, state derived from snapshot member counts and `SLOTS_OPEN` events). Public channel = `DISCORD_PUBLIC_WEBHOOK_URL` (#gig_in_session); numbers only.

@@ -1,14 +1,11 @@
 import { getPrisma } from "@/lib/prisma";
 import { postDiscordAnnouncement } from "@/lib/discord";
+import { siteUrl } from "@/lib/site-url";
 import { describeWin, type WinKind } from "@/lib/wins";
 
 export type DigestWin = { who: string; discordUserId?: string | null; kind: WinKind; subject: string; value: number };
 
 const MAX_LINES = 12;
-
-function siteUrl() {
-  return process.env.SITE_URL || "https://swgoh-bluesbrothers.vercel.app";
-}
 
 /** Pure formatter: turns a week of wins into the Discord post, or null when there is nothing worth posting. */
 export function buildWeeklyDigest(wins: DigestWin[]) {

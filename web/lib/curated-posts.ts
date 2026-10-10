@@ -4,6 +4,7 @@ import { getDashboardSummary } from "@/lib/dashboard";
 import { isPromptWindow, pickPrompt, PROMPTS } from "@/lib/prompts";
 import { JOIN_REQUIREMENTS } from "@/lib/requirements";
 import { getPrisma } from "@/lib/prisma";
+import { siteUrl } from "@/lib/site-url";
 
 export type CuratedChannel = "general" | "public";
 
@@ -25,7 +26,7 @@ export function channelWebhook(channel: CuratedChannel) {
 export async function postToChannel(channel: CuratedChannel, post: CuratedPost, footer = "Blues Brothers") {
   const webhook = channelWebhook(channel);
   if (!webhook) return false;
-  await postDiscordAnnouncement({ ...post, websiteUrl: process.env.SITE_URL, footer }, webhook);
+  await postDiscordAnnouncement({ ...post, websiteUrl: siteUrl(), footer }, webhook);
   return true;
 }
 
@@ -77,10 +78,6 @@ export async function postNewTwResults() {
     }
   }
   return posted;
-}
-
-function siteUrl() {
-  return process.env.SITE_URL || "https://swgoh-bluesbrothers.vercel.app";
 }
 
 /** Counts across current members' stored rosters. Numbers only, so nothing here can name a member. */

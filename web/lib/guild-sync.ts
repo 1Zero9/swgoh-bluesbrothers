@@ -9,6 +9,7 @@ import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
 import { channelWebhook, postNewTwResults, postSlotsOpenIfNeeded, postWeeklyPromptIfDue } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
+import { siteUrl } from "@/lib/site-url";
 import { detectWins } from "@/lib/wins";
 
 type PendingAnnouncement = {
@@ -282,7 +283,7 @@ export async function syncGuildRoster() {
         ? welcomePost({ name: announcement.playerName, galacticPower: announcement.galacticPower ?? 0 })
         : farewellPost({ name: announcement.playerName, tenureDays: announcement.tenureDays ?? 0 });
       const posted = await postDiscordAnnouncement(
-        { ...post, websiteUrl: process.env.SITE_URL },
+        { ...post, websiteUrl: siteUrl() },
         channelWebhook("general") ?? process.env.DISCORD_WEBHOOK_URL,
       );
       const removed = !isWelcome && (await Promise.all(announcement.discordUserIds.map((id) => demoteDiscordMemberOnDeparture(id)))).some(Boolean);
