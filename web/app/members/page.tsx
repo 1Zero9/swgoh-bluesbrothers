@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import MemberDeparture from "@/app/member-departures";
@@ -7,13 +9,14 @@ import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import { getRosterChanges, getRosterMembers } from "@/lib/members";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Guild Members · Blues Brothers",
   description: "Search the Blues Brothers roster and open detailed member cards.",
 };
 
 export default async function MembersPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/members" area="The member roster" />;
   const [roster, changes] = await Promise.all([getRosterMembers(), getRosterChanges()]);
   const members = roster.map((member) => ({
     ...member,

@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
@@ -37,6 +39,7 @@ function power(value: bigint) {
 }
 
 export default async function TerritoryBattlesPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/territory-battles" area="Territory Battles" />;
   const [summary, members] = await Promise.all([
     getDashboardSummary(),
     getRosterMembers(),

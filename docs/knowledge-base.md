@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.30.0 · **Last updated:** 2026-10-08 · tracks site `v0.42.0`
+**Doc version:** 1.31.0 · **Last updated:** 2026-10-08 · tracks site `v0.43.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.31.0 — 2026-10-10**: members-only gate (`lib/member-gate.ts`, `app/members-only.tsx`) on /members, /arsenal, /datacrons, /territory-war, /territory-battles and `/api/members/progression`. Public: /, /wins, guides, game, cantina. Open item: the home page still shows the Wall of Shame (named members with missed tickets) publicly.
 - **1.30.0 — 2026-10-10**: header account menu (`app/account-menu.tsx`), `POST /api/auth/signout` clears member, link and officer cookies; `/api/members/me` returns `{signedIn, role, name}`.
 - **1.29.2 — 2026-10-10**: `/gig-in-session` redirects signed-in members/officers to `/`; the gate's Discord button no longer passes `next`; `LinkNudge` links straight to `/api/auth/discord?next=<current page>`.
 - **1.29.1 — 2026-10-10**: Discord OAuth uses `prompt=none` first (skips the approval screen for returning users) and retries with `prompt=consent` on Discord's refusal; the member session cookie (`bb_member`, 90 days) is unchanged.
