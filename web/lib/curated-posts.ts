@@ -4,13 +4,18 @@ import { getPrisma } from "@/lib/prisma";
 
 export type CuratedChannel = "general" | "public";
 
-const CHANNEL_ENV: Record<CuratedChannel, string> = {
-  general: "DISCORD_GENERAL_WEBHOOK_URL",
-  public: "DISCORD_PUBLIC_WEBHOOK_URL",
+/** The first variable that is set wins, so the public channel can be wired as either name. */
+const CHANNEL_ENV: Record<CuratedChannel, string[]> = {
+  general: ["DISCORD_GENERAL_WEBHOOK_URL"],
+  public: ["DISCORD_PUBLIC_WEBHOOK_URL", "DISCORD_WELCOME_WEBHOOK_URL"],
 };
 
 export function channelWebhook(channel: CuratedChannel) {
-  return process.env[CHANNEL_ENV[channel]] || undefined;
+  for (const name of CHANNEL_ENV[channel]) {
+    const value = process.env[name];
+    if (value) return value;
+  }
+  return undefined;
 }
 
 /** Posts to one of the curated channels; does nothing (returns false) when that channel has no webhook. */
