@@ -215,9 +215,9 @@ export async function postSlotsOpenIfNeeded() {
  * One conversation starter a week in #general, in the Wednesday-evening/Thursday window. It stands aside if
  * anything else was posted to #general in the last 20 hours, and is switched off with CURATED_PROMPTS=off.
  */
-export async function postWeeklyPromptIfDue(now = new Date()) {
+export async function postWeeklyPromptIfDue(now = new Date(), { force = false }: { force?: boolean } = {}) {
   if (process.env.CURATED_PROMPTS === "off") return false;
-  if (!channelWebhook("general") || !isPromptWindow(now)) return false;
+  if (!channelWebhook("general") || (!force && !isPromptWindow(now))) return false;
 
   const prisma = getPrisma();
   const [past, busy] = await Promise.all([
@@ -232,7 +232,7 @@ export async function postWeeklyPromptIfDue(now = new Date()) {
     }),
   ]);
   if (past[0] && now.getTime() - past[0].occurredAt.getTime() < 6 * 86_400_000) return false;
-  if (busy) return false;
+  if (busy && !force) return false;
 
   const usedIds = past.flatMap((event) => {
     const id = (event.metadata as { promptId?: unknown } | null)?.promptId;
