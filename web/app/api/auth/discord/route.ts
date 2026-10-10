@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildDiscordAuthorizeUrl } from "@/lib/discord-oauth";
-import { OAUTH_STATE_COOKIE_NAME, createOAuthState, isMemberAuthConfigured } from "@/lib/member-auth";
+import { OAUTH_NEXT_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME, createOAuthState, isMemberAuthConfigured, safeNextPath } from "@/lib/member-auth";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -19,6 +19,17 @@ export async function GET(request: Request) {
     path: "/",
     maxAge: 600,
   });
+
+  const next = safeNextPath(new URL(request.url).searchParams.get("next"));
+  if (next !== "/") {
+    response.cookies.set(OAUTH_NEXT_COOKIE_NAME, next, {
+      httpOnly: true,
+      secure: new URL(request.url).protocol === "https:",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 600,
+    });
+  }
 
   return response;
 }

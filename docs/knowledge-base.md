@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.27.0 · **Last updated:** 2026-10-08 · tracks site `v0.39.0`
+**Doc version:** 1.28.0 · **Last updated:** 2026-10-08 · tracks site `v0.40.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.28.0 — 2026-10-10**: Discord sign-in auto-signs-in linked active members (`lib/member-lookup.ts`, OAuth callback); optional `next` redirect (`safeNextPath`). Decision: no passwords and no forum — Discord is the credential and the community space. Public-page requirements from the game's guild info: 10M GP, 5 GL, participate.
 - **1.27.0 — 2026-10-10**: multiple Discord accounts per player (`PlayerDiscordAccount`, `link_extra`/`unlink_extra`); departure demotes all of a player's accounts; self-service linking can no longer overwrite an existing link.
 - **1.26.0 — 2026-10-10**: Discord Sync gains the Unmatched Discord tab (`unmatchedDiscordMembers` in the report); bots filtered from the member list; suggestions exclude Discord ids already linked to any player.
 - **1.25.2 — 2026-10-08**: Discord Sync surfaces the real error when the member list is empty. Listing guild members needs the bot's privileged **Server Members Intent** enabled in the Developer Portal; without it Discord refuses and the matcher has nothing to match.
