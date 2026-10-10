@@ -8541,3 +8541,9 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
 .news-list span { color: var(--muted); font-size: 12px; }
 .news-list b { margin-right: 8px; padding: 1px 7px; border-radius: 99px; background: var(--blue-soft); color: var(--blue); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .news-credit { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+
+/* Stat tiles: a tidy two-column grid on phones */
+@media (max-width: 640px) {
+  .intel-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .intel-summary > div { min-width: 0; padding: 16px 16px; }
+}

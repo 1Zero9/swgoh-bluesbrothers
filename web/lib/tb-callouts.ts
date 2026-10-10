@@ -3,7 +3,7 @@ import { postDiscordAnnouncement } from "@/lib/discord";
 import { siteUrl } from "@/lib/site-url";
 import { evaluateCallout, type CalloutProgress, type CalloutRoster } from "@/lib/tb-callout-match";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
-import { unitName } from "@/lib/wins";
+import { allUnitNames, unitName } from "@/lib/wins";
 
 export type CalloutView = {
   id: string;
@@ -55,6 +55,7 @@ export async function loadRosters(): Promise<CalloutRoster[]> {
 
 export async function getCalloutUnitOptions(): Promise<UnitOption[]> {
   const known = new Map<string, string>();
+  for (const unit of allUnitNames()) known.set(unit.id, unit.name);
   for (const group of Object.values(UNIT_CHECKLIST)) for (const unit of group) known.set(unit.definitionId, unit.name);
   try {
     for (const roster of await loadRosters()) {

@@ -59,6 +59,7 @@ export default async function MyPage() {
         eyebrow={`${data.rank} · Level ${data.level ?? "—"}`}
         title={<>{data.name}<br /><em>your page.</em></>}
         description="Where you stand, what you've earned lately, and where the guild could use you."
+        priority
         syncLabel="My page"
       >
         <div className="intel-summary">

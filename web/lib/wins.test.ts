@@ -46,7 +46,10 @@ test("ultimates and datacrons are detected", () => {
   assert.equal(wins.find((w) => w.kind === "DATACRON")?.value, 3);
 });
 
-test("unknown units get a readable fallback name", () => {
+test("units get proper game names, and unknown ones a readable fallback", () => {
+  assert.equal(unitName("GARSAXON"), "Gar Saxon");
+  assert.equal(unitName("JARJARBINKS"), "Jar Jar Binks");
+  assert.equal(unitName("GLREY"), "Rey"); // curated name wins
   assert.equal(unitName("SOMENEWUNIT"), "Somenewunit");
   assert.equal(unitName(""), null);
 });
