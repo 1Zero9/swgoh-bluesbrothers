@@ -1,3 +1,6 @@
+import PublicHome from "./public-home";
+import { getViewerAccess } from "@/lib/access-control";
+import { getPublicHomeData } from "@/lib/public-stats";
 import Image from "next/image";
 import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard";
@@ -79,15 +82,23 @@ function wireIcon(kind: string) {
 }
 
 export default async function Home() {
-  const [guildWire, summary, wallOfShame, wallOfFame, memberContext, changes] = await Promise.all([
+  // Visitors get the public front page; the command centre is for signed-in members and officers.
+  const access = await getViewerAccess();
+  if (!(access.isMember || access.isOfficer)) {
+    const [data, context] = await Promise.all([getPublicHomeData(), getMemberContext()]);
+    return <PublicHome data={data} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
+  }
+
+  const [guildWire, summary, wallOfFame, memberContext, changes] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
-    getWallOfShame(),
     getWallOfFame(),
     getMemberContext(),
     getRosterChanges(),
   ]);
   const isOfficer = await isOfficerRequest();
+  // The watchlist names members who missed tickets, so it is for officers only.
+  const wallOfShame = isOfficer ? await getWallOfShame() : [];
   const discordUrl = getDiscordUrl();
   const discordGuildId = process.env.DISCORD_GUILD_ID;
   const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);
@@ -250,6 +261,7 @@ export default async function Home() {
               )}
             </section>
 
+            {isOfficer ? (
             <section className="standing-panel watch-panel" id="wall-of-shame" aria-labelledby="wos-heading">
               <header className="standing-panel-head">
                 <div><span className="standing-symbol">!</span><p>Officer watchlist</p><h3 id="wos-heading">Needs a check-in</h3></div>
@@ -273,6 +285,7 @@ export default async function Home() {
                 <div className="standing-empty standing-clear"><strong>All clear tonight</strong><p>{summary.live ? "No members currently need an officer check-in." : "The watchlist opens after the first roster sync."}</p></div>
               )}
             </section>
+            ) : null}
           </div>
         </section>
 
