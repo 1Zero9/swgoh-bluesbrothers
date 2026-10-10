@@ -1,3 +1,4 @@
+import unitNameData from "@/lib/unit-names.json";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
 export type WinKind = "GL_UNLOCK" | "ULTIMATE" | "RELIC" | "UNIT_UNLOCK" | "DATACRON" | "FIRST_R9";
@@ -101,9 +102,17 @@ function datacronWin(previous: Profile, next: Profile): WinDraft[] {
   return now > was ? [{ kind: "DATACRON", subject: "", value: now }] : [];
 }
 
+const GAME_NAMES = unitNameData as Record<string, string>;
+
+/** Curated names first, then the game's own names, then a tidied id for brand-new units. */
 export function unitName(subject: string) {
   if (!subject) return null;
-  return UNIT_NAMES.get(subject) ?? subject.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return UNIT_NAMES.get(subject) ?? GAME_NAMES[subject] ?? subject.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Every unit we have a proper name for, for pickers. */
+export function allUnitNames() {
+  return Object.entries(GAME_NAMES).map(([id, name]) => ({ id, name: UNIT_NAMES.get(id) ?? name }));
 }
 
 function ordinal(n: number) {
