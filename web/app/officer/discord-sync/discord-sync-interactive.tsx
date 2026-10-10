@@ -29,7 +29,6 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
   const summary = report.summary;
 
   // Filtered active players list
-  const unlinkedPlayers = report.activePlayers.filter((player) => !player.linkedDiscordUser);
   const bulkCandidates = selectBulkLinkCandidates(report.activePlayers);
   const filteredPlayers = report.activePlayers.filter((player) => {
     if (filterMode === "UNLINKED" && player.linkedDiscordUser) return false;
@@ -89,12 +88,24 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
 
   async function handleLinkFromDiscord(discordUserId: string) {
     const typed = (pickedPlayer[discordUserId] ?? "").trim().toLowerCase();
-    const matches = unlinkedPlayers.filter((player) => player.playerName.toLowerCase() === typed);
+    const matches = report.activePlayers.filter((player) => player.playerName.toLowerCase() === typed);
     if (matches.length !== 1) {
       setStatusMessage({ type: "error", text: matches.length ? "More than one member has that name. Use the manual picker on their card instead." : "Pick an in-game member from the list first." });
       return;
     }
-    await executeAction({ action: "link", playerId: matches[0].playerId, discordUserId });
+    const target = matches[0];
+    if (target.linkedDiscordUser) {
+      const existing = target.linkedDiscordUser.nickname || target.linkedDiscordUser.globalName || target.linkedDiscordUser.username;
+      if (!confirm(`${target.playerName} is already linked to ${existing}. Add this as a second Discord account for them? Both will get the Member role.`)) return;
+      await executeAction({ action: "link_extra", playerId: target.playerId, discordUserId });
+      return;
+    }
+    await executeAction({ action: "link", playerId: target.playerId, discordUserId });
+  }
+
+  async function handleUnlinkExtra(discordUserId: string) {
+    if (!confirm("Remove this extra Discord account from the member?")) return;
+    await executeAction({ action: "unlink_extra", discordUserId });
   }
 
   async function handleUnlink(playerId: string) {
@@ -237,10 +248,12 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
         <section className="ds-drift-section">
           <div className="ds-section-header">
             <h3>Discord members not linked to anyone</h3>
-            <p>Start from the Discord side: if you recognise someone, type their in-game name and link them. Linking also gives them the Member role.</p>
+            <p>Start from the Discord side: if you recognise someone, type their in-game name and link them. If that member already has a Discord account, this adds it as a second one. Either way they get the Member role.</p>
           </div>
           <datalist id="ds-unlinked-players">
-            {unlinkedPlayers.map((player) => <option key={player.playerId} value={player.playerName} />)}
+            {report.activePlayers.map((player) => (
+              <option key={player.playerId} value={player.playerName} label={player.linkedDiscordUser ? "already linked — adds a 2nd account" : undefined} />
+            ))}
           </datalist>
           {report.unmatchedDiscordMembers.length === 0 ? (
             <div className="ds-empty-card">
@@ -384,6 +397,18 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
                           <small>@{player.linkedDiscordUser.username}</small>
                         </div>
                       </div>
+
+                      {player.extraDiscordUsers.length > 0 ? (
+                        <div className="ds-extra-accounts">
+                          <small>Also:</small>
+                          {player.extraDiscordUsers.map((extra) => (
+                            <span key={extra.id} className="ds-extra-chip">
+                              {extra.nickname || extra.globalName || extra.username}
+                              <button type="button" onClick={() => handleUnlinkExtra(extra.id)} disabled={isProcessing} title="Remove this extra account">×</button>
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
 
                       <button
                         type="button"

@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.26.0 · **Last updated:** 2026-10-08 · tracks site `v0.38.0`
+**Doc version:** 1.27.0 · **Last updated:** 2026-10-08 · tracks site `v0.39.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -262,6 +262,7 @@ Defined in `web/prisma/schema.prisma`, PostgreSQL via Prisma 7.
 | `MemberSnapshot` | Point-in-time per-member stats, tied to a `GuildSnapshot` | Total/character/ship GP, tickets, activity, player level, guild role, squad power, season score, league, guild XP, and the complete raw guild-member payload |
 | `PlayerProfileSnapshot` | Lightweight history from rotating full-profile enrichment | Galactic Legends, unlocked ultimates, relic units, roster-unit count, datacrons, and lifetime season score |
 | `TbCallout` | An officer's "we need this unit at this level" request on `/territory-battles` | `unitId`, `minStars`, `minRelic`, `needed`, `phase`, `status` (`OPEN`/`CLOSED`); progress is computed live from stored rosters by `lib/tb-callout-match.ts`, never stored |
+| `PlayerDiscordAccount` | Extra Discord accounts for one player (primary stays on `Player.discordUserId`) | `discordUserId` unique; added by officers via the `link_extra` action; demoted with the player on departure |
 | `GuildWin` | A detected member achievement shown on `/wins` | `kind` (`GL_UNLOCK`/`ULTIMATE`/`RELIC`/`UNIT_UNLOCK`/`DATACRON`), `subject` (unit id, empty when unknown), `value`; unique per player+kind+subject+value |
 | `GuildEvent` | A Territory Battle / Territory War / Raid instance | `type` (enum `GuildEventType`), `externalId`, `finalResult`; Territory Wars are populated by guild sync |
 | `EventSnapshot` | Point-in-time capture of a `GuildEvent`'s progress | `phase`, complete raw `payload`; active Territory Wars are captured hourly |
@@ -471,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.27.0 — 2026-10-10**: multiple Discord accounts per player (`PlayerDiscordAccount`, `link_extra`/`unlink_extra`); departure demotes all of a player's accounts; self-service linking can no longer overwrite an existing link.
 - **1.26.0 — 2026-10-10**: Discord Sync gains the Unmatched Discord tab (`unmatchedDiscordMembers` in the report); bots filtered from the member list; suggestions exclude Discord ids already linked to any player.
 - **1.25.2 — 2026-10-08**: Discord Sync surfaces the real error when the member list is empty. Listing guild members needs the bot's privileged **Server Members Intent** enabled in the Developer Portal; without it Discord refuses and the matcher has nothing to match.
 - **1.25.1 — 2026-10-08**: wins feed and digest restricted to players with an ACTIVE membership term. A departed member's `discordUserId` link is kept (sync only demotes their Discord role), so a rejoin picks it back up.

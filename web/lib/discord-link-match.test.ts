@@ -15,6 +15,7 @@ const player = (
 ): PlayerDiscordStatus => ({
   playerId, playerName, playerLevel: 85, galacticPower: null, allyCode: null, state: "ACTIVE",
   linkedDiscordUser: linked,
+  extraDiscordUsers: [],
   suggestedMatches: suggestions.map(([discordMember, confidence]) => ({ discordMember, score: 100, confidence, matchReason: "" })),
 });
 

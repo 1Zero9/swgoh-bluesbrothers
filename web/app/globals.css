@@ -8412,3 +8412,9 @@ html[data-theme="light"] .step-instruction {
 .link-nudge p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
 .link-nudge a { flex: none; padding: 8px 16px; border-radius: 999px; background: var(--blue); color: #04121c; font-weight: 700; font-size: 13px; text-decoration: none; }
 @media (max-width: 560px) { .link-nudge { flex-direction: column; align-items: flex-start; } }
+
+/* Extra Discord accounts on a linked card */
+.ds-extra-accounts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 0; }
+.ds-extra-accounts small { color: var(--muted); font-size: 11px; }
+.ds-extra-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 4px 2px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: var(--text); }
+.ds-extra-chip button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 6px; }

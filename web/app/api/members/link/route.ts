@@ -48,11 +48,32 @@ export async function POST(request: Request) {
     );
   }
 
+  // The same Discord account may re-enter its own player. A different account can't replace an existing
+  // link (an officer adds extras), and an extra account of one player can't claim another.
+  const asExtra = await prisma.playerDiscordAccount.findUnique({
+    where: { discordUserId: link.discordUserId },
+    select: { playerId: true },
+  });
+  const alreadyThisPlayer = player.discordUserId === link.discordUserId || asExtra?.playerId === player.id;
+  if (!alreadyThisPlayer && (player.discordUserId || asExtra)) {
+    return Response.json(
+      {
+        ok: false,
+        error: asExtra
+          ? "That Discord account is already linked to another member."
+          : "That member already has a Discord account linked. Ask an officer to add this one.",
+      },
+      { status: 409 },
+    );
+  }
+
   try {
-    await prisma.player.update({
-      where: { id: player.id },
-      data: { discordUserId: link.discordUserId },
-    });
+    if (!alreadyThisPlayer) {
+      await prisma.player.update({
+        where: { id: player.id },
+        data: { discordUserId: link.discordUserId },
+      });
+    }
   } catch {
     return Response.json(
       { ok: false, error: "That Discord account is already linked to another member." },
