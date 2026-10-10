@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
@@ -17,6 +19,7 @@ function percentage(value: number, total: number) {
 }
 
 export default async function ArsenalPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/arsenal" area="The guild arsenal" />;
   const arsenal = await getGuildArsenal();
   const profileCoverage = percentage(arsenal.syncedMembers, arsenal.memberCount);
   const priorityUnitCount = Object.values(UNIT_CHECKLIST).reduce((total, units) => total + units.length, 0);

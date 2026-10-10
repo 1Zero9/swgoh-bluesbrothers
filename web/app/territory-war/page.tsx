@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
@@ -18,7 +20,7 @@ import { buildPool } from "@/lib/tw-view";
 import WarRoster from "./war-roster";
 import TwWorkspace, { type WorkspacePlan } from "./tw-workspace";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Territory War Room · Blues Brothers",
   description: "Live Territory War registration, scores, zones and roster readiness for the Blues Brothers.",
@@ -61,6 +63,7 @@ function ZoneBoard({ title, zones }: { title: string; zones: TerritoryWarZone[] 
 }
 
 export default async function TerritoryWarPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/territory-war" area="Territory War" />;
   const war = await getTerritoryWarRoom();
   const profileCoverage = war.members.filter((member) => member.profileSyncedAt).length;
   const capturedLabel = war.capturedAt?.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) ?? "Awaiting first sync";

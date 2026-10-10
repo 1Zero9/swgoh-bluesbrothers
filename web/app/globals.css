@@ -8431,3 +8431,8 @@ html[data-theme="light"] .step-instruction {
 .account-menu-signin { display: inline-flex; align-items: center; padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); font-size: 12px; font-weight: 700; text-decoration: none; background: rgba(255,255,255,.05); }
 .account-menu.drawer, .account-menu-signin.drawer { margin-bottom: 10px; }
 .account-menu.drawer .account-menu-panel { position: static; margin-top: 8px; box-shadow: none; }
+
+/* Members-only gate */
+.members-only-card { display: grid; justify-items: center; gap: 12px; max-width: 520px; margin: 40px auto; padding: 32px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); text-align: center; }
+.members-only-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.members-only-card a:not(.btn-discord-gate) { color: var(--blue); }

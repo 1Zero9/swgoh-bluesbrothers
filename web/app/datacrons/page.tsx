@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
@@ -5,7 +7,7 @@ import IntelFooter from "@/app/intel-footer";
 import DatacronsInteractive from "./datacrons-interactive";
 import { getGuildDatacronVault } from "@/lib/datacrons";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Datacrons · Guild Vault & Active Meta Codex · Blues Brothers",
@@ -20,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DatacronsPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/datacrons" area="The datacron vault" />;
   const data = await getGuildDatacronVault();
 
   return (
