@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { signOutEverywhere } from "./sign-out";
 import { useViewer } from "./use-viewer";
 
 /** Sign in / account control for the site header. Reads who you are from /api/members/me so cached pages stay cached. */
@@ -21,13 +22,7 @@ export default function AccountMenu({ variant = "header" }: { variant?: "header"
 
   async function signOut() {
     setBusy(true);
-    try {
-      await fetch("/api/auth/signout", { method: "POST" });
-    } finally {
-      // A full reload (not a client navigation) so every page re-renders in its signed-out state.
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.href = "/";
-    }
+    await signOutEverywhere();
   }
 
   if (!me) return null;
@@ -41,6 +36,17 @@ export default function AccountMenu({ variant = "header" }: { variant?: "header"
   }
 
   const label = me.name ?? "Signed in";
+
+  // In the mobile drawer the chip is just a link to My page; sign out is a visible button in the drawer footer.
+  if (variant === "drawer") {
+    return (
+      <a className="account-menu-button drawer" href="/me" title="My page">
+        <span className="account-menu-avatar" aria-hidden="true">{label.charAt(0).toUpperCase()}</span>
+        <span className="account-menu-name">{label}</span>
+      </a>
+    );
+  }
+
   return (
     <div className={`account-menu ${variant}`} ref={ref}>
       <button type="button" className="account-menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-haspopup="menu" title={label}>

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AccountMenu from "./account-menu";
+import { signOutEverywhere } from "./sign-out";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -136,6 +137,9 @@ export default function MobileMenu({ discordUrl }: MobileMenuProps) {
                   <a href={discordUrl} target="_blank" rel="noreferrer">Open Discord</a>
                   <ThemeToggle />
                 </div>
+                {viewer?.signedIn ? (
+                  <button type="button" className="drawer-signout" onClick={() => void signOutEverywhere()}>Sign out</button>
+                ) : null}
               </aside>
             </div>,
             // Rendered into <body>: inside the header it would be sized against the header itself

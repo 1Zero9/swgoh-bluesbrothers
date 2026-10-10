@@ -8512,3 +8512,5 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
     linear-gradient(165deg, #11161d, #080a0d 58%, #17130f);
 }
 .drawer-simple-group.is-grid a { padding-inline: 6px; font-size: 14.5px; line-height: 1.25; }
+.account-menu-button.drawer { text-decoration: none; }
+.drawer-signout { width: 100%; margin-top: 12px; padding: 12px; border: 1px solid rgba(248,113,113,.4); border-radius: 10px; background: rgba(248,113,113,.08); color: #fecaca; font-size: 14px; cursor: pointer; }
