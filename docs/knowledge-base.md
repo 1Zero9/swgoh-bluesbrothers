@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.35.1 · **Last updated:** 2026-10-08 · tracks site `v0.47.1`
+**Doc version:** 1.35.2 · **Last updated:** 2026-10-08 · tracks site `v0.47.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.35.2 — 2026-10-10**: field guides (`lib/guides-data.ts`) rewritten for the Discord sign-in flow, members' area and officer access; keep them in step whenever access or linking changes.
 - **1.35.1 — 2026-10-10**: shared officer password is optional. Retire it by deleting `OFFICER_SITE_PASSWORD` in Vercel and redeploying; officer access then comes only from the in-game rank via Discord sign-in (`isOfficerRequest`). `GET /api/officer/session` reports whether the password is enabled. To bring it back, set the variable again.
 - **1.35.0 — 2026-10-10**: `/me` personal page (`lib/my-page.ts`, `app/me/page.tsx`); account menu links to it.
 - **1.34.0 — 2026-10-10**: Discord officer role sync (`lib/discord-role-sync.ts`, planner in `lib/discord-role-plan.ts`) runs at the end of `syncGuildRoster`. Requires the bot to have Manage Roles with its role above the Officer role. Source of truth is the in-game rank (`MemberSnapshot.memberRole`).
