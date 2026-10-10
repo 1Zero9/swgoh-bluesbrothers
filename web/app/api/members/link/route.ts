@@ -6,6 +6,8 @@ import {
   createMemberCookieValue,
   verifyLinkCookieValue,
 } from "@/lib/member-auth";
+import { isInDiscordServer } from "@/lib/discord";
+import { isInGameOfficer } from "@/lib/officer-session";
 import { getPrisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +67,23 @@ export async function POST(request: Request) {
       },
       { status: 409 },
     );
+  }
+
+  if (!alreadyThisPlayer) {
+    // Officer access follows the link, so an ally code alone must never be enough to claim an officer.
+    if (await isInGameOfficer(player.id)) {
+      return Response.json(
+        { ok: false, error: "Officers are linked by another officer. Ask in the Discord and they'll sort it in a minute." },
+        { status: 403 },
+      );
+    }
+    // Must already be in the guild's Discord (when we can check), so an outsider can't claim a seat.
+    if ((await isInDiscordServer(link.discordUserId)) === false) {
+      return Response.json(
+        { ok: false, error: "Join the Blues Brothers Discord server with this account first, then try again." },
+        { status: 403 },
+      );
+    }
   }
 
   try {

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRosterMembers } from "@/lib/members";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerIdentity } from "@/lib/officer-identity";
 import {
   ensureBuiltInCommands,
@@ -46,8 +45,7 @@ export default async function TerritoryBattlesPage() {
   const totalCharacterGp = members.reduce((sum, m) => sum + m.characterPower, BigInt(0));
   const totalShipGp = members.reduce((sum, m) => sum + m.shipPower, BigInt(0));
 
-  const store = await cookies();
-  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
 
   const [callouts, calloutUnits] = await Promise.all([listCallouts(), isOfficer ? getCalloutUnitOptions() : Promise.resolve([])]);
   const calloutCards = callouts.map((callout) => ({

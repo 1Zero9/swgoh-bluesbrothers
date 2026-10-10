@@ -99,3 +99,20 @@ export async function demoteDiscordMemberOnDeparture(discordUserId: string | nul
   }
   return true;
 }
+
+/** Whether a Discord account is currently a member of the guild's Discord server. null = couldn't check. */
+export async function isInDiscordServer(discordUserId: string): Promise<boolean | null> {
+  const token = process.env.DISCORD_BOT_TOKEN;
+  const guildId = process.env.DISCORD_GUILD_ID;
+  if (!token || !guildId) return null;
+  try {
+    const response = await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${discordUserId}`, {
+      headers: { Authorization: `Bot ${token}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (response.status === 404) return false;
+    return response.ok ? true : null;
+  } catch {
+    return null;
+  }
+}

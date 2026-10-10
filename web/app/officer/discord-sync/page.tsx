@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getDiscordSyncReport } from "@/lib/discord-sync";
 import DiscordSyncInteractive from "./discord-sync-interactive";
 
@@ -15,8 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function OfficerDiscordSyncPage() {
-  const store = await cookies();
-  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
 
   if (!isOfficer) {
     return (

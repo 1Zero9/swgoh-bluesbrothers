@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import { postDiscordAnnouncement } from "@/lib/discord";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getPrisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -8,8 +7,7 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 
 async function isOfficerSession() {
-  const store = await cookies();
-  return verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  return isOfficerRequest();
 }
 
 export async function POST(request: Request) {

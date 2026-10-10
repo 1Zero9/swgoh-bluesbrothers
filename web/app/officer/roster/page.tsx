@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerRosterReport } from "@/lib/officer-roster";
 import OfficerRosterLogin from "@/app/officer-roster-login";
 import OfficerRosterTable from "@/app/officer-roster-table";
@@ -15,8 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function OfficerRosterPage() {
-  const store = await cookies();
-  const isOfficer = verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  const isOfficer = await isOfficerRequest();
   const report = isOfficer ? await getOfficerRosterReport() : null;
 
   const rows = (report?.rows ?? []).map((row) => ({

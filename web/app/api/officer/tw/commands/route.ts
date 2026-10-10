@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
+import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerIdentity } from "@/lib/officer-identity";
 import {
   createCommand,
@@ -14,8 +13,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 async function isOfficerSession() {
-  const store = await cookies();
-  return verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value);
+  return isOfficerRequest();
 }
 
 export async function GET() {
