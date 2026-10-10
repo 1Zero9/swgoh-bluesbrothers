@@ -60,6 +60,7 @@ export default function AccountMenu({ variant = "header" }: { variant?: "header"
       {open ? (
         <div className="account-menu-panel" role="menu">
           <p><strong>{label}</strong><small>{me.role === "OFFICER" ? "Officer" : "Member"}</small></p>
+          <a className="account-menu-link" href="/me" role="menuitem">My page</a>
           <button type="button" role="menuitem" onClick={signOut} disabled={busy}>{busy ? "Signing out…" : "Sign out"}</button>
         </div>
       ) : null}

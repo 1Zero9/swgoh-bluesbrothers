@@ -8473,3 +8473,14 @@ html[data-theme="light"] .step-instruction {
 .record-sub { margin: 22px 0 10px; color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
 .highlight-list li { color: var(--text); font-size: 15px; }
 .highlight-list li span { margin-right: 8px; color: var(--amber); }
+
+/* My page */
+.my-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.my-list li { display: grid; gap: 3px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.my-list li.ready { border-color: rgba(52,211,153,.5); }
+.my-list li strong { color: var(--text); font-size: 15px; }
+.my-list li span { color: var(--muted); font-size: 12px; }
+.my-empty, .my-line { margin: 0; color: var(--muted); font-size: 14px; }
+.my-line strong { color: var(--text); }
+.my-empty a { color: var(--blue); }
+.account-menu-link { display: block; margin-bottom: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); font-size: 13px; text-align: center; text-decoration: none; }

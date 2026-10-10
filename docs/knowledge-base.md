@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.34.0 · **Last updated:** 2026-10-08 · tracks site `v0.46.0`
+**Doc version:** 1.35.0 · **Last updated:** 2026-10-08 · tracks site `v0.47.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.35.0 — 2026-10-10**: `/me` personal page (`lib/my-page.ts`, `app/me/page.tsx`); account menu links to it.
 - **1.34.0 — 2026-10-10**: Discord officer role sync (`lib/discord-role-sync.ts`, planner in `lib/discord-role-plan.ts`) runs at the end of `syncGuildRoster`. Requires the bot to have Manage Roles with its role above the Officer role. Source of truth is the in-game rank (`MemberSnapshot.memberRole`).
 - **1.33.0 — 2026-10-10**: privacy pass — /wins and /raids join the members-only gate; public highlights are anonymous and names aren't passed to the public page. Public: /, /guides, game, cantina, credits. Rule: any page that lists members by name must call `canViewMembersArea()`.
 - **1.32.0 — 2026-10-10**: `/` is the public front page for visitors (`app/public-home.tsx`, `lib/public-stats.ts`) and the command centre for signed-in members/officers; `POST /api/public/check-stats` (public profile by ally code, best-effort per-IP rate limit, headline figures only); join requirements in `lib/requirements.ts` (10M GP, 5 GL); Wall of Shame officers-only. Known limit: Territory Battle results aren't available from Comlink, so the public record shows Territory War only.

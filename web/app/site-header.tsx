@@ -50,6 +50,7 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     mark: "MB",
     href: "/members",
     children: [
+      { label: "My Page", mark: "ME", href: "/me", description: "Your standing, wins and callouts", icon: "🙋" },
       { label: "Member Roster", mark: "MB", href: "/members", description: "50-member profiles, GP & GL counts", icon: "👥" },
       { label: "The Wins", mark: "WN", href: "/wins", description: "Galactic Legends, ultimates & relics as they happen", icon: "🏆" },
       { label: "Wall of Fame", mark: "WF", href: "/#wall-of-fame", description: "Top rankings across power & tickets", icon: "★" },
