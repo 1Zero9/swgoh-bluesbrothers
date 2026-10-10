@@ -69,3 +69,12 @@ export function verifyMemberCookieValue(value: string | undefined) {
 
   return playerId;
 }
+
+export const OAUTH_NEXT_COOKIE_NAME = "bb_oauth_next";
+
+/** Only same-site relative paths are allowed as a post-sign-in destination (no open redirects). */
+export function safeNextPath(value: string | null | undefined) {
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return "/";
+  if (value.startsWith("/api/") || /[\r\n]/.test(value)) return "/";
+  return value;
+}

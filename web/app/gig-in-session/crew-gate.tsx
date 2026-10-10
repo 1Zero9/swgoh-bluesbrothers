@@ -181,7 +181,7 @@ export default function CrewGate({
               Connect your Discord account. If you hold the verified Blues Brothers guild role, the doors will open immediately.
             </p>
             <div className="auth-action-box">
-              <a href="/api/auth/discord" className="btn-discord-gate">
+              <a href="/api/auth/discord?next=/gig-in-session" className="btn-discord-gate">
                 <span>◈</span>
                 <b>Enter with Discord OAuth</b>
               </a>
