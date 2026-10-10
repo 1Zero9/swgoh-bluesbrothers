@@ -4,7 +4,11 @@ function getRedirectUri() {
   return `${siteUrl.replace(/\/$/, "")}/api/auth/discord/callback`;
 }
 
-export function buildDiscordAuthorizeUrl(state: string) {
+/**
+ * `prompt: "none"` skips Discord's approval screen for someone who has already approved the app;
+ * the callback retries with `"consent"` the first time (when Discord refuses to skip it).
+ */
+export function buildDiscordAuthorizeUrl(state: string, prompt: "none" | "consent" = "none") {
   const clientId = process.env.DISCORD_CLIENT_ID;
   if (!clientId) throw new Error("DISCORD_CLIENT_ID is not configured");
 
@@ -14,7 +18,7 @@ export function buildDiscordAuthorizeUrl(state: string) {
     response_type: "code",
     scope: "identify",
     state,
-    prompt: "consent",
+    prompt,
   });
 
   return `https://discord.com/oauth2/authorize?${params.toString()}`;
