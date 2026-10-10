@@ -71,6 +71,7 @@ export function verifyMemberCookieValue(value: string | undefined) {
 }
 
 export const OAUTH_NEXT_COOKIE_NAME = "bb_oauth_next";
+export const OAUTH_PROMPT_COOKIE_NAME = "bb_oauth_prompt";
 
 /** Only same-site relative paths are allowed as a post-sign-in destination (no open redirects). */
 export function safeNextPath(value: string | null | undefined) {
