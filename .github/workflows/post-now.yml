@@ -1,0 +1,32 @@
+name: Post now
+
+# Manual trigger for the curated Discord posts. Run it from the Actions tab (or `gh workflow run post-now.yml`).
+on:
+  workflow_dispatch:
+    inputs:
+      what:
+        description: "Which posts"
+        type: choice
+        options: [both, public-stats, prompt]
+        default: both
+      dry:
+        description: "Preview only, post nothing"
+        type: boolean
+        default: true
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger posts
+        run: |
+          dry="0"; if [ "${{ inputs.dry }}" = "true" ]; then dry="1"; fi
+          status=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            "https://swgoh-bluesbrothers.vercel.app/api/cron/post-now?what=${{ inputs.what }}&dry=${dry}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 90)
+          echo "HTTP status: $status"
+          cat /tmp/response.json
+          if [ "$status" -ne 200 ]; then
+            exit 1
+          fi
