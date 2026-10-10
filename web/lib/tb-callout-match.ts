@@ -6,6 +6,7 @@ export type CalloutRequirement = {
 };
 
 export type CalloutRoster = {
+  playerId?: string;
   playerName: string;
   discordUserId?: string | null;
   /** null when the member's profile hasn't synced yet. */

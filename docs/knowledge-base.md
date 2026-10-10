@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.41.1 · **Last updated:** 2026-10-08 · tracks site `v0.53.0`
+**Doc version:** 1.42.0 · **Last updated:** 2026-10-08 · tracks site `v0.54.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -475,6 +475,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.42.0 — 2026-10-10**: roster advice (`lib/roster-advice.ts`) on `/me` — squad readiness from `lib/tw-squads.ts` leaders against stored rosters (`loadRosters` in `lib/tb-callouts.ts`, now carrying `playerId`). Leader-only check, as elsewhere.
 - **1.41.1 — 2026-10-10**: documented that live Territory War status is absent from `/guild` snapshots (see §15), so TW reminders are not feasible.
 - **1.41.0 — 2026-10-10**: milestone and anniversary posts (`postMilestonesIfAny`, `postAnniversariesIfDue`, wording in `lib/curated-messages.ts`); new `FIRST_R9` win kind from `detectWins`; `MILESTONE`/`ANNIVERSARY` automation events dedupe by `winId` / `playerId`+`year`; shared limit of 2 celebrations per 20h.
 - **1.40.2 — 2026-10-10**: `lib/site-url.ts#siteUrl()` strips trailing slashes from `SITE_URL`; use it for every link built from the site address.

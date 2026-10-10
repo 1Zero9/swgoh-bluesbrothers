@@ -30,10 +30,10 @@ function num(value: unknown) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-async function loadRosters(): Promise<CalloutRoster[]> {
+export async function loadRosters(): Promise<CalloutRoster[]> {
   const snapshot = await getPrisma().guildSnapshot.findFirst({
     orderBy: { capturedAt: "desc" },
-    select: { members: { select: { player: { select: { currentName: true, discordUserId: true, profilePayload: true } } } } },
+    select: { members: { select: { player: { select: { id: true, currentName: true, discordUserId: true, profilePayload: true } } } } },
   });
   if (!snapshot) return [];
 
@@ -42,14 +42,14 @@ async function loadRosters(): Promise<CalloutRoster[]> {
     const roster = payload && typeof payload === "object" && !Array.isArray(payload)
       ? (payload as { rosterUnit?: unknown }).rosterUnit
       : null;
-    if (!Array.isArray(roster)) return { playerName: player.currentName, discordUserId: player.discordUserId, units: null };
+    if (!Array.isArray(roster)) return { playerId: player.id, playerName: player.currentName, discordUserId: player.discordUserId, units: null };
 
     const units = new Map<string, { stars: number; relic: number }>();
     for (const unit of roster as RawUnit[]) {
       const id = String(unit?.definitionId ?? "").split(":")[0];
       if (id) units.set(id, { stars: num(unit.currentRarity), relic: Math.max(0, num(unit.relic?.currentTier) - 2) });
     }
-    return { playerName: player.currentName, discordUserId: player.discordUserId, units };
+    return { playerId: player.id, playerName: player.currentName, discordUserId: player.discordUserId, units };
   });
 }
 
