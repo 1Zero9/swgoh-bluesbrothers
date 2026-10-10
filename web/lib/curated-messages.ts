@@ -68,3 +68,72 @@ export function farewellPost(member: { name: string; tenureDays: number }): Cura
     color: AMBER,
   };
 }
+
+export type WeeklyPublicStats = {
+  members: number;
+  capacity: number;
+  week: { galacticLegends: number; ultimates: number; relicLevels: number; newRelicNine: number };
+  totals: { galacticLegends: number; relicNine: number; relicSevenPlus: number };
+  lastWar: { won: boolean; score: number; opponentScore: number } | null;
+  requirements: { minGalacticPower: number; minGalacticLegends: number };
+  siteUrl: string;
+};
+
+function plural(count: number, one: string, many = `${one}s`) {
+  return `${count.toLocaleString("en-GB")} ${count === 1 ? one : many}`;
+}
+
+/** The weekly post for the public channel: numbers only, never a member's name. */
+export function weeklyPublicPost(stats: WeeklyPublicStats): CuratedPost {
+  const spaces = Math.max(0, stats.capacity - stats.members);
+  const lines: string[] = [];
+
+  lines.push(
+    spaces === 0
+      ? `**Members:** ${stats.members}/${stats.capacity}. Full house. Stay tuned for open slots.`
+      : `**Members:** ${stats.members}/${stats.capacity}. ${plural(spaces, "seat")} open on the stage.`,
+  );
+
+  const done = [
+    stats.week.galacticLegends ? plural(stats.week.galacticLegends, "new Galactic Legend") : "",
+    stats.week.ultimates ? plural(stats.week.ultimates, "new ultimate") : "",
+    stats.week.newRelicNine ? plural(stats.week.newRelicNine, "new Relic 9 unit") : "",
+    stats.week.relicLevels ? plural(stats.week.relicLevels, "relic level-up") : "",
+  ].filter(Boolean);
+  lines.push(
+    done.length
+      ? `**This week the band added:** ${done.join(" · ")}.`
+      : "**This week:** a quiet one on the roster. The band's regrouping.",
+  );
+
+  lines.push(
+    `**Across the guild:** ${plural(stats.totals.galacticLegends, "Galactic Legend")} · ${plural(stats.totals.relicNine, "Relic 9 unit")} · ${plural(stats.totals.relicSevenPlus, "unit")} at Relic 7+.`,
+  );
+
+  if (stats.lastWar) {
+    const score = `${stats.lastWar.score.toLocaleString("en-GB")}–${stats.lastWar.opponentScore.toLocaleString("en-GB")}`;
+    lines.push(`**Territory War:** ${stats.lastWar.won ? "victory" : "a tough one"} last time out, ${score}.`);
+  }
+
+  lines.push(
+    `Want in? We ask ${stats.requirements.minGalacticPower / 1_000_000}M GP and ${stats.requirements.minGalacticLegends}+ Galactic Legends. Check yours: ${stats.siteUrl}/#check-stats`,
+  );
+
+  return { title: "This week in the Blues Brothers", description: lines.join("\n\n"), color: 0xfbbf24 };
+}
+
+/** Posted when a seat opens up. */
+export function slotsOpenPost(input: {
+  spaces: number;
+  requirements: { minGalacticPower: number; minGalacticLegends: number };
+  siteUrl: string;
+}): CuratedPost {
+  const seats = input.spaces === 1 ? "A seat has" : `${input.spaces} seats have`;
+  return {
+    title: "We're putting the band back together",
+    description:
+      `${seats} just opened on the stage. If you've got ${input.requirements.minGalacticPower / 1_000_000}M GP and ${input.requirements.minGalacticLegends}+ Galactic Legends, and you're ready to turn up and have fun, you're on a mission from the Force.\n\n` +
+      `Check you fit: ${input.siteUrl}/#check-stats\nThen say hello in here, or search for **Blues Brothers** in-game.`,
+    color: BLUE,
+  };
+}

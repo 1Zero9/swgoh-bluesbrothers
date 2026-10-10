@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.38.1 · **Last updated:** 2026-10-08 · tracks site `v0.50.1`
+**Doc version:** 1.39.0 · **Last updated:** 2026-10-08 · tracks site `v0.51.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -473,6 +473,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.39.0 — 2026-10-10**: weekly public stats (`runWeeklyPublicStats`, triggered by the existing Sunday `/api/cron/weekly-digest` call — Vercel Hobby allows only two crons so no third was added) and the vacancy post (`postSlotsOpenIfNeeded`, called at the end of `syncGuildRoster`, state derived from snapshot member counts and `SLOTS_OPEN` events). Public channel = `DISCORD_PUBLIC_WEBHOOK_URL` (#gig_in_session); numbers only.
 - **1.38.1 — 2026-10-10**: public channel webhook accepts `DISCORD_WELCOME_WEBHOOK_URL` as an alias. Also noted: the legacy Python reporter's launchd job (`com.bluesbrothers.guild-droid`) was still running daily on the maintainer's Mac and posting failure alerts to #bot-lab (Comlink 403); it is superseded by the web sync and should be unloaded.
 - **1.38.0 — 2026-10-10**: curated Discord posts — channel routing, fresh-only TW result announcements (`TW_RESULT` automation events guard against repeats), warmer welcome/farewell wording. Public channel gets numbers only, never names.
 - **1.37.0 — 2026-10-10**: PWA install — `app/manifest.ts`, icons in `public/icons/` and `app/apple-icon.png`, `appleWebApp`/`viewport.themeColor` in the root layout, `app/install-prompt.tsx` (+ `lib/install-platform.ts`) shown on phones only, reopened from the mobile menu. No service worker (nothing is cached offline). Gotcha: an installed iPhone web app has its own cookie storage, so members sign in again inside it, and Discord's app can pull the sign-in out into Safari.

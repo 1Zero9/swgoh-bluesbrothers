@@ -7,7 +7,7 @@ import {
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
-import { channelWebhook, postNewTwResults } from "@/lib/curated-posts";
+import { channelWebhook, postNewTwResults, postSlotsOpenIfNeeded } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { detectWins } from "@/lib/wins";
 
@@ -327,7 +327,14 @@ export async function syncGuildRoster() {
     return 0;
   });
 
+  // Announce a vacancy (full -> a seat free) once, on the public channel.
+  const slotsOpenPosted = await postSlotsOpenIfNeeded().catch((error) => {
+    console.error("slots open check failed", error);
+    return false;
+  });
+
   return {
+    slotsOpenPosted,
     twResultsPosted,
     officerRoles,
     guild: roster.name,

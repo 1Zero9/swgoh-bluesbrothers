@@ -1,3 +1,4 @@
+import { runWeeklyPublicStats } from "@/lib/curated-posts";
 import { runWeeklyDigest } from "@/lib/wins-digest";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,12 @@ export async function GET(request: Request) {
   try {
     const dryRun = new URL(request.url).searchParams.get("dry") === "1";
     const result = await runWeeklyDigest({ dryRun });
-    return Response.json({ ok: true, ...result });
+    // The same weekly trigger also posts the numbers-only roundup to the public channel (it has its own guard).
+    const publicStats = await runWeeklyPublicStats({ dryRun }).catch((error) => {
+      console.error("weekly public stats failed", error);
+      return { posted: false, reason: "error" };
+    });
+    return Response.json({ ok: true, ...result, publicStats });
   } catch (error) {
     console.error("weekly digest failed", error);
     return Response.json({ ok: false, error: "weekly digest failed" }, { status: 500 });
