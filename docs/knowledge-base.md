@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.36.1 · **Last updated:** 2026-10-08 · tracks site `v0.48.1`
+**Doc version:** 1.36.2 · **Last updated:** 2026-10-08 · tracks site `v0.48.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -472,6 +472,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.36.2 — 2026-10-10**: visible Sign out in the mobile drawer; shared `signOutEverywhere()` in `app/sign-out.ts`.
 - **1.36.1 — 2026-10-10**: mobile drawer width is 75vw (clamped 280–430px) with a CSS grid background (`.drawer-simple` in `globals.css`).
 - **1.36.0 — 2026-10-10**: mobile drawer rewritten (`app/mobile-menu.tsx`) as a portal into `document.body` with a short role-aware flat list (`app/use-viewer.ts`). Gotcha: never render a `position: fixed` overlay inside `.site-header` — once scrolled the header has `backdrop-filter`, which makes WebKit size fixed children against the header.
 - **1.35.2 — 2026-10-10**: field guides (`lib/guides-data.ts`) rewritten for the Discord sign-in flow, members' area and officer access; keep them in step whenever access or linking changes.
