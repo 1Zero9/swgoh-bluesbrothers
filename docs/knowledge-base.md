@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.38.0 · **Last updated:** 2026-10-08 · tracks site `v0.50.0`
+**Doc version:** 1.38.1 · **Last updated:** 2026-10-08 · tracks site `v0.50.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -360,7 +360,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_WELCOME_CHANNEL_ID` / `DISCORD_OFFICER_CHANNEL_ID` | Channels automation posts into |
 | `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
 | `DISCORD_CALLOUTS_WEBHOOK_URL` | Optional webhook for new TB callouts; falls back to `DISCORD_WINS_WEBHOOK_URL`, and nothing posts if neither is set |
-| `DISCORD_GENERAL_WEBHOOK_URL` / `DISCORD_PUBLIC_WEBHOOK_URL` | Webhooks for #general (members) and the public channel; curated posts (`lib/curated-posts.ts`, wording in `lib/curated-messages.ts`) go here and nothing posts to a channel without one. General also receives welcomes/farewells in place of `DISCORD_WEBHOOK_URL`, and TW results |
+| `DISCORD_GENERAL_WEBHOOK_URL` / `DISCORD_PUBLIC_WEBHOOK_URL` (or `DISCORD_WELCOME_WEBHOOK_URL`) | Webhooks for #general (members) and the public channel; curated posts (`lib/curated-posts.ts`, wording in `lib/curated-messages.ts`) go here and nothing posts to a channel without one. General also receives welcomes/farewells in place of `DISCORD_WEBHOOK_URL`, and TW results |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
 | `OFFICER_SITE_PASSWORD` | Shared officer login password |
@@ -473,6 +473,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.38.1 — 2026-10-10**: public channel webhook accepts `DISCORD_WELCOME_WEBHOOK_URL` as an alias. Also noted: the legacy Python reporter's launchd job (`com.bluesbrothers.guild-droid`) was still running daily on the maintainer's Mac and posting failure alerts to #bot-lab (Comlink 403); it is superseded by the web sync and should be unloaded.
 - **1.38.0 — 2026-10-10**: curated Discord posts — channel routing, fresh-only TW result announcements (`TW_RESULT` automation events guard against repeats), warmer welcome/farewell wording. Public channel gets numbers only, never names.
 - **1.37.0 — 2026-10-10**: PWA install — `app/manifest.ts`, icons in `public/icons/` and `app/apple-icon.png`, `appleWebApp`/`viewport.themeColor` in the root layout, `app/install-prompt.tsx` (+ `lib/install-platform.ts`) shown on phones only, reopened from the mobile menu. No service worker (nothing is cached offline). Gotcha: an installed iPhone web app has its own cookie storage, so members sign in again inside it, and Discord's app can pull the sign-in out into Safari.
 - **1.36.2 — 2026-10-10**: visible Sign out in the mobile drawer; shared `signOutEverywhere()` in `app/sign-out.ts`.
