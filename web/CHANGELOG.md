@@ -2,6 +2,127 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.57.0 — 2026-10-11
+
+- **Guild Chat** (`/chat`): the Discord #general channel on the site, for signed-in members and officers. Messages (including the Droid's automatic posts, mentions, links and images) show with names and avatars and refresh every few seconds while the page is open; members can reply from the site, and the reply appears in Discord under their own name and avatar. Discord stays the source of truth (moderation, deleted messages, history) and the site stores nothing.
+- Safeguards: only allowlisted channels can be read or posted to (officers' channels are not on it); posts can't ping `@everyone` or anyone else; one message every 2 seconds and 15 a minute per member, 1,000 characters; names Discord would refuse are tidied; message text is never treated as HTML; only Discord's own image hosts are shown.
+- More channels are switched on with `DISCORD_CHAT_CHANNELS` (for example `general,the-wins,tw`); posting to a channel needs its webhook (`DISCORD_TW_WEBHOOK_URL`, `DISCORD_TW_STATS_WEBHOOK_URL`; #general and #the-wins reuse the existing ones). Without a webhook a channel is read-only.
+- Needs the bot's **Message Content Intent** switched on and View Channel + Read Message History on each channel; the page says so if Discord is hiding message text.
+
+## 0.56.0 — 2026-10-11
+
+- **Proper unit names everywhere** from the game's own data (411 names via `scripts/build-unit-names.mjs`), replacing tidied internal ids in Wins, My Page and callouts; the callout picker now offers every unit.
+- Stat tiles use a tidy two-column grid on phones; the My Page hero image loads with priority.
+
+## 0.55.0 — 2026-10-10
+
+- **Star Wars news**: a "What's happening in the galaxy" section on the public front page (headlines from Google News' public RSS search, hourly, up to two about Galaxy of Heroes tagged "Game") and a Friday afternoon news post in #general. `CURATED_NEWS=off` switches the post off; "Post now" gained a `news` option.
+
+## 0.54.0 — 2026-10-10
+
+- **Roster advice on My Page**: the squads the guild builds Territory War around, checked against your own roster by squad leader, with the exact gap and a flag when the guild is thin on a squad (fewer than 15 members can field it).
+
+## 0.53.0 — 2026-10-10
+
+- **Member milestones and joining anniversaries in #general**: a first Relic 9 (new win kind `FIRST_R9`), a 5th or 10th Galactic Legend, and "N years with the band". They share a small allowance (two per 20 hours), never post overnight and are never repeated.
+
+## 0.52.2 — 2026-10-10
+
+- Links in Discord posts no longer get a double slash when `SITE_URL` ends with `/`; one shared `siteUrl()` builds every link.
+
+## 0.52.1 — 2026-10-10
+
+- Added a manual **Post now** for the curated posts: a protected `/api/cron/post-now` route and a "Post now" GitHub workflow (preview by default).
+
+## 0.52.0 — 2026-10-10
+
+- **Weekly conversation starter in #general**: one "Question of the week" from 46 curated prompts that rotate through squads, war, fun, The Blues Brothers and this-or-that, in a Wednesday-evening/Thursday window (UK daylight), never repeating until all are used. `CURATED_PROMPTS=off` switches it off.
+
+## 0.51.0 — 2026-10-10
+
+- **Weekly public stats post** (numbers only, members as x/50, this week's achievements, guild totals, the latest Territory War result and the entry bar) and a one-off **vacancy post** ("We're putting the band back together") when the guild goes from full to having a seat.
+
+## 0.50.1 — 2026-10-10
+
+- The public channel webhook can be set as `DISCORD_WELCOME_WEBHOOK_URL` as well as `DISCORD_PUBLIC_WEBHOOK_URL`.
+
+## 0.50.0 — 2026-10-10
+
+- **Curated Discord posts, part one**: channel routing (`DISCORD_GENERAL_WEBHOOK_URL`, `DISCORD_PUBLIC_WEBHOOK_URL`), fresh-only Territory War result announcements, and warmer welcome and farewell posts.
+
+## 0.49.0 — 2026-10-10
+
+- **Installable on a phone**: web app manifest, icons and an iPhone home-screen icon, plus a phones-only "Keep the guild in your pocket" sheet with the steps for iPhone and Android (a one-tap Install button on Android Chrome), reopenable from the mobile menu.
+
+## 0.48.2 — 2026-10-10
+
+- The mobile menu has a visible **Sign out** button.
+
+## 0.48.1 — 2026-10-10
+
+- The mobile menu is three-quarters of the screen width with a faint blueprint grid background.
+
+## 0.48.0 — 2026-10-10
+
+- Fixed the mobile menu collapsing into a thin strip once the page is scrolled (WebKit sizes fixed children against a blurred header); the drawer now renders into the page body.
+- Simplified the mobile menu to a short role-aware list that fits one screen.
+
+## 0.47.2 — 2026-10-10
+
+- Field guides rewritten for the Discord sign-in flow, the members' area, My Page and officer access.
+
+## 0.47.1 — 2026-10-10
+
+- The shared officer password is optional in the interface; removing `OFFICER_SITE_PASSWORD` replaces the password boxes with Sign in with Discord.
+
+## 0.47.0 — 2026-10-10
+
+- **My Page** (`/me`): your power, Galactic Legends and relic units with 30-day change, datacrons, your wins, the callouts you're ready for or close to, and your own standing.
+
+## 0.46.0 — 2026-10-10
+
+- **The Discord officer role follows the in-game rank** after every guild sync, with safeguards (linked accounts in the server only, nothing on empty data, at most 8 changes per run).
+
+## 0.45.0 — 2026-10-10
+
+- **No member names in the public view**: Wins and Raids are members-only, public highlights are anonymous, and the field guides are linked from the front page.
+
+## 0.44.0 — 2026-10-10
+
+- **Public front page** with members and spaces, the entry bar (10M GP, 5 Galactic Legends), how to join, **Check your stats**, the Territory War record and highlights; the command centre stays at the same address for signed-in members and officers. The **Wall of Shame is officers-only**.
+
+## 0.43.0 — 2026-10-10
+
+- **Members area**: roster, arsenal, datacrons, Territory War and Territory Battles (with callouts) require a signed-in member or officer; visitors see a Members only page.
+
+## 0.42.0 — 2026-10-10
+
+- **Header account control** (Sign in / your name with Sign out), and sign-out now clears every session.
+
+## 0.41.2 — 2026-10-10
+
+- Fixed the sign-in "loop": sign-in lands on the home page and the gate sends signed-in people straight there.
+
+## 0.41.1 — 2026-10-10
+
+- Discord sign-in skips the Authorize screen for people who have already approved the site.
+
+## 0.41.0 — 2026-10-10
+
+- **In-game officers are site officers**: Officer or Leader rank gives officer access via Discord sign-in. Self-service ally-code linking is refused for officers and requires the Discord account to be in the server.
+
+## 0.40.0 — 2026-10-10
+
+- Linked members sign in with one click (no ally-code step), returning to the page they came from.
+
+## 0.39.0 — 2026-10-10
+
+- A member can have more than one Discord account; extra accounts get the Member role and are demoted together on departure. Self-service linking can no longer replace an existing link.
+
+## 0.38.0 — 2026-10-10
+
+- Discord Sync: an **Unmatched Discord** tab to match from the Discord side; suggestions skip already-linked accounts; bots excluded.
+
 ## 0.37.2 — 2026-10-08
 
 - Discord Sync now shows *why* the Discord member list is empty (token rejected, missing Server Members Intent, wrong server ID, or network failure) instead of always saying "Bot connected & active". Previously every failure was swallowed and looked like an empty server.

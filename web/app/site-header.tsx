@@ -50,6 +50,7 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     mark: "MB",
     href: "/members",
     children: [
+      { label: "Guild Chat", mark: "CH", href: "/chat", description: "The Discord channels, on the site", icon: "💬" },
       { label: "My Page", mark: "ME", href: "/me", description: "Your standing, wins and callouts", icon: "🙋" },
       { label: "Member Roster", mark: "MB", href: "/members", description: "50-member profiles, GP & GL counts", icon: "👥" },
       { label: "The Wins", mark: "WN", href: "/wins", description: "Galactic Legends, ultimates & relics as they happen", icon: "🏆" },
