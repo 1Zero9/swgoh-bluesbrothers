@@ -63,3 +63,12 @@ test("the vacancy post speaks Blues Brothers and states the bar", () => {
   assert.match(post.description, /mission from the Force/);
   assert.match(slotsOpenPost({ spaces: 3, requirements: stats.requirements, siteUrl: "x" }).description, /3 seats have/);
 });
+
+import { promptPost } from "./curated-messages";
+
+test("the weekly prompt is the question plus a light nudge", () => {
+  const post = promptPost({ text: "Jake or Elwood: who is your main, and why?" });
+  assert.equal(post.title, "Question of the week");
+  assert.match(post.description, /Jake or Elwood/);
+  assert.match(post.description, /Answer in here/);
+});

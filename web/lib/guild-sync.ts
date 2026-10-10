@@ -7,7 +7,7 @@ import {
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
-import { channelWebhook, postNewTwResults, postSlotsOpenIfNeeded } from "@/lib/curated-posts";
+import { channelWebhook, postNewTwResults, postSlotsOpenIfNeeded, postWeeklyPromptIfDue } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { detectWins } from "@/lib/wins";
 
@@ -333,7 +333,14 @@ export async function syncGuildRoster() {
     return false;
   });
 
+  // The weekly conversation starter for #general (only inside its Wednesday/Thursday window).
+  const promptPosted = await postWeeklyPromptIfDue().catch((error) => {
+    console.error("weekly prompt check failed", error);
+    return false;
+  });
+
   return {
+    promptPosted,
     slotsOpenPosted,
     twResultsPosted,
     officerRoles,
