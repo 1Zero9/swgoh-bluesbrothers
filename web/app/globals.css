@@ -8514,3 +8514,19 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
 .drawer-simple-group.is-grid a { padding-inline: 6px; font-size: 14.5px; line-height: 1.25; }
 .account-menu-button.drawer { text-decoration: none; }
 .drawer-signout { width: 100%; margin-top: 12px; padding: 12px; border: 1px solid rgba(248,113,113,.4); border-radius: 10px; background: rgba(248,113,113,.08); color: #fecaca; font-size: 14px; cursor: pointer; }
+
+/* Add-to-home-screen sheet */
+.install-sheet { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 1100; max-width: 460px; margin: 0 auto; padding: 20px 18px 16px; border: 1px solid rgba(120,170,255,.28); border-radius: 18px; background: #0d1117; color: #e8edf5; box-shadow: 0 20px 60px rgba(0,0,0,.6); max-height: calc(100svh - 24px); overflow-y: auto; }
+.install-sheet h2 { margin: 0 28px 6px 0; font-size: 18px; color: #fff; }
+.install-sheet h3 { margin: 14px 0 6px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); }
+.install-lead { margin: 0; color: #aab4c3; font-size: 14px; line-height: 1.5; }
+.install-sheet ol { margin: 0; padding-left: 22px; list-style: decimal; font-size: 14px; line-height: 1.65; }
+.install-sheet li { margin-bottom: 4px; }
+.install-share-icon { display: inline-block; vertical-align: -4px; margin: 0 2px; color: var(--blue); }
+.install-close { position: absolute; top: 8px; right: 10px; width: 36px; height: 36px; border: 0; background: transparent; color: #aab4c3; font-size: 24px; cursor: pointer; }
+.install-primary { width: 100%; padding: 12px; border: 0; border-radius: 12px; background: var(--blue); color: #04121c; font-size: 15px; font-weight: 700; cursor: pointer; }
+.install-sheet section p { margin: 8px 0 0; color: #aab4c3; font-size: 13px; }
+.install-toggle { margin-top: 12px; padding: 4px 0; border: 0; background: transparent; color: var(--blue); font-size: 13px; cursor: pointer; }
+.install-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); }
+.install-actions button { padding: 8px 12px; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; background: transparent; color: #cbd5e1; font-size: 13px; cursor: pointer; }
+.drawer-install { width: 100%; margin-top: 8px; padding: 12px; border: 1px solid rgba(120,170,255,.3); border-radius: 10px; background: rgba(56,189,248,.08); color: #dceeff; font-size: 14px; cursor: pointer; }
