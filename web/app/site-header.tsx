@@ -131,7 +131,7 @@ export default async function SiteHeader({
           <span aria-hidden="true">◈</span><b>Open Discord</b>
         </a>
       </div>
-      <MobileMenu items={SITE_NAVIGATION} version={APP_VERSION} discordUrl={discordUrl} syncLabel={commsLabel} live={commsLive} />
+      <MobileMenu discordUrl={discordUrl} />
     </header>
   );
 }
