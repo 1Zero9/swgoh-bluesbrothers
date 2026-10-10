@@ -16,7 +16,7 @@ type Props = {
 
 export default function DiscordSyncInteractive({ initialReport }: Props) {
   const [report, setReport] = useState<DiscordSyncReport>(initialReport);
-  const [filterMode, setFilterMode] = useState<"ALL" | "UNLINKED" | "LINKED" | "DRIFT">("UNLINKED");
+  const [filterMode, setFilterMode] = useState<"ALL" | "UNLINKED" | "LINKED" | "DRIFT" | "DISCORD">("UNLINKED");
   const [searchQuery, setSearchQuery] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
@@ -24,10 +24,12 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
   // Manual select modal state
   const [manualModalPlayer, setManualModalPlayer] = useState<PlayerDiscordStatus | null>(null);
   const [selectedDiscordId, setSelectedDiscordId] = useState("");
+  const [pickedPlayer, setPickedPlayer] = useState<Record<string, string>>({});
 
   const summary = report.summary;
 
   // Filtered active players list
+  const unlinkedPlayers = report.activePlayers.filter((player) => !player.linkedDiscordUser);
   const bulkCandidates = selectBulkLinkCandidates(report.activePlayers);
   const filteredPlayers = report.activePlayers.filter((player) => {
     if (filterMode === "UNLINKED" && player.linkedDiscordUser) return false;
@@ -83,6 +85,16 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
   async function handleLink(playerId: string, discordUserId: string) {
     await executeAction({ action: "link", playerId, discordUserId });
     setManualModalPlayer(null);
+  }
+
+  async function handleLinkFromDiscord(discordUserId: string) {
+    const typed = (pickedPlayer[discordUserId] ?? "").trim().toLowerCase();
+    const matches = unlinkedPlayers.filter((player) => player.playerName.toLowerCase() === typed);
+    if (matches.length !== 1) {
+      setStatusMessage({ type: "error", text: matches.length ? "More than one member has that name. Use the manual picker on their card instead." : "Pick an in-game member from the list first." });
+      return;
+    }
+    await executeAction({ action: "link", playerId: matches[0].playerId, discordUserId });
   }
 
   async function handleUnlink(playerId: string) {
@@ -180,6 +192,13 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
           </button>
           <button
             type="button"
+            className={`ds-pill${filterMode === "DISCORD" ? " active" : ""}`}
+            onClick={() => setFilterMode("DISCORD")}
+          >
+            💬 Unmatched Discord ({report.unmatchedDiscordMembers.length})
+          </button>
+          <button
+            type="button"
             className={`ds-pill${filterMode === "ALL" ? " active" : ""}`}
             onClick={() => setFilterMode("ALL")}
           >
@@ -214,7 +233,58 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
       </section>
 
       {/* 3. Main Content Views */}
-      {filterMode === "DRIFT" ? (
+      {filterMode === "DISCORD" ? (
+        <section className="ds-drift-section">
+          <div className="ds-section-header">
+            <h3>Discord members not linked to anyone</h3>
+            <p>Start from the Discord side: if you recognise someone, type their in-game name and link them. Linking also gives them the Member role.</p>
+          </div>
+          <datalist id="ds-unlinked-players">
+            {unlinkedPlayers.map((player) => <option key={player.playerId} value={player.playerName} />)}
+          </datalist>
+          {report.unmatchedDiscordMembers.length === 0 ? (
+            <div className="ds-empty-card">
+              <span className="ds-empty-icon">✓</span>
+              <h4>Every Discord member is linked</h4>
+              <p>Nobody in the server is waiting to be matched.</p>
+            </div>
+          ) : (
+            <div className="ds-drift-grid">
+              {report.unmatchedDiscordMembers.map((dm) => (
+                <div key={dm.id} className="ds-drift-card">
+                  <div className="ds-user-badge">
+                    {dm.avatarUrl ? (
+                      <Image src={dm.avatarUrl} alt="" width={40} height={40} className="ds-avatar" />
+                    ) : (
+                      <div className="ds-avatar-placeholder">{dm.username[0].toUpperCase()}</div>
+                    )}
+                    <div>
+                      <strong>{dm.nickname || dm.globalName || dm.username}</strong>
+                      <small>@{dm.username}</small>
+                    </div>
+                  </div>
+                  <input
+                    type="search"
+                    className="ds-search-input"
+                    list="ds-unlinked-players"
+                    placeholder="In-game name…"
+                    value={pickedPlayer[dm.id] ?? ""}
+                    onChange={(e) => setPickedPlayer({ ...pickedPlayer, [dm.id]: e.target.value })}
+                  />
+                  <button
+                    type="button"
+                    className="btn-ds-demote"
+                    onClick={() => handleLinkFromDiscord(dm.id)}
+                    disabled={isProcessing || !(pickedPlayer[dm.id] ?? "").trim()}
+                  >
+                    Link →
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      ) : filterMode === "DRIFT" ? (
         /* Role Drift: Ex-Members with Member Role */
         <section className="ds-drift-section">
           <div className="ds-section-header">

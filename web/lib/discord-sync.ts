@@ -47,6 +47,8 @@ export type DiscordSyncReport = {
   summary: DiscordSyncSummary;
   activePlayers: PlayerDiscordStatus[];
   departedWithMemberRole: DiscordGuildMember[];
+  /** Discord accounts (not bots) not yet linked to any in-game player. */
+  unmatchedDiscordMembers: DiscordGuildMember[];
   recentAuditEvents: Array<{
     id: string;
     kind: string;
@@ -204,7 +206,7 @@ export async function fetchDiscordGuildMembersDetailed(): Promise<{ members: Dis
       }
 
       const data = (await response.json()) as Array<{
-        user?: { id: string; username: string; global_name?: string | null; avatar?: string | null };
+        user?: { id: string; username: string; global_name?: string | null; avatar?: string | null; bot?: boolean };
         nick?: string | null;
         roles?: string[];
         joined_at?: string | null;
@@ -215,7 +217,7 @@ export async function fetchDiscordGuildMembersDetailed(): Promise<{ members: Dis
       }
 
       for (const item of data) {
-        if (!item.user?.id) continue;
+        if (!item.user?.id || item.user.bot) continue;
         members.push({
           id: item.user.id,
           username: item.user.username,
@@ -379,6 +381,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
       },
       activePlayers: samplePlayers,
       departedWithMemberRole: [],
+      unmatchedDiscordMembers: [],
       recentAuditEvents: [
         {
           id: "evt-1",
@@ -413,6 +416,11 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
   const { members: discordMembers, error: discordError } = await fetchDiscordGuildMembersDetailed();
   const discordMemberMap = new Map(discordMembers.map((m) => [m.id, m]));
 
+  // Any Discord account already tied to a player (active or departed) must not be suggested again.
+  const allLinkedDiscordIds = new Set(
+    (await prisma.player.findMany({ where: { discordUserId: { not: null } }, select: { discordUserId: true } }))
+      .flatMap((row) => (row.discordUserId ? [row.discordUserId] : [])),
+  );
   const linkedDiscordUserIds = new Set<string>();
   const activePlayers: PlayerDiscordStatus[] = [];
 
@@ -429,7 +437,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
     let suggestedMatches: MatchSuggestion[] = [];
     if (!linkedUser && discordMembers.length > 0) {
       suggestedMatches = discordMembers
-        .filter((dm) => !linkedDiscordUserIds.has(dm.id))
+        .filter((dm) => !allLinkedDiscordIds.has(dm.id))
         .map((dm) => {
           const match = calculateMatchScore(player.currentName, dm);
           return {
@@ -504,6 +512,9 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
     },
     activePlayers,
     departedWithMemberRole,
+    unmatchedDiscordMembers: discordMembers
+      .filter((dm) => !allLinkedDiscordIds.has(dm.id))
+      .sort((a, b) => (a.nickname || a.globalName || a.username).localeCompare(b.nickname || b.globalName || b.username)),
     recentAuditEvents: auditEvents,
   };
 }
