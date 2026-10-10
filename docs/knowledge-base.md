@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.41.0 · **Last updated:** 2026-10-08 · tracks site `v0.53.0`
+**Doc version:** 1.41.1 · **Last updated:** 2026-10-08 · tracks site `v0.53.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -460,6 +460,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 - Guild-wide UX pass: player-card-style detail (full stat cards) should stay on `/members`; every other destination should default to collapsed/searchable rows and only expand a member on demand. Territory War's roster and the new Raids board (v0.20.0/v0.21.0) follow this pattern.
 - **Comlink guild-data boundary (confirmed 2026-08-21 against the swgoh-comlink wiki):** the public `/guild` endpoint only returns live status for Territory War (`territoryWarStatus`) plus historical results for TW (`recentTerritoryWarResult`) and raids (`recentRaidResult`, last completed attempt per raid only). `territoryBattleStatus`, `territoryBattleResult`, and `raidStatus` (live) are **not returned** outside the guild's own account — there is no live TB/raid pipeline to build without a member-authenticated data source. Territory Battles stays a live-baseline-only page until that changes; Raids now uses `recentRaidResult` (see `lib/raids.ts`).
+- **Live Territory War data is not actually available (checked 2026-10-10).** Stored `/guild` snapshots taken during the 6–7 Oct war (and every other war since September) all have an empty `territoryWarStatus`, so there is no live join count, round or score feed. Only the finished result (`recentTerritoryWarResult`) arrives. Consequences: the TW room's live board stays empty during wars, and TW *reminders* ("42/50 joined") cannot be built from game data; wars are also too irregular (10–28 days apart) to schedule. The result announcement works because it only needs the finished result.
 - SWGOH.gg as an optional secondary data source (pending API approval) — see root `README.md`
 - Officer moderation queue for approving/rejecting pending Soul Food Cantina recipe submissions
 - ~~Add officer-owned TW defensive assignments and counter notes on top of the read-only live board~~ — done in v0.22.0 (§5.9, the TW command tool). Still open: investigate whether Comlink's per-zone `warSquad` field (currently untyped/unused) can drive a deployed-squad composition view once a fuller unit-name map exists (today `lib/unit-checklist.ts` only names ~50 priority units).
@@ -474,6 +475,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.41.1 — 2026-10-10**: documented that live Territory War status is absent from `/guild` snapshots (see §15), so TW reminders are not feasible.
 - **1.41.0 — 2026-10-10**: milestone and anniversary posts (`postMilestonesIfAny`, `postAnniversariesIfDue`, wording in `lib/curated-messages.ts`); new `FIRST_R9` win kind from `detectWins`; `MILESTONE`/`ANNIVERSARY` automation events dedupe by `winId` / `playerId`+`year`; shared limit of 2 celebrations per 20h.
 - **1.40.2 — 2026-10-10**: `lib/site-url.ts#siteUrl()` strips trailing slashes from `SITE_URL`; use it for every link built from the site address.
 - **1.40.1 — 2026-10-10**: manual "Post now" — `.github/workflows/post-now.yml` (workflow_dispatch; inputs what + dry) calls `GET /api/cron/post-now` with the cron secret. Use dry first: it previews the text and reports which channel webhooks are set.
