@@ -12,7 +12,7 @@ export type PublicHomeData = {
   guildPower: bigint;
   galacticLegends: number;
   tw: { wins: number; losses: number; recent: PublicTwResult[] };
-  highlights: { who: string; text: string; icon: string }[];
+  highlights: { text: string; icon: string }[];
 };
 
 const empty: PublicHomeData = {
@@ -58,7 +58,6 @@ export async function getPublicHomeData(): Promise<PublicHomeData> {
         },
         orderBy: { occurredAt: "desc" },
         take: 4,
-        include: { player: { select: { currentName: true } } },
       }),
     ]);
 
@@ -88,7 +87,8 @@ export async function getPublicHomeData(): Promise<PublicHomeData> {
       },
       highlights: wins.map((win) => {
         const described = describeWin({ kind: win.kind as WinKind, subject: win.subject, value: win.value });
-        return { who: win.player.currentName, text: described.text, icon: described.icon };
+        // Public view: no member names.
+        return { text: described.text, icon: described.icon };
       }),
     };
   } catch {

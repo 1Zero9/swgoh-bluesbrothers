@@ -1,3 +1,5 @@
+import MembersOnly from "@/app/members-only";
+import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
@@ -5,7 +7,7 @@ import IntelFooter from "@/app/intel-footer";
 import LinkNudge from "@/app/link-nudge";
 import { getWinsFeed, type FeedWin } from "@/lib/wins-feed";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "The Wins · Blues Brothers",
   description: "Galactic Legends, ultimates and relics the Blues Brothers have earned, as they happen.",
@@ -42,6 +44,7 @@ function summarise(items: FeedWin[]) {
 }
 
 export default async function WinsPage() {
+  if (!(await canViewMembersArea())) return <MembersOnly path="/wins" area="The Wins" />;
   const feed = await getWinsFeed();
 
   return (
