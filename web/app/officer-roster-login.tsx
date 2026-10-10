@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useOfficerPasswordEnabled } from "@/app/use-officer-password";
 
 export default function OfficerRosterLogin() {
   const router = useRouter();
+  const passwordEnabled = useOfficerPasswordEnabled();
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,15 @@ export default function OfficerRosterLogin() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (passwordEnabled !== true) {
+    return (
+      <div className="officer-form officer-gate">
+        <p className="officer-hint">Officers only. In-game officers are let in automatically once they sign in with Discord.</p>
+        <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
+      </div>
+    );
   }
 
   return (

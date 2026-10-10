@@ -9,6 +9,11 @@ import {
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+/** Whether the shared password sign-in is switched on (it is retired by removing OFFICER_SITE_PASSWORD). */
+export async function GET() {
+  return Response.json({ enabled: isOfficerConfigured() }, { headers: { "Cache-Control": "no-store" } });
+}
+
 export async function POST(request: Request) {
   if (!isOfficerConfigured()) {
     return Response.json({ ok: false, error: "officer access is not configured" }, { status: 503 });

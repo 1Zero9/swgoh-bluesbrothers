@@ -157,13 +157,15 @@ export default function CrewGate({
           >
             ⚡ SWGOH Ally Code
           </button>
-          <button
-            type="button"
-            className={`terminal-tab-btn${activeTab === "officer" ? " active" : ""}`}
-            onClick={() => setActiveTab("officer")}
-          >
-            🔑 Officer Keycard
-          </button>
+          {isOfficerConfigured ? (
+            <button
+              type="button"
+              className={`terminal-tab-btn${activeTab === "officer" ? " active" : ""}`}
+              onClick={() => setActiveTab("officer")}
+            >
+              🔑 Officer Keycard
+            </button>
+          ) : null}
         </div>
 
         {/* Status Message */}
@@ -216,7 +218,7 @@ export default function CrewGate({
         )}
 
         {/* Tab 3: Officer Keycard */}
-        {activeTab === "officer" && (
+        {activeTab === "officer" && isOfficerConfigured && (
           <form className="terminal-body" onSubmit={handleOfficerSubmit}>
             <p className="tab-instructions">
               Guild Leadership Access. Enter the shared officer master keycard password.
