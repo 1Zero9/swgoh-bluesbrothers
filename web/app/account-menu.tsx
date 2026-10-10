@@ -2,25 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-type Me = { signedIn: boolean; role: "OFFICER" | "MEMBER" | "PUBLIC"; name: string | null };
+import { useViewer } from "./use-viewer";
 
 /** Sign in / account control for the site header. Reads who you are from /api/members/me so cached pages stay cached. */
 export default function AccountMenu({ variant = "header" }: { variant?: "header" | "drawer" }) {
   const pathname = usePathname();
-  const [me, setMe] = useState<Me | null>(null);
+  const me = useViewer(pathname);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/members/me")
-      .then((response) => response.json())
-      .then((data: Me) => { if (!cancelled) setMe(data); })
-      .catch(() => { if (!cancelled) setMe(null); });
-    return () => { cancelled = true; };
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;

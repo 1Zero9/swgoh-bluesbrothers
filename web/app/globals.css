@@ -8484,3 +8484,20 @@ html[data-theme="light"] .step-instruction {
 .my-line strong { color: var(--text); }
 .my-empty a { color: var(--blue); }
 .account-menu-link { display: block; margin-bottom: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); font-size: 13px; text-align: center; text-decoration: none; }
+
+/* Simple mobile drawer (rendered into <body>, so it always covers the viewport) */
+.drawer-layer { z-index: 1000; }
+.drawer-simple { padding: 16px 18px 22px; gap: 0; }
+.drawer-simple-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid rgba(223,196,154,.16); }
+.drawer-simple-top .account-menu, .drawer-simple-top .account-menu-signin { margin: 0; }
+.drawer-simple-top .account-menu-panel { position: absolute; left: 0; right: auto; }
+.drawer-simple-nav { display: grid; gap: 10px; padding: 14px 0; }
+.drawer-simple-group { display: grid; gap: 2px; }
+.drawer-simple-group.is-grid { grid-template-columns: 1fr 1fr; column-gap: 8px; }
+.drawer-simple-group.is-grid p { grid-column: 1 / -1; }
+.drawer-simple-group p { margin: 0 0 4px; color: #8d99a6; font: 10px var(--font-geist-mono); letter-spacing: .12em; text-transform: uppercase; }
+.drawer-simple-nav a { display: block; padding: 9px 8px; color: #e8edf5; font-size: 16px; text-decoration: none; border-radius: 10px; }
+.drawer-simple-nav a.active { color: #fff; background: rgba(56,189,248,.14); }
+.drawer-simple-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(223,196,154,.16); }
+.drawer-simple-foot > a { padding: 10px 16px; border: 1px solid rgba(60,131,255,.4); border-radius: 10px; color: #dceeff; background: rgba(24,77,169,.2); font-size: 13px; text-decoration: none; }
+html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
