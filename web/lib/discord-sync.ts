@@ -27,6 +27,8 @@ export type PlayerDiscordStatus = {
   allyCode: string | null;
   state: "ACTIVE" | "LEFT";
   linkedDiscordUser: DiscordGuildMember | null;
+  /** Further Discord accounts belonging to the same in-game player. */
+  extraDiscordUsers: DiscordGuildMember[];
   suggestedMatches: MatchSuggestion[];
 };
 
@@ -338,6 +340,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
         allyCode: "123-456-789",
         state: "ACTIVE",
         linkedDiscordUser: discordMembers[0] || null,
+        extraDiscordUsers: [],
         suggestedMatches: [],
       },
       {
@@ -348,6 +351,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
         allyCode: "987-654-321",
         state: "ACTIVE",
         linkedDiscordUser: null,
+        extraDiscordUsers: [],
         suggestedMatches: discordMembers.slice(0, 2).map((dm) => ({
           discordMember: dm,
           score: 88,
@@ -363,6 +367,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
         allyCode: "555-123-456",
         state: "ACTIVE",
         linkedDiscordUser: null,
+        extraDiscordUsers: [],
         suggestedMatches: [],
       },
     ];
@@ -402,6 +407,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
     include: {
       player: {
         include: {
+          extraDiscordAccounts: { select: { discordUserId: true } },
           snapshots: {
             orderBy: { guildSnapshot: { capturedAt: "desc" } },
             take: 1,
@@ -417,10 +423,11 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
   const discordMemberMap = new Map(discordMembers.map((m) => [m.id, m]));
 
   // Any Discord account already tied to a player (active or departed) must not be suggested again.
-  const allLinkedDiscordIds = new Set(
-    (await prisma.player.findMany({ where: { discordUserId: { not: null } }, select: { discordUserId: true } }))
+  const allLinkedDiscordIds = new Set([
+    ...(await prisma.player.findMany({ where: { discordUserId: { not: null } }, select: { discordUserId: true } }))
       .flatMap((row) => (row.discordUserId ? [row.discordUserId] : [])),
-  );
+    ...(await prisma.playerDiscordAccount.findMany({ select: { discordUserId: true } })).map((row) => row.discordUserId),
+  ]);
   const linkedDiscordUserIds = new Set<string>();
   const activePlayers: PlayerDiscordStatus[] = [];
 
@@ -432,6 +439,10 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
     if (linkedUser) {
       linkedDiscordUserIds.add(linkedUser.id);
     }
+    const extraDiscordUsers = player.extraDiscordAccounts.flatMap((row) => {
+      const member = discordMemberMap.get(row.discordUserId);
+      return member ? [member] : [];
+    });
 
     // Compute suggested matches for unlinked players
     let suggestedMatches: MatchSuggestion[] = [];
@@ -460,6 +471,7 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
       allyCode: player.allyCode ?? null,
       state: "ACTIVE",
       linkedDiscordUser: linkedUser,
+      extraDiscordUsers,
       suggestedMatches,
     });
   }
@@ -473,7 +485,10 @@ export async function getDiscordSyncReport(): Promise<DiscordSyncReport> {
 
   // Find Discord members who hold the member role but are NOT active in game
   const activeLinkedDiscordIds = new Set(
-    activePlayers.filter((p) => p.linkedDiscordUser).map((p) => p.linkedDiscordUser!.id),
+    activePlayers.flatMap((p) => [
+      ...(p.linkedDiscordUser ? [p.linkedDiscordUser.id] : []),
+      ...p.extraDiscordUsers.map((u) => u.id),
+    ]),
   );
 
   const departedWithMemberRole = memberRoleId
@@ -526,6 +541,9 @@ export async function linkPlayerToDiscord(playerId: string, discordUserId: strin
   const prisma = getPrisma();
   const player = await prisma.player.findUnique({ where: { id: playerId } });
   if (!player) return false;
+  if (await prisma.playerDiscordAccount.findUnique({ where: { discordUserId } })) {
+    throw new Error("That Discord account is already linked as an extra account.");
+  }
 
   await prisma.player.update({
     where: { id: playerId },
@@ -577,5 +595,57 @@ export async function unlinkPlayerFromDiscord(playerId: string): Promise<boolean
     },
   });
 
+  return true;
+}
+
+/**
+ * Adds a second (or third) Discord account to a player who already has a primary link.
+ * The extra account gets the Member role and is demoted with the player on departure.
+ */
+export async function linkExtraDiscordAccount(playerId: string, discordUserId: string): Promise<boolean> {
+  const prisma = getPrisma();
+  const player = await prisma.player.findUnique({ where: { id: playerId } });
+  if (!player) return false;
+  if (!player.discordUserId) throw new Error("Link a primary Discord account first.");
+  if (player.discordUserId === discordUserId) throw new Error("That is already this member's primary account.");
+
+  const takenAsPrimary = await prisma.player.findUnique({ where: { discordUserId }, select: { currentName: true } });
+  if (takenAsPrimary) throw new Error(`That Discord account is already linked to ${takenAsPrimary.currentName}.`);
+
+  try {
+    await prisma.playerDiscordAccount.create({ data: { playerId, discordUserId } });
+  } catch {
+    throw new Error("That Discord account is already linked as an extra account.");
+  }
+
+  const memberRoleId = process.env.DISCORD_MEMBER_ROLE_ID;
+  if (memberRoleId) await addDiscordUserRole(discordUserId, memberRoleId);
+
+  await prisma.automationEvent.create({
+    data: {
+      guildId: process.env.SWGOH_GUILD_ID || "guild",
+      playerId: player.id,
+      kind: "DISCORD_MANUAL_LINK",
+      status: "SENT",
+      summary: `Added extra Discord ID ${discordUserId} to SWGOH member ${player.currentName}.`,
+    },
+  });
+  return true;
+}
+
+export async function unlinkExtraDiscordAccount(discordUserId: string): Promise<boolean> {
+  const prisma = getPrisma();
+  const row = await prisma.playerDiscordAccount.findUnique({ where: { discordUserId }, include: { player: { select: { id: true, currentName: true } } } });
+  if (!row) return false;
+  await prisma.playerDiscordAccount.delete({ where: { discordUserId } });
+  await prisma.automationEvent.create({
+    data: {
+      guildId: process.env.SWGOH_GUILD_ID || "guild",
+      playerId: row.player.id,
+      kind: "DISCORD_MANUAL_LINK",
+      status: "SENT",
+      summary: `Removed extra Discord ID ${discordUserId} from SWGOH member ${row.player.currentName}.`,
+    },
+  });
   return true;
 }

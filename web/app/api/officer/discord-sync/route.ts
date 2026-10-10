@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
 import {
   linkPlayerToDiscord,
+  linkExtraDiscordAccount,
+  unlinkExtraDiscordAccount,
   unlinkPlayerFromDiscord,
   demoteDiscordMemberToPublic,
   fetchDiscordGuildMembers,
@@ -24,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json().catch(() => null)) as {
-    action?: "link" | "unlink" | "reconcile_roles" | "demote_user" | "bulk_link_exact";
+    action?: "link" | "unlink" | "reconcile_roles" | "demote_user" | "bulk_link_exact" | "link_extra" | "unlink_extra";
     playerId?: string;
     discordUserId?: string;
   } | null;
@@ -51,6 +53,20 @@ export async function POST(request: Request) {
         if (await linkPlayerToDiscord(candidate.playerId, candidate.discordUserId).catch(() => false)) linked += 1;
       }
       return NextResponse.json({ ok: true, linked, attempted: candidates.length });
+    }
+
+    if (body.action === "link_extra") {
+      if (!body.playerId || !body.discordUserId) {
+        return NextResponse.json({ ok: false, error: "playerId and discordUserId are required." }, { status: 400 });
+      }
+      return NextResponse.json({ ok: await linkExtraDiscordAccount(body.playerId, body.discordUserId) });
+    }
+
+    if (body.action === "unlink_extra") {
+      if (!body.discordUserId) {
+        return NextResponse.json({ ok: false, error: "discordUserId is required." }, { status: 400 });
+      }
+      return NextResponse.json({ ok: await unlinkExtraDiscordAccount(body.discordUserId) });
     }
 
     if (body.action === "unlink") {
@@ -86,9 +102,11 @@ export async function POST(request: Request) {
       // 2. Ensure all active linked players have the member role
       if (memberRoleId) {
         for (const player of report.activePlayers) {
-          if (player.linkedDiscordUser && !player.linkedDiscordUser.roles.includes(memberRoleId)) {
-            await addDiscordRole(player.linkedDiscordUser.id, memberRoleId);
-            promotedCount += 1;
+          for (const account of [player.linkedDiscordUser, ...player.extraDiscordUsers]) {
+            if (account && !account.roles.includes(memberRoleId)) {
+              await addDiscordRole(account.id, memberRoleId);
+              promotedCount += 1;
+            }
           }
         }
       }

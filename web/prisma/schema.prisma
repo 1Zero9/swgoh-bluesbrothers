@@ -97,6 +97,7 @@ model Player {
   automationEvents AutomationEvent[]
   profileSnapshots PlayerProfileSnapshot[]
   wins             GuildWin[]
+  extraDiscordAccounts PlayerDiscordAccount[]
   twAssignments    PlayerAssignment[]
   twAttackAssignments AttackAssignment[]
 }
@@ -460,4 +461,15 @@ model TbCallout {
   guild      Guild     @relation(fields: [guildId], references: [id], onDelete: Cascade)
 
   @@index([guildId, status])
+}
+
+/// Additional Discord accounts for one in-game player (the primary stays on Player.discordUserId).
+model PlayerDiscordAccount {
+  id            String   @id @default(cuid())
+  playerId      String
+  discordUserId String   @unique
+  createdAt     DateTime @default(now())
+  player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
 }

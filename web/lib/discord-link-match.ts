@@ -13,7 +13,9 @@ export type BulkLinkCandidate = {
  * linked elsewhere, and not an exact match for a second player.
  */
 export function selectBulkLinkCandidates(players: PlayerDiscordStatus[]): BulkLinkCandidate[] {
-  const alreadyLinked = new Set(players.flatMap((p) => (p.linkedDiscordUser ? [p.linkedDiscordUser.id] : [])));
+  const alreadyLinked = new Set(
+    players.flatMap((p) => [...(p.linkedDiscordUser ? [p.linkedDiscordUser.id] : []), ...p.extraDiscordUsers.map((u) => u.id)]),
+  );
 
   const exactFor = (player: PlayerDiscordStatus): DiscordGuildMember | null => {
     if (player.linkedDiscordUser) return null;

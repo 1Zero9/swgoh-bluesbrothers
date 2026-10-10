@@ -13,7 +13,7 @@ type PendingAnnouncement = {
   membershipId: string;
   kind: "MEMBER_WELCOME" | "MEMBER_DEPARTURE";
   playerName: string;
-  discordUserId: string | null;
+  discordUserIds: string[];
 };
 
 const PROFILE_BATCH_SIZE = 6;
@@ -167,14 +167,14 @@ export async function syncGuildRoster() {
 
     const activeTerms = await tx.membershipTerm.findMany({
       where: { guildId: roster.guildId, state: "ACTIVE" },
-      include: { player: true },
+      include: { player: { include: { extraDiscordAccounts: { select: { discordUserId: true } } } } },
     });
     const activeByPlayer = new Map(activeTerms.map((term) => [term.playerId, term]));
     const currentIds = new Set(roster.members.map((member) => member.playerId));
     const pending: PendingAnnouncement[] = [];
 
     for (const member of roster.members) {
-      const player = await tx.player.upsert({
+      await tx.player.upsert({
         where: { id: member.playerId },
         update: { currentName: member.name, level: member.playerLevel || undefined },
         create: { id: member.playerId, currentName: member.name, level: member.playerLevel || undefined },
@@ -204,7 +204,7 @@ export async function syncGuildRoster() {
               summary: `${member.name} joined the Blues Brothers. Welcome to the band!`,
             },
           });
-          pending.push({ eventId: event.id, membershipId: membership.id, kind: "MEMBER_WELCOME", playerName: member.name, discordUserId: player.discordUserId });
+          pending.push({ eventId: event.id, membershipId: membership.id, kind: "MEMBER_WELCOME", playerName: member.name, discordUserIds: [] });
         }
       }
     }
@@ -220,7 +220,7 @@ export async function syncGuildRoster() {
           summary: `${term.player.currentName} has left the Blues Brothers. Their time with the guild remains in the archive.`,
         },
       });
-      pending.push({ eventId: event.id, membershipId: term.id, kind: "MEMBER_DEPARTURE", playerName: term.player.currentName, discordUserId: term.player.discordUserId });
+      pending.push({ eventId: event.id, membershipId: term.id, kind: "MEMBER_DEPARTURE", playerName: term.player.currentName, discordUserIds: [term.player.discordUserId, ...term.player.extraDiscordAccounts.map((row) => row.discordUserId)].filter((id): id is string => Boolean(id)) });
     }
 
     await tx.guildSnapshot.create({
@@ -280,7 +280,7 @@ export async function syncGuildRoster() {
         color: isWelcome ? 0x3c83ff : 0xe49b4d,
         websiteUrl: process.env.SITE_URL,
       });
-      const removed = !isWelcome && await demoteDiscordMemberOnDeparture(announcement.discordUserId);
+      const removed = !isWelcome && (await Promise.all(announcement.discordUserIds.map((id) => demoteDiscordMemberOnDeparture(id)))).some(Boolean);
       if (posted) delivered += 1;
       if (removed) accessRemoved += 1;
 
@@ -290,7 +290,7 @@ export async function syncGuildRoster() {
           data: {
             status: posted ? "SENT" : "PENDING",
             sentAt: posted ? new Date() : null,
-            metadata: { discordPosted: posted, roleRemoved: removed, discordMapped: Boolean(announcement.discordUserId) },
+            metadata: { discordPosted: posted, roleRemoved: removed, discordMapped: announcement.discordUserIds.length > 0 },
           },
         }),
         prisma.membershipTerm.update({
