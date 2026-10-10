@@ -6,6 +6,7 @@ import {
 } from "@/lib/comlink";
 import { getDiscordUrl, postDiscordAnnouncement, removeDiscordMemberRole, demoteDiscordMemberOnDeparture } from "@/lib/discord";
 import { getPrisma } from "@/lib/prisma";
+import { syncOfficerRoles } from "@/lib/discord-role-sync";
 import { detectWins } from "@/lib/wins";
 
 type PendingAnnouncement = {
@@ -310,7 +311,14 @@ export async function syncGuildRoster() {
     capturedAt,
   );
 
+  // Keep the Discord officer role in step with in-game ranks. Never let this fail the roster sync.
+  const officerRoles = await syncOfficerRoles().catch((error) => {
+    console.error("officer role sync failed", error);
+    return { added: 0, removed: 0, failed: 0, skipped: "error" };
+  });
+
   return {
+    officerRoles,
     guild: roster.name,
     members: roster.members.length,
     baseline: isBaseline,
