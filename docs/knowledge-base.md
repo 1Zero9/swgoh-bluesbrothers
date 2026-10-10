@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.45.0 · **Last updated:** 2026-10-08 · tracks site `v0.57.0`
+**Doc version:** 1.45.0 · **Last updated:** 2026-10-11 · tracks site `v0.57.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
