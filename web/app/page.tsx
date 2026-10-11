@@ -10,7 +10,6 @@ import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
-import { isOfficerRequest } from "@/lib/officer-session";
 import { getWallOfFame } from "@/lib/wall-of-fame";
 import { getWallOfShame } from "@/lib/wall-of-shame";
 import { getRosterChanges } from "@/lib/members";
@@ -92,17 +91,17 @@ export default async function Home() {
     return <PublicHome data={data} news={news} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
   }
 
-  const [guildWire, summary, wallOfFame, memberContext, changes] = await Promise.all([
+  const [guildWire, summary, wallOfFame, memberContext, changes, wallOfShame] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfFame(),
     getMemberContext(),
     getRosterChanges(),
+    // The watchlist names members who missed tickets, so it is for officers only.
+    access.isOfficer ? getWallOfShame() : Promise.resolve([]),
   ]);
   const chatChannel = enabledChatChannels()[0];
-  const isOfficer = await isOfficerRequest();
-  // The watchlist names members who missed tickets, so it is for officers only.
-  const wallOfShame = isOfficer ? await getWallOfShame() : [];
+  const isOfficer = access.isOfficer;
   const discordUrl = getDiscordUrl();
   const discordGuildId = process.env.DISCORD_GUILD_ID;
   const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);

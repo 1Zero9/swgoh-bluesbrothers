@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import {
   LINK_COOKIE_NAME,
@@ -23,7 +24,7 @@ export type MemberContext =
       };
     };
 
-export async function getMemberContext(): Promise<MemberContext> {
+export const getMemberContext = cache(async (): Promise<MemberContext> => {
   const store = await cookies();
 
   const playerId = verifyMemberCookieValue(store.get(MEMBER_COOKIE_NAME)?.value);
@@ -66,4 +67,4 @@ export async function getMemberContext(): Promise<MemberContext> {
   }
 
   return { status: "signed-out" };
-}
+});
