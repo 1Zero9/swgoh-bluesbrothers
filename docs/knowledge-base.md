@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.46.1 · **Last updated:** 2026-10-11 · tracks site `v0.58.1`
+**Doc version:** 1.46.2 · **Last updated:** 2026-10-11 · tracks site `v0.58.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -478,6 +478,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.46.2 — 2026-10-11**: Prisma 7.10.0. Prisma's CLI pins vulnerable `mysql2` 3.15.3 and `deepmerge-ts` 7.1.5 (no upstream fix as of 7.10.0; the `latest` tag is an 8.0 release candidate, not used), so `web/package.json` has `overrides` forcing `mysql2` ^3.24.5 and `deepmerge-ts` ^8.0.2. Verified with `prisma validate/generate/migrate status` and live queries. If a later Prisma upgrade misbehaves, remove the overrides first. `npm audit --omit=dev` is clean; dev-only findings remain in the ESLint toolchain (`braces`, `micromatch`, `fast-glob` via `eslint-config-next`) and are not shipped.
 - **1.46.1 — 2026-10-11**: Next.js 16.3.1 → 16.3.8 for published RCE/cache-poisoning/SSRF advisories (`npm audit --omit=dev` no longer lists `next`). Remaining audit findings are prisma tooling transitive dependencies (`@prisma/config`, `deepmerge-ts`, `mysql2`, `fast-uri`, `source-map-js`); revisit with the next Prisma upgrade. Habit: run `npm audit --omit=dev` and bump `next` to the newest patch of the current minor when it flags it.
 - **1.46.0 — 2026-10-11**: web push (`public/sw.js`, `lib/push.ts`, `lib/push-payload.ts`, `app/push-settings.tsx`, `app/api/push/*`, `PushSubscription` model). Topics: `droid` (fired from `postToChannel('general')`, welcome/farewell in the sync, the wins digest) and `chat` (fired when a member posts from `/chat`, throttled 30 s per channel). Not possible: notifying for messages typed directly in Discord (no gateway on Vercel; Hobby cron is daily only) — an always-on gateway worker or per-minute polling would be needed. iPhone needs the installed app; Chrome incognito can't subscribe. Verified in real Chrome (non-incognito profile): subscribe, real push via the push service, and the worker's notification.
 - **1.45.0 — 2026-10-11**: guild chat (`lib/chat.ts`, `lib/chat-config.ts`, `lib/chat-rules.ts`, `lib/discord-text.ts`, `app/api/chat/messages`, `app/chat`). Reads channels with the bot token (REST, no gateway; 4 s server cache, client polls every 6 s while visible) and posts through each channel's webhook under the member's name and avatar. Discord needs Message Content Intent on, and View Channel + Read Message History for the bot in each mirrored channel. Nothing is stored. Not mirrored: #officers, #bot-lab, DMs, voice, threads. Real-time push (needed for the installed app to notify) is not built.

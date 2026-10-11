@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.58.2 — 2026-10-11
+
+- **Security and tooling: Prisma 7.9.1 → 7.10.0** (client, Postgres adapter and CLI), plus patched `fast-uri` and `source-map-js`. The remaining flagged packages (`mysql2`, `deepmerge-ts`) are pinned inside Prisma's command-line tooling and Prisma has not released a fix, so they are pinned to patched versions with npm `overrides`. The production security audit now reports **0 vulnerabilities**. Neither package is used by the running site (it uses PostgreSQL through `@prisma/adapter-pg`).
+- Checked against the real database: `prisma migrate status` ("13 migrations, schema up to date"), live queries through the new client, typecheck, lint, all 100 tests and a production build.
+
 ## 0.58.1 — 2026-10-11
 
 - **Security: upgraded Next.js from 16.3.1 to 16.3.8** (and `eslint-config-next` to match). 16.3.1 was affected by several published advisories, three of them critical remote-code-execution issues (two of which involve Windows-hosted servers and the image optimiser, and one `next/og`), plus cache-poisoning and request-forgery issues in the image optimiser. The security audit no longer lists Next.js. No code changes were needed; typecheck, lint, all 100 tests and a full production build pass.
