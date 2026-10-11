@@ -6,6 +6,7 @@ import MemberDeparture from "@/app/member-departures";
 import MemberDirectory from "@/app/member-directory";
 import MemberWelcomeTicker from "@/app/member-welcome-ticker";
 import PageHero from "@/app/page-hero";
+import WhoHas from "./who-has";
 import IntelFooter from "@/app/intel-footer";
 import { getRosterChanges, getRosterMembers } from "@/lib/members";
 
@@ -54,6 +55,7 @@ export default async function MembersPage() {
         </div>
       </PageHero>
       <MemberWelcomeTicker members={newMembers} />
+      <WhoHas />
       <MemberDirectory members={members} />
       <MemberDeparture members={departedMembers} />
       <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
