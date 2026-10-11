@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.61.3 — 2026-10-11
+
+- **Guild clocks on the home page.** Under the "Comlink connected" tag you now see the current time in Arizona, Texas / Chicago (the same Central time, so one clock), New York and Dublin, kept up to date as you watch and following daylight saving automatically.
+- **The "Comlink connected" tag no longer collides with the logo** on shorter screens; the hero now keeps clear of the header.
+
 ## 0.61.2 — 2026-10-11
 
 - **Tidier top-right header.** The sync status, version, theme switch, your name and the Discord button now sit together on one dark panel, so they stay readable when they land on a bright part of the hero picture (the neon sign was washing them out). Once you scroll, the panel steps aside and the normal header bar takes over.
