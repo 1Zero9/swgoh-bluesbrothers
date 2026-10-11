@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.46.3 · **Last updated:** 2026-10-11 · tracks site `v0.58.3`
+**Doc version:** 1.47.0 · **Last updated:** 2026-10-11 · tracks site `v0.59.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -478,6 +478,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.47.0 — 2026-10-11**: home-page chat panel (`app/home-chat.tsx`) under a compact members' hero (`.hero-compact`); chat logic shared via `app/chat/use-chat.ts` and `app/chat/chat-parts.tsx` (used by `/chat` and the panel). Open/closed state in `localStorage` key `bb-home-chat`. `getChatPreview` removed.
 - **1.46.3 — 2026-10-11**: `detectContentHidden` (lib/chat.ts) flags a missing Message Content Intent only when all member messages are blank; dashboard chat panel uses `getChatPreview` (2.5 s cap). Symptom of the intent being off: the chat page banner and the Droid's posts showing but no member text.
 - **1.46.2 — 2026-10-11**: Prisma 7.10.0. Prisma's CLI pins vulnerable `mysql2` 3.15.3 and `deepmerge-ts` 7.1.5 (no upstream fix as of 7.10.0; the `latest` tag is an 8.0 release candidate, not used), so `web/package.json` has `overrides` forcing `mysql2` ^3.24.5 and `deepmerge-ts` ^8.0.2. Verified with `prisma validate/generate/migrate status` and live queries. If a later Prisma upgrade misbehaves, remove the overrides first. `npm audit --omit=dev` is clean; dev-only findings remain in the ESLint toolchain (`braces`, `micromatch`, `fast-glob` via `eslint-config-next`) and are not shipped.
 - **1.46.1 — 2026-10-11**: Next.js 16.3.1 → 16.3.8 for published RCE/cache-poisoning/SSRF advisories (`npm audit --omit=dev` no longer lists `next`). Remaining audit findings are prisma tooling transitive dependencies (`@prisma/config`, `deepmerge-ts`, `mysql2`, `fast-uri`, `source-map-js`); revisit with the next Prisma upgrade. Habit: run `npm audit --omit=dev` and bump `next` to the newest patch of the current minor when it flags it.

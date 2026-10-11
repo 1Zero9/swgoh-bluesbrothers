@@ -1,6 +1,7 @@
 import PublicHome from "./public-home";
 import { getViewerAccess } from "@/lib/access-control";
-import { getChatPreview } from "@/lib/chat";
+import { enabledChatChannels } from "@/lib/chat-config";
+import HomeChat from "./home-chat";
 import { getPublicHomeData } from "@/lib/public-stats";
 import { getStarWarsNews } from "@/lib/news";
 import Image from "next/image";
@@ -91,14 +92,14 @@ export default async function Home() {
     return <PublicHome data={data} news={news} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
   }
 
-  const [guildWire, summary, wallOfFame, memberContext, changes, chatPreview] = await Promise.all([
+  const [guildWire, summary, wallOfFame, memberContext, changes] = await Promise.all([
     getGuildWire(),
     getDashboardSummary(),
     getWallOfFame(),
     getMemberContext(),
     getRosterChanges(),
-    getChatPreview(3),
   ]);
+  const chatChannel = enabledChatChannels()[0];
   const isOfficer = await isOfficerRequest();
   // The watchlist names members who missed tickets, so it is for officers only.
   const wallOfShame = isOfficer ? await getWallOfShame() : [];
@@ -123,7 +124,7 @@ export default async function Home() {
     <main className="app-shell">
       <SiteHeader syncLabel={syncLabel} />
       <section className="workspace" id="top">
-        <section className="hero" id="command-centre" aria-labelledby="mission-heading">
+        <section className="hero hero-compact" id="command-centre" aria-labelledby="mission-heading">
           <Image
             className="hero-image"
             src="/bb-title.webp"
@@ -144,6 +145,12 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {chatChannel ? (
+          <div className="dashboard-content home-chat-wrap">
+            <HomeChat channelKey={chatChannel.key} channelLabel={chatChannel.label} signedInAsMember={access.isMember && Boolean(access.playerId)} />
+          </div>
+        ) : null}
 
         <div className="dashboard-content">
         <section className="metric-grid" aria-label="Guild health">
@@ -204,7 +211,7 @@ export default async function Home() {
           </div>
 
           <aside className="discord-handoff" aria-label="Guild chat">
-            <div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Guild chat</p><strong>What&apos;s being said</strong></div></div>
+            <div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Discord</p><strong>Prefer the app?</strong></div></div>
             {showDiscordWidget ? (
               <iframe
                 className="discord-widget"
@@ -212,20 +219,13 @@ export default async function Home() {
                 title="Blues Brothers Discord server presence"
                 sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
               />
-            ) : chatPreview && chatPreview.length ? (
-              <ul className="chat-preview">
-                {chatPreview.map((item, index) => (
-                  <li key={`${item.at}-${index}`}><strong>{item.name}</strong><span>{item.text.length > 110 ? `${item.text.slice(0, 109).trimEnd()}…` : item.text}</span></li>
-                ))}
-              </ul>
             ) : (
               <div className="widget-placeholder">
-                <span><i /> Chat is open</span>
-                <p>Read and join the Discord conversation without leaving the site.</p>
+                <span><i /> Discord connected</span>
+                <p>The chat above is the same conversation. Reactions, threads and the officers&apos; channels live in Discord itself.</p>
               </div>
             )}
-            <Link className="discord-open" href="/chat">Open the chat <span>→</span></Link>
-            <a className="chat-preview-discord" href={discordUrl} target="_blank" rel="noreferrer">or open Discord</a>
+            <a className="discord-open" href={discordUrl} target="_blank" rel="noreferrer">Open Discord <span>→</span></a>
           </aside>
         </section>
 
