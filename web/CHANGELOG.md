@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.61.0 — 2026-10-11
+
+- **Counter library for Territory War and GAC.** Pick an enemy squad by its leader and see the counter squads the guild trusts for it. Each counter shows the squad (units and minimum relic), how to run it, and who added it, plus **whether you can run it right now** (or exactly what you're missing), **who in the guild can**, and who is closest. Any signed-in member can add a counter; its author or an officer can remove it (members can add up to 20 a day).
+- **In Discord:** `/counter enemy:<leader>` gives the same answer privately, with name autocomplete. Run the "Register Discord commands" workflow once to install it.
+- The library starts empty on purpose: counters change with the game's meta, so the guild keeps it current. Readiness is worked out in the database from the stored rosters, so answers come back in about a second.
+- On the site at `/counters`, and in the mobile and Roster menus.
+
 ## 0.60.2 — 2026-10-11
 
 - **Fixed `/whohas` replying "The application did not respond".** Discord only waits 3 seconds, and the lookup took about 5, because it loaded every member's full roster to find one unit. The database now picks out just that unit (about half a second), and the command also tells Discord "thinking…" straight away and sends the answer when it is ready, so a slow start can't cause a timeout. The Roster page's "Who has…?" search is faster for the same reason.

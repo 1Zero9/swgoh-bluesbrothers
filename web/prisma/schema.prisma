@@ -491,3 +491,20 @@ model PushSubscription {
 
   @@index([playerId])
 }
+
+/// A counter squad the guild has found for an enemy squad (identified by its leader), for Territory War and GAC.
+model Counter {
+  id            String   @id @default(cuid())
+  enemyLeaderId String
+  title         String
+  mode          String   @default("BOTH")
+  /// [{ unitId, minStars, minRelic }], leader first.
+  squad         Json
+  notes         String?
+  createdById   String?
+  createdByName String
+  createdAt     DateTime @default(now())
+
+  @@index([enemyLeaderId])
+  @@index([createdAt])
+}

@@ -9,7 +9,16 @@ export const WHOHAS_COMMAND = {
   ],
 };
 
-export const GUILD_COMMANDS = [WHOHAS_COMMAND];
+export const COUNTER_COMMAND = {
+  name: "counter",
+  type: 1,
+  description: "Counter squads the guild has found for an enemy squad, and whether you can run them",
+  options: [
+    { type: 3, name: "enemy", description: "The enemy squad's leader. Start typing a unit name", required: true, autocomplete: true },
+  ],
+};
+
+export const GUILD_COMMANDS = [WHOHAS_COMMAND, COUNTER_COMMAND];
 
 /** Discord's interaction request types and response types that we use. */
 export const InteractionType = { Ping: 1, Command: 2, Autocomplete: 4 } as const;
