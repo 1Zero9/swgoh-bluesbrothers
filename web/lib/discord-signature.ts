@@ -15,3 +15,8 @@ export function verifyDiscordSignature(publicKeyHex: string, signatureHex: strin
     return false;
   }
 }
+
+/** The application's public key, accepted under either name and with stray whitespace removed. */
+export function discordPublicKey(env: Record<string, string | undefined> = process.env) {
+  return (env.DISCORD_APP_PUBLIC_KEY || env.DISCORD_PUBLIC_KEY || "").trim() || undefined;
+}

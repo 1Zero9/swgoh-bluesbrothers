@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.60.1 — 2026-10-11
+
+- The Discord application's public key can be set as `DISCORD_PUBLIC_KEY` as well as `DISCORD_APP_PUBLIC_KEY`, and stray spaces or line breaks around it are ignored. (Discord's endpoint check failed because the key was saved under the other name.)
+
 ## 0.60.0 — 2026-10-11
 
 - **"Who has…?"** Members can ask who in the guild has any unit (all 411 in the game) and how far they've taken it, ranked by stars, then relic level, then gear, with an optional minimum star level.

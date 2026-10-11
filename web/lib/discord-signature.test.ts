@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync, sign } from "node:crypto";
-import { verifyDiscordSignature } from "./discord-signature";
+import { discordPublicKey, verifyDiscordSignature } from "./discord-signature";
 
 const { publicKey, privateKey } = generateKeyPairSync("ed25519");
 const publicHex = publicKey.export({ type: "spki", format: "der" }).subarray(-32).toString("hex");
@@ -21,4 +21,12 @@ test("a changed body, timestamp, signature or key is rejected", () => {
   assert.equal(verifyDiscordSignature(other, signature, timestamp, body), false);
   assert.equal(verifyDiscordSignature("not hex", signature, timestamp, body), false);
   assert.equal(verifyDiscordSignature("", "", "", ""), false);
+});
+
+test("the public key is found under either variable name and trimmed", () => {
+  assert.equal(discordPublicKey({ DISCORD_APP_PUBLIC_KEY: "abc" }), "abc");
+  assert.equal(discordPublicKey({ DISCORD_PUBLIC_KEY: "  def\n" }), "def");
+  assert.equal(discordPublicKey({ DISCORD_APP_PUBLIC_KEY: "first", DISCORD_PUBLIC_KEY: "second" }), "first");
+  assert.equal(discordPublicKey({}), undefined);
+  assert.equal(discordPublicKey({ DISCORD_PUBLIC_KEY: "   " }), undefined);
 });
