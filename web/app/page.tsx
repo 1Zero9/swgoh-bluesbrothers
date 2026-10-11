@@ -16,6 +16,7 @@ import { getRosterChanges } from "@/lib/members";
 import AccountLink from "./account-link";
 import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
+import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
 import WallOfFameBoard from "./wall-of-fame-board";
 
@@ -135,6 +136,7 @@ export default async function Home() {
           <div className="hero-shade" />
           <div className="hero-copy">
             <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
+            <WorldClocks />
             <p className="eyebrow">The roster. The plan. The next mission.</p>
             <h1 id="mission-heading">On a mission<br /><em>from the Force.</em></h1>
             <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
