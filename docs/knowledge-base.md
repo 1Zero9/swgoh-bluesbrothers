@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.49.1 · **Last updated:** 2026-10-11 · tracks site `v0.61.1`
+**Doc version:** 1.49.2 · **Last updated:** 2026-10-11 · tracks site `v0.61.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.49.2 — 2026-10-11**: header controls get a dark glass capsule (`.site-header .header-controls` in globals.css) so they stay legible over the hero image; it drops away once `html.scrolled`.
 - **1.49.1 — 2026-10-11**: page-load speed — `getViewerAccess`, `isOfficerRequest`, `getMemberContext` and `getDashboardSummary` are wrapped in React `cache()` so the gate, header and page share one lookup per request, and `getViewerAccess` runs the officer and member lookups in parallel. Each database round trip costs ~100 ms, so sequential duplicate lookups were the main page-transition cost; avoid awaiting queries one after another in pages.
 - **1.49.0 — 2026-10-11**: counter library — `Counter` model (enemy leader id, squad JSON of unit/min stars/min relic, notes, author), `lib/counters.ts` (validation, readiness, Discord wording), `lib/counters-data.ts` (SQL read of just the squad's units per member), `/api/counters`, `/counters`, and the `/counter` slash command (add to `GUILD_COMMANDS`; re-run "Register Discord commands" after deploy). Deliberately starts empty: the meta moves, so the guild curates it. Counters are matched by squad units and minimum levels, not simulated.
 - **1.48.2 — 2026-10-11**: Discord interactions must answer within 3 s. `/whohas` now replies with a deferred ephemeral response (type 5) and finishes in `after()` by PATCHing `webhooks/{app}/{token}/messages/@original` (`lib/whohas-command.ts`); the lookup reads one unit per roster in SQL (`jsonb_array_elements`) instead of loading every `profilePayload` (5 s → ~0.6 s). Avoid `loadRosters()` on any request path that has a deadline.

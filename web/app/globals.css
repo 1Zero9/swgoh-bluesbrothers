@@ -102,6 +102,13 @@ html.scrolled .site-header .brand-logo { transform: scale(0.9); }
 .site-header .brand small { font-size: 8px; }
 .header-controls .version-label { color: #f1f5f9; }
 .header-controls .discord-button { border-radius: 10px; }
+/* One dark capsule behind the controls so they stay legible over any hero image. */
+.site-header .header-controls { gap: 12px; padding: 6px 8px 6px 14px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; background: rgba(5, 8, 14, 0.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.site-header .comms-status { background: transparent; border-color: transparent; padding: 0; }
+.site-header .comms-status.is-live { background: transparent; border-color: transparent; }
+.site-header .header-controls .theme-picker { border-color: rgba(255, 255, 255, 0.12); }
+html.scrolled .site-header .header-controls { border-color: transparent; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-theme="light"] .site-header .header-controls { border-color: rgba(148, 163, 184, 0.35); background: rgba(255, 255, 255, 0.88); }
 .hero-copy { position: relative; z-index: 2; max-width: 680px; transform: translateY(-8px); }
 .hero-status { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; color: #d8cdbd; font: 10px var(--font-geist-mono); letter-spacing: .08em; text-transform: uppercase; }
 .hero-status span { padding: 6px 9px; border: 1px solid rgba(103,184,255,.24); background: rgba(5,10,16,.46); }
