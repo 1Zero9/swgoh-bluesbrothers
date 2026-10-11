@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { MEMBER_COOKIE_NAME, verifyMemberCookieValue } from "@/lib/member-auth";
 import { OFFICER_COOKIE_NAME, verifyOfficerSessionValue } from "@/lib/officer-auth";
@@ -29,10 +30,10 @@ export async function isInGameOfficer(playerId: string) {
 }
 
 /** Officer access: a signed-in member who is an in-game officer, or the legacy shared password session. */
-export async function isOfficerRequest() {
+export const isOfficerRequest = cache(async () => {
   const store = await cookies();
   if (verifyOfficerSessionValue(store.get(OFFICER_COOKIE_NAME)?.value)) return true;
 
   const playerId = verifyMemberCookieValue(store.get(MEMBER_COOKIE_NAME)?.value);
   return playerId ? isInGameOfficer(playerId) : false;
-}
+});

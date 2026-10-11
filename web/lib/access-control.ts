@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import {
   LINK_COOKIE_NAME,
@@ -29,20 +30,19 @@ export type ViewerAccess = {
  * - MEMBER: Has verified member session linked to an ACTIVE SWGOH guild membership.
  * - PUBLIC: Unauthenticated visitor, unlinked Discord user, or ex-member whose membership is LEFT.
  */
-export async function getViewerAccess(): Promise<ViewerAccess> {
+export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
   try {
     const store = await cookies();
 
-    // 1. Check Officer status
-    const isOfficer = await isOfficerRequest();
+    // 1. Officer status (starts now, so it runs alongside the member lookup)
+    const officerCheck = isOfficerRequest();
 
     // 2. Check Member status
     const memberCookie = store.get(MEMBER_COOKIE_NAME)?.value;
     const playerId = verifyMemberCookieValue(memberCookie);
 
-    if (playerId) {
-      const prisma = getPrisma();
-      const player = await prisma.player.findUnique({
+    const playerLookup = playerId
+      ? getPrisma().player.findUnique({
         where: { id: playerId },
         select: {
           id: true,
@@ -54,8 +54,11 @@ export async function getViewerAccess(): Promise<ViewerAccess> {
             select: { state: true, guildId: true },
           },
         },
-      });
+      })
+      : Promise.resolve(null);
+    const [isOfficer, player] = await Promise.all([officerCheck, playerLookup]);
 
+    {
       if (player && player.membershipTerms.length > 0) {
         const latestTerm = player.membershipTerms[0];
         const isActiveMember = latestTerm.state === "ACTIVE";
@@ -118,4 +121,4 @@ export async function getViewerAccess(): Promise<ViewerAccess> {
       isMember: false,
     };
   }
-}
+});

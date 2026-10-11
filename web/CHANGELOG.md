@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.61.1 — 2026-10-11
+
+- **Faster page loads for signed-in members.** Every page was looking up who you are, whether you're an officer, and the guild summary for the header more than once, one after another, and each lookup is a trip to the database. They are now done once per page view and run side by side, and the home page no longer waits for the officer check before loading the rest. No change to what anyone can see.
+
 ## 0.61.0 — 2026-10-11
 
 - **Counter library for Territory War and GAC.** Pick an enemy squad by its leader and see the counter squads the guild trusts for it. Each counter shows the squad (units and minimum relic), how to run it, and who added it, plus **whether you can run it right now** (or exactly what you're missing), **who in the guild can**, and who is closest. Any signed-in member can add a counter; its author or an officer can remove it (members can add up to 20 a day).

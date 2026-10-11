@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getPrisma } from "@/lib/prisma";
 
 export type DashboardSummary = {
@@ -23,7 +24,7 @@ const fallbackSummary: DashboardSummary = {
   live: false,
 };
 
-export async function getDashboardSummary(): Promise<DashboardSummary> {
+export const getDashboardSummary = cache(async (): Promise<DashboardSummary> => {
   if (!process.env.DATABASE_URL) return fallbackSummary;
 
   try {
@@ -44,4 +45,4 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
   } catch {
     return fallbackSummary;
   }
-}
+});
