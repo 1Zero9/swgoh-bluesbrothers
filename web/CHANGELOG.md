@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.58.3 — 2026-10-11
+
+- **Chat warning is more reliable.** The "Discord isn't sharing people's message text" banner now only appears when every member message in the channel is blank, so a lone sticker, GIF or poll can no longer trigger it by mistake.
+- **The dashboard's "Discord stays live" panel is now a live chat preview**: the last three messages from #general with a button to open the chat (and a smaller link to Discord). If Discord can't be reached within 2.5 seconds the panel simply shows the button, so the page never waits on it. The old Discord-presence widget still shows if `DISCORD_WIDGET_ENABLED=true`.
+
 ## 0.58.2 — 2026-10-11
 
 - **Security and tooling: Prisma 7.9.1 → 7.10.0** (client, Postgres adapter and CLI), plus patched `fast-uri` and `source-map-js`. The remaining flagged packages (`mysql2`, `deepmerge-ts`) are pinned inside Prisma's command-line tooling and Prisma has not released a fix, so they are pinned to patched versions with npm `overrides`. The production security audit now reports **0 vulnerabilities**. Neither package is used by the running site (it uses PostgreSQL through `@prisma/adapter-pg`).

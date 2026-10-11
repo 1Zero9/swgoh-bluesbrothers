@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { shapeMessage } from "./chat";
+import { detectContentHidden, shapeMessage, type RawMessage } from "./chat";
 
 const dir = {
   names: new Map([["500", "general"]]),
@@ -44,4 +44,18 @@ test("only Discord's own image hosts are shown as attachments", () => {
     dir,
   );
   assert.deepEqual(message.attachments.map((a) => a.name), ["a.png"]);
+});
+
+const raw = (over: Partial<RawMessage>): RawMessage => ({ id: "1", type: 0, content: "", timestamp: "2026-10-11T10:00:00.000Z", edited_timestamp: null, author: { id: "1", username: "hess" }, ...over });
+
+test("message text only counts as hidden when every member message is blank", () => {
+  assert.equal(detectContentHidden([raw({ id: "1" }), raw({ id: "2" })]), true);
+  // One sticker-only message among normal ones (intent on) is not a problem.
+  assert.equal(detectContentHidden([raw({ id: "1", content: "hello" }), raw({ id: "2", sticker_items: [{}] })]), false);
+  // A lone sticker, GIF or poll never raises the alarm.
+  assert.equal(detectContentHidden([raw({ sticker_items: [{}] })]), false);
+  assert.equal(detectContentHidden([raw({ poll: {} })]), false);
+  // The Droid's own posts don't count either way.
+  assert.equal(detectContentHidden([raw({ author: { id: "9", username: "Droid", bot: true } })]), false);
+  assert.equal(detectContentHidden([]), false);
 });

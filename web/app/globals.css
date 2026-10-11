@@ -8596,3 +8596,10 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
 .push-message { color: var(--text) !important; }
 .chat-bell { flex: none; margin-left: auto; padding: 7px 12px; color: var(--muted); font-size: 12px; text-decoration: none; white-space: nowrap; }
 .chat-bell:hover { color: var(--text); }
+
+/* Dashboard chat preview */
+.chat-preview { display: grid; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.chat-preview li { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; background: rgba(255,255,255,.04); }
+.chat-preview strong { color: #e8edf5; font-size: 13px; }
+.chat-preview span { color: #aab4c3; font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.chat-preview-discord { display: block; margin-top: 10px; color: var(--muted); font-size: 12px; text-align: center; }

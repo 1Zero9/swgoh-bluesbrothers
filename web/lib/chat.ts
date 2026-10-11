@@ -23,7 +23,7 @@ export type ChatResult =
   | { ok: false; error: string; status: number };
 
 type RawUser = { id: string; username: string; global_name?: string | null; avatar?: string | null; bot?: boolean };
-type RawMessage = {
+export type RawMessage = {
   id: string;
   type: number;
   content: string;
@@ -34,6 +34,9 @@ type RawMessage = {
   mentions?: RawUser[];
   attachments?: { url: string; filename: string; content_type?: string }[];
   embeds?: { title?: string; url?: string; description?: string; color?: number }[];
+  sticker_items?: unknown[];
+  poll?: unknown;
+  message_snapshots?: unknown[];
 };
 
 function botHeaders() {
@@ -121,6 +124,17 @@ export function shapeMessage(
   };
 }
 
+/**
+ * Without the Message Content Intent Discord blanks EVERY member's message text. So it only counts as hidden when
+ * there are member messages and none of them has any text, attachment, embed, sticker or poll. A lone sticker or
+ * GIF-only message (which is legitimately empty) never triggers it.
+ */
+export function detectContentHidden(messages: RawMessage[]) {
+  const fromMembers = messages.filter((message) => !message.author.bot && !message.webhook_id);
+  if (!fromMembers.length) return false;
+  return fromMembers.every((message) => !message.content && !message.attachments?.length && !message.embeds?.length && !message.sticker_items?.length && !message.poll && !message.message_snapshots?.length);
+}
+
 const cache = new Map<string, { at: number; result: ChatResult }>();
 
 export function chatChannel(key: string): ChatChannelConfig | undefined {
@@ -153,7 +167,7 @@ async function loadMessages(channel: ChatChannelConfig): Promise<ChatResult> {
 
   const raw = ((await response.json()) as RawMessage[]).filter((message) => message.type === 0 || message.type === 19);
   // Without the Message Content Intent, Discord blanks people's message text. Spot that and say so.
-  const contentHidden = raw.some((message) => !message.author.bot && !message.webhook_id && !message.content && !message.attachments?.length && !message.embeds?.length);
+  const contentHidden = detectContentHidden(raw);
   return { ok: true, messages: raw.reverse().map((message) => shapeMessage(message, dir)), contentHidden };
 }
 
@@ -177,4 +191,31 @@ export async function postChatMessage(channel: ChatChannelConfig, member: { name
   if (!response?.ok) return { ok: false as const, error: "Discord didn't accept that message. Try again." };
   cache.delete(channel.key);
   return { ok: true as const };
+}
+
+export type ChatPreviewItem = { name: string; text: string; at: string; app: boolean };
+
+function flatten(segments: Segment[]) {
+  return segments.map((segment) => segment.text).join("");
+}
+
+/** The last few messages of #general for the dashboard. Gives up quietly after 2.5 seconds so the page never waits on Discord. */
+export async function getChatPreview(limit = 3): Promise<ChatPreviewItem[] | null> {
+  const channel = chatChannel("general");
+  if (!channel) return null;
+  const result = await Promise.race([
+    getChatMessages(channel),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),
+  ]).catch(() => null);
+  if (!result || !result.ok) return null;
+
+  return result.messages
+    .map((message) => ({
+      name: message.author.name,
+      app: message.author.app,
+      at: message.at,
+      text: flatten(message.segments).trim() || message.embeds.map((embed) => [embed.title, flatten(embed.segments)].filter(Boolean).join(": ")).join(" ").trim(),
+    }))
+    .filter((item) => item.text)
+    .slice(-limit);
 }
