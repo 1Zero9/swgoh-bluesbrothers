@@ -1,5 +1,5 @@
 import { EPHEMERAL, InteractionType, ResponseType } from "@/lib/discord-commands";
-import { verifyDiscordSignature } from "@/lib/discord-signature";
+import { discordPublicKey, verifyDiscordSignature } from "@/lib/discord-signature";
 import { findActiveMemberByDiscordId } from "@/lib/member-lookup";
 import { siteUrl } from "@/lib/site-url";
 import { formatHolders, searchUnits, whoHas } from "@/lib/who-has";
@@ -22,7 +22,7 @@ function reply(content: string) {
 
 /** Discord posts slash commands and autocomplete requests here, signed so we can trust them. */
 export async function POST(request: Request) {
-  const publicKey = process.env.DISCORD_APP_PUBLIC_KEY;
+  const publicKey = discordPublicKey();
   const signature = request.headers.get("x-signature-ed25519");
   const timestamp = request.headers.get("x-signature-timestamp");
   const body = await request.text();
