@@ -4,9 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavCategoryItem } from "./site-header";
+import { useViewer } from "./use-viewer";
 
-export default function NavLinks({ items }: { items: NavCategoryItem[] }) {
+export default function NavLinks({ items: allItems }: { items: NavCategoryItem[] }) {
   const pathname = usePathname();
+  const viewer = useViewer(pathname);
+  // The Officer Deck is only for officers; hide it from everyone else (and while we are still finding out who is looking).
+  const items = viewer?.role === "OFFICER" ? allItems : allItems.filter((item) => item.label !== "Officer Deck");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLElement>(null);

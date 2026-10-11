@@ -31,6 +31,7 @@ function menuFor(role: "OFFICER" | "MEMBER" | "PUBLIC" | null): MenuGroup[] {
         title: "Guild",
         links: [
           { label: "Roster", href: "/members" },
+          { label: "Who has…?", href: "/members#who-has" },
           { label: "Territory War", href: "/territory-war" },
           { label: "Territory Battles", href: "/territory-battles" },
           { label: "Counters", href: "/counters" },
