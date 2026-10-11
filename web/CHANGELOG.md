@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.60.2 — 2026-10-11
+
+- **Fixed `/whohas` replying "The application did not respond".** Discord only waits 3 seconds, and the lookup took about 5, because it loaded every member's full roster to find one unit. The database now picks out just that unit (about half a second), and the command also tells Discord "thinking…" straight away and sends the answer when it is ready, so a slow start can't cause a timeout. The Roster page's "Who has…?" search is faster for the same reason.
+
 ## 0.60.1 — 2026-10-11
 
 - The Discord application's public key can be set as `DISCORD_PUBLIC_KEY` as well as `DISCORD_APP_PUBLIC_KEY`, and stray spaces or line breaks around it are ignored. (Discord's endpoint check failed because the key was saved under the other name.)

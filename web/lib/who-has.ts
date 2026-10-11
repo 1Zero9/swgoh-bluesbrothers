@@ -34,14 +34,19 @@ export function resolveUnit(input: string, units: UnitMatch[] = allUnitNames()):
   return searchUnits(text, 1, units)[0] ?? null;
 }
 
-/** Everyone who has the unit, best first (stars, then relic, then gear), optionally at a minimum star level. */
+/** Best first: stars, then relic, then gear, then name. */
+export function sortHolders(holders: Holder[]): Holder[] {
+  return [...holders].sort((a, b) => b.stars - a.stars || b.relic - a.relic || b.gear - a.gear || a.name.localeCompare(b.name));
+}
+
+/** Everyone who has the unit, best first, optionally at a minimum star level. */
 export function findHolders(rosters: CalloutRoster[], unitId: string, minStars = 0): Holder[] {
-  return rosters
-    .flatMap((roster) => {
+  return sortHolders(
+    rosters.flatMap((roster) => {
       const unit = roster.units?.get(unitId);
       return unit && unit.stars >= minStars ? [{ name: roster.playerName, stars: unit.stars, relic: unit.relic, gear: unit.gear ?? 0 }] : [];
-    })
-    .sort((a, b) => b.stars - a.stars || b.relic - a.relic || b.gear - a.gear || a.name.localeCompare(b.name));
+    }),
+  );
 }
 
 /** The reply text for Discord (kept under its 2,000-character limit). */
@@ -57,11 +62,38 @@ export function formatHolders(unit: UnitMatch, holders: Holder[], minStars: numb
 
 export type WhoHasResult = { unit: UnitMatch | null; holders: Holder[]; totalMembers: number };
 
-/** The live lookup: resolves the unit and reads every member's stored roster. */
+type HolderRow = { name: string; stars: string | null; gear: string | null; relic: string | null };
+
+/**
+ * The live lookup. The database picks out just this unit from each current member's stored roster, so
+ * only a few small rows travel back (loading every full roster takes several seconds).
+ */
 export async function whoHas(input: string, minStars = 0): Promise<WhoHasResult> {
-  const { loadRosters } = await import("@/lib/tb-callouts");
   const unit = resolveUnit(input);
   if (!unit) return { unit: null, holders: [], totalMembers: 0 };
-  const rosters = await loadRosters();
-  return { unit, holders: findHolders(rosters, unit.id, minStars), totalMembers: rosters.length };
+
+  const { getPrisma } = await import("@/lib/prisma");
+  const prisma = getPrisma();
+  const [rows, members] = await Promise.all([
+    prisma.$queryRaw<HolderRow[]>`
+      SELECT p."currentName" AS name,
+             u->>'currentRarity' AS stars,
+             u->>'currentTier' AS gear,
+             u->'relic'->>'currentTier' AS relic
+      FROM "Player" p, jsonb_array_elements(p."profilePayload"->'rosterUnit') u
+      WHERE p."profilePayload" IS NOT NULL
+        AND split_part(u->>'definitionId', ':', 1) = ${unit.id}
+        AND EXISTS (SELECT 1 FROM "MembershipTerm" t WHERE t."playerId" = p.id AND t.state = 'ACTIVE')`,
+    prisma.player.count({ where: { membershipTerms: { some: { state: "ACTIVE" } } } }),
+  ]);
+
+  const holders = rows
+    .map((row) => ({
+      name: row.name,
+      stars: Number(row.stars ?? 0),
+      gear: Number(row.gear ?? 0),
+      relic: row.relic === null ? 0 : Math.max(0, Number(row.relic) - 2),
+    }))
+    .filter((holder) => holder.stars >= minStars);
+  return { unit, holders: sortHolders(holders), totalMembers: members };
 }

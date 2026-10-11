@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.48.1 · **Last updated:** 2026-10-11 · tracks site `v0.60.1`
+**Doc version:** 1.48.2 · **Last updated:** 2026-10-11 · tracks site `v0.60.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.48.2 — 2026-10-11**: Discord interactions must answer within 3 s. `/whohas` now replies with a deferred ephemeral response (type 5) and finishes in `after()` by PATCHing `webhooks/{app}/{token}/messages/@original` (`lib/whohas-command.ts`); the lookup reads one unit per roster in SQL (`jsonb_array_elements`) instead of loading every `profilePayload` (5 s → ~0.6 s). Avoid `loadRosters()` on any request path that has a deadline.
 - **1.48.1 — 2026-10-11**: the interactions public key is read from `DISCORD_APP_PUBLIC_KEY` or `DISCORD_PUBLIC_KEY` (`discordPublicKey()`), trimmed. Symptom of a missing/misnamed key: Discord says the interactions endpoint URL "could not be verified" (our route answers 401 to its signed test ping).
 - **1.48.0 — 2026-10-11**: who-has lookup (`lib/who-has.ts`, `app/members/who-has.tsx`, `/api/who-has*`) and the `/whohas` slash command (`app/api/discord/interactions`, `lib/discord-signature.ts` Ed25519 check, `lib/discord-commands.ts`). Setup: set `DISCORD_APP_PUBLIC_KEY`, set the application's Interactions Endpoint URL to `<site>/api/discord/interactions` (Discord pings it to validate), then run the "Register Discord commands" workflow. If registration returns 403/50001 the bot was invited without the `applications.commands` scope: re-invite it. Replies are ephemeral and only for linked active members.
 - **1.47.0 — 2026-10-11**: home-page chat panel (`app/home-chat.tsx`) under a compact members' hero (`.hero-compact`); chat logic shared via `app/chat/use-chat.ts` and `app/chat/chat-parts.tsx` (used by `/chat` and the panel). Open/closed state in `localStorage` key `bb-home-chat`. `getChatPreview` removed.
