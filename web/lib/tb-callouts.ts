@@ -23,7 +23,7 @@ export type CalloutView = {
 
 export type UnitOption = { id: string; name: string };
 
-type RawUnit = { definitionId?: unknown; currentRarity?: unknown; relic?: { currentTier?: unknown } | null };
+type RawUnit = { definitionId?: unknown; currentRarity?: unknown; currentTier?: unknown; relic?: { currentTier?: unknown } | null };
 
 function num(value: unknown) {
   const parsed = Number(value ?? 0);
@@ -44,10 +44,10 @@ export async function loadRosters(): Promise<CalloutRoster[]> {
       : null;
     if (!Array.isArray(roster)) return { playerId: player.id, playerName: player.currentName, discordUserId: player.discordUserId, units: null };
 
-    const units = new Map<string, { stars: number; relic: number }>();
+    const units = new Map<string, { stars: number; relic: number; gear: number }>();
     for (const unit of roster as RawUnit[]) {
       const id = String(unit?.definitionId ?? "").split(":")[0];
-      if (id) units.set(id, { stars: num(unit.currentRarity), relic: Math.max(0, num(unit.relic?.currentTier) - 2) });
+      if (id) units.set(id, { stars: num(unit.currentRarity), relic: Math.max(0, num(unit.relic?.currentTier) - 2), gear: num(unit.currentTier) });
     }
     return { playerId: player.id, playerName: player.currentName, discordUserId: player.discordUserId, units };
   });

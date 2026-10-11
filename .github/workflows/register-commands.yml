@@ -1,0 +1,21 @@
+name: Register Discord commands
+
+# Run once after setting up the Discord interactions endpoint, and again whenever a command changes.
+on:
+  workflow_dispatch: {}
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register the slash commands in the guild
+        run: |
+          status=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            "https://swgoh-bluesbrothers.vercel.app/api/cron/register-commands" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 60)
+          echo "HTTP status: $status"
+          cat /tmp/response.json
+          if [ "$status" -ne 200 ]; then
+            exit 1
+          fi

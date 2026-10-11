@@ -2,6 +2,15 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.60.0 — 2026-10-11
+
+- **"Who has…?"** Members can ask who in the guild has any unit (all 411 in the game) and how far they've taken it, ranked by stars, then relic level, then gear, with an optional minimum star level.
+  - **On the site:** a search box at the top of the Roster page with name suggestions as you type.
+  - **In Discord:** a `/whohas` slash command with name autocomplete and an optional `min_stars`. The reply is private to the person who asked, and only linked, current guild members get an answer.
+- The Discord command is served by a signed interactions endpoint (`/api/discord/interactions`), so it needs no always-on connection. Requests are verified against the application's public key (`DISCORD_APP_PUBLIC_KEY`); anything unsigned is refused.
+- Added a "Register Discord commands" GitHub workflow that installs the command in the server on demand.
+- The roster loader now also records gear level.
+
 ## 0.59.0 — 2026-10-11
 
 - **Guild chat now sits at the top of the home page.** Signed-in members get a "Guild chat" panel directly under the hero, in the first screen on phones and laptops. Collapsed, it shows the last two messages and a reply box; **Open chat** expands a live conversation in place, **Full screen** goes to the chat page, and the choice is remembered on that device.

@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.47.0 · **Last updated:** 2026-10-11 · tracks site `v0.59.0`
+**Doc version:** 1.48.0 · **Last updated:** 2026-10-11 · tracks site `v0.60.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -361,6 +361,7 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_WINS_WEBHOOK_URL` | Webhook for the dedicated wins channel; the weekly digest (`lib/wins-digest.ts`, `/api/cron/weekly-digest`, Vercel Cron Sundays 17:00 UTC) posts here and is skipped if unset |
 | `DISCORD_CALLOUTS_WEBHOOK_URL` | Optional webhook for new TB callouts; falls back to `DISCORD_WINS_WEBHOOK_URL`, and nothing posts if neither is set |
 | `DISCORD_GENERAL_WEBHOOK_URL` / `DISCORD_PUBLIC_WEBHOOK_URL` (or `DISCORD_WELCOME_WEBHOOK_URL`) | Webhooks for #general (members) and the public channel; curated posts (`lib/curated-posts.ts`, wording in `lib/curated-messages.ts`) go here and nothing posts to a channel without one. General also receives welcomes/farewells in place of `DISCORD_WEBHOOK_URL`, and TW results |
+| `DISCORD_APP_PUBLIC_KEY` | The Discord application's Public Key (Developer Portal → General Information). Verifies signed slash-command requests at `/api/discord/interactions`; without it every interaction is refused |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` | Web push keys (`node scripts/generate-vapid.mjs`; private key Sensitive; subject like `mailto:you@example.com`). Without them push is off and the settings say so |
 | `DISCORD_CHAT_CHANNELS` | Comma-separated Discord channel names mirrored on `/chat` (default `general`; allowlist in `lib/chat-config.ts`). Posting to a channel needs its webhook: `DISCORD_GENERAL_WEBHOOK_URL`, `DISCORD_WINS_WEBHOOK_URL`, `DISCORD_TW_WEBHOOK_URL`, `DISCORD_TW_STATS_WEBHOOK_URL` |
 | `CURATED_NEWS` | Set to `off` to stop the Friday Star Wars news post in #general (`postWeeklyNewsIfDue`; headlines from `lib/news.ts`) |
@@ -478,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.48.0 — 2026-10-11**: who-has lookup (`lib/who-has.ts`, `app/members/who-has.tsx`, `/api/who-has*`) and the `/whohas` slash command (`app/api/discord/interactions`, `lib/discord-signature.ts` Ed25519 check, `lib/discord-commands.ts`). Setup: set `DISCORD_APP_PUBLIC_KEY`, set the application's Interactions Endpoint URL to `<site>/api/discord/interactions` (Discord pings it to validate), then run the "Register Discord commands" workflow. If registration returns 403/50001 the bot was invited without the `applications.commands` scope: re-invite it. Replies are ephemeral and only for linked active members.
 - **1.47.0 — 2026-10-11**: home-page chat panel (`app/home-chat.tsx`) under a compact members' hero (`.hero-compact`); chat logic shared via `app/chat/use-chat.ts` and `app/chat/chat-parts.tsx` (used by `/chat` and the panel). Open/closed state in `localStorage` key `bb-home-chat`. `getChatPreview` removed.
 - **1.46.3 — 2026-10-11**: `detectContentHidden` (lib/chat.ts) flags a missing Message Content Intent only when all member messages are blank; dashboard chat panel uses `getChatPreview` (2.5 s cap). Symptom of the intent being off: the chat page banner and the Droid's posts showing but no member text.
 - **1.46.2 — 2026-10-11**: Prisma 7.10.0. Prisma's CLI pins vulnerable `mysql2` 3.15.3 and `deepmerge-ts` 7.1.5 (no upstream fix as of 7.10.0; the `latest` tag is an 8.0 release candidate, not used), so `web/package.json` has `overrides` forcing `mysql2` ^3.24.5 and `deepmerge-ts` ^8.0.2. Verified with `prisma validate/generate/migrate status` and live queries. If a later Prisma upgrade misbehaves, remove the overrides first. `npm audit --omit=dev` is clean; dev-only findings remain in the ESLint toolchain (`braces`, `micromatch`, `fast-glob` via `eslint-config-next`) and are not shipped.

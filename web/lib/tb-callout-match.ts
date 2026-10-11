@@ -10,7 +10,7 @@ export type CalloutRoster = {
   playerName: string;
   discordUserId?: string | null;
   /** null when the member's profile hasn't synced yet. */
-  units: Map<string, { stars: number; relic: number }> | null;
+  units: Map<string, { stars: number; relic: number; gear?: number }> | null;
 };
 
 export type CalloutMember = { name: string; discordUserId?: string | null; stars: number; relic: number; gap: string };

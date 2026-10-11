@@ -8623,3 +8623,24 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
   .hero-compact .hero-copy > p:not(.eyebrow), .hero-compact .hero-actions { display: none; }
   .hero-compact h1 { font-size: clamp(32px, 9vw, 44px); }
 }
+
+/* Who has...? */
+.who-has { max-width: 920px; margin: 0 auto 28px; padding: 0 16px; }
+.who-has > header h2 { margin: 2px 0 12px; color: var(--text); font-size: clamp(24px, 4vw, 34px); letter-spacing: -.03em; }
+.who-has form { display: flex; flex-wrap: wrap; gap: 8px; }
+.who-has-field { position: relative; flex: 1 1 260px; }
+.who-has input, .who-has select { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(0,0,0,.25); color: var(--text); font: inherit; font-size: 16px; }
+.who-has select { width: auto; }
+.who-has form > button { padding: 0 20px; border: 0; border-radius: 12px; background: var(--blue); color: #04121c; font-weight: 700; cursor: pointer; }
+.who-has form > button:disabled { opacity: .5; cursor: default; }
+.who-has-suggestions { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; border: 1px solid var(--line); border-radius: 12px; background: #0d1117; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+.who-has-suggestions button { width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: var(--text); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+.who-has-suggestions button:hover { background: var(--blue-soft); }
+.who-has-result { margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.who-has-head { margin: 0 0 10px; color: var(--text); font-size: 15px; }
+.who-has-result ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.who-has-result li { display: flex; gap: 12px; align-items: baseline; color: var(--text); font-size: 15px; }
+.who-has-stars { min-width: 34px; color: var(--amber); font-weight: 800; }
+.who-has-level { min-width: 34px; color: var(--muted); font-size: 13px; }
+.who-has-note { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+.who-has-error { color: var(--red); }
