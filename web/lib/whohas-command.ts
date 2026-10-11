@@ -1,6 +1,8 @@
+import { formatCounters } from "@/lib/counters";
+import { listCounters } from "@/lib/counters-data";
 import { findActiveMemberByDiscordId } from "@/lib/member-lookup";
 import { siteUrl } from "@/lib/site-url";
-import { formatHolders, whoHas } from "@/lib/who-has";
+import { formatHolders, resolveUnit, whoHas } from "@/lib/who-has";
 
 export type CommandOption = { name: string; value?: string | number; focused?: boolean };
 
@@ -25,4 +27,17 @@ export async function editOriginalResponse(applicationId: string, token: string,
     signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error(`Discord rejected the follow-up (${response.status})`);
+}
+
+/** The text answer to a /counter command: the guild's counters to an enemy leader and whether the asker can run them. */
+export async function answerCounter(discordUserId: string | undefined, options: CommandOption[]): Promise<string> {
+  const member = discordUserId ? await findActiveMemberByDiscordId(discordUserId).catch(() => null) : null;
+  if (!member) return `Link your account first and I'll answer: sign in with Discord at ${siteUrl()}.`;
+
+  const input = String(options.find((option) => option.name === "enemy")?.value ?? "");
+  const enemy = resolveUnit(input);
+  if (!enemy) return `I couldn't find a unit called "${input.slice(0, 60)}". Start typing and pick one from the list.`;
+
+  const counters = await listCounters({ enemyId: enemy.id, youPlayerId: member.id, limit: 5 });
+  return formatCounters(enemy.name, counters, `${siteUrl()}/counters`);
 }

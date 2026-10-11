@@ -2,7 +2,7 @@ import { after } from "next/server";
 import { EPHEMERAL, InteractionType, ResponseType } from "@/lib/discord-commands";
 import { discordPublicKey, verifyDiscordSignature } from "@/lib/discord-signature";
 import { searchUnits } from "@/lib/who-has";
-import { answerWhoHas, editOriginalResponse, type CommandOption } from "@/lib/whohas-command";
+import { answerCounter, answerWhoHas, editOriginalResponse, type CommandOption } from "@/lib/whohas-command";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -43,7 +43,8 @@ export async function POST(request: Request) {
     return Response.json({ type: ResponseType.Autocomplete, data: { choices } });
   }
 
-  if (interaction.type === InteractionType.Command && interaction.data?.name === "whohas") {
+  const commandName = interaction.data?.name;
+  if (interaction.type === InteractionType.Command && (commandName === "whohas" || commandName === "counter")) {
     const discordId = interaction.member?.user?.id ?? interaction.user?.id;
     const applicationId = interaction.application_id ?? process.env.DISCORD_CLIENT_ID;
     const token = interaction.token;
@@ -54,15 +55,15 @@ export async function POST(request: Request) {
     after(async () => {
       let content: string;
       try {
-        content = await answerWhoHas(discordId, options);
+        content = commandName === "counter" ? await answerCounter(discordId, options) : await answerWhoHas(discordId, options);
       } catch (error) {
-        console.error("whohas failed", error);
+        console.error(`${commandName} failed`, error);
         content = "Something went wrong looking that up. Try again in a moment.";
       }
       try {
         await editOriginalResponse(applicationId, token, content);
       } catch (error) {
-        console.error("whohas follow-up failed", error);
+        console.error(`${commandName} follow-up failed`, error);
       }
     });
     return Response.json({ type: ResponseType.Deferred, data: { flags: EPHEMERAL } });

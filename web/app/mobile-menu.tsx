@@ -33,6 +33,7 @@ function menuFor(role: "OFFICER" | "MEMBER" | "PUBLIC" | null): MenuGroup[] {
           { label: "Roster", href: "/members" },
           { label: "Territory War", href: "/territory-war" },
           { label: "Territory Battles", href: "/territory-battles" },
+          { label: "Counters", href: "/counters" },
           { label: "Raids", href: "/raids" },
           { label: "Datacrons", href: "/datacrons" },
           { label: "Arsenal", href: "/arsenal" },

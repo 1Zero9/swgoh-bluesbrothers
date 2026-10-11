@@ -39,6 +39,7 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     children: [
       { label: "Territory War", mark: "TW", href: "/territory-war", description: "Live war room, zones & defence assignments", icon: "⚔️" },
       { label: "Datacrons Vault", mark: "DC", href: "/datacrons", description: "Guild Level 9 weapons & active seasonal sets", icon: "💎" },
+      { label: "Counters", mark: "CT", href: "/counters", description: "Counter squads for TW and GAC, and who can run them", icon: "🛡️" },
       { label: "Territory Battles", mark: "TB", href: "/territory-battles", description: "RotE platoons & mission readiness", icon: "🪐" },
       { label: "Raids", mark: "RD", href: "/raids", description: "Speeder & Naboo guild raid tracking", icon: "💥" },
       { label: "Guild Arsenal", mark: "AR", href: "/arsenal", description: "Relic squads & counter power", icon: "🛡️" },
