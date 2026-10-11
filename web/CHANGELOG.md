@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.61.2 — 2026-10-11
+
+- **Tidier top-right header.** The sync status, version, theme switch, your name and the Discord button now sit together on one dark panel, so they stay readable when they land on a bright part of the hero picture (the neon sign was washing them out). Once you scroll, the panel steps aside and the normal header bar takes over.
+
 ## 0.61.1 — 2026-10-11
 
 - **Faster page loads for signed-in members.** Every page was looking up who you are, whether you're an officer, and the guild summary for the header more than once, one after another, and each lookup is a trip to the database. They are now done once per page view and run side by side, and the home page no longer waits for the officer check before loading the rest. No change to what anyone can see.
