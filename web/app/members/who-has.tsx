@@ -67,7 +67,7 @@ export default function WhoHas() {
   }
 
   return (
-    <section className="who-has" aria-label="Who has a unit">
+    <section className="who-has" id="who-has" aria-label="Who has a unit">
       <header>
         <p className="eyebrow">Roster search</p>
         <h2>Who has…?</h2>

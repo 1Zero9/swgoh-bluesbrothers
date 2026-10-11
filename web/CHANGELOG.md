@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.62.0 — 2026-10-11
+
+- **A home page built around the tools.** Right under the banner there is now a **status strip** (your name, GP and raid tickets, with a clear note and a link to My Page if you need to check in) and a **grid of big buttons**: My Page, Guild Chat, The Wins, Who has…?, Roster, Counters, Territory War, Territory Battles, Operations and Field Guides. On a phone it is a two-column grid you can reach with a thumb.
+- **Shorter on a phone.** The four guild stats sit two-by-two, the clocks fit on one row, and the page is about a third shorter overall.
+- **Cleaner for members.** The officer password box, the "Needs attention" count and the Pending/Sent labels on the Guild Wire are now for officers only. The empty "Upcoming missions" cards ("Awaiting schedule", "No active war") are gone, since Territory War and Territory Battles have their own buttons. Your cantina card only shows when you still need to link.
+- **Menus.** "Who has…?" is now in the phone menu and the Roster dropdown, and the Officer Deck no longer appears in the top menu for people who aren't officers.
+
 ## 0.61.3 — 2026-10-11
 
 - **Guild clocks on the home page.** Under the "Comlink connected" tag you now see the current time in Arizona, Texas / Chicago (the same Central time, so one clock), New York and Dublin, kept up to date as you watch and following daylight saving automatically.

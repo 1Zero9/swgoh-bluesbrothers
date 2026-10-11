@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.49.3 · **Last updated:** 2026-10-11 · tracks site `v0.61.3`
+**Doc version:** 1.50.0 · **Last updated:** 2026-10-11 · tracks site `v0.62.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.50.0 — 2026-10-11**: member home reworked for discoverability — `app/quick-launch.tsx` (tool grid), a personal status strip from `getMemberContext`, officer-only password desk / attention card / wire status, upcoming-missions cards removed, desktop `NavLinks` hides the Officer Deck unless `useViewer` says OFFICER, `#who-has` anchor on the Roster page. Phone layout verified with Playwright (WebKit, iPhone 14).
 - **1.49.3 — 2026-10-11**: `app/world-clocks.tsx` — client-side clocks for Arizona, Texas/Chicago, New York and Dublin on the home hero (Intl time zones, so DST is automatic; renders `--:--` until mounted to avoid hydration mismatch). Hero top padding raised so the status row clears the fixed header.
 - **1.49.2 — 2026-10-11**: header controls get a dark glass capsule (`.site-header .header-controls` in globals.css) so they stay legible over the hero image; it drops away once `html.scrolled`.
 - **1.49.1 — 2026-10-11**: page-load speed — `getViewerAccess`, `isOfficerRequest`, `getMemberContext` and `getDashboardSummary` are wrapped in React `cache()` so the gate, header and page share one lookup per request, and `getViewerAccess` runs the officer and member lookups in parallel. Each database round trip costs ~100 ms, so sequential duplicate lookups were the main page-transition cost; avoid awaiting queries one after another in pages.

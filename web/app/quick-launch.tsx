@@ -1,0 +1,31 @@
+import Link from "next/link";
+
+type Tool = { label: string; hint: string; href: string; icon: string };
+
+// The things members come back for, in the order they matter. Everything else is in the menu.
+const TOOLS: Tool[] = [
+  { label: "My Page", hint: "Your standing and callouts", href: "/me", icon: "🙋" },
+  { label: "Guild Chat", hint: "Talk to the band", href: "/chat", icon: "💬" },
+  { label: "The Wins", hint: "What the guild just did", href: "/wins", icon: "🏆" },
+  { label: "Who has…?", hint: "Find a unit in the guild", href: "/members#who-has", icon: "🔎" },
+  { label: "Roster", hint: "All 50 members", href: "/members", icon: "👥" },
+  { label: "Counters", hint: "Squads for TW and GAC", href: "/counters", icon: "🛡️" },
+  { label: "Territory War", hint: "War room and defence", href: "/territory-war", icon: "⚔️" },
+  { label: "Territory Battles", hint: "Planets and platoons", href: "/territory-battles", icon: "🪐" },
+  { label: "Operations", hint: "Raids, datacrons, arsenal", href: "/operations", icon: "🚀" },
+  { label: "Field Guides", hint: "How to do things", href: "/guides", icon: "📖" },
+];
+
+export default function QuickLaunch() {
+  return (
+    <nav className="quick-launch" aria-label="Guild tools">
+      {TOOLS.map((tool) => (
+        <Link key={tool.href} href={tool.href} className="quick-tool">
+          <span className="quick-icon" aria-hidden="true">{tool.icon}</span>
+          <strong>{tool.label}</strong>
+          <small>{tool.hint}</small>
+        </Link>
+      ))}
+    </nav>
+  );
+}

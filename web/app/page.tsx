@@ -16,44 +16,12 @@ import { getRosterChanges } from "@/lib/members";
 import AccountLink from "./account-link";
 import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
+import QuickLaunch from "./quick-launch";
 import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
 import WallOfFameBoard from "./wall-of-fame-board";
 
 export const dynamic = "force-dynamic";
-
-const eventCards = [
-  {
-    id: "territory-battles",
-    eyebrow: "Territory battle",
-    title: "Rise of the Empire",
-    status: "Awaiting schedule",
-    copy: "Mission loadouts, operations and deployment plans will appear here when event sync is enabled.",
-    action: "Preview TB planner",
-    href: "/territory-battles",
-    tone: "blue",
-  },
-  {
-    id: "territory-war",
-    eyebrow: "Territory war",
-    title: "The next gig",
-    status: "No active war",
-    copy: "Registration, defensive assignments and the opponent counter board will share one live plan.",
-    action: "Open TW war room",
-    href: "/territory-war",
-    tone: "amber",
-  },
-  {
-    id: "raids",
-    eyebrow: "Raid operations",
-    title: "Guild raid",
-    status: "Results tracked",
-    copy: "See who carried the last completed raid, ranked by member damage contribution.",
-    action: "View raid results",
-    href: "/raids",
-    tone: "red",
-  },
-];
 
 function Mark({ label }: { label: string }) {
   return <span className="nav-mark" aria-hidden="true">{label}</span>;
@@ -141,11 +109,34 @@ export default async function Home() {
             <h1 id="mission-heading">On a mission<br /><em>from the Force.</em></h1>
             <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
             <div className="hero-actions">
-              <a className="primary-action" href="#administration">Review officer actions</a>
+              {isOfficer
+                ? <a className="primary-action" href="#administration">Review officer actions</a>
+                : <Link className="primary-action" href="/me">Open my page</Link>}
               <Link className="secondary-action" href="/members">View guild roster <span>→</span></Link>
             </div>
           </div>
         </section>
+
+        <div className="dashboard-content home-launch">
+          {memberContext.status === "linked" ? (
+            <Link className={`personal-strip${memberContext.player.onWallOfShame ? " needs-checkin" : ""}`} href="/me">
+              <span className="personal-avatar" aria-hidden="true">{memberContext.player.name.charAt(0).toUpperCase()}</span>
+              <span className="personal-main">
+                <strong>{memberContext.player.name}</strong>
+                <small>
+                  {formatPower(memberContext.player.galacticPower).value}{formatPower(memberContext.player.galacticPower).unit} GP · {memberContext.player.raidTickets} raid tickets
+                </small>
+              </span>
+              <span className="personal-note">
+                {memberContext.player.onWallOfShame
+                  ? `Check-in needed: ${memberContext.player.reasons[0]?.toLowerCase() ?? "see my page"}`
+                  : "All good · my page"}
+                <i aria-hidden="true"> →</i>
+              </span>
+            </Link>
+          ) : null}
+          <QuickLaunch />
+        </div>
 
         {chatChannel ? (
           <div className="dashboard-content home-chat-wrap">
@@ -177,6 +168,7 @@ export default async function Home() {
             <div className="progress-track"><i style={{ width: `${summary.live ? ticketPct : 0}%` }} /></div>
             <p>{summary.live ? `${ticketPct}% of ${summary.ticketTarget.toLocaleString("en-GB")} target` : "Tracking starts with the first sync"}</p>
           </article>
+          {isOfficer ? (
           <article className={`metric-card${wallOfShame.length ? " attention" : ""}`}>
             <div className="metric-head"><span>Needs attention</span><Mark label="!" /></div>
             <strong>{wallOfShame.length}</strong>
@@ -188,6 +180,7 @@ export default async function Home() {
                   : "Awaiting first roster sync"}
             </p>
           </article>
+          ) : null}
         </section>
 
         <section className="guild-wire" id="guild-wire" aria-labelledby="guild-wire-heading">
@@ -205,7 +198,7 @@ export default async function Home() {
                     <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
                     <p>{item.summary}</p>
                   </div>
-                  <span className={`wire-state state-${item.status}`}>{item.status}</span>
+                  {isOfficer ? <span className={`wire-state state-${item.status}`}>{item.status}</span> : null}
                 </article>
               ))}
             </div>
@@ -228,28 +221,6 @@ export default async function Home() {
             )}
             <a className="discord-open" href={discordUrl} target="_blank" rel="noreferrer">Open Discord <span>→</span></a>
           </aside>
-        </section>
-
-        <section className="section-block" id="operations">
-          <div className="section-heading">
-            <div><p className="eyebrow">Operations board</p><h2>Upcoming missions</h2></div>
-            <Link href="/operations">Open operations hub <span>→</span></Link>
-          </div>
-          <div className="event-grid">
-            {eventCards.map((event) => (
-              <article className={`event-card ${event.tone}`} id={event.id} key={event.eyebrow}>
-                <div className="event-top"><span>{event.eyebrow}</span><i>{event.status}</i></div>
-                <div className="event-symbol" aria-hidden="true"><span>{event.eyebrow.split(" ").map((word) => word[0]).join("")}</span></div>
-                <h3>{event.title}</h3>
-                <p>{event.copy}</p>
-                {event.href ? (
-                  <Link className="event-action" href={event.href}>{event.action}<span>→</span></Link>
-                ) : (
-                  <button type="button" disabled>{event.action}<span>→</span></button>
-                )}
-              </article>
-            ))}
-          </div>
         </section>
 
         <section className="section-block standings-section" aria-labelledby="standings-heading">
@@ -299,12 +270,14 @@ export default async function Home() {
           </div>
         </section>
 
-        <div className="lower-grid">
+        <div className={`lower-grid${memberContext.status === "linked" ? " lower-grid-single" : ""}`}>
+          {memberContext.status !== "linked" ? (
           <section className="panel member-account-panel">
             <div className="panel-heading"><div><p className="eyebrow">Personal view</p><h2>Your cantina card</h2></div><span className="private-pill">Private</span></div>
             <p className="panel-intro">Link Discord once to see your own live standing and keep your guild identity connected.</p>
             <AccountLink context={memberContext} />
           </section>
+          ) : null}
 
           <section className="panel" id="administration">
             <div className="panel-heading">
@@ -344,11 +317,13 @@ export default async function Home() {
               )}
             </div>
 
+            {isOfficer ? (
             <div className="officer-desk" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
               <p className="officer-desk-heading">Officer&apos;s desk</p>
               <OfficerDesk signedIn={isOfficer} />
               {isOfficer ? <Link className="officer-roster-link" href="/officer/roster">Open the full roster report →</Link> : null}
             </div>
+            ) : null}
           </section>
         </div>
 
