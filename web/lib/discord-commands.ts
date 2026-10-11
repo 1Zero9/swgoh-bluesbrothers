@@ -13,5 +13,5 @@ export const GUILD_COMMANDS = [WHOHAS_COMMAND];
 
 /** Discord's interaction request types and response types that we use. */
 export const InteractionType = { Ping: 1, Command: 2, Autocomplete: 4 } as const;
-export const ResponseType = { Pong: 1, Message: 4, Autocomplete: 8 } as const;
+export const ResponseType = { Pong: 1, Message: 4, Deferred: 5, Autocomplete: 8 } as const;
 export const EPHEMERAL = 64;

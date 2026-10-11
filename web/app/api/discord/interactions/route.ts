@@ -1,19 +1,20 @@
+import { after } from "next/server";
 import { EPHEMERAL, InteractionType, ResponseType } from "@/lib/discord-commands";
 import { discordPublicKey, verifyDiscordSignature } from "@/lib/discord-signature";
-import { findActiveMemberByDiscordId } from "@/lib/member-lookup";
-import { siteUrl } from "@/lib/site-url";
-import { formatHolders, searchUnits, whoHas } from "@/lib/who-has";
+import { searchUnits } from "@/lib/who-has";
+import { answerWhoHas, editOriginalResponse, type CommandOption } from "@/lib/whohas-command";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const maxDuration = 10;
+export const maxDuration = 30;
 
-type Option = { name: string; value?: string | number; focused?: boolean };
 type Interaction = {
   type: number;
+  token?: string;
+  application_id?: string;
   member?: { user?: { id?: string } };
   user?: { id?: string };
-  data?: { name?: string; options?: Option[] };
+  data?: { name?: string; options?: CommandOption[] };
 };
 
 function reply(content: string) {
@@ -43,16 +44,28 @@ export async function POST(request: Request) {
   }
 
   if (interaction.type === InteractionType.Command && interaction.data?.name === "whohas") {
-    // Only linked, current guild members get an answer, and the answer is private to them.
     const discordId = interaction.member?.user?.id ?? interaction.user?.id;
-    const member = discordId ? await findActiveMemberByDiscordId(discordId).catch(() => null) : null;
-    if (!member) return reply(`Link your account first and I'll answer: sign in with Discord at ${siteUrl()}.`);
+    const applicationId = interaction.application_id ?? process.env.DISCORD_CLIENT_ID;
+    const token = interaction.token;
+    if (!applicationId || !token) return reply("Something is missing from that request. Try again.");
 
-    const unitInput = String(options.find((option) => option.name === "unit")?.value ?? "");
-    const minStars = Number(options.find((option) => option.name === "min_stars")?.value ?? 0) || 0;
-    const result = await whoHas(unitInput, minStars);
-    if (!result.unit) return reply(`I couldn't find a unit called "${unitInput.slice(0, 60)}". Start typing and pick one from the list.`);
-    return reply(formatHolders(result.unit, result.holders, minStars, result.totalMembers));
+    // Discord gives us 3 seconds to answer. Reading every roster can take longer on a cold start, so we
+    // reply "thinking..." (private to the asker) straight away and fill in the answer when it is ready.
+    after(async () => {
+      let content: string;
+      try {
+        content = await answerWhoHas(discordId, options);
+      } catch (error) {
+        console.error("whohas failed", error);
+        content = "Something went wrong looking that up. Try again in a moment.";
+      }
+      try {
+        await editOriginalResponse(applicationId, token, content);
+      } catch (error) {
+        console.error("whohas follow-up failed", error);
+      }
+    });
+    return Response.json({ type: ResponseType.Deferred, data: { flags: EPHEMERAL } });
   }
 
   return reply("I don't know that command.");
