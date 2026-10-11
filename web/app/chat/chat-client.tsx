@@ -111,6 +111,7 @@ export default function ChatClient({ channels, signedInAsMember }: { channels: C
             {channel.label}
           </button>
         ))}
+        <a className="chat-bell" href="/me#notifications">🔔 Notifications</a>
       </nav>
 
       {contentHidden ? (

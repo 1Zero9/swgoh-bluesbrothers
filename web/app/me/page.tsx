@@ -3,6 +3,7 @@ import Link from "next/link";
 import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
 import PageHero from "@/app/page-hero";
+import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
 import { getMyPage } from "@/lib/my-page";
 import { getSquadAdvice } from "@/lib/roster-advice";
@@ -142,6 +143,11 @@ export default async function MyPage() {
         ) : (
           <p className="my-empty">All clear. Keep it up.</p>
         )}
+      </section>
+
+      <section className="public-block">
+        <header><p className="eyebrow">Stay in the loop</p><h2>Notifications</h2><p>Choose what buzzes your phone or desktop. This applies to this device only.</p></header>
+        <PushSettings />
       </section>
 
       <IntelFooter message="This page is only visible to you.">

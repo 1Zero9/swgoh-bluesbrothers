@@ -1,4 +1,5 @@
 import { postDiscordAnnouncement } from "@/lib/discord";
+import { notifyDroidPost } from "@/lib/push";
 import { anniversaryPost, milestonePost, newsPost, promptPost, slotsOpenPost, twResultPost, weeklyPublicPost, type CuratedPost, type WeeklyPublicStats } from "@/lib/curated-messages";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getStarWarsNews } from "@/lib/news";
@@ -29,6 +30,8 @@ export async function postToChannel(channel: CuratedChannel, post: CuratedPost, 
   const webhook = channelWebhook(channel);
   if (!webhook) return false;
   await postDiscordAnnouncement({ ...post, websiteUrl: siteUrl(), footer, mentionUserIds }, webhook);
+  // Members who asked for the Droid's posts get a nudge for what lands in #general.
+  if (channel === "general") await notifyDroidPost(post);
   return true;
 }
 
