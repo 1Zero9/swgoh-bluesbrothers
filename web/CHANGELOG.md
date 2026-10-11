@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.59.0 — 2026-10-11
+
+- **Guild chat now sits at the top of the home page.** Signed-in members get a "Guild chat" panel directly under the hero, in the first screen on phones and laptops. Collapsed, it shows the last two messages and a reply box; **Open chat** expands a live conversation in place, **Full screen** goes to the chat page, and the choice is remembered on that device.
+- The members' hero is shorter so the panel isn't pushed below the fold. The old "Discord stays live" card is now a small "Prefer the app?" link to Discord.
+- Under the hood the chat page and the home panel share one message list and one loader, so they always show the same thing.
+
 ## 0.58.3 — 2026-10-11
 
 - **Chat warning is more reliable.** The "Discord isn't sharing people's message text" banner now only appears when every member message in the channel is blank, so a lone sticker, GIF or poll can no longer trigger it by mistake.

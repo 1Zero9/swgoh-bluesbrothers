@@ -192,30 +192,3 @@ export async function postChatMessage(channel: ChatChannelConfig, member: { name
   cache.delete(channel.key);
   return { ok: true as const };
 }
-
-export type ChatPreviewItem = { name: string; text: string; at: string; app: boolean };
-
-function flatten(segments: Segment[]) {
-  return segments.map((segment) => segment.text).join("");
-}
-
-/** The last few messages of #general for the dashboard. Gives up quietly after 2.5 seconds so the page never waits on Discord. */
-export async function getChatPreview(limit = 3): Promise<ChatPreviewItem[] | null> {
-  const channel = chatChannel("general");
-  if (!channel) return null;
-  const result = await Promise.race([
-    getChatMessages(channel),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),
-  ]).catch(() => null);
-  if (!result || !result.ok) return null;
-
-  return result.messages
-    .map((message) => ({
-      name: message.author.name,
-      app: message.author.app,
-      at: message.at,
-      text: flatten(message.segments).trim() || message.embeds.map((embed) => [embed.title, flatten(embed.segments)].filter(Boolean).join(": ")).join(" ").trim(),
-    }))
-    .filter((item) => item.text)
-    .slice(-limit);
-}
