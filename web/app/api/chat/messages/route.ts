@@ -1,6 +1,7 @@
 import { getViewerAccess } from "@/lib/access-control";
 import { canPostTo, chatChannel, getChatMessages, postChatMessage } from "@/lib/chat";
 import { cleanMessage, postingAllowed } from "@/lib/chat-rules";
+import { notifyChatMessage } from "@/lib/push";
 import { getPrisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -44,5 +45,7 @@ export async function POST(request: Request) {
 
   const result = await postChatMessage(channel, { name: player.currentName, discordUserId: player.discordUserId }, content);
   if (!result.ok) return fail(result.error, 502);
+  // Tell members who asked for chat notifications (not the sender). Best effort; never blocks the reply.
+  await notifyChatMessage(channel.label, player.currentName, content, access.playerId, channel.key).catch(() => undefined);
   return Response.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
 }

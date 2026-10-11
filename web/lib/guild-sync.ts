@@ -9,6 +9,7 @@ import { getPrisma } from "@/lib/prisma";
 import { farewellPost, welcomePost } from "@/lib/curated-messages";
 import { channelWebhook, postNewTwResults, postAnniversariesIfDue, postMilestonesIfAny, postSlotsOpenIfNeeded, postWeeklyNewsIfDue, postWeeklyPromptIfDue } from "@/lib/curated-posts";
 import { syncOfficerRoles } from "@/lib/discord-role-sync";
+import { notifyDroidPost } from "@/lib/push";
 import { siteUrl } from "@/lib/site-url";
 import { detectWins } from "@/lib/wins";
 
@@ -286,6 +287,7 @@ export async function syncGuildRoster() {
         { ...post, websiteUrl: siteUrl() },
         channelWebhook("general") ?? process.env.DISCORD_WEBHOOK_URL,
       );
+      if (posted) await notifyDroidPost(post);
       const removed = !isWelcome && (await Promise.all(announcement.discordUserIds.map((id) => demoteDiscordMemberOnDeparture(id)))).some(Boolean);
       if (posted) delivered += 1;
       if (removed) accessRemoved += 1;

@@ -98,6 +98,7 @@ model Player {
   profileSnapshots PlayerProfileSnapshot[]
   wins             GuildWin[]
   extraDiscordAccounts PlayerDiscordAccount[]
+  pushSubscriptions PushSubscription[]
   twAssignments    PlayerAssignment[]
   twAttackAssignments AttackAssignment[]
 }
@@ -470,6 +471,23 @@ model PlayerDiscordAccount {
   discordUserId String   @unique
   createdAt     DateTime @default(now())
   player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+}
+
+/// A browser or installed-app notification subscription belonging to a member.
+model PushSubscription {
+  id             String    @id @default(cuid())
+  playerId       String
+  endpoint       String    @unique
+  p256dh         String
+  auth           String
+  /// Which kinds of notification this device wants: "chat" (messages sent from the site) and "droid" (automatic posts).
+  topics         String[]
+  userAgent      String?
+  createdAt      DateTime  @default(now())
+  lastNotifiedAt DateTime?
+  player         Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@index([playerId])
 }

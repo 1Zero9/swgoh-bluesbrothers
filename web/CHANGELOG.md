@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.58.0 — 2026-10-11
+
+- **Push notifications.** Members can turn on notifications from My Page (and a link in Chat) and choose what buzzes their phone or desktop: **the Droid's posts** (Territory War results, milestones and anniversaries, the weekly question, news, welcomes and farewells, the Sunday roundup) and **chat messages sent from the site**. Settings apply per device; "Send me a test" checks it works.
+- Works on Android and desktop browsers, and on iPhone in the installed app (the page explains this and what to do). Chrome's incognito mode doesn't support push.
+- Built on a service worker (`public/sw.js`) that only shows notifications and caches nothing, a `PushSubscription` table (additive migration), and `web-push` with VAPID keys. Dead subscriptions are removed automatically, notifications go only to current guild members, and bursts of chat are limited to one notification per channel per 30 seconds.
+- **Limit:** messages typed directly in Discord can't trigger a notification, because the site has no always-on connection to Discord; people still using Discord are notified by Discord itself.
+- Needs `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `VAPID_SUBJECT` in Vercel (generate with `node scripts/generate-vapid.mjs`); without them the settings say notifications aren't switched on and nothing is sent.
+
 ## 0.57.0 — 2026-10-11
 
 - **Guild Chat** (`/chat`): the Discord #general channel on the site, for signed-in members and officers. Messages (including the Droid's automatic posts, mentions, links and images) show with names and avatars and refresh every few seconds while the page is open; members can reply from the site, and the reply appears in Discord under their own name and avatar. Discord stays the source of truth (moderation, deleted messages, history) and the site stores nothing.

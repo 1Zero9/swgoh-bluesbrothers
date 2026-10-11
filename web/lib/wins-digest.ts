@@ -1,5 +1,6 @@
 import { getPrisma } from "@/lib/prisma";
 import { postDiscordAnnouncement } from "@/lib/discord";
+import { notifyDroidPost } from "@/lib/push";
 import { siteUrl } from "@/lib/site-url";
 import { describeWin, type WinKind } from "@/lib/wins";
 
@@ -73,6 +74,7 @@ export async function runWeeklyDigest({ dryRun = false }: { dryRun?: boolean } =
   if (!guild) return { posted: false, reason: "no guild", digest };
 
   await postDiscordAnnouncement(digest, webhookUrl);
+  await notifyDroidPost(digest);
   await prisma.automationEvent.create({
     data: {
       guildId: guild.id,
