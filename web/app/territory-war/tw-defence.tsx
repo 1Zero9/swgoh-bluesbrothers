@@ -10,6 +10,7 @@ import type {
   Recommendation,
 } from "@/lib/tw-planning-engine";
 import type { CommandSummary, EffectiveZone } from "@/lib/tw-view";
+import NavIcon from "@/app/nav-icon";
 
 function confidenceClass(score: number) {
   if (score >= 75) return "is-strong";
@@ -260,7 +261,7 @@ export default function TwDefence({
                           title={assignment.locked ? "Unlock" : "Lock"}
                           onClick={() => onUpdateAssignment(assignment.id, { locked: !assignment.locked })}
                         >
-                          {assignment.locked ? "🔒" : "🔓"}
+                          {assignment.locked ? <NavIcon name="lock" /> : <NavIcon name="unlock" />}
                         </button>
                         <button type="button" className="twc-icon-btn twc-danger" disabled={busy} onClick={() => onDeleteAssignment(assignment.id)}>
                           Remove

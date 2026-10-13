@@ -134,7 +134,7 @@ export function describeWin(win: WinDraft): { text: string; tag: string; icon: s
     case "ULTIMATE":
       return {
         text: unit ? `unlocked the ${unit} Ultimate — ultimate #${win.value}` : `unlocked ultimate #${win.value}`,
-        tag: "Ultimate", icon: "⚡", tier: "headline",
+        tag: "Ultimate", icon: "✧", tier: "headline",
       };
     case "RELIC":
       return {

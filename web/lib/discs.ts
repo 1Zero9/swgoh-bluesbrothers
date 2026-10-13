@@ -35,11 +35,11 @@ export type DiscSubmission = {
 
 export const DISC_CATEGORIES: Array<{ id: DiscCategory; label: string; icon: string; description: string }> = [
   { id: "all", label: "All Crates", icon: "◈", description: "The full galactic vinyl collection" },
-  { id: "blues-brothers", label: "Blues Brothers", icon: "🕶️", description: "Jake & Elwood anthems and movie showstoppers" },
-  { id: "chicago-blues", label: "Chicago Blues", icon: "🎷", description: "Chess Records legends and electric South Side shuffles" },
-  { id: "stax-soul", label: "Stax & Soul", icon: "🎺", description: "Memphis horns, Motown grooves and soul power" },
-  { id: "delta-roots", label: "Delta & Roots", icon: "🎸", description: "Acoustic slide, raw mojo and foundational blues" },
-  { id: "community", label: "Guild Picks", icon: "⚡", description: "Tracks suggested and queued by guild members" },
+  { id: "blues-brothers", label: "Blues Brothers", icon: "glasses", description: "Jake & Elwood anthems and movie showstoppers" },
+  { id: "chicago-blues", label: "Chicago Blues", icon: "sax", description: "Chess Records legends and electric South Side shuffles" },
+  { id: "stax-soul", label: "Stax & Soul", icon: "sax", description: "Memphis horns, Motown grooves and soul power" },
+  { id: "delta-roots", label: "Delta & Roots", icon: "guitar", description: "Acoustic slide, raw mojo and foundational blues" },
+  { id: "community", label: "Guild Picks", icon: "zap", description: "Tracks suggested and queued by guild members" },
 ];
 
 export const CURATED_DISCS: DiscTrack[] = [

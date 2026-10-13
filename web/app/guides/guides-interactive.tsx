@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FIELD_GUIDES, GUIDE_CATEGORIES, GuideItem } from "@/lib/guides-data";
+import NavIcon from "@/app/nav-icon";
 
 export default function GuidesInteractive() {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
@@ -66,7 +67,7 @@ export default function GuidesInteractive() {
                 if (firstInCat) setActiveGuideId(firstInCat.id);
               }}
             >
-              <span>{cat.icon}</span>
+              <NavIcon name={cat.icon} />
               <strong>{cat.label}</strong>
             </button>
           ))}
@@ -114,7 +115,7 @@ export default function GuidesInteractive() {
                     onClick={() => setActiveGuideId(guide.id)}
                   >
                     <div className="guide-nav-top">
-                      <span className="guide-nav-icon">{guide.icon}</span>
+                      <span className="guide-nav-icon"><NavIcon name={guide.icon} size={18} /></span>
                       <div className="guide-nav-meta">
                         <span className="guide-category-tag">{guide.categoryLabel}</span>
                         {guide.badge && <span className="guide-badge-tag">{guide.badge}</span>}
@@ -125,9 +126,9 @@ export default function GuidesInteractive() {
                     <p>{guide.shortDescription}</p>
 
                     <div className="guide-nav-bottom">
-                      <span className="guide-time">⏱ {guide.estimatedMinutes} min read</span>
+                      <span className="guide-time"><NavIcon name="clock" size={16} /> {guide.estimatedMinutes} min read</span>
                       <span className="guide-step-count">
-                        {checkedSteps > 0 ? `✓ ${checkedSteps}/${totalSteps} done` : `${totalSteps} steps`}
+                        {checkedSteps > 0 ? `${checkedSteps}/${totalSteps} done` : `${totalSteps} steps`}
                       </span>
                     </div>
                   </button>
@@ -143,8 +144,8 @@ export default function GuidesInteractive() {
             <div className="reader-meta-row">
               <div className="reader-badges">
                 <span className="guide-category-tag">{activeGuide.categoryLabel}</span>
-                <span className="guide-audience-tag">👤 {activeGuide.targetAudience}</span>
-                <span className="guide-time-tag">⏱ {activeGuide.estimatedMinutes} min walkthrough</span>
+                <span className="guide-audience-tag"><NavIcon name="user" size={16} /> {activeGuide.targetAudience}</span>
+                <span className="guide-time-tag"><NavIcon name="clock" size={16} /> {activeGuide.estimatedMinutes} min walkthrough</span>
               </div>
 
               <button
@@ -153,12 +154,12 @@ export default function GuidesInteractive() {
                 onClick={() => handleShareGuide(activeGuide.slug)}
                 title="Copy direct link to this guide"
               >
-                {copiedLink ? "✓ Copied Link!" : "🔗 Share Guide"}
+                {copiedLink ? "Copied Link!" : <><NavIcon name="link" size={16} /> Share Guide</>}
               </button>
             </div>
 
             <div className="reader-title-group">
-              <span className="reader-big-icon">{activeGuide.icon}</span>
+              <span className="reader-big-icon"><NavIcon name={activeGuide.icon} size={30} /></span>
               <div>
                 <h2>{activeGuide.title}</h2>
                 <p className="reader-subtitle">{activeGuide.shortDescription}</p>
@@ -198,7 +199,7 @@ export default function GuidesInteractive() {
 
                       {step.tip && (
                         <div className="step-tip-box">
-                          <span className="tip-icon">💡</span>
+                          <span className="tip-icon"><NavIcon name="bulb" size={18} /></span>
                           <div>
                             <strong>Pro Tip:</strong> <span>{step.tip}</span>
                           </div>

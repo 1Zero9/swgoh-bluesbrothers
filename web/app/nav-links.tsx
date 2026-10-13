@@ -117,7 +117,7 @@ export default function NavLinks({ items: allItems }: { items: NavCategoryItem[]
                         onClick={() => setOpenDropdown(null)}
                       >
                         <div className="nav-drop-icon">
-                          <NavIcon name={child.icon} />
+                          <NavIcon name={child.icon} size={20} />
                         </div>
                         <div className="nav-drop-info">
                           <div className="nav-drop-title-row">

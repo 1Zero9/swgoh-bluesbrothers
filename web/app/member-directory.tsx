@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import NavIcon from "@/app/nav-icon";
 
 export type MemberDirectoryEntry = {
   playerId: string;
@@ -285,7 +286,7 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
                   </div>
                   {(growthStats.relicsDelta !== 0 || growthStats.glsDelta !== 0) && (
                     <div style={{ gridColumn: "1 / -1", padding: "10px", borderRadius: "8px", background: "rgba(33, 112, 255, 0.05)", border: "1px solid rgba(33, 112, 255, 0.1)", fontSize: "12px", color: "#d3e8ff" }}>
-                      📈 Milestones: {growthStats.relicsDelta > 0 && `+${growthStats.relicsDelta} Relics`} {growthStats.glsDelta > 0 && `+${growthStats.glsDelta} GLs`} (7d)
+                      <NavIcon name="trend" size={16} /> Milestones: {growthStats.relicsDelta > 0 && `+${growthStats.relicsDelta} Relics`} {growthStats.glsDelta > 0 && `+${growthStats.glsDelta} GLs`} (7d)
                     </div>
                   )}
                 </div>

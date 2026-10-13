@@ -289,7 +289,7 @@ export default async function Home() {
                 <h2>New Crew Welcomes</h2>
               </div>
               <span className="live-pill" style={{ background: "rgba(83, 214, 154, 0.15)", color: "#53d69a" }}>
-                Welcome 🎷
+                Welcome
               </span>
             </div>
             <p className="panel-intro">Give a warm welcome to the latest players to join the Blues Brothers guild roster.</p>

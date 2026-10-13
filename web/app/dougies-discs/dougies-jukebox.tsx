@@ -8,6 +8,7 @@ import {
   DISC_CATEGORIES,
   parseYouTubeId,
 } from "@/lib/discs";
+import NavIcon from "@/app/nav-icon";
 
 // Extend window for YouTube IFrame API
 declare global {
@@ -429,7 +430,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   function addToQueue(track: DiscTrack, playNext: boolean = false) {
     if (playNext) {
       setQueue((prev) => [track, ...prev]);
-      showToast(`⚡ Set as Up Next (#1): "${track.title}"`, "success");
+      showToast(`Set as Up Next (#1): "${track.title}"`, "success");
     } else {
       setQueue((prev) => [...prev, track]);
       showToast(`Added to queue (#${queue.length + 1}): "${track.title}"`, "success");
@@ -682,7 +683,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             <span className="station-code">FREQ BB-45</span>
             {queue.length > 0 && (
               <span className="station-queue-badge">
-                ⚡ {queue.length} in Up Next
+                <NavIcon name="zap" size={16} /> {queue.length} in Up Next
               </span>
             )}
           </div>
@@ -694,7 +695,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               onClick={scrollToCrate}
               title="Jump down to dig in crate"
             >
-              <span>📂</span> Dig in Crate ({catalog.length})
+              <span><NavIcon name="folder" size={16} /></span> Dig in Crate ({catalog.length})
             </button>
 
             <div className="cockpit-mode-pills">
@@ -703,14 +704,14 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 className={playerMode === "vinyl" ? "active" : ""}
                 onClick={() => setPlayerMode("vinyl")}
               >
-                <span>💿</span> Turntable
+                <span><NavIcon name="disc" size={16} /></span> Turntable
               </button>
               <button
                 type="button"
                 className={playerMode === "video" ? "active" : ""}
                 onClick={() => setPlayerMode("video")}
               >
-                <span>📺</span> Video Clip
+                <span><NavIcon name="tv" size={16} /></span> Video Clip
               </button>
             </div>
 
@@ -722,7 +723,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 playSoundbite("Nickel", "Drop a nickel in the slot!", "bell");
               }}
             >
-              <span aria-hidden="true">🪙</span> Drop a Record
+              <span aria-hidden="true"><NavIcon name="coins" size={16} /></span> Drop a Record
             </button>
           </div>
         </div>
@@ -833,7 +834,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                     onClick={skipNext}
                     title="Skip immediately to this queued track"
                   >
-                    ▶ Spin Next
+                    <NavIcon name="play" /> Spin Next
                   </button>
                 </div>
               )}
@@ -850,7 +851,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   title="Previous Track"
                   aria-label="Previous Track"
                 >
-                  ⏮
+                  <NavIcon name="prev" size={16} />
                 </button>
 
                 <button
@@ -860,7 +861,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   title={isPlaying ? "Pause Track" : "Play Track"}
                   aria-label={isPlaying ? "Pause Track" : "Play Track"}
                 >
-                  {isPlaying ? "⏸ PAUSE" : "▶ SPIN"}
+                  {isPlaying ? <><NavIcon name="pause" size={16} /> PAUSE</> : <><NavIcon name="play" size={16} /> SPIN</>}
                 </button>
 
                 <button
@@ -870,7 +871,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   title={queue.length > 0 ? `Next in Queue: ${queue[0].title}` : "Next Track"}
                   aria-label="Next Track"
                 >
-                  ⏭
+                  <NavIcon name="next" size={16} />
                 </button>
 
                 <button
@@ -883,7 +884,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   title={isShuffle ? "Shuffle: ON" : "Shuffle: OFF"}
                   aria-pressed={isShuffle}
                 >
-                  🔀
+                  <NavIcon name="shuffle" size={16} />
                 </button>
 
                 <button
@@ -896,7 +897,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   }}
                   title={`Repeat: ${repeatMode}`}
                 >
-                  {repeatMode === "one" ? "🔂" : "🔁"}
+                  {repeatMode === "one" ? <NavIcon name="repeat1" size={16} /> : <NavIcon name="repeat" size={16} />}
                 </button>
               </div>
 
@@ -910,7 +911,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                     title={isMuted ? "Unmute" : "Mute"}
                     aria-label={isMuted ? "Unmute" : "Mute"}
                   >
-                    {isMuted || volume === 0 ? "🔇" : volume < 50 ? "🔉" : "🔊"}
+                    {isMuted || volume === 0 ? <NavIcon name="mute" size={16} /> : volume < 50 ? <NavIcon name="quiet" size={16} /> : <NavIcon name="loud" size={16} />}
                   </button>
                   <input
                     type="range"
@@ -931,7 +932,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   aria-expanded={isQueueOpen}
                   aria-controls="cockpit-queue-drawer"
                 >
-                  <span>📋</span>
+                  <span><NavIcon name="clipboard" size={16} /></span>
                   <strong>Up Next</strong>
                   <span className="queue-pill">{queue.length}</span>
                 </button>
@@ -962,7 +963,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               <div className="quick-add-input-row">
                 <input
                   type="text"
-                  placeholder="⚡ Quick add track to queue…"
+                  placeholder="Quick add track to queue…"
                   value={quickAddSearch}
                   onFocus={() => setIsQuickAddOpen(true)}
                   onChange={(e) => {
@@ -1017,7 +1018,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                             }}
                             title="Play right after current song"
                           >
-                            ⚡ Play Next
+                            <NavIcon name="zap" size={16} /> Play Next
                           </button>
                           <button
                             type="button"
@@ -1047,7 +1048,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 onClick={() => queueCategory("blues-brothers")}
                 title="Queue all 10 Blues Brothers anthems"
               >
-                🕶️ +Blues Brothers
+                <NavIcon name="glasses" size={16} /> +Blues Brothers
               </button>
               <button
                 type="button"
@@ -1055,7 +1056,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 onClick={() => queueCategory("chicago-blues")}
                 title="Queue all Chicago Blues legends"
               >
-                🎷 +Chicago Blues
+                <NavIcon name="sax" size={16} /> +Chicago Blues
               </button>
               <button
                 type="button"
@@ -1063,7 +1064,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 onClick={() => queueRandomHits(5)}
                 title="Queue 5 random hits from the crate"
               >
-                🎲 +5 Random
+                <NavIcon name="dice" size={16} /> +5 Random
               </button>
             </div>
 
@@ -1081,9 +1082,9 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             <div className="queue-list-scroll">
               {queue.length === 0 ? (
                 <div className="queue-empty-box">
-                  <span className="q-empty-disc">💿</span>
+                  <span className="q-empty-disc"><NavIcon name="disc" size={28} /></span>
                   <p>Slot is open.</p>
-                  <small>Use <strong>⚡ Quick Add</strong> above, or click <strong>＋ Queue</strong> on any track in the crate below.</small>
+                  <small>Use <strong>Quick Add</strong> above, or click <strong>＋ Queue</strong> on any track in the crate below.</small>
                 </div>
               ) : (
                 queue.map((track, idx) => (
@@ -1103,7 +1104,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         title="Spin now"
                         className="q-btn-play"
                       >
-                        ▶ Spin
+                        <NavIcon name="play" /> Spin
                       </button>
                       {idx > 0 && (
                         <button
@@ -1158,7 +1159,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             className="soundbite-card"
             onClick={() => playSoundbite("Mission", "We're on a mission from God.", "bell")}
           >
-            <span className="sound-icon">✝️</span>
+            <span className="sound-icon"><NavIcon name="church" size={20} /></span>
             <strong>&ldquo;On a mission from God&rdquo;</strong>
             <small>Jake &amp; Elwood motto</small>
           </button>
@@ -1174,7 +1175,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
               )
             }
           >
-            <span className="sound-icon">🕶️</span>
+            <span className="sound-icon"><NavIcon name="glasses" size={20} /></span>
             <strong>&ldquo;106 Miles to Chicago&rdquo;</strong>
             <small>Hit it!</small>
           </button>
@@ -1184,7 +1185,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             className="soundbite-card"
             onClick={() => playSoundbite("Horns", "Play it Steve! Take it out to the street!", "horn")}
           >
-            <span className="sound-icon">🎺</span>
+            <span className="sound-icon"><NavIcon name="sax" size={20} /></span>
             <strong>&ldquo;Play It, Steve!&rdquo;</strong>
             <small>Memphis brass flourish</small>
           </button>
@@ -1194,7 +1195,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
             className="soundbite-card"
             onClick={() => playSoundbite("Needle Drop", "Spinning 45 RPM analogue vinyl directly from Chess Records.", "crackle")}
           >
-            <span className="sound-icon">📻</span>
+            <span className="sound-icon"><NavIcon name="radio" size={20} /></span>
             <strong>&ldquo;Needle Drop &amp; Crackle&rdquo;</strong>
             <small>33⅓ / 45 RPM stylus drop</small>
           </button>
@@ -1252,7 +1253,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   className={`category-pill${activeCategory === cat.id ? " is-active" : ""}`}
                   onClick={() => setActiveCategory(cat.id)}
                 >
-                  <span className="pill-icon">{cat.icon}</span>
+                  <span className="pill-icon"><NavIcon name={cat.icon} /></span>
                   <strong>{cat.label}</strong>
                   <span className="pill-count">{count}</span>
                 </button>
@@ -1261,7 +1262,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
           </div>
 
           <div className="crate-search-wrap">
-            <span className="search-icon" aria-hidden="true">🔍</span>
+            <span className="search-icon" aria-hidden="true"><NavIcon name="search" size={16} /></span>
             <input
               type="search"
               placeholder="Search artist, track, album or vibe…"
@@ -1333,7 +1334,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         onClick={() => playTrack(disc)}
                         title="Spin immediately"
                       >
-                        {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin"}
+                        {isCurrent && isPlaying ? <><NavIcon name="pause" size={16} /> Spinning</> : <><NavIcon name="play" size={16} /> Spin</>}
                       </button>
                       <button
                         type="button"
@@ -1341,7 +1342,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         onClick={() => addToQueue(disc, true)}
                         title="Play next after current song"
                       >
-                        ⚡ Next
+                        <NavIcon name="zap" size={16} /> Next
                       </button>
                       <button
                         type="button"
@@ -1380,7 +1381,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
 
                       <div className="jacket-artwork">
                         <span className="jacket-disc-mark" aria-hidden="true">
-                          {disc.category === "blues-brothers" ? "🕶️" : disc.category === "chicago-blues" ? "🎷" : "🎸"}
+                          {disc.category === "blues-brothers" ? <NavIcon name="glasses" size={22} /> : disc.category === "chicago-blues" ? <NavIcon name="sax" size={22} /> : <NavIcon name="guitar" size={22} />}
                         </span>
                         <h4>{disc.title}</h4>
                         <p>{disc.artist}</p>
@@ -1415,7 +1416,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         onClick={() => playTrack(disc)}
                         aria-label={`Spin ${disc.title}`}
                       >
-                        {isCurrent && isPlaying ? "⏸ Spinning" : "▶ Spin"}
+                        {isCurrent && isPlaying ? <><NavIcon name="pause" size={16} /> Spinning</> : <><NavIcon name="play" size={16} /> Spin</>}
                       </button>
 
                       <button
@@ -1424,7 +1425,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                         onClick={() => addToQueue(disc, true)}
                         title="Play right after current track"
                       >
-                        ⚡ Next
+                        <NavIcon name="zap" size={16} /> Next
                       </button>
 
                       <button
@@ -1468,7 +1469,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 title="Previous Track"
                 aria-label="Previous Track"
               >
-                ⏮
+                <NavIcon name="prev" size={16} />
               </button>
 
               <button
@@ -1478,7 +1479,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 title={isPlaying ? "Pause Track" : "Play Track"}
                 aria-label={isPlaying ? "Pause Track" : "Play Track"}
               >
-                {isPlaying ? "⏸" : "▶"}
+                {isPlaying ? <NavIcon name="pause" size={16} /> : <NavIcon name="play" size={16} />}
               </button>
 
               <button
@@ -1488,7 +1489,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 title={queue.length > 0 ? `Next: ${queue[0].title}` : "Next Track"}
                 aria-label="Next Track"
               >
-                ⏭
+                <NavIcon name="next" size={16} />
               </button>
 
               {/* Volume Slider in Mini-bar */}
@@ -1499,7 +1500,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   onClick={toggleMute}
                   title={isMuted ? "Unmute" : "Mute"}
                 >
-                  {isMuted || volume === 0 ? "🔇" : "🔊"}
+                  {isMuted || volume === 0 ? <NavIcon name="mute" size={16} /> : <NavIcon name="loud" size={16} />}
                 </button>
                 <input
                   type="range"
@@ -1521,7 +1522,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                 onClick={scrollToDeck}
                 title="View Up Next queue in Cockpit"
               >
-                <span>📋 Up Next</span>
+                <span><NavIcon name="clipboard" size={16} /> Up Next</span>
                 <span className="fl-queue-num">{queue.length}</span>
               </button>
 
@@ -1678,7 +1679,7 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
                   disabled={suggestSending || !suggestPreviewId}
                   className="btn-submit-record"
                 >
-                  {suggestSending ? "Loading into Jukebox…" : "🪙 Drop in Jukebox & Spin"}
+                  {suggestSending ? "Loading into Jukebox…" : <><NavIcon name="coins" size={16} /> Drop in Jukebox &amp; Spin</>}
                 </button>
               </div>
             </form>

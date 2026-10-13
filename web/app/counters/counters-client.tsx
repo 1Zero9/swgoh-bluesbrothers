@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import UnitPicker, { type PickedUnit } from "@/app/unit-picker";
 import type { CounterView } from "@/lib/counters-data";
+import NavIcon from "@/app/nav-icon";
 
 type Slot = { unit: PickedUnit | null; minRelic: number; key: number };
 const MODE_LABEL: Record<string, string> = { TW: "TW", GAC: "GAC", BOTH: "TW + GAC" };
@@ -126,7 +127,7 @@ export default function CountersClient() {
             {counter.notes ? <p className="counter-notes">{counter.notes}</p> : null}
             {counter.readiness.you ? (
               <p className={`counter-you${counter.readiness.you.ready ? " is-ready" : ""}`}>
-                {counter.readiness.you.ready ? "✅ You can run this now." : `❌ You're not there yet: ${counter.readiness.you.gaps.slice(0, 3).join("; ")}`}
+                {counter.readiness.you.ready ? <><NavIcon name="check" /> You can run this now.</> : <><NavIcon name="cross" /> You&apos;re not there yet: {counter.readiness.you.gaps.slice(0, 3).join("; ")}</>}
               </p>
             ) : null}
             <p className="counter-ready"><strong>Ready now ({counter.readiness.ready.length}):</strong> {counter.readiness.ready.length ? counter.readiness.ready.join(", ") : "nobody yet"}</p>

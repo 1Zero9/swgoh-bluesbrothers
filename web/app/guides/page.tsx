@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import GuidesInteractive from "./guides-interactive";
+import NavIcon from "@/app/nav-icon";
 
 export const metadata: Metadata = {
   title: "Field Guides & Simple Instructions · Blues Brothers",
@@ -32,11 +33,11 @@ export default function GuidesPage() {
         priority
       >
         <div className="guides-hero-shortcuts">
-          <Link href="#account-linking" className="hero-shortcut-chip">⚡ Account Linking</Link>
-          <Link href="#territory-war-orders" className="hero-shortcut-chip">⚔️ TW Battle Orders</Link>
-          <Link href="#datacron-optimization" className="hero-shortcut-chip">💎 Datacron Upgrades</Link>
-          <Link href="#dougies-discs-jukebox" className="hero-shortcut-chip">🎵 Dougie&apos;s Discs</Link>
-          <Link href="#officer-discord-sync" className="hero-shortcut-chip">🛡️ Officer Sync</Link>
+          <Link href="#account-linking" className="hero-shortcut-chip"><NavIcon name="zap" size={16} /> Account Linking</Link>
+          <Link href="#territory-war-orders" className="hero-shortcut-chip"><NavIcon name="war" size={16} /> TW Battle Orders</Link>
+          <Link href="#datacron-optimization" className="hero-shortcut-chip"><NavIcon name="gem" size={16} /> Datacron Upgrades</Link>
+          <Link href="#dougies-discs-jukebox" className="hero-shortcut-chip"><NavIcon name="music" size={16} /> Dougie&apos;s Discs</Link>
+          <Link href="#officer-discord-sync" className="hero-shortcut-chip"><NavIcon name="shield" size={16} /> Officer Sync</Link>
         </div>
       </PageHero>
 
