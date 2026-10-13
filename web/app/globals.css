@@ -8995,3 +8995,15 @@ svg.ni:only-child { margin-right: 0; vertical-align: middle; }
   .phone-fold.standings-section { margin-top: 14px; }
   .lower-grid-single > .panel { padding: 0; border: 0; background: none; backdrop-filter: none; }
 }
+
+/* Welcome banner: new arrivals, first thing on the member home page */
+.welcome-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 18px; border: 1px solid rgba(83,214,154,.45); border-radius: 16px; background: linear-gradient(130deg, rgba(14,40,32,.9), rgba(11,18,16,.95)); color: inherit; text-decoration: none; }
+.welcome-banner-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgba(83,214,154,.16); color: #53d69a; }
+.welcome-banner-copy { display: grid; gap: 2px; min-width: 0; }
+.welcome-banner-copy small { color: #53d69a; font: 10px var(--font-geist-mono); letter-spacing: .12em; text-transform: uppercase; }
+.welcome-banner-copy strong { font-size: 18px; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.welcome-banner-copy > span { color: var(--muted); font-size: 13px; }
+.welcome-banner-go { color: #53d69a; font-size: 20px; }
+html[data-theme="light"] .welcome-banner { background: #f0fbf6; border-color: rgba(34,150,100,.4); }
+html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome-banner-copy small, html[data-theme="light"] .welcome-banner-go { color: #15795a; }
+@media (max-width: 560px) { .welcome-banner { padding: 12px 14px; gap: 12px; } .welcome-banner-icon { width: 40px; height: 40px; } .welcome-banner-copy strong { font-size: 16px; } }

@@ -1,6 +1,6 @@
 import {
   Bell, Bot, BookOpen, CircleCheck, CircleX, Church, Clock, ClipboardList, Coins, Dices, Disc3, FlaskConical, FolderOpen, Gem, Glasses, Guitar, Hourglass,
-  KeyRound, Lightbulb, Link2, Lock, LockOpen, MessageCircle, Music, Music2, Orbit, Pause, Play, Radio, Repeat, Repeat1, Rocket, Scale, Search, Shield,
+  KeyRound, Lightbulb, Link2, Lock, LockOpen, MessageCircle, Music, Music2, Orbit, PartyPopper, Pause, Play, Radio, Repeat, Repeat1, Rocket, Scale, Search, Shield,
   Shuffle, SkipBack, SkipForward, Sparkles, Star, Swords, TrendingUp, Trophy, Tv, UserRound, Users, Utensils, Volume1, Volume2, VolumeX, Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -12,7 +12,7 @@ const ICONS: Record<string, LucideIcon> = {
   report: ClipboardList, clipboard: ClipboardList, guide: BookOpen, bell: Bell, orb: Sparkles, flask: FlaskConical, scale: Scale, hourglass: Hourglass,
   clock: Clock, link: Link2, bulb: Lightbulb, key: KeyRound, trend: TrendingUp, lock: Lock, unlock: LockOpen, check: CircleCheck, cross: CircleX,
   folder: FolderOpen, disc: Disc3, tv: Tv, coins: Coins, prev: SkipBack, next: SkipForward, pause: Pause, play: Play, shuffle: Shuffle, repeat: Repeat,
-  repeat1: Repeat1, mute: VolumeX, quiet: Volume1, loud: Volume2, guitar: Guitar, dice: Dices, radio: Radio, church: Church,
+  repeat1: Repeat1, mute: VolumeX, quiet: Volume1, loud: Volume2, guitar: Guitar, dice: Dices, radio: Radio, church: Church, party: PartyPopper,
 };
 
 export default function NavIcon({ name, size = 16 }: { name?: string; size?: number }) {

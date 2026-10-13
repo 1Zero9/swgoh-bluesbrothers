@@ -19,6 +19,7 @@ import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
 import BlueLine from "@/app/blue-line";
 import PhoneFold from "@/app/phone-fold";
+import WelcomeBanner from "@/app/welcome-banner";
 import QuickLaunch from "./quick-launch";
 import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
@@ -140,6 +141,7 @@ export default async function Home() {
               </span>
             </Link>
           ) : null}
+          <WelcomeBanner members={changes.newMembers} />
           <Suspense fallback={null}><BlueLine /></Suspense>
           <QuickLaunch />
         </div>

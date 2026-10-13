@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.69.1 — 2026-10-13
+
+- **New members get the top spot.** A green "Welcome to the band" banner now sits right under your status line on the home page, naming anyone who joined in the last three weeks and linking to chat to say hello. It disappears when no one is new.
+
 ## 0.69.0 — 2026-10-13
 
 - **A much shorter home page on phones** (about 4,400 px down to about 2,400). The tool buttons are one line each, the stat cards and Blue's note are smaller, the Guild Wire shows its three newest items with the rest under "Older news", and "Legends & watchlist" and "New crew welcomes" are fold-aways. Laptops are unchanged.
