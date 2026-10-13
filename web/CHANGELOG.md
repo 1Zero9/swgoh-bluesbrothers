@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.65.1 — 2026-10-13
+
+- **Shorter datacron cards.** Each card now shows the level, the character, the set, the owner and whether it is Territory War ready. The ability text and rolled stats fold away behind "Ability and stats". The vault is less than half its former length on a phone (about 5,600 px, down from about 12,000).
+
 ## 0.65.0 — 2026-10-13
 
 - **Guild Arsenal is a fifth of its length** on a phone (about 2,700 px, down from 11,800). Each group (Galactic Legends, core characters, capital ships) folds away, with the first one open; each unit is a short card with how many members own it and how many are at 7★ and R5+. Tap a unit for the full list of who has it, as before.
