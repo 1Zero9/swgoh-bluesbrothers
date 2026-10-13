@@ -20,6 +20,7 @@ import OfficerDesk from "./officer-desk";
 import BlueLine from "@/app/blue-line";
 import PhoneFold from "@/app/phone-fold";
 import WelcomeBanner from "@/app/welcome-banner";
+import { buildWelcome } from "@/lib/welcome";
 import QuickLaunch from "./quick-launch";
 import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
@@ -141,7 +142,7 @@ export default async function Home() {
               </span>
             </Link>
           ) : null}
-          <WelcomeBanner members={changes.newMembers} />
+          <WelcomeBanner welcome={buildWelcome(changes.newMembers, new Date().getTime())} />
           <Suspense fallback={null}><BlueLine /></Suspense>
           <QuickLaunch />
         </div>
