@@ -8955,3 +8955,12 @@ html[data-theme="light"] .blue-line-ask { color: #1d4f9a; }
 /* Inline icons (lucide) sit on the text baseline; alone, they carry no margin */
 svg.ni { display: inline-block; flex: none; vertical-align: -0.17em; margin-right: .35em; }
 svg.ni:only-child { margin-right: 0; vertical-align: middle; }
+/* Jukebox top row on phones: let it wrap into tidy rows instead of squeezing the labels */
+.cockpit-top-actions button { white-space: nowrap; }
+@media (max-width: 640px) {
+  .cockpit-top-actions { flex-wrap: wrap; }
+  .cockpit-mode-pills { flex: 1 1 auto; }
+  .cockpit-mode-pills button { flex: 1; justify-content: center; }
+  .cockpit-scroll-down-btn { flex: 1 1 100%; justify-content: center; padding: 8px 10px; }
+  .cockpit-drop-record-btn { flex: 1 1 100%; justify-content: center; padding: 9px 12px; }
+}
