@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.66.4 — 2026-10-13
+
+- **Laptop screens: the useful part comes first.** The banner at the top of most pages filled the whole screen on a laptop, so things like "Your job this war" and the Operations tools started below the fold. Banners are now about a third shorter, and the home page banner drops its intro text and buttons (the tool buttons sit right underneath instead), so the status strip and buttons show on the first screen.
+- **Tidier alignment.** The Operations tiles are four across, and the Territory War orders card and the officer fold-aways line up with the rest of the page.
+
 ## 0.66.3 — 2026-10-13
 
 - **A Sign in button on the front page.** Members arriving at the site for the first time had no sign-in button on the first screen; on a phone it was only inside the menu. The front page now opens with **Sign in with Discord** and, next to it, "Thinking of joining?" for recruits, which jumps to what the guild asks for.
