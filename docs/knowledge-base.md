@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.56.0 · **Last updated:** 2026-10-13 · tracks site `v0.68.0`
+**Doc version:** 1.56.1 · **Last updated:** 2026-10-13 · tracks site `v0.68.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -484,6 +484,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.56.1 — 2026-10-13**: menus and tool tiles use lucide-react icons via `app/nav-icon.tsx` (navigation data holds icon names such as `war`, `blue`, not emoji; add new names to the `ICONS` map). Mobile menu: officers get an "Officer Deck" group right under the everyday links (roster report, Discord sync, war room, battle planning); the desktop Officer Deck gained the same two planning links. Emoji remain in other pages (jukebox, TB planner, datacron UI, guides, Discord sync UI, wins).
 - **1.56.0 — 2026-10-13**: Blue on the home page: `app/blue-line.tsx` (server component inside `<Suspense>`, reuses `blueBriefing`, rule-based so free) under the personal strip; "Ask Blue" (`/me#ask-blue`) added to the quick-launch grid (now 12 tiles, 6 across on laptop, with Raids), the Roster dropdown and the mobile menu. My Page briefing card floats the droid beside the heading on phones.
 - **1.55.2 — 2026-10-13**: B-LU3's allowance is weekly, not daily: `weekStart()` (Monday UTC) keys the `BlueUsage` row, default 5 questions, `BLUE_WEEKLY_LIMIT` overrides. The rule-based roster report stays free.
 - **1.55.1 — 2026-10-13**: B-LU3 can run on Gemini directly (`@ai-sdk/google`, `GOOGLE_GENERATIVE_AI_API_KEY`); falls back to the AI Gateway when no Google key is set.

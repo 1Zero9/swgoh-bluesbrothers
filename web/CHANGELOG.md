@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.68.1 — 2026-10-13
+
+- **Officers can find their tools on a phone.** The phone menu now has an **Officer Deck** section near the top (roster report, Discord sync, the Territory War war room and Territory Battle planning), instead of an "Officers" section at the bottom. The laptop Officer Deck menu also links to the war room and battle planning.
+- **Proper icons instead of emoji** in the menus and the tool tiles on the home page and Operations.
+
 ## 0.68.0 — 2026-10-13
 
 - **Blue is on the home page.** Under your status line there is now a short note from B-LU3 (what you're needed for, or your closest next finish) with an **Ask Blue** link. It costs nothing to show.
