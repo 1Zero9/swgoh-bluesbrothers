@@ -23,12 +23,12 @@ export type GuideItem = {
 };
 
 export const GUIDE_CATEGORIES = [
-  { id: "ALL", label: "All Guides", icon: "📖" },
-  { id: "GETTING_STARTED", label: "Getting Started & Access", icon: "⚡" },
-  { id: "TERRITORY_WAR", label: "Territory War Orders", icon: "⚔️" },
-  { id: "DATACRONS", label: "Datacron Optimization", icon: "💎" },
-  { id: "CANTINA", label: "Cantina & Music", icon: "🎵" },
-  { id: "OFFICER", label: "Officer Command", icon: "🛡️" },
+  { id: "ALL", label: "All Guides", icon: "guide" },
+  { id: "GETTING_STARTED", label: "Getting Started & Access", icon: "zap" },
+  { id: "TERRITORY_WAR", label: "Territory War Orders", icon: "war" },
+  { id: "DATACRONS", label: "Datacron Optimization", icon: "gem" },
+  { id: "CANTINA", label: "Cantina & Music", icon: "music" },
+  { id: "OFFICER", label: "Officer Command", icon: "shield" },
 ] as const;
 
 export const FIELD_GUIDES: GuideItem[] = [
@@ -39,7 +39,7 @@ export const FIELD_GUIDES: GuideItem[] = [
     shortDescription: "Sign in once with Discord and the roster, Territory War, Territory Battles, your own page and the Wins feed all open up.",
     category: "GETTING_STARTED",
     categoryLabel: "Getting Started",
-    icon: "⚡",
+    icon: "zap",
     badge: "Essential",
     targetAudience: "All Members",
     estimatedMinutes: 2,
@@ -92,7 +92,7 @@ export const FIELD_GUIDES: GuideItem[] = [
     shortDescription: "Clear instructions for every TW phase: joining the war, setting assigned defence squads, and attacking enemy zones.",
     category: "TERRITORY_WAR",
     categoryLabel: "Territory War",
-    icon: "⚔️",
+    icon: "war",
     badge: "Battle Orders",
     targetAudience: "All Members",
     estimatedMinutes: 4,
@@ -138,7 +138,7 @@ export const FIELD_GUIDES: GuideItem[] = [
     shortDescription: "How to prioritize Level 9 character perks, faction boosts, and material rerolls to supercharge your combat teams.",
     category: "DATACRONS",
     categoryLabel: "Datacrons",
-    icon: "💎",
+    icon: "gem",
     badge: "Meta Strategy",
     targetAudience: "All Members",
     estimatedMinutes: 3,
@@ -181,7 +181,7 @@ export const FIELD_GUIDES: GuideItem[] = [
     shortDescription: "How to play Chicago blues classics, control the retro vinyl player, and add your own YouTube music to the guild queue.",
     category: "CANTINA",
     categoryLabel: "Cantina & Music",
-    icon: "🎵",
+    icon: "music",
     badge: "Entertainment",
     targetAudience: "All Members",
     estimatedMinutes: 2,
@@ -224,7 +224,7 @@ export const FIELD_GUIDES: GuideItem[] = [
     shortDescription: "How officer access works, how to link members to Discord in bulk, and what the site keeps in step automatically.",
     category: "OFFICER",
     categoryLabel: "Officer Command",
-    icon: "🛡️",
+    icon: "shield",
     badge: "Leadership Only",
     targetAudience: "Officers",
     estimatedMinutes: 3,

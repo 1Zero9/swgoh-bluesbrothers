@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { ROTE_PLANNER_DATA, type RotePhase } from "@/lib/territory-battles";
+import NavIcon from "@/app/nav-icon";
 
 type MemberGp = {
   playerId: string;
@@ -235,7 +236,7 @@ export default function TbPlanner({ members, initialCharacterGp, initialShipGp }
           ))}
         </div>
         <button type="button" className="btn-optimize" onClick={autoOptimize}>
-          ⚡ Auto-Allocate GP
+          <NavIcon name="zap" size={16} /> Auto-Allocate GP
         </button>
       </div>
 
@@ -368,7 +369,7 @@ export default function TbPlanner({ members, initialCharacterGp, initialShipGp }
               />
             </div>
             {calculations.remainingCharacterGp < 0 && (
-              <span className="balance-error">⚠️ Over-allocated by {Math.abs(calculations.remainingCharacterGp).toFixed(1)}M Character GP</span>
+              <span className="balance-error">Over-allocated by {Math.abs(calculations.remainingCharacterGp).toFixed(1)}M Character GP</span>
             )}
 
             <div className="balance-row margin-top-20">
@@ -382,7 +383,7 @@ export default function TbPlanner({ members, initialCharacterGp, initialShipGp }
               />
             </div>
             {calculations.remainingShipGp < 0 && (
-              <span className="balance-error">⚠️ Over-allocated by {Math.abs(calculations.remainingShipGp).toFixed(1)}M Ship GP</span>
+              <span className="balance-error">Over-allocated by {Math.abs(calculations.remainingShipGp).toFixed(1)}M Ship GP</span>
             )}
           </div>
 
@@ -401,7 +402,7 @@ export default function TbPlanner({ members, initialCharacterGp, initialShipGp }
                 alert("Copied strategy directive to clipboard!");
               }}
             >
-              📋 Copy to Clipboard
+              <NavIcon name="clipboard" size={16} /> Copy to Clipboard
             </button>
           </div>
         </div>

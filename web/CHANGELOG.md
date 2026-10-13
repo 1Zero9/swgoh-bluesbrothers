@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.68.2 — 2026-10-13
+
+- **No more emoji on the site.** The jukebox, datacrons, guides, counters, Discord sync, the Territory War lock, the sign-in page and the theme switch now use clean icons that match the rest of the site. The only emoji left are in the text you copy to paste into Discord.
+
 ## 0.68.1 — 2026-10-13
 
 - **Officers can find their tools on a phone.** The phone menu now has an **Officer Deck** section near the top (roster report, Discord sync, the Territory War war room and Territory Battle planning), instead of an "Officers" section at the bottom. The laptop Officer Deck menu also links to the war room and battle planning.

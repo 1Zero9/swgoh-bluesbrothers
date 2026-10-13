@@ -8952,3 +8952,6 @@ html[data-theme="light"] .blue-line-ask { color: #1d4f9a; }
   .blue-briefing-copy { padding: 0; }
   .blue-briefing::after { content: ""; display: table; clear: both; }
 }
+/* Inline icons (lucide) sit on the text baseline; alone, they carry no margin */
+svg.ni { display: inline-block; flex: none; vertical-align: -0.17em; margin-right: .35em; }
+svg.ni:only-child { margin-right: 0; vertical-align: middle; }

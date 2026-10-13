@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { DISC_CATEGORIES, CURATED_DISCS } from "@/lib/discs";
+import NavIcon from "@/app/nav-icon";
 
 type Props = {
   discordUrl: string;
@@ -155,7 +156,7 @@ export default function CrewGate({
             className={`terminal-tab-btn${activeTab === "ally-code" ? " active" : ""}`}
             onClick={() => setActiveTab("ally-code")}
           >
-            ⚡ SWGOH Ally Code
+            <NavIcon name="zap" size={16} /> SWGOH Ally Code
           </button>
           {isOfficerConfigured ? (
             <button
@@ -163,7 +164,7 @@ export default function CrewGate({
               className={`terminal-tab-btn${activeTab === "officer" ? " active" : ""}`}
               onClick={() => setActiveTab("officer")}
             >
-              🔑 Officer Keycard
+              <NavIcon name="key" size={16} /> Officer Keycard
             </button>
           ) : null}
         </div>
@@ -253,7 +254,7 @@ export default function CrewGate({
           {/* Teaser 1: Dougie's Jukebox Sample */}
           <article className="teaser-card">
             <div className="teaser-card-head">
-              <span className="teaser-icon">🎵</span>
+              <span className="teaser-icon"><NavIcon name="music" size={22} /></span>
               <div>
                 <h3>Dougie&apos;s Discs Sampler</h3>
                 <small>Spinning timeless Chicago blues classics</small>
@@ -297,7 +298,7 @@ export default function CrewGate({
                   className="btn-sample-play"
                   onClick={() => setIsPlaying(true)}
                 >
-                  ▶ Spin {activeTrack.title}
+                  <NavIcon name="play" /> Spin {activeTrack.title}
                 </button>
               )}
             </div>
@@ -306,7 +307,7 @@ export default function CrewGate({
           {/* Teaser 2: Soul Food Cantina Sample */}
           <article className="teaser-card">
             <div className="teaser-card-head">
-              <span className="teaser-icon">🥘</span>
+              <span className="teaser-icon"><NavIcon name="food" size={22} /></span>
               <div>
                 <h3>Soul Food Cafe Specials</h3>
                 <small>Authentic Chicago fuel from the outer rim</small>
@@ -332,7 +333,7 @@ export default function CrewGate({
           {/* Teaser 3: Join the Band & Discord */}
           <article className="teaser-card teaser-card-discord">
             <div className="teaser-card-head">
-              <span className="teaser-icon">💬</span>
+              <span className="teaser-icon"><NavIcon name="chat" size={22} /></span>
               <div>
                 <h3>Want to Join the Band?</h3>
                 <small>The Blues Brothers SWGOH Guild</small>
@@ -345,7 +346,7 @@ export default function CrewGate({
               </p>
               <div className="join-band-stats">
                 <div><strong>480M+</strong><small>Guild GP</small></div>
-                <div><strong>35+ ⭐</strong><small>RotE Stars</small></div>
+                <div><strong>35+ ★</strong><small>RotE Stars</small></div>
                 <div><strong>50/50</strong><small>Active Crew</small></div>
               </div>
               <a href={discordUrl} target="_blank" rel="noreferrer" className="btn-join-discord">

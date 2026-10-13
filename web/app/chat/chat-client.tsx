@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageList } from "./chat-parts";
 import { useChat } from "./use-chat";
+import NavIcon from "@/app/nav-icon";
 
 type ChannelTab = { key: string; label: string };
 
@@ -45,7 +46,7 @@ export default function ChatClient({ channels, signedInAsMember }: { channels: C
             {channel.label}
           </button>
         ))}
-        <a className="chat-bell" href="/me#notifications">🔔 Notifications</a>
+        <a className="chat-bell" href="/me#notifications"><NavIcon name="bell" size={16} /> Notifications</a>
       </nav>
 
       {contentHidden ? (

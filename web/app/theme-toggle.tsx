@@ -1,5 +1,6 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 type Theme = "gradient" | "light" | "dark";
@@ -27,8 +28,8 @@ export default function ThemeToggle() {
   return (
     <div className="theme-picker" role="group" aria-label="Colour theme">
       <button type="button" data-theme-choice="gradient" onClick={(event) => { event.stopPropagation(); setTheme("gradient"); }} aria-label="Use gradient theme" aria-pressed={activeTheme === "gradient"} title="Gradient theme">◐</button>
-      <button type="button" data-theme-choice="light" onClick={(event) => { event.stopPropagation(); setTheme("light"); }} aria-label="Use light theme" aria-pressed={activeTheme === "light"} title="Light theme">☀</button>
-      <button type="button" data-theme-choice="dark" onClick={(event) => { event.stopPropagation(); setTheme("dark"); }} aria-label="Use dark theme" aria-pressed={activeTheme === "dark"} title="Dark theme">☾</button>
+      <button type="button" data-theme-choice="light" onClick={(event) => { event.stopPropagation(); setTheme("light"); }} aria-label="Use light theme" aria-pressed={activeTheme === "light"} title="Light theme"><Sun size={15} aria-hidden="true" /></button>
+      <button type="button" data-theme-choice="dark" onClick={(event) => { event.stopPropagation(); setTheme("dark"); }} aria-label="Use dark theme" aria-pressed={activeTheme === "dark"} title="Dark theme"><Moon size={15} aria-hidden="true" /></button>
     </div>
   );
 }

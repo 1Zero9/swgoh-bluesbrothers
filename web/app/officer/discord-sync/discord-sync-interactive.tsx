@@ -9,6 +9,7 @@ import type {
   MatchSuggestion,
 } from "@/lib/discord-sync";
 import { selectBulkLinkCandidates } from "@/lib/discord-link-match";
+import NavIcon from "@/app/nav-icon";
 
 type Props = {
   initialReport: DiscordSyncReport;
@@ -135,7 +136,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
         <article className="ds-kpi-card">
           <div className="ds-kpi-head">
             <span>Linked Active Crew</span>
-            <span className="ds-kpi-mark">🔗</span>
+            <span className="ds-kpi-mark"><NavIcon name="link" size={18} /></span>
           </div>
           <strong>{summary.linkedMembersCount}<span>/{summary.activeGameMembers}</span></strong>
           <p>{Math.round((summary.linkedMembersCount / (summary.activeGameMembers || 1)) * 100)}% roster mapped to Discord</p>
@@ -144,7 +145,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
         <article className={`ds-kpi-card${summary.unlinkedMembersCount > 0 ? " ds-kpi-warn" : ""}`}>
           <div className="ds-kpi-head">
             <span>Unlinked Active Members</span>
-            <span className="ds-kpi-mark">⚡</span>
+            <span className="ds-kpi-mark"><NavIcon name="zap" size={18} /></span>
           </div>
           <strong>{summary.unlinkedMembersCount}</strong>
           <p>{summary.unlinkedMembersCount === 0 ? "All members connected!" : "In-game crew needing Discord link"}</p>
@@ -153,7 +154,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
         <article className={`ds-kpi-card${summary.exMembersWithMemberRoleCount > 0 ? " ds-kpi-alert" : ""}`}>
           <div className="ds-kpi-head">
             <span>Ex-Members in Role</span>
-            <span className="ds-kpi-mark">🛡️</span>
+            <span className="ds-kpi-mark"><NavIcon name="shield" size={18} /></span>
           </div>
           <strong>{summary.exMembersWithMemberRoleCount}</strong>
           <p>{summary.exMembersWithMemberRoleCount === 0 ? "Zero role drift detected" : "Discord users holding member role after departure"}</p>
@@ -185,28 +186,28 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
             className={`ds-pill${filterMode === "UNLINKED" ? " active" : ""}`}
             onClick={() => setFilterMode("UNLINKED")}
           >
-            ⚡ Unlinked Members ({summary.unlinkedMembersCount})
+            <NavIcon name="zap" size={16} /> Unlinked Members ({summary.unlinkedMembersCount})
           </button>
           <button
             type="button"
             className={`ds-pill${filterMode === "LINKED" ? " active" : ""}`}
             onClick={() => setFilterMode("LINKED")}
           >
-            🔗 Linked Crew ({summary.linkedMembersCount})
+            <NavIcon name="link" size={16} /> Linked Crew ({summary.linkedMembersCount})
           </button>
           <button
             type="button"
             className={`ds-pill${filterMode === "DRIFT" ? " active" : ""}`}
             onClick={() => setFilterMode("DRIFT")}
           >
-            🛡️ Role Drift ({summary.exMembersWithMemberRoleCount})
+            <NavIcon name="shield" size={16} /> Role Drift ({summary.exMembersWithMemberRoleCount})
           </button>
           <button
             type="button"
             className={`ds-pill${filterMode === "DISCORD" ? " active" : ""}`}
             onClick={() => setFilterMode("DISCORD")}
           >
-            💬 Unmatched Discord ({report.unmatchedDiscordMembers.length})
+            <NavIcon name="chat" size={16} /> Unmatched Discord ({report.unmatchedDiscordMembers.length})
           </button>
           <button
             type="button"
@@ -228,7 +229,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
 
           {bulkCandidates.length > 0 ? (
             <button type="button" className="btn-ds-reconcile" onClick={handleBulkLinkExact} disabled={isProcessing}>
-              🔗 Link {bulkCandidates.length} exact match{bulkCandidates.length === 1 ? "" : "es"}
+              <NavIcon name="link" size={16} /> Link {bulkCandidates.length} exact match{bulkCandidates.length === 1 ? "" : "es"}
             </button>
           ) : null}
 
@@ -238,7 +239,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
             onClick={handleReconcileAllRoles}
             disabled={isProcessing}
           >
-            {isProcessing ? "Reconciling..." : "⚡ Reconcile All Discord Roles"}
+            {isProcessing ? "Reconciling..." : "Reconcile All Discord Roles"}
           </button>
         </div>
       </section>
@@ -367,7 +368,7 @@ export default function DiscordSyncInteractive({ initialReport }: Props) {
                     </div>
 
                     <span className={`ds-status-badge ${player.linkedDiscordUser ? "badge-linked" : "badge-unlinked"}`}>
-                      {player.linkedDiscordUser ? "✓ Linked" : "⚡ Unlinked"}
+                      {player.linkedDiscordUser ? "✓ Linked" : "Unlinked"}
                     </span>
                   </div>
 

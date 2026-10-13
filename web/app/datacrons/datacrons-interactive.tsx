@@ -8,6 +8,7 @@ import {
   type DatacronSetDefinition,
   type DatacronTier,
 } from "@/lib/datacrons";
+import NavIcon from "@/app/nav-icon";
 
 type TabId = "vault" | "codex" | "tw-synergy" | "reroll-guide";
 
@@ -76,7 +77,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
       <section className="datacron-kpi-grid" aria-label="Datacron Vault Metrics">
         <article className="dc-kpi-card card-glow-gold">
           <div className="kpi-icon-wrap">
-            <span className="dc-gem gem-gold">💎</span>
+            <span className="dc-gem gem-gold"><NavIcon name="gem" size={22} /></span>
           </div>
           <div className="kpi-info">
             <span className="kpi-tag">Level 9 Super-Weapons</span>
@@ -87,7 +88,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
 
         <article className="dc-kpi-card card-glow-purple">
           <div className="kpi-icon-wrap">
-            <span className="dc-gem gem-purple">🔮</span>
+            <span className="dc-gem gem-purple"><NavIcon name="orb" size={22} /></span>
           </div>
           <div className="kpi-info">
             <span className="kpi-tag">Level 6 Faction Boosts</span>
@@ -98,7 +99,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
 
         <article className="dc-kpi-card card-glow-cyan">
           <div className="kpi-icon-wrap">
-            <span className="dc-gem gem-cyan">🛡️</span>
+            <span className="dc-gem gem-cyan"><NavIcon name="shield" size={22} /></span>
           </div>
           <div className="kpi-info">
             <span className="kpi-tag">Total Guild Vault</span>
@@ -109,7 +110,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
 
         <article className="dc-kpi-card card-glow-emerald">
           <div className="kpi-icon-wrap">
-            <span className="dc-gem gem-emerald">⚡</span>
+            <span className="dc-gem gem-emerald"><NavIcon name="zap" size={22} /></span>
           </div>
           <div className="kpi-info">
             <span className="kpi-tag">Active Meta Seasons</span>
@@ -126,7 +127,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
           className={`dc-tab-btn${activeTab === "vault" ? " is-active" : ""}`}
           onClick={() => setActiveTab("vault")}
         >
-          <span>🛡️</span>
+          <span><NavIcon name="shield" size={16} /></span>
           <strong>Guild Datacron Vault</strong>
           <span className="dc-tab-count">{datacrons.length}</span>
         </button>
@@ -136,7 +137,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
           className={`dc-tab-btn${activeTab === "codex" ? " is-active" : ""}`}
           onClick={() => setActiveTab("codex")}
         >
-          <span>💎</span>
+          <span><NavIcon name="gem" size={16} /></span>
           <strong>Active Sets &amp; Meta Codex</strong>
           <span className="dc-tab-badge">SWGOH Meta</span>
         </button>
@@ -146,7 +147,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
           className={`dc-tab-btn${activeTab === "tw-synergy" ? " is-active" : ""}`}
           onClick={() => setActiveTab("tw-synergy")}
         >
-          <span>⚔️</span>
+          <span><NavIcon name="war" size={16} /></span>
           <strong>TW Command Synergies</strong>
           <span className="dc-tab-badge">War Room</span>
         </button>
@@ -156,7 +157,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
           className={`dc-tab-btn${activeTab === "reroll-guide" ? " is-active" : ""}`}
           onClick={() => setActiveTab("reroll-guide")}
         >
-          <span>🧪</span>
+          <span><NavIcon name="flask" size={16} /></span>
           <strong>Reroll &amp; Farming Advisor</strong>
           <span className="dc-tab-badge">Guide</span>
         </button>
@@ -169,7 +170,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
           <div className="vault-controls-bar">
             {/* Search Input */}
             <div className="vault-search-wrap">
-              <span className="search-icon" aria-hidden="true">🔍</span>
+              <span className="search-icon" aria-hidden="true"><NavIcon name="search" size={16} /></span>
               <input
                 type="search"
                 placeholder="Search character, faction, member name, or stat (e.g. Vader, Defense, Elwood)…"
@@ -300,7 +301,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
 
               {filteredDatacrons.length === 0 ? (
                 <div className="no-datacrons-card">
-                  <span className="empty-icon">💎</span>
+                  <span className="empty-icon"><NavIcon name="gem" size={32} /></span>
                   <h4>No Datacrons Matched Your Filter</h4>
                   <p>Try adjusting your search query, tier filter, or member selection.</p>
                   <button
@@ -343,11 +344,11 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       <div className="dc-target-block">
                         <h4 className="dc-target-name">
                           {dc.characterTarget ? (
-                            <span className="highlight-target">⭐ {dc.characterTarget}</span>
+                            <span className="highlight-target"><NavIcon name="star" size={16} /> {dc.characterTarget}</span>
                           ) : dc.factionTarget ? (
-                            <span>🛡️ {dc.factionTarget}</span>
+                            <span><NavIcon name="shield" size={16} /> {dc.factionTarget}</span>
                           ) : (
-                            <span>⚖️ {dc.alignmentTarget} Alignment</span>
+                            <span><NavIcon name="scale" size={16} /> {dc.alignmentTarget} Alignment</span>
                           )}
                         </h4>
                         {dc.factionTarget && dc.characterTarget && (
@@ -381,7 +382,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       {/* Card Footer: Owner & TW Command Suitability */}
                       <div className="dc-card-foot">
                         <div className="dc-owner-info">
-                          <span className="owner-avatar">👤</span>
+                          <span className="owner-avatar"><NavIcon name="user" size={16} /></span>
                           <div>
                             <strong className="owner-name">{dc.ownerName}</strong>
                             <small className="reroll-tag">{dc.rerollCount} reroll(s)</small>
@@ -394,7 +395,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                             className="dc-tw-action-link"
                             title="View Territory War squad plans"
                           >
-                            <span>⚔️</span> TW Ready
+                            <span><NavIcon name="war" size={16} /></span> TW Ready
                           </Link>
                         )}
                       </div>
@@ -422,7 +423,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                         <span className="tbl-lvl-badge">L{dc.level}</span>
                         <div className="tbl-target-col">
                           <strong>
-                            {dc.characterTarget ? `⭐ ${dc.characterTarget}` : dc.factionTarget ? `🛡️ ${dc.factionTarget}` : `⚖️ ${dc.alignmentTarget}`}
+                            {dc.characterTarget ? <><NavIcon name="star" size={16} /> {dc.characterTarget}</> : dc.factionTarget ? <><NavIcon name="shield" size={16} /> {dc.factionTarget}</> : <><NavIcon name="scale" size={16} /> {dc.alignmentTarget}</>}
                           </strong>
                           <small>{dc.abilitySummary ? dc.abilitySummary.slice(0, 100) + "…" : "Stat enhancement datacron"}</small>
                         </div>
@@ -440,7 +441,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                         </div>
                         <div className="tbl-action-col">
                           <span className={`tw-suit-badge suit-${dc.twSuitability.toLowerCase()}`}>
-                            {dc.twSuitability === "OPTIMAL_DEFENCE" ? "🛡️ Defence" : "⚡ Offence"}
+                            {dc.twSuitability === "OPTIMAL_DEFENCE" ? <><NavIcon name="shield" size={16} /> Defence</> : <><NavIcon name="zap" size={16} /> Offence</>}
                           </span>
                         </div>
                       </div>
@@ -456,7 +457,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
               {/* Member Datacron Leaderboard */}
               <div className="sidebar-card">
                 <div className="sb-card-head">
-                  <h4>🏆 Guild Datacron Leaders</h4>
+                  <h4><NavIcon name="trophy" size={16} /> Guild Datacron Leaders</h4>
                   <small>Ranked by Level 9s &amp; Total</small>
                 </div>
                 <div className="sb-leaderboard-list">
@@ -472,7 +473,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       <div className="rank-badges">
                         {owner.l9Count > 0 && (
                           <span className="badge-l9" title="Level 9 Datacrons">
-                            ⭐ {owner.l9Count}
+                            <NavIcon name="star" size={16} /> {owner.l9Count}
                           </span>
                         )}
                         <span className="badge-total" title="Total Datacrons">
@@ -487,7 +488,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
               {/* Signature Level 9 Weapon Roster */}
               <div className="sidebar-card">
                 <div className="sb-card-head">
-                  <h4>⭐ Signature L9 Roster</h4>
+                  <h4><NavIcon name="star" size={16} /> Signature L9 Roster</h4>
                   <small>Guild availability for TW</small>
                 </div>
                 <div className="sb-char-list">
@@ -536,7 +537,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                     <div className="set-title-row">
                       <span className="set-season-badge">Season {set.seasonNumber}</span>
                       <h4>{set.name}</h4>
-                      <span className="set-expiry-chip">⏳ Expires in {set.expiresInDays} days</span>
+                      <span className="set-expiry-chip"><NavIcon name="hourglass" size={16} /> Expires in {set.expiresInDays} days</span>
                     </div>
 
                     <div className="set-factions-row">
@@ -557,7 +558,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       {/* TIER 9 SIGNATURE CHARACTER PERKS */}
                       <div className="set-tier-block">
                         <div className="tier-block-head head-gold">
-                          <h5>⭐ Level 9 Signature Character Perks</h5>
+                          <h5><NavIcon name="star" size={16} /> Level 9 Signature Character Perks</h5>
                           <small>Character-specific game changers</small>
                         </div>
                         <div className="tier9-cards-grid">
@@ -586,7 +587,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       {/* TIER 6 FACTION PERKS */}
                       <div className="set-tier-block">
                         <div className="tier-block-head head-purple">
-                          <h5>🛡️ Level 6 Faction Perks</h5>
+                          <h5><NavIcon name="shield" size={16} /> Level 6 Faction Perks</h5>
                           <small>Faction-wide combat amplifiers</small>
                         </div>
                         <div className="tier6-cards-grid">
@@ -612,7 +613,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       {/* TIER 3 ALIGNMENT PERKS */}
                       <div className="set-tier-block">
                         <div className="tier-block-head head-cyan">
-                          <h5>⚖️ Level 3 Alignment Perks</h5>
+                          <h5><NavIcon name="scale" size={16} /> Level 3 Alignment Perks</h5>
                           <small>Base Light / Dark Side mechanics</small>
                         </div>
                         <div className="tier3-cards-grid">
