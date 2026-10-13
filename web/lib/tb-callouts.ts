@@ -53,6 +53,52 @@ export async function loadRosters(): Promise<CalloutRoster[]> {
   });
 }
 
+type UnitRow = { playerId: string; unitId: string; stars: string | null; gear: string | null; relic: string | null };
+
+/**
+ * The same rosters as `loadRosters`, but only these units. The database picks the units out of each
+ * stored profile, so a few small rows travel back instead of fifty whole rosters (a fraction of a second, not many).
+ */
+export async function loadRostersForUnits(unitIds: string[]): Promise<CalloutRoster[]> {
+  const prisma = getPrisma();
+  const snapshot = await prisma.guildSnapshot.findFirst({
+    orderBy: { capturedAt: "desc" },
+    select: { members: { select: { player: { select: { id: true, currentName: true, discordUserId: true } } } } },
+  });
+  if (!snapshot) return [];
+  const players = snapshot.members.map((member) => member.player);
+  const ids = players.map((player) => player.id);
+  const wanted = [...new Set(unitIds)];
+
+  const [synced, rows] = await Promise.all([
+    prisma.$queryRaw<{ id: string }[]>`SELECT id FROM "Player" WHERE id = ANY(${ids}::text[]) AND "profilePayload" IS NOT NULL`,
+    wanted.length
+      ? prisma.$queryRaw<UnitRow[]>`
+          SELECT p.id AS "playerId",
+                 split_part(u->>'definitionId', ':', 1) AS "unitId",
+                 u->>'currentRarity' AS stars, u->>'currentTier' AS gear, u->'relic'->>'currentTier' AS relic
+          FROM "Player" p, jsonb_array_elements(p."profilePayload"->'rosterUnit') u
+          WHERE p.id = ANY(${ids}::text[])
+            AND p."profilePayload" IS NOT NULL
+            AND split_part(u->>'definitionId', ':', 1) = ANY(${wanted}::text[])`
+      : Promise.resolve([] as UnitRow[]),
+  ]);
+
+  const hasProfile = new Set(synced.map((row) => row.id));
+  const byPlayer = new Map<string, Map<string, { stars: number; relic: number; gear: number }>>();
+  for (const row of rows) {
+    const units = byPlayer.get(row.playerId) ?? new Map();
+    units.set(row.unitId, { stars: num(row.stars), relic: Math.max(0, num(row.relic) - 2), gear: num(row.gear) });
+    byPlayer.set(row.playerId, units);
+  }
+  return players.map((player) => ({
+    playerId: player.id,
+    playerName: player.currentName,
+    discordUserId: player.discordUserId,
+    units: hasProfile.has(player.id) ? byPlayer.get(player.id) ?? new Map() : null,
+  }));
+}
+
 export async function getCalloutUnitOptions(): Promise<UnitOption[]> {
   const known = new Map<string, string>();
   for (const unit of allUnitNames()) known.set(unit.id, unit.name);
@@ -71,10 +117,8 @@ export async function listCallouts(): Promise<CalloutView[]> {
   if (!process.env.DATABASE_URL) return [];
   try {
     const prisma = getPrisma();
-    const [rows, rosters] = await Promise.all([
-      prisma.tbCallout.findMany({ orderBy: [{ status: "desc" }, { createdAt: "desc" }], take: 30 }),
-      loadRosters(),
-    ]);
+    const rows = await prisma.tbCallout.findMany({ orderBy: [{ status: "desc" }, { createdAt: "desc" }], take: 30 });
+    const rosters = await loadRostersForUnits(rows.map((row) => row.unitId));
     return rows.map((row) => ({
       id: row.id,
       unitId: row.unitId,

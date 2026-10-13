@@ -508,3 +508,15 @@ model Counter {
   @@index([enemyLeaderId])
   @@index([createdAt])
 }
+
+/// How many questions a member has put to B-LU3 on a given (UTC) day. Keeps the AI bill predictable.
+model BlueUsage {
+  id    String @id @default(cuid())
+  /// The member's player id, or "officer" for a shared-password officer session.
+  who   String
+  /// UTC day, YYYY-MM-DD.
+  day   String
+  count Int    @default(0)
+
+  @@unique([who, day])
+}
