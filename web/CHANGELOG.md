@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.69.0 — 2026-10-13
+
+- **A much shorter home page on phones** (about 4,400 px down to about 2,400). The tool buttons are one line each, the stat cards and Blue's note are smaller, the Guild Wire shows its three newest items with the rest under "Older news", and "Legends & watchlist" and "New crew welcomes" are fold-aways. Laptops are unchanged.
+
 ## 0.68.3 — 2026-10-13
 
 - **Dougie's Discs on a phone:** the buttons across the top of the jukebox (Dig in Crate, Turntable / Video Clip, Drop a Record) now sit in three tidy rows instead of being squeezed and cut off.

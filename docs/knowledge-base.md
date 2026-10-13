@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.56.3 · **Last updated:** 2026-10-13 · tracks site `v0.68.3`
+**Doc version:** 1.57.0 · **Last updated:** 2026-10-13 · tracks site `v0.69.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -484,6 +484,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.57.0 — 2026-10-13**: member home page on phones 4.4k → ~2.4k px. `app/phone-fold.tsx` (`PhoneFold`): a `<details>` that is open on laptops and closes itself on phone-width screens (deferred matchMedia); used for older Guild Wire items (`WIRE_SHOWN` = 3 shown), "Legends & watchlist" and "New crew welcomes". Phone CSS (end of globals.css) makes tool tiles one-line, shortens the Blue note and stat cards, and hides the Wire intro and the Discord hand-off card. The officer desk stays outside any fold.
 - **1.56.3 — 2026-10-13**: jukebox top row (`.cockpit-top-actions`) wraps into three full-width rows at ≤640px and labels never wrap (`white-space: nowrap`).
 - **1.56.2 — 2026-10-13**: emoji swept out of the UI (jukebox, datacrons, guides, Discord sync, counters, TW defence lock, crew gate, theme toggle). Icon data (`lib/discs.ts`, `lib/guides-data.ts`) now holds `NavIcon` names; add new ones to `ICONS` in `app/nav-icon.tsx`. Emoji deliberately kept only in text pasted into Discord (TB planner copy-to-clipboard, `lib/counters.ts` Discord wording); ★ ☆ ✓ ✕ ➔ are typographic glyphs and stay. Wins feed icons are glyphs (`lib/wins.ts`).
 - **1.56.1 — 2026-10-13**: menus and tool tiles use lucide-react icons via `app/nav-icon.tsx` (navigation data holds icon names such as `war`, `blue`, not emoji; add new names to the `ICONS` map). Mobile menu: officers get an "Officer Deck" group right under the everyday links (roster report, Discord sync, war room, battle planning); the desktop Officer Deck gained the same two planning links. 
