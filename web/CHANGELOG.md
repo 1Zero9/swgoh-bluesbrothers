@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.66.0 — 2026-10-13
+
+- **The Roster is one row per member on a phone.** Rank, name (with Officer or Leader where it applies, level and time in the guild), power and Galactic Legends on a single line, instead of a full trading card each. About a fifth of its former length (about 4,900 px, down from about 22,750). Tap a row for the full card, exactly as before; on a laptop it is still the trading cards.
+- **Who has…? is at the top of the Roster page**, above the new-arrivals strip, since it is the most useful thing on the page.
+- **"Until the next gig" folds away** so the list of members who left is there if you want it but is not in the way.
+
 ## 0.65.2 — 2026-10-13
 
 - **Operations is one screen of tools.** Seven short tiles (Territory War, Territory Battles, Counters, Raids, Datacrons, Arsenal, Who has…?), each with one line saying what it is for and one live fact, instead of two sets of cards describing the same six tools. About a third of its former length on a phone.

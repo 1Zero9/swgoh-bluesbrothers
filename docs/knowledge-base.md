@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.53.2 · **Last updated:** 2026-10-11 · tracks site `v0.65.2`
+**Doc version:** 1.54.0 · **Last updated:** 2026-10-11 · tracks site `v0.66.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.54.0 — 2026-10-13**: Roster trading cards collapse to one-line rows at phone width (CSS only, plus a `tc-role-inline` span for Officer/Leader); Who has…? moved above the arrivals ticker; departures list is a `<details>`.
 - **1.53.2 — 2026-10-13**: `/operations` is now a members-only (dynamic) tile grid reusing the `quick-launch` styles; the Discord sync tile is officer-only.
 - **1.53.1 — 2026-10-13**: datacron cards fold ability text and rolled stats into a `<details class="dc-detail">`.
 - **1.53.0 — 2026-10-13**: tool simplification, step 3. Arsenal categories are `<details>` (first open) with one-line unit cards; Raids drops the placeholder cards, shows the top 10 with "Show all", and labels tabs by raid + end date (`recentRaidResult` holds several runs of the same raid, so `raidId` alone is not a unique key).

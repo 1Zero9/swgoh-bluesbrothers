@@ -54,8 +54,8 @@ export default async function MembersPage() {
           <div><strong>{newMembers.length || "—"}</strong><small>joined this month</small></div>
         </div>
       </PageHero>
-      <MemberWelcomeTicker members={newMembers} />
       <WhoHas />
+      <MemberWelcomeTicker members={newMembers} />
       <MemberDirectory members={members} />
       <MemberDeparture members={departedMembers} />
       <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
