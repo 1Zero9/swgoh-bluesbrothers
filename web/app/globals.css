@@ -8732,3 +8732,26 @@ html[data-theme="light"] .personal-note { color: #1d4f9a; }
   .world-clocks .clock-short { display: inline; }
   .world-clocks time { font-size: 13px; }
 }
+
+.dc-show-more { grid-column: 1 / -1; justify-self: center; margin: 14px auto 4px; padding: 10px 22px; border: 1px solid rgba(103,184,255,.4); border-radius: 12px; background: rgba(21,74,170,.22); color: #d3e8ff; font-size: 14px; }
+@media (max-width: 760px) {
+  .datacron-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .dc-kpi-card { padding: 12px; }
+}
+
+/* Territory Battles: members' plan view and the officer tools fold-away */
+.tb-plan-view { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.tb-plan-phase { padding: 16px; border: 1px solid rgba(151,176,205,.18); border-radius: 14px; background: rgba(13,19,28,.7); }
+.tb-plan-phase h3 { margin: 0 0 10px; font-size: 15px; }
+.tb-plan-phase ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.tb-plan-phase li { display: grid; gap: 3px; }
+.tb-plan-phase li strong { font-size: 15px; }
+.tb-plan-phase li small { color: #9baabd; }
+.tb-plan-phase li p { margin: 2px 0 0; color: #b6c2d1; font-size: 13px; }
+.tb-plan-badge { justify-self: start; padding: 2px 8px; border-radius: 999px; font: 10px var(--font-geist-mono); letter-spacing: .07em; text-transform: uppercase; background: rgba(103,184,255,.16); color: #bfe0ff; }
+.tb-plan-badge.is-three-star { background: rgba(83,214,154,.16); color: #86efc0; }
+.tb-plan-badge.is-hold { background: rgba(234,179,8,.16); color: #fde68a; }
+.tb-officer-tools > summary { cursor: pointer; padding: 14px 16px; border: 1px solid rgba(151,176,205,.2); border-radius: 12px; font-size: 15px; font-weight: 600; }
+.tb-officer-tools[open] > summary { margin-bottom: 10px; }
+.tb-officer-note { margin: 0 0 12px; color: #9baabd; font-size: 13px; }
+html[data-theme="light"] .tb-plan-phase { background: #fff; border-color: rgba(148,163,184,.35); }

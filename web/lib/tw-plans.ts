@@ -478,6 +478,18 @@ export async function getOrCreateActiveTbPlan(
   });
 }
 
+/** The plan officers have marked Active, read-only, for the members view. Never creates one. */
+export async function getActiveTbPlanDetail(guildId: string, eventId: string | null) {
+  const prisma = getPrisma();
+  return prisma.territoryBattlePlan.findFirst({
+    where: { guildId, eventId: eventId ?? undefined, status: "ACTIVE" },
+    orderBy: { createdAt: "desc" },
+    include: {
+      planetPlans: { orderBy: [{ phase: "asc" }, { priority: "asc" }], include: { command: true } },
+    },
+  });
+}
+
 export async function listTbPlansForGuild(guildId: string) {
   const prisma = getPrisma();
   return prisma.territoryBattlePlan.findMany({

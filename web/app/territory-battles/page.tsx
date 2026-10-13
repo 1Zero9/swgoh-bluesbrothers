@@ -11,6 +11,7 @@ import { getOfficerIdentity } from "@/lib/officer-identity";
 import {
   ensureBuiltInCommands,
   getCurrentTbEventId,
+  getActiveTbPlanDetail,
   getDefaultGuildId,
   getOrCreateActiveTbPlan,
   getTbPlanDetail,
@@ -20,7 +21,8 @@ import { calloutHeadline, getCalloutUnitOptions, listCallouts } from "@/lib/tb-c
 import LinkNudge from "@/app/link-nudge";
 import TbCallouts from "./tb-callouts";
 import TbPlanner from "./tb-planner";
-import TbWorkspace, { type TbWorkspacePlan } from "./tb-workspace";
+import TbPlanView from "./tb-plan-view";
+import TbWorkspace, { type PlanetStrategy, type TbWorkspacePlan } from "./tb-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -40,15 +42,15 @@ function power(value: bigint) {
 
 export default async function TerritoryBattlesPage() {
   if (!(await canViewMembersArea())) return <MembersOnly path="/territory-battles" area="Territory Battles" />;
+  const isOfficer = await isOfficerRequest();
+  // Only officers use the planner, so members don't pay for loading every roster.
   const [summary, members] = await Promise.all([
     getDashboardSummary(),
-    getRosterMembers(),
+    isOfficer ? getRosterMembers() : Promise.resolve([]),
   ]);
 
   const totalCharacterGp = members.reduce((sum, m) => sum + m.characterPower, BigInt(0));
   const totalShipGp = members.reduce((sum, m) => sum + m.shipPower, BigInt(0));
-
-  const isOfficer = await isOfficerRequest();
 
   const [callouts, calloutUnits] = await Promise.all([listCallouts(), isOfficer ? getCalloutUnitOptions() : Promise.resolve([])]);
   const calloutCards = callouts.map((callout) => ({
@@ -116,6 +118,25 @@ export default async function TerritoryBattlesPage() {
     }
   }
 
+  // What members see: the plan officers have marked Active, if any.
+  const sharedGuildId = await getDefaultGuildId();
+  const sharedPlan = sharedGuildId ? await getActiveTbPlanDetail(sharedGuildId, await getCurrentTbEventId()) : null;
+  const sharedPlanets = (sharedPlan?.planetPlans ?? [])
+    .filter((planet) => planet.strategy !== "SKIP")
+    .map((planet) => ({
+      id: planet.id,
+      planetName: planet.planetName,
+      phase: planet.phase,
+      strategy: planet.strategy as PlanetStrategy,
+      commandId: planet.commandId,
+      command: planet.command
+        ? { id: planet.command.id, name: planet.command.name, squadKey: planet.command.squadKey, kitNotes: planet.command.kitNotes, isBuiltIn: planet.command.isBuiltIn }
+        : null,
+      note: planet.note,
+      priority: planet.priority,
+      updatedBy: planet.updatedBy,
+    }));
+
   return (
     <main className="intel-shell destination-shell mission-shell">
       <PageHero
@@ -123,13 +144,12 @@ export default async function TerritoryBattlesPage() {
         imageAlt="The Blues Brothers and guild officers studying a holographic Territory Battle map"
         eyebrow="Territory Battles"
         title={<>See the whole field.<br /><em>Deploy with purpose.</em></>}
-        description="Optimize stars in Rise of the Empire. Auto-allocate GP targets, adjust zone star thresholds, calculate pre-loads, and compile direct copy-paste instructions for Discord."
+        description="What the guild needs from you in Rise of the Empire, and the plan for each phase."
         priority
       >
         <div className="intel-summary">
           <div><strong>{summary.live ? summary.memberCount : "—"}<span>/{summary.capacity}</span></strong><small>active members</small></div>
           <div><strong>{summary.live ? power(summary.guildPower) : "—"}</strong><small>guild power</small></div>
-          <div><strong>ROTE</strong><small>planning focus</small></div>
         </div>
       </PageHero>
 
@@ -145,6 +165,22 @@ export default async function TerritoryBattlesPage() {
         <TbCallouts callouts={calloutCards} units={calloutUnits} isOfficer={isOfficer} />
       </section>
 
+      {sharedPlanets.length ? (
+        <section className="tb-section margin-top-20" id="plan">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">The plan</p>
+              <h2>What we are doing, phase by phase</h2>
+            </div>
+          </div>
+          <TbPlanView name={sharedPlan?.name ?? "Territory Battle plan"} planets={sharedPlanets} />
+        </section>
+      ) : null}
+
+      {isOfficer ? (
+        <details className="tb-section margin-top-20 tb-officer-tools">
+          <summary>Officer planning tools</summary>
+          <p className="tb-officer-note">The star calculator and the per-planet plan. Mark the plan Active and members see it above.</p>
       <section className="tb-section margin-top-20">
         <div className="section-heading">
           <div>
@@ -188,6 +224,9 @@ export default async function TerritoryBattlesPage() {
           millions (M) based on standard Rise of the Empire zone thresholds.
         </p>
       </aside>
+
+        </details>
+      ) : null}
 
       <IntelFooter message="Territory Battle allocations are calculated using synced guild snapshots.">
         <Link href="/operations">Back to Operations →</Link>

@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.63.0 — 2026-10-13
+
+- **Datacrons no longer go on forever.** The vault showed all 433 datacrons at once, which made the page over 169,000 pixels tall on a phone. It now opens on the 151 Level 9 super-weapons, shows 12 at a time with a "Show more" button, and the stat tiles sit two by two. Search and the other filters work as before.
+- **Territory Battles is about you now.** Members see what the guild needs from them (the callouts) and, once the officers mark a plan Active, the plan phase by phase in plain words (Pre-load, Go for 3★, Hold, with the squad and any note). The page is about a fifth of its former length on a phone.
+- **The star calculator and the per-planet planner are for officers**, tucked into one "Officer planning tools" fold-away at the bottom. Members no longer see sliders and "0M deployed", and the page no longer loads every roster for them.
+
 ## 0.62.0 — 2026-10-11
 
 - **A home page built around the tools.** Right under the banner there is now a **status strip** (your name, GP and raid tickets, with a clear note and a link to My Page if you need to check in) and a **grid of big buttons**: My Page, Guild Chat, The Wins, Who has…?, Roster, Counters, Territory War, Territory Battles, Operations and Field Guides. On a phone it is a two-column grid you can reach with a thumb.

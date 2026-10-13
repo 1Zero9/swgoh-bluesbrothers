@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.50.0 · **Last updated:** 2026-10-11 · tracks site `v0.62.0`
+**Doc version:** 1.51.0 · **Last updated:** 2026-10-11 · tracks site `v0.63.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.51.0 — 2026-10-13**: tool simplification, step 1. Datacrons vault paginates (`PAGE_SIZE`, default tier L9, cards view). Territory Battles: members see callouts plus the plan officers mark ACTIVE (`getActiveTbPlanDetail`, `tb-plan-view.tsx`, read-only, never creates a plan); `TbPlanner` and `TbWorkspace` live in an officer-only `<details>` and rosters load only for officers. Principle: one question per tool, officer controls out of the member view.
 - **1.50.0 — 2026-10-11**: member home reworked for discoverability — `app/quick-launch.tsx` (tool grid), a personal status strip from `getMemberContext`, officer-only password desk / attention card / wire status, upcoming-missions cards removed, desktop `NavLinks` hides the Officer Deck unless `useViewer` says OFFICER, `#who-has` anchor on the Roster page. Phone layout verified with Playwright (WebKit, iPhone 14).
 - **1.49.3 — 2026-10-11**: `app/world-clocks.tsx` — client-side clocks for Arizona, Texas/Chicago, New York and Dublin on the home hero (Intl time zones, so DST is automatic; renders `--:--` until mounted to avoid hydration mismatch). Hero top padding raised so the status row clears the fixed header.
 - **1.49.2 — 2026-10-11**: header controls get a dark glass capsule (`.site-header .header-controls` in globals.css) so they stay legible over the hero image; it drops away once `html.scrolled`.
