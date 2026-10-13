@@ -78,7 +78,7 @@ export default function BlueChat() {
         />
         <button type="submit" disabled={busy || !text.trim()}>Ask</button>
       </form>
-      <p className="blue-fineprint">Blue looks things up in the guild&apos;s synced data. It can&apos;t see mods or farm locations, and can be wrong, so check in game.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left today.` : ""}</p>
+      <p className="blue-fineprint">Blue looks things up in the guild&apos;s synced data. It can&apos;t see mods or farm locations, and can be wrong, so check in game.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
     </div>
   );
 }
