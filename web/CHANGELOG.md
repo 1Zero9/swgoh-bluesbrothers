@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.68.3 — 2026-10-13
+
+- **Dougie's Discs on a phone:** the buttons across the top of the jukebox (Dig in Crate, Turntable / Video Clip, Drop a Record) now sit in three tidy rows instead of being squeezed and cut off.
+
 ## 0.68.2 — 2026-10-13
 
 - **No more emoji on the site.** The jukebox, datacrons, guides, counters, Discord sync, the Territory War lock, the sign-in page and the theme switch now use clean icons that match the rest of the site. The only emoji left are in the text you copy to paste into Discord.
