@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import PublicHome from "./public-home";
 import { getViewerAccess } from "@/lib/access-control";
 import { enabledChatChannels } from "@/lib/chat-config";
@@ -16,6 +17,7 @@ import { getRosterChanges } from "@/lib/members";
 import AccountLink from "./account-link";
 import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
+import BlueLine from "@/app/blue-line";
 import QuickLaunch from "./quick-launch";
 import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
@@ -135,6 +137,7 @@ export default async function Home() {
               </span>
             </Link>
           ) : null}
+          <Suspense fallback={null}><BlueLine /></Suspense>
           <QuickLaunch />
         </div>
 

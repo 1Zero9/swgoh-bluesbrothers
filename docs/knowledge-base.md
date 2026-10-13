@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.55.2 · **Last updated:** 2026-10-13 · tracks site `v0.67.2`
+**Doc version:** 1.56.0 · **Last updated:** 2026-10-13 · tracks site `v0.68.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -484,6 +484,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.56.0 — 2026-10-13**: Blue on the home page: `app/blue-line.tsx` (server component inside `<Suspense>`, reuses `blueBriefing`, rule-based so free) under the personal strip; "Ask Blue" (`/me#ask-blue`) added to the quick-launch grid (now 12 tiles, 6 across on laptop, with Raids), the Roster dropdown and the mobile menu. My Page briefing card floats the droid beside the heading on phones.
 - **1.55.2 — 2026-10-13**: B-LU3's allowance is weekly, not daily: `weekStart()` (Monday UTC) keys the `BlueUsage` row, default 5 questions, `BLUE_WEEKLY_LIMIT` overrides. The rule-based roster report stays free.
 - **1.55.1 — 2026-10-13**: B-LU3 can run on Gemini directly (`@ai-sdk/google`, `GOOGLE_GENERATIVE_AI_API_KEY`); falls back to the AI Gateway when no Google key is set.
 - **1.55.0 — 2026-10-13**: B-LU3 ("Blue"), the guild droid, on `/me`. `lib/blue/` = `tools.ts` (read-only AI SDK tools: who has a unit, my unit, guild counters, my status/Territory War advice, open callouts, my war orders; no Discord ids, no writes), `prompt.ts` (persona and rules; tool output and member text are treated as data), `ask.ts` (`generateText` through the AI Gateway, `isStepCount(6)`, 700 output tokens, 45 s timeout), `limits.ts` (`cleanConversation` accepts only user/assistant text, 500 chars, 6 turns; `BlueUsage` table counts questions, 5 per member per week (see 1.55.2)), `advice.ts` (the rule-based briefing and preset answers). `POST /api/blue` is members/officers only, same-origin only, and off unless `BLUE_AI=on`. `app/blue-chat.tsx` is the chat box. `loadRostersForUnits` (tb-callouts.ts) reads only the units needed in SQL; `getSquadAdvice` and `listCallouts` use it (9 s → 1.4 s). Callout matching uses player ids, not names. Migration `20261013010000_blue_usage`. The model cannot see mods or farm locations and is told not to guess; counters come only from the guild's saved library.

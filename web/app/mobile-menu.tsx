@@ -23,6 +23,7 @@ function menuFor(role: "OFFICER" | "MEMBER" | "PUBLIC" | null): MenuGroup[] {
         links: [
           { label: "Home", href: "/" },
           { label: "My page", href: "/me" },
+          { label: "Ask Blue", href: "/me#ask-blue" },
           { label: "Chat", href: "/chat" },
           { label: "The Wins", href: "/wins" },
         ],

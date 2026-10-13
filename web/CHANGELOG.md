@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.68.0 — 2026-10-13
+
+- **Blue is on the home page.** Under your status line there is now a short note from B-LU3 (what you're needed for, or your closest next finish) with an **Ask Blue** link. It costs nothing to show.
+- **Ask Blue is easy to find:** it has a tile in the tool grid (which also gains Raids), and an entry in the Roster menu and the phone menu.
+- **My Page:** Blue's card is tidier on phones, with the droid beside the heading and the text running full width below it.
+
 ## 0.67.2 — 2026-10-13
 
 - **Blue's allowance is now 5 questions per member per week** (resets on Monday), to keep the AI cost small. The roster report and preset briefing on My Page stay free and unlimited.
