@@ -8805,3 +8805,7 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
   .datacron-card { padding: 14px; }
   .datacron-card .dc-target-name { font-size: 18px; }
 }
+
+/* Operations hub: tools grid */
+.ops-launch { margin: 22px clamp(16px, 4vw, 56px) 0; }
+.ops-fact { margin-top: 6px; color: #8fc6ff; font: normal 11px var(--font-geist-mono); letter-spacing: .05em; text-transform: uppercase; }
