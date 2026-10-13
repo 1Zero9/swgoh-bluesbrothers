@@ -5,6 +5,7 @@ type Tool = { label: string; hint: string; href: string; icon: string };
 // The things members come back for, in the order they matter. Everything else is in the menu.
 const TOOLS: Tool[] = [
   { label: "My Page", hint: "Your standing and callouts", href: "/me", icon: "🙋" },
+  { label: "Ask Blue", hint: "Your guild droid", href: "/me#ask-blue", icon: "🤖" },
   { label: "Guild Chat", hint: "Talk to the band", href: "/chat", icon: "💬" },
   { label: "The Wins", hint: "What the guild just did", href: "/wins", icon: "🏆" },
   { label: "Who has…?", hint: "Find a unit in the guild", href: "/members#who-has", icon: "🔎" },
@@ -12,6 +13,7 @@ const TOOLS: Tool[] = [
   { label: "Counters", hint: "Squads for TW and GAC", href: "/counters", icon: "🛡️" },
   { label: "Territory War", hint: "War room and defence", href: "/territory-war", icon: "⚔️" },
   { label: "Territory Battles", hint: "Planets and platoons", href: "/territory-battles", icon: "🪐" },
+  { label: "Raids", hint: "Tickets and results", href: "/raids", icon: "👾" },
   { label: "Operations", hint: "Raids, datacrons, arsenal", href: "/operations", icon: "🚀" },
   { label: "Field Guides", hint: "How to do things", href: "/guides", icon: "📖" },
 ];

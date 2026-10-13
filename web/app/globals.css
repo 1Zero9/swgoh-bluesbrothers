@@ -8736,7 +8736,7 @@ html[data-theme="light"] .drawer-simple-nav a { color: #e8edf5; }
 .personal-main small { color: #9baabd; font: 11px var(--font-geist-mono); letter-spacing: .04em; }
 .personal-note { color: #cfe3ff; font-size: 13px; text-align: right; }
 .personal-strip.needs-checkin .personal-note { color: #fca5a5; }
-.quick-launch { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.quick-launch { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
 .quick-tool { display: grid; gap: 3px; align-content: start; min-height: 96px; padding: 14px; border: 1px solid rgba(151,176,205,.18); border-radius: 14px; background: linear-gradient(160deg, rgba(22,30,42,.92), rgba(11,15,21,.96)); color: inherit; text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
 .quick-tool:hover, .quick-tool:focus-visible { border-color: rgba(103,184,255,.6); transform: translateY(-1px); }
 .quick-icon { font-size: 22px; line-height: 1; }
@@ -8933,3 +8933,21 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
 .blue-form button:disabled { opacity: .5; cursor: default; }
 .blue-error { margin: 0; color: #ff9d9d; font-size: 13px; }
 .blue-fineprint { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.blue-line { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 16px; border: 1px solid rgba(60,131,255,.4); border-radius: 16px; background: linear-gradient(130deg, rgba(15,24,36,.92), rgba(11,14,18,.92)); color: inherit; text-decoration: none; }
+.blue-line img { width: 44px; height: 44px; object-fit: contain; }
+.blue-line-copy { display: grid; gap: 1px; min-width: 0; }
+.blue-line-copy small { color: var(--blue); font: 10px var(--font-geist-mono); letter-spacing: .1em; text-transform: uppercase; }
+.blue-line-copy strong { font-size: 15px; }
+.blue-line-copy > span { color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.blue-line-ask { color: #cfe3ff; font-size: 13px; font-weight: 700; white-space: nowrap; }
+html[data-theme="light"] .blue-line { background: #fff; border-color: rgba(148,163,184,.35); }
+html[data-theme="light"] .blue-line-ask { color: #1d4f9a; }
+@media (max-width: 560px) {
+  .blue-line { grid-template-columns: 44px minmax(0, 1fr); }
+  .blue-line-ask { grid-column: 1 / -1; }
+  /* My Page briefing card: a small droid beside the heading, text running full width underneath */
+  .blue-briefing { display: block; padding: 14px; }
+  .blue-briefing-avatar { float: left; width: 64px; height: 64px; max-height: none; margin: 0 12px 4px 0; }
+  .blue-briefing-copy { padding: 0; }
+  .blue-briefing::after { content: ""; display: table; clear: both; }
+}
