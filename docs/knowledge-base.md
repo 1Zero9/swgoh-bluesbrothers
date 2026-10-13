@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.54.3 · **Last updated:** 2026-10-11 · tracks site `v0.66.3`
+**Doc version:** 1.54.4 · **Last updated:** 2026-10-11 · tracks site `v0.66.4`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.54.4 — 2026-10-13**: laptop pass — `.page-hero` min-height reduced at >=761px, compact home hero hides its paragraph and buttons there, new blocks (`tw-my-orders`, `ops-launch`, officer fold-aways) use the parent's width rather than their own margins.
 - **1.54.3 — 2026-10-13**: public front page hero now carries `.public-cta` (Sign in with Discord + "Thinking of joining?" anchor) so a member can sign in without opening the phone menu.
 - **1.54.2 — 2026-10-13**: Dougie's Discs switches `crateViewMode` to "compact" on phone-width screens after mount (matchMedia, deferred so it passes the set-state-in-effect lint rule); the compact row restyled as two lines on phones; `.crate-search-wrap { flex: none }` on phones (its `flex: 0 1 300px` was a 300px height in the column layout).
 - **1.54.1 — 2026-10-13**: Wins page shows the last `RECENT_DAYS` (3) days open, older days in a `<details>`, and only `ROUTINE_SHOWN` (3) routine upgrades per day before a fold-away.

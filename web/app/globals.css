@@ -8868,3 +8868,16 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
   .req-grid article strong { font-size: 22px; }
   .req-grid article span { font-size: 13px; }
 }
+
+/* Laptop: shorter banners so the useful part of each page starts on the first screen */
+@media (min-width: 761px) {
+  .page-hero { min-height: clamp(380px, 34vw, 470px); margin-bottom: 32px; }
+  .page-hero-copy { padding-top: clamp(110px, 12vh, 140px); padding-bottom: clamp(28px, 3.5vw, 40px); }
+  .page-hero .intel-summary { margin-top: 24px; }
+  .hero.hero-compact { padding-top: 130px; }
+  .hero-compact .hero-copy > p:not(.eyebrow), .hero-compact .hero-actions { display: none; }
+}
+
+/* Line the new blocks up with the page's own content width: no extra side margin */
+.tw-my-orders, .ops-launch, .tw-officer-tools, .raid-data-note { width: auto; margin-inline: 0; }
+@media (min-width: 1101px) { .ops-launch { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
