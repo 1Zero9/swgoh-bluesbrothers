@@ -8964,3 +8964,34 @@ svg.ni:only-child { margin-right: 0; vertical-align: middle; }
   .cockpit-scroll-down-btn { flex: 1 1 100%; justify-content: center; padding: 8px 10px; }
   .cockpit-drop-record-btn { flex: 1 1 100%; justify-content: center; padding: 9px 12px; }
 }
+
+/* Phone folds: always open on a laptop (title hidden); tucked behind their title on a phone */
+.phone-fold > summary { display: none; }
+@media (max-width: 760px) {
+  .phone-fold > summary { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--text); font-size: 15px; font-weight: 700; cursor: pointer; list-style: none; }
+  .phone-fold > summary::-webkit-details-marker { display: none; }
+  .phone-fold > summary::after { content: "+"; color: var(--blue); font-size: 20px; line-height: 1; }
+  .phone-fold[open] > summary { margin-bottom: 12px; }
+  .phone-fold[open] > summary::after { content: "–"; }
+  .phone-fold > .section-heading, .phone-fold > .panel-heading { display: none; }
+  .phone-fold.wire-older > summary { margin-top: 10px; }
+  .phone-fold.standings-section { padding: 0; border: 0; background: none; }
+
+  /* Home: shorter tiles, stats and Blue note */
+  .quick-launch { gap: 8px; }
+  .quick-tool { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; padding: 12px; min-height: 0; }
+  .quick-tool small { display: none; }
+  .quick-tool strong { margin-top: 0; }
+  .quick-tool .quick-icon { margin: 0; }
+  .blue-line-copy > span { display: none; }
+  .blue-line { padding: 10px 14px; grid-template-columns: 40px minmax(0, 1fr) auto; }
+  .blue-line-ask { grid-column: auto; }
+  .blue-line img { width: 40px; height: 40px; }
+  .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .metric-card { padding: 14px; }
+  .metric-card > strong { margin-top: 8px; font-size: 24px; }
+  .metric-card p { display: none; }
+  .wire-intro, .discord-handoff { display: none; }
+  .phone-fold.standings-section { margin-top: 14px; }
+  .lower-grid-single > .panel { padding: 0; border: 0; background: none; backdrop-filter: none; }
+}

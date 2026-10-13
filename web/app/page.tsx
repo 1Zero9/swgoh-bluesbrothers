@@ -18,10 +18,13 @@ import AccountLink from "./account-link";
 import { BuiltByBadge } from "./built-by-badge";
 import OfficerDesk from "./officer-desk";
 import BlueLine from "@/app/blue-line";
+import PhoneFold from "@/app/phone-fold";
 import QuickLaunch from "./quick-launch";
 import WorldClocks from "./world-clocks";
 import SiteHeader, { APP_VERSION } from "./site-header";
 import WallOfFameBoard from "./wall-of-fame-board";
+
+const WIRE_SHOWN = 3;
 
 export const dynamic = "force-dynamic";
 
@@ -194,7 +197,7 @@ export default async function Home() {
             </div>
             <p className="wire-intro">Guild news lives here. The same membership announcements are sent into Discord, where the conversation continues.</p>
             <div className="wire-list">
-              {guildWire.map((item) => (
+              {guildWire.slice(0, WIRE_SHOWN).map((item) => (
                 <article className={`wire-item wire-${item.kind}`} key={item.id}>
                   <span className="wire-icon" aria-hidden="true">{wireIcon(item.kind)}</span>
                   <div>
@@ -204,6 +207,20 @@ export default async function Home() {
                   {isOfficer ? <span className={`wire-state state-${item.status}`}>{item.status}</span> : null}
                 </article>
               ))}
+              {guildWire.length > WIRE_SHOWN ? (
+                <PhoneFold title={`Older news (${guildWire.length - WIRE_SHOWN})`} className="wire-older">
+              {guildWire.slice(WIRE_SHOWN).map((item) => (
+                <article className={`wire-item wire-${item.kind}`} key={item.id}>
+                  <span className="wire-icon" aria-hidden="true">{wireIcon(item.kind)}</span>
+                  <div>
+                    <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
+                    <p>{item.summary}</p>
+                  </div>
+                  {isOfficer ? <span className={`wire-state state-${item.status}`}>{item.status}</span> : null}
+                </article>
+              ))}
+                </PhoneFold>
+              ) : null}
             </div>
           </div>
 
@@ -226,7 +243,7 @@ export default async function Home() {
           </aside>
         </section>
 
-        <section className="section-block standings-section" aria-labelledby="standings-heading">
+        <PhoneFold title="Legends & watchlist" className="section-block standings-section">
           <div className="section-heading standings-heading">
             <div><p className="eyebrow">Guild standings</p><h2 id="standings-heading">Legends &amp; watchlist</h2></div>
             <span>One board to celebrate. One board to act on.</span>
@@ -271,7 +288,7 @@ export default async function Home() {
             </section>
             ) : null}
           </div>
-        </section>
+        </PhoneFold>
 
         <div className={`lower-grid${memberContext.status === "linked" ? " lower-grid-single" : ""}`}>
           {memberContext.status !== "linked" ? (
@@ -283,6 +300,7 @@ export default async function Home() {
           ) : null}
 
           <section className="panel" id="administration">
+            <PhoneFold title="New crew welcomes">
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">Roster additions</p>
@@ -319,6 +337,7 @@ export default async function Home() {
                 <p className="empty-copy">Roster is stable. No new band members checked in this week.</p>
               )}
             </div>
+            </PhoneFold>
 
             {isOfficer ? (
             <div className="officer-desk" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
