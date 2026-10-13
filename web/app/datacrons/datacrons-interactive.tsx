@@ -20,14 +20,19 @@ type Props = {
   };
 };
 
+const PAGE_SIZE = 12;
+
 export default function DatacronsInteractive({ initialData }: Props) {
   const { datacrons, summary, activeSets, syncedMemberCount } = initialData;
   const [activeTab, setActiveTab] = useState<TabId>("vault");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedSet, setSelectedSet] = useState<string>("all");
-  const [selectedTier, setSelectedTier] = useState<string>("all");
+  // Level 9 is the short list that matters; the rest is one tap away.
+  const [selectedTier, setSelectedTier] = useState<string>("l9");
   const [selectedOwner, setSelectedOwner] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  // Showing every datacron at once made the page endlessly long; reveal them in pages.
+  const [shown, setShown] = useState<{ key: string; count: number }>({ key: "", count: PAGE_SIZE });
   const [expandedSetId, setExpandedSetId] = useState<string>(activeSets[0]?.id || "set-20");
 
   // Filtered guild datacrons
@@ -51,6 +56,19 @@ export default function DatacronsInteractive({ initialData }: Props) {
       );
     });
   }, [datacrons, selectedSet, selectedTier, selectedOwner, searchQuery]);
+
+  const filterKey = `${selectedSet}|${selectedTier}|${selectedOwner}|${searchQuery}`;
+  const visibleCount = shown.key === filterKey ? shown.count : PAGE_SIZE;
+  const visibleDatacrons = filteredDatacrons.slice(0, visibleCount);
+  const showMore = filteredDatacrons.length > visibleCount ? (
+    <button
+      type="button"
+      className="dc-show-more"
+      onClick={() => setShown({ key: filterKey, count: visibleCount + PAGE_SIZE })}
+    >
+      Show more ({filteredDatacrons.length - visibleCount} left)
+    </button>
+  ) : null;
 
   return (
     <div className="datacrons-page-wrap" aria-label="Guild Datacrons Console">
@@ -299,7 +317,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                 </div>
               ) : viewMode === "cards" ? (
                 <div className="datacron-cards-grid">
-                  {filteredDatacrons.map((dc) => (
+                  {visibleDatacrons.map((dc) => (
                     <article
                       key={dc.id}
                       className={`datacron-card dc-tier-${dc.level === 9 ? "gold" : dc.level >= 6 ? "purple" : "cyan"}`}
@@ -377,6 +395,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       </div>
                     </article>
                   ))}
+                  {showMore}
                 </div>
               ) : (
                 /* TABLE VIEW MODE */
@@ -390,7 +409,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                     <span className="th-action">TW Role</span>
                   </div>
                   <div className="dc-tbl-body">
-                    {filteredDatacrons.map((dc) => (
+                    {visibleDatacrons.map((dc) => (
                       <div
                         key={dc.id}
                         className={`dc-tbl-row dc-tier-${dc.level === 9 ? "gold" : dc.level >= 6 ? "purple" : "cyan"}`}
@@ -422,6 +441,7 @@ export default function DatacronsInteractive({ initialData }: Props) {
                       </div>
                     ))}
                   </div>
+                  {showMore}
                 </div>
               )}
             </div>
