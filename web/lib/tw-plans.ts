@@ -75,6 +75,20 @@ export async function getPlanDetail(planId: string) {
   });
 }
 
+/** The plan officers have marked Active, read-only, for the members view. Never creates one. */
+export async function getActiveTwPlanDetail(guildId: string, eventId: string | null) {
+  const prisma = getPrisma();
+  return prisma.territoryWarPlan.findFirst({
+    where: { guildId, eventId: eventId ?? undefined, status: "ACTIVE" },
+    orderBy: { createdAt: "desc" },
+    include: {
+      zonePlans: { orderBy: { zoneId: "asc" }, include: { command: true } },
+      assignments: { orderBy: { priority: "asc" } },
+      attackAssignments: { orderBy: { zoneLabel: "asc" } },
+    },
+  });
+}
+
 export async function setPlanStatus(planId: string, status: TwPlanStatus) {
   const prisma = getPrisma();
   return prisma.territoryWarPlan.update({ where: { id: planId }, data: { status } });

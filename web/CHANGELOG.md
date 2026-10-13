@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.64.0 — 2026-10-13
+
+- **Territory War: "Your job this war".** The page now opens on your own orders: which squad to defend and where, and which enemy squad to attack, taken from the plan the officers mark Active. If there are no orders yet, or you are not in the plan, it says so in a line, with links to Counters and the TW guide.
+- **Shorter and clearer.** The page is about a fifth of its former length on a phone. The dashes-and-zeros summary only shows during a live war, and the "Officer sign-in required" box is gone for members.
+- **The planner, assignments and roster board are for officers**, in one "Officer war room" fold-away. Officers still plan exactly as before; marking a plan Active is what publishes each member's orders.
+
 ## 0.63.0 — 2026-10-13
 
 - **Datacrons no longer go on forever.** The vault showed all 433 datacrons at once, which made the page over 169,000 pixels tall on a phone. It now opens on the 151 Level 9 super-weapons, shows 12 at a time with a "Show more" button, and the stat tiles sit two by two. Search and the other filters work as before.

@@ -8755,3 +8755,22 @@ html[data-theme="light"] .personal-note { color: #1d4f9a; }
 .tb-officer-tools[open] > summary { margin-bottom: 10px; }
 .tb-officer-note { margin: 0 0 12px; color: #9baabd; font-size: 13px; }
 html[data-theme="light"] .tb-plan-phase { background: #fff; border-color: rgba(148,163,184,.35); }
+
+/* Territory War: the member's own orders, and the officer fold-away */
+.tw-my-orders { margin: 22px clamp(16px, 4vw, 56px) 0; padding: 20px; border: 1px solid rgba(103,184,255,.28); border-radius: 18px; background: linear-gradient(160deg, rgba(20,30,46,.9), rgba(10,14,20,.95)); }
+.tw-my-orders h2 { margin: 4px 0 14px; font-size: clamp(20px, 3vw, 26px); }
+.tw-order-list { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.tw-order-list article { display: grid; gap: 3px; padding: 14px; border: 1px solid rgba(151,176,205,.2); border-radius: 12px; background: rgba(8,12,18,.7); }
+.tw-order-list article.is-done { opacity: .6; }
+.tw-order-list strong { font-size: 17px; }
+.tw-order-list small { color: #9baabd; }
+.tw-order-list p { margin: 4px 0 0; color: #b6c2d1; font-size: 13px; }
+.tw-order-kind { justify-self: start; padding: 2px 8px; border-radius: 999px; background: rgba(83,214,154,.16); color: #86efc0; font: 10px var(--font-geist-mono); letter-spacing: .08em; text-transform: uppercase; }
+.tw-order-kind.is-attack { background: rgba(248,113,113,.16); color: #fca5a5; }
+.tw-order-empty { margin: 0 0 12px; color: #b6c2d1; line-height: 1.5; }
+.tw-order-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; }
+.tw-order-links a { color: #8fc6ff; font-size: 14px; }
+.tw-officer-tools { margin: 22px clamp(16px, 4vw, 56px) 0; }
+.tw-officer-tools > summary { cursor: pointer; padding: 14px 16px; border: 1px solid rgba(151,176,205,.2); border-radius: 12px; font-size: 15px; font-weight: 600; }
+.tw-officer-tools[open] > summary { margin-bottom: 10px; }
+html[data-theme="light"] .tw-my-orders, html[data-theme="light"] .tw-order-list article { background: #fff; border-color: rgba(148,163,184,.35); }
