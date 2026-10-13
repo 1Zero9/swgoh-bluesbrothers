@@ -68,6 +68,13 @@ export default function DougiesJukebox({ initialDiscs }: { initialDiscs: DiscTra
   const [playerMode, setPlayerMode] = useState<"vinyl" | "video">("vinyl");
   const [activeCategory, setActiveCategory] = useState<DiscCategory>("all");
   const [crateViewMode, setCrateViewMode] = useState<"grid" | "compact">("grid");
+  // On a phone the full sleeves are a screen each, so start on the compact list; the toggle still works.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (window.matchMedia("(max-width: 760px)").matches) setCrateViewMode("compact");
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [volume, setVolume] = useState<number>(100);
   const [isMuted, setIsMuted] = useState<boolean>(false);

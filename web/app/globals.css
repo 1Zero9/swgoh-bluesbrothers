@@ -8836,3 +8836,23 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
 @media (max-width: 760px) {
   .wins-day { padding-top: 14px; }
 }
+
+/* Dougie's Discs on a phone: tidy the crate controls and the quote buttons */
+@media (max-width: 760px) {
+  .crate-search-wrap { flex: none; }
+  .soundboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .soundbite-card { padding: 12px; }
+  .soundbite-card small { display: none; }
+}
+
+/* Dougie's Discs compact list on a phone: title and time on top, the three buttons underneath */
+@media (max-width: 760px) {
+  .compact-table-head { display: none; }
+  .compact-table-row { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: "num title dur" ". actions actions"; row-gap: 8px; padding: 10px 12px; align-items: center; }
+  .compact-table-row .row-num { grid-area: num; }
+  .compact-table-row .row-title-col { grid-area: title; min-width: 0; }
+  .compact-table-row .row-title-col strong, .compact-table-row .row-title-col small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; display: block; }
+  .compact-table-row .row-duration { grid-area: dur; }
+  .compact-table-row .row-actions { grid-area: actions; display: flex; gap: 6px; }
+  .compact-table-row .row-actions button { flex: 1; padding: 7px 4px; font-size: 12px; white-space: nowrap; }
+}
