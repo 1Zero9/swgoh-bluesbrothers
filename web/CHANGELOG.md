@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.66.1 — 2026-10-13
+
+- **The Wins is a third of its length** (about 4,100 px on a phone, down from about 13,300). The last three days show in full; earlier days fold away under "Earlier". Within a day the big wins (Galactic Legends, ultimates, Relic 7 and up) always show, a few routine upgrades follow, and the rest are behind "N more upgrades".
+
 ## 0.66.0 — 2026-10-13
 
 - **The Roster is one row per member on a phone.** Rank, name (with Officer or Leader where it applies, level and time in the guild), power and Galactic Legends on a single line, instead of a full trading card each. About a fifth of its former length (about 4,900 px, down from about 22,750). Tap a row for the full card, exactly as before; on a laptop it is still the trading cards.
