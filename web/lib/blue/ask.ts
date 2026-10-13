@@ -1,10 +1,18 @@
+import { google } from "@ai-sdk/google";
 import { generateText, isStepCount } from "ai";
 import { BLUE_INSTRUCTIONS } from "@/lib/blue/prompt";
 import type { ChatTurn } from "@/lib/blue/limits";
 import { buildBlueTools, type BlueViewer } from "@/lib/blue/tools";
 
-/** Cheap and quick is right for lookups; change it with BLUE_MODEL (an AI Gateway "provider/model" id). */
-const DEFAULT_MODEL = "anthropic/claude-haiku-5-5";
+/** Cheap and quick is right for lookups. Change either with BLUE_MODEL. */
+const DEFAULT_GEMINI = "gemini-flash-latest";
+const DEFAULT_GATEWAY_MODEL = "anthropic/claude-haiku-5-5";
+
+/** A Google key (GOOGLE_GENERATIVE_AI_API_KEY) is used directly; otherwise the Vercel AI Gateway, which wants a "provider/model" id. */
+function blueModel() {
+  const chosen = process.env.BLUE_MODEL?.trim();
+  return process.env.GOOGLE_GENERATIVE_AI_API_KEY ? google(chosen || DEFAULT_GEMINI) : chosen || DEFAULT_GATEWAY_MODEL;
+}
 
 /** B-LU3's AI chat is off until BLUE_AI=on is set on the server, so nothing is billed by accident. */
 export function blueEnabled() {
@@ -13,7 +21,7 @@ export function blueEnabled() {
 
 export async function askBlue(viewer: BlueViewer, conversation: ChatTurn[]): Promise<string> {
   const result = await generateText({
-    model: process.env.BLUE_MODEL?.trim() || DEFAULT_MODEL,
+    model: blueModel(),
     instructions: BLUE_INSTRUCTIONS,
     messages: conversation,
     tools: buildBlueTools(viewer),

@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.67.1 — 2026-10-13
+
+- **Blue can run on Google Gemini.** Add a Gemini API key and switch Blue on; no other AI service is needed.
+
 ## 0.67.0 — 2026-10-13
 
 - **Meet B-LU3, "Blue".** The guild's operations droid now lives on **My Page**. Members can type a question ("who has Darth Revan?", "which counter can I run into Revan?", "what am I needed for?") or tap one of three suggestions. Blue looks things up in the guild's own data (rosters, saved counters, Territory Battle callouts, Territory War orders) before answering, and says so when it doesn't know. It can see across the whole guild, like an officer, but only reports what helps the member asking, and it is read-only: it can't change plans or post anywhere. It lives on the site only, not in Discord.
