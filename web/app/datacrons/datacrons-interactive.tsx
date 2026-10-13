@@ -355,6 +355,9 @@ export default function DatacronsInteractive({ initialData }: Props) {
                         )}
                       </div>
 
+                      {/* Ability and rolled stats fold away: the card is the answer, this is the detail. */}
+                      <details className="dc-detail">
+                        <summary>Ability and stats</summary>
                       {/* Ability Description */}
                       {dc.abilitySummary && (
                         <p className="dc-ability-desc">&ldquo;{dc.abilitySummary}&rdquo;</p>
@@ -372,6 +375,8 @@ export default function DatacronsInteractive({ initialData }: Props) {
                           ))}
                         </div>
                       </div>
+
+                      </details>
 
                       {/* Card Footer: Owner & TW Command Suitability */}
                       <div className="dc-card-foot">
