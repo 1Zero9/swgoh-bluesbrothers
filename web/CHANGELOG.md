@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.66.2 — 2026-10-13
+
+- **Dougie's Discs is about a third of its length on a phone** (about 5,400 px, down from about 15,500). The record crate opens as a compact list instead of a full sleeve per record: title and artist with the running time, and Spin, Next and Queue buttons underneath. The Sleeves view is still one tap away, and on a laptop it still opens on the sleeves.
+- **Fixed a blank gap** under the crate search box on phones, and the four movie-quote buttons now sit two by two.
+
 ## 0.66.1 — 2026-10-13
 
 - **The Wins is a third of its length** (about 4,100 px on a phone, down from about 13,300). The last three days show in full; earlier days fold away under "Earlier". Within a day the big wins (Galactic Legends, ultimates, Relic 7 and up) always show, a few routine upgrades follow, and the rest are behind "N more upgrades".
