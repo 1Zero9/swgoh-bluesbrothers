@@ -8829,3 +8829,10 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
   .trading-card-stats > span:nth-child(n+3) { display: none; }
   .trading-card-stats strong { margin-top: 2px; font-size: 13px; }
 }
+
+/* Wins: older days and routine upgrades fold away */
+.wins-earlier > summary, .wins-more > summary { cursor: pointer; color: #8fc6ff; font-size: 14px; padding: 8px 0; }
+.wins-earlier { margin-top: 12px; }
+@media (max-width: 760px) {
+  .wins-day { padding-top: 14px; }
+}

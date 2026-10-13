@@ -43,6 +43,41 @@ function summarise(items: FeedWin[]) {
   return parts.join(", ");
 }
 
+const RECENT_DAYS = 3;
+const ROUTINE_SHOWN = 3;
+
+function WinItem({ win }: { win: { icon: string; who: string; text: string; tag: string } }) {
+  return (
+    <article className="win-item">
+      <span className="win-icon" aria-hidden>{win.icon}</span>
+      <div><p><strong>{win.who}</strong> {win.text}</p><small>{win.tag}</small></div>
+    </article>
+  );
+}
+
+/** One day: the big wins always show; routine upgrades show a few, with the rest one tap away. */
+function WinsDay({ day }: { day: { label: string; wins: FeedWin[] } }) {
+  const { headlines, rolled } = collapse(day.wins);
+  return (
+    <section className="wins-day">
+      <h3>{day.label}</h3>
+      {headlines.map((win) => (
+        <article key={win.id} className="win-item win-headline">
+          <span className="win-icon" aria-hidden>{win.icon}</span>
+          <div><p><strong>{win.who}</strong> {win.text}</p><small>{win.tag}</small></div>
+        </article>
+      ))}
+      {rolled.slice(0, ROUTINE_SHOWN).map((win) => <WinItem key={win.key} win={win} />)}
+      {rolled.length > ROUTINE_SHOWN ? (
+        <details className="wins-more">
+          <summary>{rolled.length - ROUTINE_SHOWN} more upgrades</summary>
+          {rolled.slice(ROUTINE_SHOWN).map((win) => <WinItem key={win.key} win={win} />)}
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
 export default async function WinsPage() {
   if (!(await canViewMembersArea())) return <MembersOnly path="/wins" area="The Wins" />;
   const feed = await getWinsFeed();
@@ -71,30 +106,17 @@ export default async function WinsPage() {
       <section className="tw-roster-section">
         <header>
           <div><p className="eyebrow">Last three weeks</p><h2>Win after win</h2></div>
-          <p>Wins are spotted when a member&apos;s roster is next refreshed, so a day on this page is the day we noticed it — usually within a day or two of the real thing.</p>
+          <p>A day here is the day we noticed it, usually within a day or two of the real thing.</p>
         </header>
         {feed.days.length ? (
           <div className="wins-feed">
-            {feed.days.map((day) => {
-              const { headlines, rolled } = collapse(day.wins);
-              return (
-                <section key={day.label} className="wins-day">
-                  <h3>{day.label}</h3>
-                  {headlines.map((win) => (
-                    <article key={win.id} className="win-item win-headline">
-                      <span className="win-icon" aria-hidden>{win.icon}</span>
-                      <div><p><strong>{win.who}</strong> {win.text}</p><small>{win.tag}</small></div>
-                    </article>
-                  ))}
-                  {rolled.map((win) => (
-                    <article key={win.key} className="win-item">
-                      <span className="win-icon" aria-hidden>{win.icon}</span>
-                      <div><p><strong>{win.who}</strong> {win.text}</p><small>{win.tag}</small></div>
-                    </article>
-                  ))}
-                </section>
-              );
-            })}
+            {feed.days.slice(0, RECENT_DAYS).map((day) => <WinsDay key={day.label} day={day} />)}
+            {feed.days.length > RECENT_DAYS ? (
+              <details className="wins-earlier">
+                <summary>Earlier ({feed.days.length - RECENT_DAYS} more days)</summary>
+                {feed.days.slice(RECENT_DAYS).map((day) => <WinsDay key={day.label} day={day} />)}
+              </details>
+            ) : null}
           </div>
         ) : (
           <div className="tw-empty"><strong>No wins spotted yet.</strong><p>This fills in as member rosters refresh during the guild sync.</p></div>
