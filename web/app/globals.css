@@ -8809,3 +8809,23 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
 /* Operations hub: tools grid */
 .ops-launch { margin: 22px clamp(16px, 4vw, 56px) 0; }
 .ops-fact { margin-top: 6px; color: #8fc6ff; font: normal 11px var(--font-geist-mono); letter-spacing: .05em; text-transform: uppercase; }
+
+/* Roster: the trading cards become one-line rows on a phone */
+.tc-role-inline { display: none; }
+.departures-block > summary { cursor: pointer; list-style: none; }
+.departures-block > summary::-webkit-details-marker { display: none; }
+@media (max-width: 760px) {
+  .roster-grid { gap: 8px; }
+  .trading-card { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 0; padding: 10px 12px; border-radius: 14px; text-align: left; }
+  .trading-card:hover, .trading-card:focus-visible, .trading-card:target { transform: none; }
+  .trading-card-frame, .trading-card-portrait, .trading-card-foot, .trading-card-role { display: none; }
+  .trading-card-rank { position: static; padding: 3px 6px; text-align: center; }
+  .trading-card-name { width: auto; }
+  .trading-card-name strong { font-size: 15px; }
+  .trading-card-name small { margin-top: 3px; font-size: 9.5px; }
+  .tc-role-inline { display: inline; color: #d8b466; }
+  .trading-card-stats { display: flex; gap: 6px; width: auto; margin: 0; padding: 0; border: 0; }
+  .trading-card-stats > span { padding: 4px 8px; text-align: right; }
+  .trading-card-stats > span:nth-child(n+3) { display: none; }
+  .trading-card-stats strong { margin-top: 2px; font-size: 13px; }
+}

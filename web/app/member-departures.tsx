@@ -22,14 +22,14 @@ export default function MemberDepartures({ members }: { members: DepartedMemberE
   if (!members.length) return null;
 
   return (
-    <section className="departures-block" aria-label="Recent departures">
-      <div className="section-heading">
+    <details className="departures-block" aria-label="Recent departures">
+      <summary className="section-heading">
         <div>
           <p className="eyebrow">Guild archive</p>
           <h2>Until the next gig</h2>
         </div>
         <span className="departures-count">{members.length} in the last 60 days</span>
-      </div>
+      </summary>
       <ul className="departures-list">
         {members.map((member) => (
           <li key={member.playerId}>
@@ -41,6 +41,6 @@ export default function MemberDepartures({ members }: { members: DepartedMemberE
           </li>
         ))}
       </ul>
-    </section>
+    </details>
   );
 }

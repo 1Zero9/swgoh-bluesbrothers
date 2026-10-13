@@ -215,7 +215,7 @@ export default function MemberDirectory({ members }: { members: MemberDirectoryE
                 </span>
                 <span className="trading-card-name">
                   <strong>{member.name}</strong>
-                  <small>Level {member.playerLevel || "—"} · {guildTenure(member.joinedAt)} in the band</small>
+                  <small>{tier !== "member" ? <span className="tc-role-inline">{member.memberRole} · </span> : null}Level {member.playerLevel || "—"} · {guildTenure(member.joinedAt)} in the band</small>
                 </span>
                 <span className="trading-card-stats">
                   <span><small>Power</small><strong>{formatPower(member.galacticPower)}</strong></span>
