@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.65.2 — 2026-10-13
+
+- **Operations is one screen of tools.** Seven short tiles (Territory War, Territory Battles, Counters, Raids, Datacrons, Arsenal, Who has…?), each with one line saying what it is for and one live fact, instead of two sets of cards describing the same six tools. About a third of its former length on a phone.
+- **Members only, like the tools it links to.** Visitors who are not signed in used to see this page and then hit a wall on every link; they now get the normal sign-in prompt. The Discord sync tile shows only for officers.
+
 ## 0.65.1 — 2026-10-13
 
 - **Shorter datacron cards.** Each card now shows the level, the character, the set, the owner and whether it is Territory War ready. The ability text and rolled stats fold away behind "Ability and stats". The vault is less than half its former length on a phone (about 5,600 px, down from about 12,000).
