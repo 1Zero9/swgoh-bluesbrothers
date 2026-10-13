@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.65.0 — 2026-10-13
+
+- **Guild Arsenal is a fifth of its length** on a phone (about 2,700 px, down from 11,800). Each group (Galactic Legends, core characters, capital ships) folds away, with the first one open; each unit is a short card with how many members own it and how many are at 7★ and R5+. Tap a unit for the full list of who has it, as before.
+- **Raids is a third of its length** (about 2,000 px, down from 6,200). The three placeholder boxes ("Roster pass next" and the like) are gone, the explanation of what the game will not tell us is a small fold-away, and the results show the top 10 with a "Show all" button.
+- **Fixed the raid tabs.** The three tabs all said "ORDER66"; each is a different run, so they now say which raid and the date it ended.
+
 ## 0.64.0 — 2026-10-13
 
 - **Territory War: "Your job this war".** The page now opens on your own orders: which squad to defend and where, and which enemy squad to attack, taken from the plan the officers mark Active. If there are no orders yet, or you are not in the plan, it says so in a line, with links to Counters and the TW guide.

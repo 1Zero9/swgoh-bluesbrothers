@@ -19,6 +19,7 @@ function formatEnded(value: string | null) {
 export default function RaidBoard({ raids }: { raids: RaidSummary[] }) {
   const [active, setActive] = useState(0);
   const [query, setQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
   const raid = raids[active];
 
   const visible = useMemo(() => {
@@ -29,20 +30,23 @@ export default function RaidBoard({ raids }: { raids: RaidSummary[] }) {
   }, [raid, query]);
 
   if (!raid) return null;
+  // The top of the table is what people come for; the full list is one tap away (or any search).
+  const TOP = 10;
+  const shown = query.trim() || showAll ? visible : visible.slice(0, TOP);
 
   return (
     <>
       <div className="fame-tabs" role="tablist" aria-label="Raid type">
         {raids.map((item, index) => (
           <button
-            key={item.raidId}
+            key={`${item.raidId}-${item.endedAt ?? index}`}
             type="button"
             role="tab"
             aria-selected={index === active}
             className={index === active ? "is-active" : ""}
             onClick={() => { setActive(index); setQuery(""); }}
           >
-            {item.label}
+            {item.label} · {formatEnded(item.endedAt)}
           </button>
         ))}
       </div>
@@ -63,7 +67,7 @@ export default function RaidBoard({ raids }: { raids: RaidSummary[] }) {
       </label>
 
       <ol className="standing-list fame-list">
-        {visible.map((member) => (
+        {shown.map((member) => (
           <li key={member.playerId}>
             <a href={`#member-${member.playerId}`}>
               <span className="standing-rank">{member.rank}</span>
@@ -76,6 +80,9 @@ export default function RaidBoard({ raids }: { raids: RaidSummary[] }) {
         ))}
         {!visible.length ? <li className="raid-empty">No participants match that search.</li> : null}
       </ol>
+      {!query.trim() && !showAll && visible.length > TOP ? (
+        <button type="button" className="dc-show-more" onClick={() => setShowAll(true)}>Show all {visible.length}</button>
+      ) : null}
     </>
   );
 }
