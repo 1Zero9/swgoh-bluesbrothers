@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.54.4 · **Last updated:** 2026-10-11 · tracks site `v0.66.4`
+**Doc version:** 1.55.0 · **Last updated:** 2026-10-13 · tracks site `v0.67.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -366,6 +366,9 @@ Set in three places independently — **they do not sync automatically**:
 | `DISCORD_CHAT_CHANNELS` | Comma-separated Discord channel names mirrored on `/chat` (default `general`; allowlist in `lib/chat-config.ts`). Posting to a channel needs its webhook: `DISCORD_GENERAL_WEBHOOK_URL`, `DISCORD_WINS_WEBHOOK_URL`, `DISCORD_TW_WEBHOOK_URL`, `DISCORD_TW_STATS_WEBHOOK_URL` |
 | `CURATED_NEWS` | Set to `off` to stop the Friday Star Wars news post in #general (`postWeeklyNewsIfDue`; headlines from `lib/news.ts`) |
 | `CURATED_PROMPTS` | Set to `off` to stop the weekly #general conversation prompt (`postWeeklyPromptIfDue`, prompts in `lib/prompts.ts`) |
+| `BLUE_AI` | Set to `on` to switch on B-LU3's AI chat on `/me`. Off (unset) means only the three preset questions, rule-based, and nothing is billed |
+| `BLUE_MODEL` | Optional AI Gateway model id for B-LU3 (default `anthropic/claude-haiku-5-5`) |
+| `AI_GATEWAY_API_KEY` | Vercel AI Gateway key the AI SDK reads for B-LU3 (not needed if the project's AI Gateway/OIDC is enabled) |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
 | `DISCORD_WIDGET_ENABLED` | `true` to embed Discord's official presence widget |
 | `OFFICER_SITE_PASSWORD` | Shared officer login password |
@@ -479,6 +482,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.55.0 — 2026-10-13**: B-LU3 ("Blue"), the guild droid, on `/me`. `lib/blue/` = `tools.ts` (read-only AI SDK tools: who has a unit, my unit, guild counters, my status/Territory War advice, open callouts, my war orders; no Discord ids, no writes), `prompt.ts` (persona and rules; tool output and member text are treated as data), `ask.ts` (`generateText` through the AI Gateway, `isStepCount(6)`, 700 output tokens, 45 s timeout), `limits.ts` (`cleanConversation` accepts only user/assistant text, 500 chars, 6 turns; `BlueUsage` table counts questions, 25 per member per UTC day), `advice.ts` (the rule-based briefing and preset answers). `POST /api/blue` is members/officers only, same-origin only, and off unless `BLUE_AI=on`. `app/blue-chat.tsx` is the chat box. `loadRostersForUnits` (tb-callouts.ts) reads only the units needed in SQL; `getSquadAdvice` and `listCallouts` use it (9 s → 1.4 s). Callout matching uses player ids, not names. Migration `20261013010000_blue_usage`. The model cannot see mods or farm locations and is told not to guess; counters come only from the guild's saved library.
 - **1.54.4 — 2026-10-13**: laptop pass — `.page-hero` min-height reduced at >=761px, compact home hero hides its paragraph and buttons there, new blocks (`tw-my-orders`, `ops-launch`, officer fold-aways) use the parent's width rather than their own margins.
 - **1.54.3 — 2026-10-13**: public front page hero now carries `.public-cta` (Sign in with Discord + "Thinking of joining?" anchor) so a member can sign in without opening the phone menu.
 - **1.54.2 — 2026-10-13**: Dougie's Discs switches `crateViewMode` to "compact" on phone-width screens after mount (matchMedia, deferred so it passes the set-state-in-effect lint rule); the compact row restyled as two lines on phones; `.crate-search-wrap { flex: none }` on phones (its `flex: 0 1 300px` was a 300px height in the column layout).

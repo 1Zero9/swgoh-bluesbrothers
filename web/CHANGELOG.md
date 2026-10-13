@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.67.0 — 2026-10-13
+
+- **Meet B-LU3, "Blue".** The guild's operations droid now lives on **My Page**. Members can type a question ("who has Darth Revan?", "which counter can I run into Revan?", "what am I needed for?") or tap one of three suggestions. Blue looks things up in the guild's own data (rosters, saved counters, Territory Battle callouts, Territory War orders) before answering, and says so when it doesn't know. It can see across the whole guild, like an officer, but only reports what helps the member asking, and it is read-only: it can't change plans or post anywhere. It lives on the site only, not in Discord.
+- **Blue is switched off until the AI key is added.** Until then My Page keeps the three preset questions and the roster report, which work without any AI. Each member gets 25 questions a day.
+- **My Page** has Blue's briefing at the top (what you are needed for right now) and a roster report: leaders you can field, the ones you're closest to, and saved counters you can run or nearly can.
+- **Faster pages.** Pages that check the roster for squad leaders and Territory Battle callouts now read only the units they need, so My Page and the callouts load several times faster (about 9 seconds down to 1.4 locally).
+- Territory Battle callouts now match members by player rather than by name.
+
 ## 0.66.4 — 2026-10-13
 
 - **Laptop screens: the useful part comes first.** The banner at the top of most pages filled the whole screen on a laptop, so things like "Your job this war" and the Operations tools started below the fold. Banners are now about a third shorter, and the home page banner drops its intro text and buttons (the tool buttons sit right underneath instead), so the status strip and buttons show on the first screen.

@@ -65,8 +65,8 @@ export async function getMyPage(playerId: string): Promise<MyPageData | null> {
     const mine: MyCallout[] = callouts
       .filter((callout) => callout.status === "OPEN")
       .flatMap((callout) => {
-        const ready = callout.progress.ready.some((member) => member.name === player.currentName);
-        const close = callout.progress.close.find((member) => member.name === player.currentName);
+        const ready = callout.progress.ready.some((member) => member.playerId === playerId);
+        const close = callout.progress.close.find((member) => member.playerId === playerId);
         if (!ready && !close) return [];
         return [{
           id: callout.id,

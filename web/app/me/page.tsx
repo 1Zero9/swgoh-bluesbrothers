@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
+import BlueChat from "@/app/blue-chat";
 import PageHero from "@/app/page-hero";
 import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
+import { blueAnswer, blueBriefing, counterOptions, type BlueQuestion } from "@/lib/blue/advice";
+import { blueEnabled } from "@/lib/blue/ask";
+import { listCounters } from "@/lib/counters-data";
 import { getMyPage } from "@/lib/my-page";
 import { getSquadAdvice } from "@/lib/roster-advice";
 
@@ -23,13 +28,13 @@ function change(value: number) {
   return value > 0 ? `+${value} in 30 days` : "no change in 30 days";
 }
 
-export default async function MyPage() {
+export default async function MyPage({ searchParams }: { searchParams: Promise<{ blue?: string | string[] }> }) {
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) return <MembersOnly path="/me" area="Your page" />;
 
-  const [data, advice] = access.playerId
-    ? await Promise.all([getMyPage(access.playerId), getSquadAdvice(access.playerId)])
-    : [null, null];
+  const [data, advice, counters] = access.playerId
+    ? await Promise.all([getMyPage(access.playerId), getSquadAdvice(access.playerId), listCounters({ youPlayerId: access.playerId })])
+    : [null, null, []];
 
   if (!data) {
     return (
@@ -51,6 +56,12 @@ export default async function MyPage() {
   const lastSeen = data.lastActivityAt
     ? data.lastActivityAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" })
     : "—";
+  const aiOn = blueEnabled();
+  const briefing = blueBriefing(data, advice);
+  const query = await searchParams;
+  const requested = typeof query.blue === "string" && ["farm", "team", "help"].includes(query.blue) ? query.blue as BlueQuestion : null;
+  const answer = requested ? blueAnswer(requested, data, advice, counters) : null;
+  const personalCounters = counterOptions(counters);
 
   return (
     <main className="intel-shell destination-shell">
@@ -71,30 +82,64 @@ export default async function MyPage() {
         </div>
       </PageHero>
 
+      <section className="blue-briefing public-block" aria-labelledby="blue-briefing-title">
+        <Image src="/blue.png" alt="Blue, Dougie's guild operations droid" className="blue-briefing-avatar" width={300} height={300} priority />
+        <div className="blue-briefing-copy">
+          <p className="eyebrow">B-LU3 · Blue&apos;s briefing</p>
+          <h2 id="blue-briefing-title">{briefing.title}</h2>
+          <p>{briefing.message}</p>
+          <Link href={briefing.href} className="blue-briefing-action">{briefing.action} <span>→</span></Link>
+        </div>
+      </section>
+
+      <section className="blue-questions public-block" id="ask-blue" aria-labelledby="ask-blue-title">
+        <header>
+          <p className="eyebrow">Ask B-LU3</p>
+          <h2 id="ask-blue-title">What do you need?</h2>
+          <p>{aiOn ? "Type a question, or tap one. Blue checks your synced roster and the guild's data before answering." : "Blue reads your synced roster against the guild's current needs and gives you the straight answer."}</p>
+        </header>
+        {aiOn ? <BlueChat /> : (
+          <>
+            <nav className="blue-question-actions" aria-label="Questions for Blue">
+          <Link href="/me?blue=farm#ask-blue">What should I farm next?</Link>
+          <Link href="/me?blue=team#ask-blue">What team should I finish?</Link>
+          <Link href="/me?blue=help#ask-blue">How can I help the band?</Link>
+        </nav>
+        {answer ? <article className="blue-answer" aria-live="polite"><Image src="/blue.png" alt="" width={72} height={72} /><div><p className="eyebrow">{answer.title}</p><p>{answer.message}</p></div></article> : null}
+          </>
+        )}
+      </section>
+
       {advice ? (
-        <section className="public-block">
+        <section className="public-block" id="blue-report">
           <header>
-            <p className="eyebrow">Roster advice</p>
-            <h2>Where you can help most</h2>
-            <p>Based on the squads the guild builds Territory War around, checked against your own roster. We look at the squad leader.</p>
+            <p className="eyebrow">Blue&apos;s roster report</p>
+            <h2>Your next useful move</h2>
+            <p>Blue compares your synced roster with saved guild counter squads and current TB callouts. Each saved counter checks every listed unit against your roster.</p>
           </header>
-          {advice.close.length ? (
-            <ul className="my-list">
-              {advice.close.slice(0, 4).map((item) => (
-                <li key={item.key}>
-                  <strong>{item.label}: {item.gap}</strong>
-                  <span>
-                    {item.thin ? `The guild is thin here: only ${item.qualifiers} member${item.qualifiers === 1 ? "" : "s"} can field it.` : `${item.qualifiers} members can field it.`}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="my-empty">You&apos;re not close to any squad you can&apos;t already field. Nice.</p>
-          )}
-          {advice.ready.length ? (
-            <p className="my-line advice-ready"><strong>You can field:</strong> {advice.ready.map((item) => `${item.label}${item.thin ? " (rare)" : ""}`).join(", ")}</p>
-          ) : null}
+          <div className="blue-report-grid">
+            <article className="blue-report-card">
+              <p className="eyebrow">Gig-ready leaders · {advice.ready.length}</p>
+              {advice.ready.length ? <ul>{advice.ready.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label}</strong><span>{item.leader} meets the {item.targetStars}★{item.targetRelic >= 0 ? ` R${item.targetRelic}+` : item.targetGear > 0 ? ` G${item.targetGear}+` : ""} leader target{item.thin ? ` · only ${item.qualifiers} guild members meet it` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked leader target is ready yet. Blue will call out the closest one.</p>}
+            </article>
+            <article className="blue-report-card">
+              <p className="eyebrow">Closest guild builds · {advice.close.length}</p>
+              {advice.close.length ? <ul>{advice.close.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label} · {item.gap}</strong><span>{item.leader}{item.haveStars !== null ? ` · currently ${item.haveStars}★${item.haveRelic ? ` R${item.haveRelic}` : item.haveGear ? ` G${item.haveGear}` : ""}` : " · not unlocked"}{item.thin ? ` · only ${item.qualifiers} members currently meet the target` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked target is close to completion right now. Blue will keep watching the roster.</p>}
+            </article>
+            <article className="blue-report-card">
+              <p className="eyebrow">Blue&apos;s next team</p>
+              {personalCounters.next ? <div className="blue-counter-pick"><strong>{personalCounters.next.title} into {personalCounters.next.enemy.name}</strong><span>{personalCounters.next.readiness.you?.gaps.length ? `Still needed: ${personalCounters.next.readiness.you.gaps.join("; ")}` : "This saved team matches your synced roster."}</span><small>{personalCounters.next.readiness.ready.length} guild member{personalCounters.next.readiness.ready.length === 1 ? "" : "s"} currently meet this counter&apos;s full requirements.</small></div> : personalCounters.ready.length ? <p className="my-empty">You meet the requirements for all saved counters in this report. Pick one from your ready list below.</p> : <p className="my-empty">No saved counter squad is available yet. Add trusted counters as the guild discovers them.</p>}
+              <p className="eyebrow blue-counter-ready-label">Ready counters · {personalCounters.ready.length}</p>
+              {personalCounters.ready.length ? <ul>{personalCounters.ready.slice(0, 4).map((counter) => <li key={counter.id}><strong>{counter.title} · into {counter.enemy.name}</strong><span>{counter.squad.map((slot) => `${slot.name}${slot.minRelic > 0 ? ` R${slot.minRelic}+` : ` ${slot.minStars}★`}`).join(" · ")}{counter.notes ? ` · ${counter.notes}` : ""}</span></li>)}</ul> : <p className="my-empty">No saved counter squad is fully ready from the latest synced roster.</p>}
+              {personalCounters.close.length > 1 ? <div className="blue-counter-close"><strong>Other close counters</strong><ul>{personalCounters.close.slice(1, 3).map((counter) => <li key={counter.id}><span>{counter.title} into {counter.enemy.name}: {counter.readiness.you?.gaps.join("; ")}</span></li>)}</ul></div> : null}
+              <Link href="/counters">Open the counters library →</Link>
+            </article>
+            <article className="blue-report-card blue-report-limits">
+              <p className="eyebrow">What Blue can read</p>
+              <p>Saved counter readiness checks each listed character&apos;s stars and relic requirement. The separate TW target list checks squad leaders only. Blue does not yet score mod loadouts or know farm locations, so it won&apos;t guess at either.</p>
+              <Link href="/members#who-has">Find who has a unit →</Link>
+            </article>
+          </div>
         </section>
       ) : null}
 
