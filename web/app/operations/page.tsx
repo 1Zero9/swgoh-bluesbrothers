@@ -4,6 +4,7 @@ import MembersOnly from "@/app/members-only";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
 import { getDashboardSummary } from "@/lib/dashboard";
+import NavIcon from "@/app/nav-icon";
 import { canViewMembersArea } from "@/lib/member-gate";
 import { isOfficerRequest } from "@/lib/officer-session";
 import { getTerritoryWarRoom } from "@/lib/territory-war";
@@ -24,14 +25,14 @@ export default async function OperationsPage() {
   const [war, summary, isOfficer] = await Promise.all([getTerritoryWarRoom(), getDashboardSummary(), isOfficerRequest()]);
 
   const tools = [
-    { href: "/territory-war", icon: "⚔️", name: "Territory War", line: "Your job this war", fact: war.active ? `Live vs ${war.opponentName || "the opposition"}` : "No war running" },
-    { href: "/territory-battles", icon: "🪐", name: "Territory Battles", line: "Callouts and the plan", fact: summary.live ? `${summary.memberCount} members` : "—" },
-    { href: "/counters", icon: "🛡️", name: "Counters", line: "What beats what, and who can run it", fact: "TW and GAC" },
-    { href: "/raids", icon: "💥", name: "Raids", line: "Who carried the last raid", fact: summary.live ? `${summary.dailyTickets.toLocaleString("en-GB")} tickets today` : "—" },
-    { href: "/datacrons", icon: "💎", name: "Datacrons", line: "The guild's Level 9 weapons", fact: "Active sets" },
-    { href: "/arsenal", icon: "🚀", name: "Arsenal", line: "What the guild can field", fact: summary.live ? `${power(summary.guildPower)} GP` : "—" },
-    { href: "/members#who-has", icon: "🔎", name: "Who has…?", line: "Find a unit in the guild", fact: "Search" },
-    ...(isOfficer ? [{ href: "/officer/discord-sync", icon: "🤖", name: "Discord sync", line: "Officers: roles and name matches", fact: "Officers only" }] : []),
+    { href: "/territory-war", icon: "war", name: "Territory War", line: "Your job this war", fact: war.active ? `Live vs ${war.opponentName || "the opposition"}` : "No war running" },
+    { href: "/territory-battles", icon: "planet", name: "Territory Battles", line: "Callouts and the plan", fact: summary.live ? `${summary.memberCount} members` : "—" },
+    { href: "/counters", icon: "shield", name: "Counters", line: "What beats what, and who can run it", fact: "TW and GAC" },
+    { href: "/raids", icon: "raid", name: "Raids", line: "Who carried the last raid", fact: summary.live ? `${summary.dailyTickets.toLocaleString("en-GB")} tickets today` : "—" },
+    { href: "/datacrons", icon: "datacron", name: "Datacrons", line: "The guild's Level 9 weapons", fact: "Active sets" },
+    { href: "/arsenal", icon: "rocket", name: "Arsenal", line: "What the guild can field", fact: summary.live ? `${power(summary.guildPower)} GP` : "—" },
+    { href: "/members#who-has", icon: "search", name: "Who has…?", line: "Find a unit in the guild", fact: "Search" },
+    ...(isOfficer ? [{ href: "/officer/discord-sync", icon: "blue", name: "Discord sync", line: "Officers: roles and name matches", fact: "Officers only" }] : []),
   ];
 
   return (
@@ -48,7 +49,7 @@ export default async function OperationsPage() {
       <nav className="quick-launch ops-launch" aria-label="Operations tools">
         {tools.map((tool) => (
           <Link key={tool.href} href={tool.href} className="quick-tool">
-            <span className="quick-icon" aria-hidden="true">{tool.icon}</span>
+            <span className="quick-icon" aria-hidden="true"><NavIcon name={tool.icon} size={22} /></span>
             <strong>{tool.name}</strong>
             <small>{tool.line}</small>
             <em className="ops-fact">{tool.fact}</em>

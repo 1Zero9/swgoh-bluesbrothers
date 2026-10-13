@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavCategoryItem } from "./site-header";
+import NavIcon from "./nav-icon";
 import { useViewer } from "./use-viewer";
 
 export default function NavLinks({ items: allItems }: { items: NavCategoryItem[] }) {
@@ -116,7 +117,7 @@ export default function NavLinks({ items: allItems }: { items: NavCategoryItem[]
                         onClick={() => setOpenDropdown(null)}
                       >
                         <div className="nav-drop-icon">
-                          <span>{child.icon || "◈"}</span>
+                          <NavIcon name={child.icon} />
                         </div>
                         <div className="nav-drop-info">
                           <div className="nav-drop-title-row">

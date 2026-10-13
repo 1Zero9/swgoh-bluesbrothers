@@ -50,11 +50,14 @@ function menuFor(role: "OFFICER" | "MEMBER" | "PUBLIC" | null): MenuGroup[] {
       },
     ];
     if (role === "OFFICER") {
-      groups.push({
-        title: "Officers",
+      // Right under the everyday links, where an officer will see it without scrolling.
+      groups.splice(1, 0, {
+        title: "Officer Deck",
         links: [
           { label: "Roster report", href: "/officer/roster" },
           { label: "Discord sync", href: "/officer/discord-sync" },
+          { label: "War room", href: "/territory-war" },
+          { label: "Battle planning", href: "/territory-battles" },
         ],
       });
     }
