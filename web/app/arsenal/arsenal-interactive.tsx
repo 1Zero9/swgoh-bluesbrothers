@@ -56,15 +56,15 @@ export default function ArsenalInteractive({ categories, syncedMembers }: Arsena
   return (
     <>
       <div className="arsenal-sections">
-        {categories.map((category) => (
-          <section className="arsenal-category" key={category.name}>
-            <header>
+        {categories.map((category, categoryIndex) => (
+          <details className="arsenal-category" key={category.name} open={categoryIndex === 0}>
+            <summary className="arsenal-summary">
               <div>
                 <p className="eyebrow">Collection coverage</p>
                 <h2>{category.name}</h2>
               </div>
               <strong>{category.coverage}<span>%</span><small>owned</small></strong>
-            </header>
+            </summary>
             <div className="arsenal-grid">
               {category.units.map((unit) => {
                 const ownedPct = percentage(unit.owned, syncedMembers);
@@ -97,20 +97,14 @@ export default function ArsenalInteractive({ categories, syncedMembers }: Arsena
                     <div className="arsenal-track">
                       <i style={{ width: `${ownedPct}%` }} />
                     </div>
-                    <div className="arsenal-stats">
-                      <span><small>Owned</small><strong>{unit.owned}</strong></span>
-                      <span><small>7 star</small><strong>{unit.sevenStar}</strong></span>
-                      {isShip ? (
-                        <span><small>Coverage</small><strong>{ownedPct}%</strong></span>
-                      ) : (
-                        <span><small>R5+</small><strong>{unit.relicFive}</strong></span>
-                      )}
-                    </div>
+                    <p className="arsenal-line">
+                      {unit.sevenStar} at 7★{isShip ? "" : ` · ${unit.relicFive} at R5+`}
+                    </p>
                   </button>
                 );
               })}
             </div>
-          </section>
+          </details>
         ))}
       </div>
 

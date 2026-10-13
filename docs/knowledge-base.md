@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.52.1 · **Last updated:** 2026-10-11 · tracks site `v0.64.0`
+**Doc version:** 1.53.0 · **Last updated:** 2026-10-11 · tracks site `v0.65.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -479,6 +479,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.53.0 — 2026-10-13**: tool simplification, step 3. Arsenal categories are `<details>` (first open) with one-line unit cards; Raids drops the placeholder cards, shows the top 10 with "Show all", and labels tabs by raid + end date (`recentRaidResult` holds several runs of the same raid, so `raidId` alone is not a unique key).
 - **1.52.1 — 2026-10-13**: `web/scripts/seed-counters.mjs` loads officers' counters from a plain-text list (`Enemy leader | Name | TW/GAC/BOTH | Unit:stars:relic, ... | note`); check-only by default, `--write` saves them as "Guild officers", and re-running does not duplicate. Deliberately not pre-filled: counters must come from the officers, because the meta moves and a wrong counter costs trust.
 - **1.52.0 — 2026-10-13**: tool simplification, step 2. `/territory-war` leads with `TwMyOrders` — the viewer's own defence and attack orders from the plan marked ACTIVE (`getActiveTwPlanDetail`, pure `buildMyOrders` in `lib/tw-my-orders.ts`, only ASSIGNED-or-later statuses count; SUGGESTED is not an order). Planner, assignments, roster board and the data note are inside an officer-only `<details>`. Live TW data still is not available from Comlink, so orders are posted by officers.
 - **1.51.0 — 2026-10-13**: tool simplification, step 1. Datacrons vault paginates (`PAGE_SIZE`, default tier L9, cards view). Territory Battles: members see callouts plus the plan officers mark ACTIVE (`getActiveTbPlanDetail`, `tb-plan-view.tsx`, read-only, never creates a plan); `TbPlanner` and `TbWorkspace` live in an officer-only `<details>` and rosters load only for officers. Principle: one question per tool, officer controls out of the member view.
