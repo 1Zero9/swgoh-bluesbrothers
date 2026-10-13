@@ -8856,3 +8856,15 @@ html[data-theme="light"] .arsenal-category > summary > strong { color: #0f172a; 
   .compact-table-row .row-actions { grid-area: actions; display: flex; gap: 6px; }
   .compact-table-row .row-actions button { flex: 1; padding: 7px 4px; font-size: 12px; white-space: nowrap; }
 }
+
+/* Public front page: a clear way in for members, a clear next step for recruits */
+.public-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 4px 0 18px; }
+.public-cta .btn-discord-gate { margin: 0; }
+.public-cta-link { color: #cfe3ff; font-size: 15px; text-decoration: none; }
+.public-cta-link:hover { text-decoration: underline; }
+@media (max-width: 760px) {
+  .req-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .req-grid article { padding: 14px; }
+  .req-grid article strong { font-size: 22px; }
+  .req-grid article span { font-size: 13px; }
+}

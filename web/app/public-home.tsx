@@ -28,6 +28,10 @@ export default function PublicHome({ data, linking, news = [] }: { data: PublicH
         description="A friendly, active guild that turns up for Territory War, Territory Battles and raids — and has fun doing it."
         priority
       >
+        <div className="public-cta">
+          <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
+          <a className="public-cta-link" href="#join">Thinking of joining? →</a>
+        </div>
         <div className="intel-summary">
           <div><strong>{data.live ? data.members : "—"}<span>/{data.capacity}</span></strong><small>members</small></div>
           <div><strong>{data.live ? millions(data.guildPower) : "—"}</strong><small>guild power</small></div>
@@ -127,7 +131,7 @@ export default function PublicHome({ data, linking, news = [] }: { data: PublicH
         <p><Link className="btn-discord-gate" href="/guides">Read the field guides</Link></p>
       </section>
 
-      <IntelFooter message="Already in the guild? Use Sign in at the top to see the members' area.">
+      <IntelFooter message="Already in the guild? Sign in with Discord to see the members' area.">
         <Link href="/guides">Field guides →</Link>
       </IntelFooter>
     </main>

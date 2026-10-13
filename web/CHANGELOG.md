@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.66.3 — 2026-10-13
+
+- **A Sign in button on the front page.** Members arriving at the site for the first time had no sign-in button on the first screen; on a phone it was only inside the menu. The front page now opens with **Sign in with Discord** and, next to it, "Thinking of joining?" for recruits, which jumps to what the guild asks for.
+- **The entry requirements sit two by two** on a phone, and the note at the bottom no longer says to look "at the top".
+
 ## 0.66.2 — 2026-10-13
 
 - **Dougie's Discs is about a third of its length on a phone** (about 5,400 px, down from about 15,500). The record crate opens as a compact list instead of a full sleeve per record: title and artist with the running time, and Spin, Next and Queue buttons underneath. The Sleeves view is still one tap away, and on a laptop it still opens on the sleeves.
