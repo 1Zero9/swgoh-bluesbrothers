@@ -4,11 +4,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/app/page-hero";
 import IntelFooter from "@/app/intel-footer";
+import { getViewerAccess } from "@/lib/access-control";
+import { buildMyOrders } from "@/lib/tw-my-orders";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
 import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerIdentity } from "@/lib/officer-identity";
 import {
   ensureBuiltInCommands,
+  getActiveTwPlanDetail,
   getCurrentTwEventId,
   getDefaultGuildId,
   getOrCreateActivePlan,
@@ -17,6 +20,7 @@ import {
   listTemplates,
 } from "@/lib/tw-plans";
 import { buildPool } from "@/lib/tw-view";
+import TwMyOrders from "./tw-my-orders";
 import WarRoster from "./war-roster";
 import TwWorkspace, { type WorkspacePlan } from "./tw-workspace";
 
@@ -69,7 +73,12 @@ export default async function TerritoryWarPage() {
   const capturedLabel = war.capturedAt?.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) ?? "Awaiting first sync";
   const roundEndLabel = war.roundEndsAt?.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-  const isOfficer = await isOfficerRequest();
+  const [isOfficer, access] = await Promise.all([isOfficerRequest(), getViewerAccess()]);
+
+  // What the officers have marked Active, and this member's slice of it.
+  const sharedGuildId = await getDefaultGuildId();
+  const sharedPlan = sharedGuildId ? await getActiveTwPlanDetail(sharedGuildId, await getCurrentTwEventId()) : null;
+  const myOrders = sharedPlan && access.playerId ? buildMyOrders(sharedPlan, access.playerId) : null;
 
   let plan: WorkspacePlan | null = null;
   let templates: { id: string; name: string; description: string | null; rules: unknown; isBuiltIn: boolean }[] = [];
@@ -179,12 +188,14 @@ export default async function TerritoryWarPage() {
           <span><i /> {war.active ? `Live war${war.round === null ? "" : ` · Round ${war.round}`}` : "No active war in the latest capture"}</span>
           <strong>{war.active ? (roundEndLabel ? `Round ends ${roundEndLabel}` : "Round timing unavailable") : `Last checked ${capturedLabel}`}</strong>
         </div>
+        {war.active ? (
         <div className="intel-summary tw-summary" aria-label="Territory War summary">
           <div><strong>{war.active ? war.joinedCount : war.members.length}<span>/{war.members.length || "—"}</span></strong><small>{war.active ? "members joined" : "active members"}</small></div>
           <div><strong>{war.active ? compactPower(war.joinedPower) : profileCoverage}<span>{war.active ? "" : `/${war.members.length || "—"}`}</span></strong><small>{war.active ? "locked guild power" : "profiles captured"}</small></div>
           <div><strong>{war.active ? war.guildScore.toLocaleString("en-GB") : "—"}</strong><small>{war.active ? "Blues Brothers score" : "guild score"}</small></div>
           <div><strong>{war.active ? war.opponentScore.toLocaleString("en-GB") : "—"}</strong><small>{war.active ? `${war.opponentName || "opponent"} score` : "opponent score"}</small></div>
         </div>
+        ) : null}
       </PageHero>
 
       {war.active ? (
@@ -200,6 +211,8 @@ export default async function TerritoryWarPage() {
         </section>
       ) : null}
 
+      <TwMyOrders orders={myOrders} planPosted={Boolean(sharedPlan)} />
+
       {war.active && (war.homeZones.length || war.opponentZones.length) ? (
         <div className="tw-zones">
           {war.homeZones.length ? <ZoneBoard title="Our defence" zones={war.homeZones} /> : null}
@@ -207,6 +220,10 @@ export default async function TerritoryWarPage() {
         </div>
       ) : null}
 
+      {isOfficer ? (
+        <details className="tw-officer-tools">
+          <summary>Officer war room</summary>
+          <p className="tb-officer-note">The planner, assignments and roster board. Mark the plan Active and members see their own orders above.</p>
       <TwWorkspace isOfficer={isOfficer} plan={plan} pool={pool} war={warSummary} templates={templates} commands={commands} />
 
       <section className="tw-roster-section">
@@ -223,6 +240,9 @@ export default async function TerritoryWarPage() {
         <strong>What this board knows</strong>
         <p>Comlink supplies guild-specific TW registration, locked rosters, opponent profile, commands, zone state and squads through the existing <code>/guild</code> call. The sync now stores every active war as a <code>GuildEvent</code> with hourly <code>EventSnapshot</code> history; no opponent counters or officer assignments are invented when the game does not provide them.</p>
       </aside>
+
+        </details>
+      ) : null}
 
       <IntelFooter message="Live data from the guild’s self-hosted SWGOH Comlink service.">
         <Link href="/arsenal">Open guild arsenal →</Link>
