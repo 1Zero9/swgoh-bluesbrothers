@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.67.2 — 2026-10-13
+
+- **Blue's allowance is now 5 questions per member per week** (resets on Monday), to keep the AI cost small. The roster report and preset briefing on My Page stay free and unlimited.
+
 ## 0.67.1 — 2026-10-13
 
 - **Blue can run on Google Gemini.** Add a Gemini API key and switch Blue on; no other AI service is needed.

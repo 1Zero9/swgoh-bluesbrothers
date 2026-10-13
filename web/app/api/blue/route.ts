@@ -9,7 +9,7 @@ export const maxDuration = 60;
 const NO_STORE = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number) => Response.json({ ok: false, error }, { status, headers: NO_STORE });
 
-/** Ask B-LU3 a question. Signed-in members and officers only; a daily allowance each. */
+/** Ask B-LU3 a question. Signed-in members and officers only; a weekly allowance each. */
 export async function POST(request: Request) {
   // Only the site itself may call this: a page on another origin must not spend the guild's AI budget.
   const origin = request.headers.get("origin");
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   if (!conversation) return fail("Ask Blue a question first.", 400);
 
   const left = await takeQuestion(access.playerId ?? "officer");
-  if (left === null) return fail("Blue has answered plenty today. Try again tomorrow.", 429);
+  if (left === null) return fail("You've used this week's questions for Blue. Your roster report below is still here, and it resets on Monday.", 429);
 
   try {
     const answer = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
