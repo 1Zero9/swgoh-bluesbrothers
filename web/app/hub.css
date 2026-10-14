@@ -551,3 +551,14 @@ html[data-theme="dark"] .hub-ground {
 .hub-blue-panel .hub-blue-play span { font-size: 11px; padding: 3px 9px; }
 .hub-blue-panel .hub-text-button { justify-self: start; margin: 0; }
 @media print { .hub-blue-float-root { display: none; } }
+
+/* B-Lue3's quick panel: everything stays inside it, and the clip is a plain button. */
+.hub-blue-panel { box-sizing: border-box; max-width: calc(100vw - 16px); }
+.hub-blue-panel > * { min-width: 0; }
+.hub-blue-panel form { width: 100%; }
+.hub-blue-panel form input { width: 0; flex: 1 1 0; }
+.hub-blue-panel form button { flex: none; }
+.hub-blue-links { flex-wrap: wrap; }
+.hub-play-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border: 1px solid var(--hub-accent); border-radius: 999px; background: var(--hub-accent-soft); color: var(--hub-accent); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.hub-play-pill:hover { background: var(--hub-accent); color: var(--hub-on-accent); }
+.hub-play-pill:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 2px; }
