@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
 import HubPage, { HubHeading } from "@/app/hub-page";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
+import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
 
 /** Local preview of the hub screens with sample data. Development only: it does not exist in a production build. */
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
   const { screen } = await searchParams;
+  if (screen === "welcome") return <LinkWelcome discordUsername="steve_c" discordUrl="https://discord.gg/example" preview />;
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage><HubHeading eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band." /><KnowledgeHub names={{}} canAct /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;

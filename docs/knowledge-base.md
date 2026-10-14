@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.64.0 · **Last updated:** 2026-10-14 · tracks site `v0.76.0`
+**Doc version:** 1.65.0 · **Last updated:** 2026-10-14 · tracks site `v0.77.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -256,7 +256,8 @@ Signed-in members and officers get a five-section shell: **Home** (`/`), **Ask B
 - **Themes.** Three, set on `html[data-theme]` and stored in `localStorage["bb-theme"]`: `rebel` (light, the default), `deep` (navy dark), `dark` (the original look, shown as "Classic"). Tokens are `--hub-*` in `app/hub.css`. New hub screens style only through those tokens. Older pages still use `globals.css` (about 1,660 hard-coded colours) and keep their dark look under every theme until moved over; inside `.hub-main` a few legacy variable names are remapped so the B-Lue3 chat and push settings follow the theme. The old `gradient`/`light` choices are gone (saved values fall back to `rebel`).
 - **Home.** `app/page.tsx` shows the public front page to visitors and `HubHome` to members: an ask box (GET to `/ask?q=`), a first-visit checklist (`get-started.tsx`, progress in `localStorage["bb-get-started"]`, account step from the server), open calls for help, the Guild Wire (3 items) and, for officers, the review-queue count. Loaders are wrapped so a missing table does not take the page down. The previous member dashboard now lives at `/overview` unchanged.
 - **Ask page.** `/ask` shows how B-Lue3 answers (free guild knowledge, then web on a tap, then AI) above the existing `BlueChat`; `?q=` pre-fills the box (it never auto-sends). The search order itself is unchanged (§9).
-- **Local preview.** `/dev/hub?screen=ask|guild|more` renders the hub screens with sample data in development builds only (404 in production), because a member view cannot be signed in locally.
+- **First sign-in (`app/link-welcome.tsx`).** A visitor who has signed in with Discord (link cookie, `MemberContext.status === "linking"`) now gets `LinkWelcome` at `/` instead of the public front page: three steps, one ally-code box that formats as typed (`lib/ally-code.ts`), a "where do I find it" hint, and failures mapped to one next step by `lib/link-help.ts` (retry, sign in again, or ask an officer in Discord). It posts to the unchanged `/api/members/link` (§5.3), then refreshes into the hub Home. `AccountLink` still exists for the older dashboard.
+- **Local preview.** `/dev/hub?screen=ask|guild|more|knowledge|welcome` renders the hub screens with sample data in development builds only (404 in production), because a member view cannot be signed in locally.
 - **Not done yet:** tips and ideas in the knowledge base (schema and review), moving older pages to the theme tokens, Home for first-time members who have not linked an account.
 
 ## 6. Data model
@@ -522,6 +523,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.65.0 — 2026-10-14**: first sign-in step (§5.17): `LinkWelcome` replaces the buried ally-code block for people who have signed in with Discord but are not yet linked; formatting and error help are pure, tested helpers.
 - **1.64.0 — 2026-10-14**: tips and ideas in the knowledge base (§9 "Counter knowledge base"): `KbNote`/`KbNoteHelpful`, officer-checked, "this helped" marks, one "Add what you know" sheet, B-Lue3 `findGuildTips`. Knowledge page moved onto the hub frame (`/knowledge` no longer uses the old hero).
 - **1.63.0 — 2026-10-14**: member hub, phase 1 (§5.17): five-section navigation, three selectable themes (Rebel default), new member Home, `/ask`, `/guild`, `/more`, the old dashboard moved to `/overview`.
 - **1.62.0 — 2026-10-14**: database-first search order for B-Lue3 (section above): free counter and "who has" answers from the guild database, an explicit paid web-search choice when nothing is saved, AI only for the rest. `findKnownCounters` now shares `lookupKnownCounters` with the free path.

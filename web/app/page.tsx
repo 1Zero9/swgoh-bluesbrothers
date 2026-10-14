@@ -2,7 +2,8 @@ import PublicHome from "./public-home";
 import { getViewerAccess } from "@/lib/access-control";
 import { getPublicHomeData } from "@/lib/public-stats";
 import { getStarWarsNews } from "@/lib/news";
-import AccountLink from "./account-link";
+import LinkWelcome from "./link-welcome";
+import { getDiscordUrl } from "@/lib/discord";
 import HubHome, { type HubHomeProps } from "./hub-home";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
@@ -40,7 +41,9 @@ export default async function Home() {
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) {
     const [data, context, news] = await Promise.all([getPublicHomeData(), getMemberContext(), getStarWarsNews(5)]);
-    return <PublicHome data={data} news={news} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
+    // Signed in with Discord but not yet matched to a game account: a short guided step, not a block lower down the page.
+    if (context.status === "linking") return <LinkWelcome discordUsername={context.discordUsername} discordUrl={getDiscordUrl()} />;
+    return <PublicHome data={data} news={news} />;
   }
 
   const [context, wire, requests, queue, noteCount] = await Promise.all([

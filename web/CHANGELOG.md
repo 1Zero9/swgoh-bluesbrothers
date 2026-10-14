@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.77.0 — 2026-10-14
+
+- **A proper first sign-in.** After you sign in with Discord for the first time, you now get one clear page: three steps (Discord, ally code, you're in), a single box for your 9-digit ally code, and a "Where do I find it?" hint. Before, the ally code box sat further down the front page.
+- **The code sets itself out.** Type the digits and the dashes appear (123-456-789).
+- **If it doesn't work, it says what to do next.** Not recognised: check the digits. Not in the guild yet or someone else is linked: a button to the Discord so an officer can sort it. Your Discord sign-in timed out: a button to sign in again.
+- When it works you see a short welcome and go straight to your home page.
+
 ## 0.76.0 — 2026-10-14
 
 - **Add what you know.** The Knowledge page now has one button for adding a **counter**, a **tip** or an **idea**. Tips and ideas are plain words: "spend raid tickets at reset", "we should plan TW defence on Thursday". Say where it applies and how you know.
