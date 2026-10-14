@@ -14,7 +14,7 @@ function millions(value: bigint) {
 }
 
 /** The front door: what the guild is, whether there's room, what we ask, and how to join. No member data. */
-export default function PublicHome({ data, linking, news = [] }: { data: PublicHomeData; linking?: ReactNode; news?: NewsItem[] }) {
+export default function PublicHome({ data, linking, notice, news = [] }: { data: PublicHomeData; linking?: ReactNode; notice?: ReactNode; news?: NewsItem[] }) {
   const discordUrl = getDiscordUrl();
   const full = data.spaces === 0;
 
@@ -28,6 +28,7 @@ export default function PublicHome({ data, linking, news = [] }: { data: PublicH
         description="A friendly, active guild that turns up for Territory War, Territory Battles and raids — and has fun doing it."
         priority
       >
+        {notice}
         <div className="public-cta">
           <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
           <a className="public-cta-link" href="#join">Thinking of joining? →</a>
