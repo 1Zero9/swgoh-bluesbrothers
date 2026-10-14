@@ -11,7 +11,7 @@ const HEIGHT = 360;
  * "Meet B-Lue3": B-Lue3's avatar with a play badge. A tap opens a short clip of B-Lue3 with the green screen
  * removed live, so he floats over the page. The video only downloads when someone taps.
  */
-export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", endLabel = "Ask B-Lue3 a question" }: { variant?: "avatar" | "welcome"; endHref?: string; endLabel?: string }) {
+export default function BlueIntro({ variant = "avatar", size = 56, endHref = "#ask-blue", endLabel = "Ask B-Lue3 a question" }: { variant?: "avatar" | "welcome" | "hub"; size?: number; endHref?: string; endLabel?: string }) {
   const [open, setOpen] = useState(false);
   const [ended, setEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,7 +59,12 @@ export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", e
 
   return (
     <>
-      {variant === "welcome" ? (
+      {variant === "hub" ? (
+        <button type="button" className="hub-blue-play" onClick={() => setOpen(true)} aria-label="Meet B-Lue3: play a short clip">
+          <Image src="/blue.png" alt="" width={size * 2} height={size * 2} style={{ width: size, height: size }} />
+          <span aria-hidden="true">▶ Meet B-Lue3</span>
+        </button>
+      ) : variant === "welcome" ? (
         <button type="button" className="blue-intro-welcome" onClick={() => setOpen(true)} aria-label="Play a welcome from B-Lue3">
           <Image src="/blue.png" alt="" width={60} height={60} />
           <span aria-hidden="true">▶</span>

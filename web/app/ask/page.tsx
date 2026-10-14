@@ -9,6 +9,7 @@ import { getViewerAccess } from "@/lib/access-control";
 import { blueAnswer, type BlueQuestion } from "@/lib/blue/advice";
 import { blueEnabled, webSearchOn } from "@/lib/blue/ask";
 import { getUsage } from "@/lib/blue/limits";
+import { resetLabel } from "@/lib/blue/reset-label";
 import { listCounters } from "@/lib/counters-data";
 import { getMyPage } from "@/lib/my-page";
 import { getSquadAdvice } from "@/lib/roster-advice";
@@ -55,5 +56,6 @@ export default async function AskPage({ searchParams }: { searchParams: SearchPa
         )}
     </>
   );
-  return <AskView>{chat}</AskView>;
+  const left = usage ? { left: usage.left, limit: usage.limit, resetsLabel: resetLabel(usage.resetsOn) } : null;
+  return <AskView left={left}>{chat}</AskView>;
 }

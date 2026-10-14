@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.79.0 — 2026-10-14
+
+- **How B-Lue3 answers is now impossible to miss.** Three clear steps with big cost labels: **Free** (the guild's own knowledge), **Uses 1 question** (a web search, only if you tap it) and **Uses 1 question** (the AI). The AI steps carry an **AI** tag. It shows on Home and on the Ask page, with how many questions you have left this week.
+- **A plain warning about the AI.** "AI can be wrong. Check in game before you commit a squad. Nothing the AI finds is shared with the guild until an officer has checked it." The web-search button and every AI answer carry a short version of it too.
+- **"Meet B-Lue3" is back.** The short clip of B-Lue3 plays from his picture on Home and on the Ask page, not just on My page.
+
 ## 0.78.1 — 2026-10-14
 
 - **If the Discord sign-in doesn't finish, you're told.** Cancelling on Discord, a timeout or a hiccup used to drop you back on the front page with no message. Now the top of the page says the sign-in didn't finish, that nothing was changed, and gives a button to try again and a way to ask an officer.
