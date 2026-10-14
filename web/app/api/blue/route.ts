@@ -27,8 +27,8 @@ export async function POST(request: Request) {
   if (left === null) return fail("You've used this week's questions for B-Lue3. Your roster report below is still here, and it resets on Monday.", 429);
 
   try {
-    const { text, sources } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
-    return Response.json({ ok: true, answer: text, sources, left }, { headers: NO_STORE });
+    const { text, sources, webSearch, searchError } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
+    return Response.json({ ok: true, answer: text, sources, webSearch, left, ...(access.isOfficer && searchError ? { searchError } : {}) }, { headers: NO_STORE });
   } catch (error) {
     const detail = safeErrorDetail(error);
     console.error("blue: ask failed", detail);

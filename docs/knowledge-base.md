@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.60.0 · **Last updated:** 2026-10-13 · tracks site `v0.72.0`
+**Doc version:** 1.60.1 · **Last updated:** 2026-10-13 · tracks site `v0.72.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -501,6 +501,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.60.1 — 2026-10-14**: B-Lue3 is honest about web search. `askBlue` returns `webSearch` (`used`/`unavailable`/`off`); when the search attempt fails and the retry runs without it, `instructionsFor(false)` tells the model it has no web search (it had been claiming it lacked the ability in general), the chat shows "I couldn't search the web just now", and officers also see the sanitised reason (`searchError`). The original failures were Google's free tier (429/503); moving the key to a paid plan fixed them.
 - **1.60.0 — 2026-10-14**: counter knowledge base foundation (see the section above): schema + migration `20261014010000_knowledge_base`, `lib/knowledge/*`, `/api/knowledge*`, `/knowledge` and `/knowledge/review`, "This is what I use" marks, calls for help to a Discord channel, B-Lue3 tools, import script. 33 new tests; the full flow was exercised against a throwaway Postgres (PGlite) with 16 migrations applied.
 - **1.59.3 — 2026-10-14**: failed B-Lue3 calls no longer cost a question (`refundQuestion`), officers see the reason in the chat error (`safeErrorDetail`: shortened, key-shaped strings removed), the web-search attempt times out at 30 s and the plain retry at 40 s (a search run that hung used to eat the whole 60 s function budget, so the retry never answered), and `/api/blue` allows `maxDuration` 120.
 - **1.59.2 — 2026-10-14**: `BLUE_AI` is read forgivingly (`isSwitchOn` in `lib/blue/ask.ts`): case, spaces, quotes, line breaks and non-breaking spaces ignored; on/true/yes/1 all count. A pasted value like `"on\n"` used to read as off with no visible clue. The officer note on `/me` now prints the value with `JSON.stringify` so hidden characters show.

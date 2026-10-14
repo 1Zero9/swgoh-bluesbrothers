@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.72.1 — 2026-10-14
+
+- **B-Lue3 is straight about web search.** If the web search doesn't work for a question, he now says "I couldn't search the web just now, try again in a few minutes" instead of claiming he can't search at all. Officers also see why it failed.
+
 ## 0.72.0 — 2026-10-14
 
 - **A counter knowledge base of our own.** New page: **Counter knowledge base** (open it from the Counters page). Search by team, character or mode. Each counter shows the enemy squad, the squad to use, how to run it, what it needs (zetas, omicrons, relic), where it came from, the date checked, and how many guildmates use it. Territory War, Grand Arena 5v5 and 3v3 are kept strictly apart.

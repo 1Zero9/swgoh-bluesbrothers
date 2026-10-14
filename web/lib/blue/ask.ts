@@ -1,7 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { generateText, isStepCount } from "ai";
-import { BLUE_INSTRUCTIONS } from "@/lib/blue/prompt";
-import type { ChatTurn } from "@/lib/blue/limits";
+import { instructionsFor } from "@/lib/blue/prompt";
+import { safeErrorDetail, type ChatTurn } from "@/lib/blue/limits";
 import { cleanSources, type AnswerSource } from "@/lib/blue/sources";
 import { buildBlueTools, type BlueViewer } from "@/lib/blue/tools";
 
@@ -30,12 +30,14 @@ function webSearchOn() {
   return Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY) && process.env.BLUE_WEB_SEARCH !== "off";
 }
 
-export type BlueAnswer = { text: string; sources: AnswerSource[] };
+/** "used": the web search tool was on for this answer. "unavailable": it was meant to be on but failed, so he answered without it. "off": not configured. */
+export type WebSearchState = "used" | "unavailable" | "off";
+export type BlueAnswer = { text: string; sources: AnswerSource[]; webSearch: WebSearchState; searchError?: string };
 
 async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boolean): Promise<BlueAnswer> {
   const result = await generateText({
     model: blueModel(),
-    instructions: BLUE_INSTRUCTIONS,
+    instructions: instructionsFor(withSearch),
     messages: conversation,
     tools: { ...buildBlueTools(viewer), ...(withSearch ? { google_search: google.tools.googleSearch({}) } : {}) },
     stopWhen: isStepCount(6),
@@ -43,7 +45,7 @@ async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boo
     timeout: withSearch ? 30_000 : 40_000,
   });
   const sources = cleanSources(result.steps.flatMap((step) => step.sources));
-  return { text: result.text.trim() || "I came up empty on that one. Try asking it another way.", sources };
+  return { text: result.text.trim() || "I came up empty on that one. Try asking it another way.", sources, webSearch: withSearch ? "used" : "off" };
 }
 
 export async function askBlue(viewer: BlueViewer, conversation: ChatTurn[]): Promise<BlueAnswer> {
@@ -51,8 +53,10 @@ export async function askBlue(viewer: BlueViewer, conversation: ChatTurn[]): Pro
   try {
     return await run(viewer, conversation, true);
   } catch (error) {
-    // Some models can't mix web search with the roster tools. Don't fail the member's question: answer without it.
-    console.error("blue: web search run failed, retrying without it", error instanceof Error ? error.message : "unknown error");
-    return run(viewer, conversation, false);
+    // Some models can't mix web search with the roster tools, and Google can be overloaded. Don't fail the member's question: answer without it, and say so.
+    const searchError = safeErrorDetail(error);
+    console.error("blue: web search run failed, retrying without it", searchError);
+    const answer = await run(viewer, conversation, false);
+    return { ...answer, webSearch: "unavailable", searchError };
   }
 }
