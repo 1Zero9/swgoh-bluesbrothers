@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.81.0 — 2026-10-14
+
+- **B-Lue3 is a floating chat icon you can move anywhere.** Drag him around the screen and he stays where you leave him, on this device. Tap him for a quick ask box (free from the guild's knowledge first) with a link to the full Ask page, the Meet B-Lue3 clip and a "Put me back in the corner" button. With the keyboard, focus him and use the arrow keys (hold Shift for bigger steps). He starts in the bottom corner, above the tab bar on a phone, and steps aside on the Ask page.
+- **The Home banner shows the sign and both brothers.** It is a little taller than the last one, with the welcome words and the guild numbers at the top.
+
 ## 0.80.2 — 2026-10-14
 
 - **A slimmer Home banner.** The picture is about half the height, so it sets the scene without taking over the page. The sign still shows. B-Lue3 still stands on its lower edge.

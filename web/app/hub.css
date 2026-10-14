@@ -524,3 +524,30 @@ html[data-theme="dark"] .hub-ground {
   .hub-statsbar li { flex: 1 1 42%; }
 }
 @media (max-width: 760px) { .hub-banner { margin-bottom: 76px; } .hub-statsbar { margin-top: 0; } }
+
+/* ---------- Banner, third pass: a little taller so the sign and both brothers show; words and numbers at the top ---------- */
+.hub-banner { height: clamp(250px, 19vw, 330px); align-items: flex-start; margin-bottom: 24px; padding-top: 22px; padding-bottom: 22px; }
+.hub-banner-bg { background-position: 72% 11%; }
+.hub-banner-copy { gap: 14px; }
+.hub-banner-copy .hub-stats li { min-width: 108px; padding: 9px 14px; border: 1px solid rgba(255, 255, 255, 0.28); background: rgba(8, 14, 28, 0.45); backdrop-filter: blur(6px); box-shadow: none; }
+.hub-banner-copy .hub-stats strong { color: #fff; font-size: 20px; }
+.hub-banner-copy .hub-stats small { color: rgba(255, 255, 255, 0.88); }
+@media (max-width: 760px) { .hub-banner { height: auto; min-height: 260px; margin-bottom: 20px; } }
+
+/* ---------- B-Lue3, floating and movable ---------- */
+.hub-blue-float { position: fixed; z-index: 950; width: 76px; height: 76px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.4)); transition: filter 0.15s; }
+.hub-blue-float:hover { filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5)) brightness(1.06); }
+.hub-blue-float.is-dragging { cursor: grabbing; transform: scale(1.08); }
+.hub-blue-float:focus-visible { outline: 3px solid var(--hub-accent); outline-offset: 3px; }
+.hub-blue-float img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.hub-blue-panel { position: fixed; z-index: 960; display: grid; gap: 10px; padding: 14px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); color: var(--hub-text); box-shadow: var(--hub-shadow), 0 18px 40px rgba(0, 0, 0, 0.3); }
+.hub-blue-panel form { display: flex; gap: 8px; }
+.hub-blue-panel input { flex: 1; min-width: 0; min-height: 42px; padding: 0 12px; border: 1px solid var(--hub-line); border-radius: 10px; background: var(--hub-bg); color: var(--hub-text); font: inherit; }
+.hub-blue-panel form button { min-height: 42px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--hub-accent); color: var(--hub-on-accent); font: inherit; font-weight: 600; cursor: pointer; }
+.hub-blue-note { margin: 0; color: var(--hub-muted); font-size: 12.5px; line-height: 1.45; }
+.hub-blue-links { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hub-blue-links a { color: var(--hub-accent); font-size: 13px; font-weight: 600; text-decoration: none; }
+.hub-blue-panel .hub-blue-play { gap: 3px; }
+.hub-blue-panel .hub-blue-play span { font-size: 11px; padding: 3px 9px; }
+.hub-blue-panel .hub-text-button { justify-self: start; margin: 0; }
+@media print { .hub-blue-float-root { display: none; } }
