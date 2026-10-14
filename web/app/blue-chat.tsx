@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import BlueText from "./blue-text";
 import NavIcon from "./nav-icon";
 import { useRef, useState } from "react";
 
@@ -89,7 +90,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { us
             <div key={index} className={`blue-turn blue-turn-${turn.role}`}>
               {turn.role === "assistant" ? <Image src="/blue.png" alt="" width={36} height={36} /> : null}
               <div className="blue-turn-body">
-                <p>{turn.content}</p>
+                {turn.role === "assistant" ? <BlueText text={turn.content} /> : <p>{turn.content}</p>}
                 {turn.role === "assistant" ? (
                   <>
                     {turn.sources?.length ? (

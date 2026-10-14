@@ -9132,3 +9132,11 @@ html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome
 .blue-ws.is-on { border-color: rgba(83,214,154,.6); color: #53d69a; }
 .blue-ws.is-off { border-color: rgba(251,191,36,.5); color: #fde68a; }
 .blue-officer-line { margin: 0; color: #fde68a; font-size: 12px; line-height: 1.5; }
+
+.blue-text { display: grid; gap: 8px; font-size: 14px; line-height: 1.55; }
+.blue-text p, .blue-text ul, .blue-text ol { margin: 0; padding: 0; border: 0; background: none; color: var(--text); }
+.blue-text ul, .blue-text ol { display: block; padding-left: 22px; }
+.blue-text ul { list-style: disc; }
+.blue-text ol { list-style: decimal; }
+.blue-text li { display: list-item; margin: 0 0 4px; padding: 0; border: 0; }
+.blue-text li::marker { color: var(--blue); }
