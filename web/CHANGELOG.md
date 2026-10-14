@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.70.4 — 2026-10-14
+
+- **"Ask B-Lue3" everywhere.** The home page tile, the menus and the home note now use the full name instead of "Blue".
+- **The three starter questions stand out.** On My Page they're now large blue buttons with icons (stacked on a phone), and the Ask button next to the typing box is bright blue too.
+
 ## 0.70.3 — 2026-10-14
 
 - **The droid's name is spelled B-Lue3** everywhere on the site, and Blue introduces himself that way.

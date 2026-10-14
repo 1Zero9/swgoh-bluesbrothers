@@ -5,7 +5,7 @@ import { blueBriefing } from "@/lib/blue/advice";
 import { getMyPage } from "@/lib/my-page";
 import { getSquadAdvice } from "@/lib/roster-advice";
 
-/** Blue's one-line briefing for the home page. Rule-based, so it costs nothing however often it is seen. */
+/** B-Lue3's one-line briefing for the home page. Rule-based, so it costs nothing however often it is seen. */
 export default async function BlueLine() {
   const access = await getViewerAccess();
   if (!access.playerId || !access.isMember) return null;
@@ -20,7 +20,7 @@ export default async function BlueLine() {
         <strong>{briefing.title}</strong>
         <span>{briefing.message}</span>
       </span>
-      <span className="blue-line-ask">Ask Blue <i aria-hidden="true">→</i></span>
+      <span className="blue-line-ask">Ask B-Lue3 <i aria-hidden="true">→</i></span>
     </Link>
   );
 }

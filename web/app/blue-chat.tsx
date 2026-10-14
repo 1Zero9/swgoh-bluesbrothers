@@ -1,11 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import NavIcon from "./nav-icon";
 import { useRef, useState } from "react";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
-const SUGGESTIONS = ["What should I farm next?", "What team should I finish?", "How can I help the band?"];
+const SUGGESTIONS = [
+  { icon: "sprout", text: "What should I farm next?" },
+  { icon: "roster", text: "What team should I finish?" },
+  { icon: "help", text: "How can I help the band?" },
+];
 
 /** Talk to B-Lue3. The conversation lives only in this page; the server keeps nothing but a daily count. */
 export default function BlueChat() {
@@ -35,10 +40,10 @@ export default function BlueChat() {
         setTurns([...next, { role: "assistant", content: data.answer }]);
         setLeft(data.left ?? null);
       } else {
-        setError(data?.error ?? "Blue lost the signal. Try again.");
+        setError(data?.error ?? "B-Lue3 lost the signal. Try again.");
       }
     } catch {
-      setError("Blue lost the signal. Try again.");
+      setError("B-Lue3 lost the signal. Try again.");
     } finally {
       setBusy(false);
       setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
@@ -48,9 +53,9 @@ export default function BlueChat() {
   return (
     <div className="blue-chat">
       {turns.length === 0 ? (
-        <nav className="blue-question-actions" aria-label="Questions for Blue">
+        <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
           {SUGGESTIONS.map((question) => (
-            <button type="button" key={question} onClick={() => send(question)} disabled={busy}>{question}</button>
+            <button type="button" key={question.text} onClick={() => send(question.text)} disabled={busy}><NavIcon name={question.icon} size={20} />{question.text}</button>
           ))}
         </nav>
       ) : (
@@ -71,14 +76,14 @@ export default function BlueChat() {
           value={text}
           onChange={(event) => setText(event.target.value)}
           maxLength={500}
-          placeholder="Ask Blue anything"
-          aria-label="Ask Blue"
+          placeholder="Ask B-Lue3 anything"
+          aria-label="Ask B-Lue3"
           enterKeyHint="send"
           disabled={busy}
         />
         <button type="submit" disabled={busy || !text.trim()}>Ask</button>
       </form>
-      <p className="blue-fineprint">Blue looks things up in the guild&apos;s synced data. It can&apos;t see mods or farm locations, and can be wrong, so check in game.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
+      <p className="blue-fineprint">B-Lue3 looks things up in the guild&apos;s synced data. It can&apos;t see mods or farm locations, and can be wrong, so check in game.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
     </div>
   );
 }
