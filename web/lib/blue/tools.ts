@@ -6,6 +6,11 @@ import { getSquadAdvice } from "@/lib/roster-advice";
 import { calloutHeadline, listCallouts } from "@/lib/tb-callouts";
 import { getActiveTbPlanDetail, getActiveTwPlanDetail, getCurrentTbEventId, getCurrentTwEventId, getDefaultGuildId } from "@/lib/tw-plans";
 import { buildMyOrders } from "@/lib/tw-my-orders";
+import { countRecentSubmissions, findMatchups, knownUnitIds, submitMatchup, unitLabel } from "@/lib/knowledge/data";
+import { MODES, MODE_LABELS, isMode } from "@/lib/knowledge/modes";
+import { validateSubmission } from "@/lib/knowledge/validate";
+import { squadStatus, type SquadSlot } from "@/lib/counters";
+import { getPrisma } from "@/lib/prisma";
 import { resolveUnit, searchUnits, whoHas } from "@/lib/who-has";
 
 export type BlueViewer = { playerId: string | null; isOfficer: boolean };
@@ -129,6 +134,74 @@ export function buildBlueTools(viewer: BlueViewer) {
             memberIsClose: me ? callout.progress.close.some((m) => m.playerId === me) : false,
           })),
         };
+      },
+    }),
+
+    findKnownCounters: tool({
+      description: "Look up counters in the guild's knowledge base (published, reviewed, not expired). Use this FIRST for 'how do I beat X?'. Shows each counter's squad, mode, strategy, requirements, how many guildmates use it, how much evidence backs it, and whether the member can run it. An empty result means nothing is published yet.",
+      inputSchema: z.object({
+        defender: z.string().min(1).max(60).describe("The enemy squad's leader, e.g. 'Lord Vader'"),
+        mode: z.enum(MODES).optional().describe("GAC_5V5, GAC_3V3, TW, GAC_FLEET or TW_FLEET. Leave out to see every mode, and say which mode each is for."),
+      }),
+      execute: async ({ defender, mode }) => {
+        const unit = resolveUnit(defender);
+        if (!unit) return { found: false, suggestions: searchUnits(defender, 5).map((match) => match.name) };
+        const hits = (await findMatchups({ defenderUnitId: unit.id, mode: mode && isMode(mode) ? mode : undefined, usableOnly: true }, me)).slice(0, 5);
+        const mine = me ? (await loadMemberUnits([...new Set(hits.flatMap((hit) => hit.attacker.memberIds))])).find((member) => member.playerId === me) : undefined;
+        const evidence = hits.length ? await getPrisma().kbEvidence.findMany({ where: { matchupId: { in: hits.map((hit) => hit.id) } }, orderBy: { createdAt: "desc" }, select: { matchupId: true, type: true, sourceProvider: true, sourceUrl: true, observedAt: true, publishedAt: true } }) : [];
+        return {
+          enemy: unit.name,
+          published: hits.length,
+          counters: hits.map((hit) => {
+            const needs = (hit.requirements as { minRelic?: Record<string, number> } | null)?.minRelic ?? {};
+            const slots: SquadSlot[] = hit.attacker.memberIds.map((unitId) => ({ unitId, minStars: 7, minRelic: needs[unitId] ?? 0 }));
+            const status = me ? squadStatus(slots, mine, unitLabel) : null;
+            return {
+              mode: MODE_LABELS[hit.mode as keyof typeof MODE_LABELS] ?? hit.mode,
+              exactMatch: hit.match === "EXACT",
+              attackingSquad: hit.attacker.memberIds.map(unitLabel),
+              strategy: hit.strategy,
+              requirements: hit.requirements,
+              datacronDependent: hit.datacronDependent,
+              datacronEnds: hit.datacronExpiresAt?.toISOString().slice(0, 10) ?? null,
+              guildmatesWhoUseIt: hit.useCount,
+              evidence: evidence.filter((item) => item.matchupId === hit.id).slice(0, 3).map((item) => ({ type: item.type, source: item.sourceProvider, url: item.sourceUrl, date: (item.observedAt ?? item.publishedAt)?.toISOString().slice(0, 10) ?? "date unknown" })),
+              lastReviewed: hit.reviewedAt?.toISOString().slice(0, 10) ?? null,
+              memberCanRunIt: status ? status.ready : null,
+              memberStillNeeds: status && !status.ready ? status.gaps : [],
+            };
+          }),
+        };
+      },
+    }),
+
+    submitCounterCandidate: tool({
+      description: "File a counter you found on the web (with its source link) so officers can review it. It is NOT published and the member is told it is awaiting review. Only use it when a specific web page names a specific attacking squad for a specific enemy squad, and never file your own suggestions or anything without a source link.",
+      inputSchema: z.object({
+        mode: z.enum(MODES),
+        defenderUnits: z.array(z.string().min(1).max(60)).min(1).max(8).describe("The enemy squad's unit names, leader first"),
+        attackerUnits: z.array(z.string().min(1).max(60)).min(1).max(8).describe("The attacking squad's unit names, leader first"),
+        strategy: z.string().min(10).max(1200).describe("A short summary in your own words of how the source says to run it"),
+        sourceUrl: z.string().url().max(500),
+        sourceTitle: z.string().max(120).optional(),
+        evidenceType: z.enum(["COMMUNITY_REPORT", "THEORY"]),
+      }),
+      execute: async (input) => {
+        if (!me) return { filed: false, error: "No member is linked to this session." };
+        const resolve = (names: string[]) => names.map((name) => resolveUnit(name)?.id ?? null);
+        const defenderIds = resolve(input.defenderUnits);
+        const attackerIds = resolve(input.attackerUnits);
+        if (defenderIds.includes(null) || attackerIds.includes(null)) return { filed: false, error: "One of the unit names wasn't recognised. Check the spellings with whoHasUnit's suggestions." };
+        const squad = (ids: (string | null)[]) => ids.map((unitId, index) => ({ unitId, role: index === 0 ? "LEADER" : "CORE" }));
+        const checked = validateSubmission({
+          mode: input.mode, defender: { members: squad(defenderIds) }, attacker: { members: squad(attackerIds) }, strategy: input.strategy,
+          evidence: [{ type: input.evidenceType, sourceProvider: input.sourceTitle || new URL(input.sourceUrl).hostname, sourceUrl: input.sourceUrl, observedAt: new Date().toISOString() }],
+        }, "BLUE", knownUnitIds);
+        if (!checked.ok) return { filed: false, error: checked.error };
+        if ((await countRecentSubmissions(me)) >= 5) return { filed: false, error: "Too many filed today. Try again tomorrow." };
+        const player = await getPrisma().player.findUnique({ where: { id: me }, select: { currentName: true } });
+        const result = await submitMatchup(checked.value, { via: "BLUE", who: `B-Lue3 (for ${player?.currentName ?? "a member"})`, whoId: me });
+        return { filed: true, status: result.status, newRecord: result.created, message: "Filed as a candidate. An officer has to review it before anyone else sees it." };
       },
     }),
 

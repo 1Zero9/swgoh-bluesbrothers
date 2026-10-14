@@ -2,6 +2,16 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.72.0 — 2026-10-14
+
+- **A counter knowledge base of our own.** New page: **Counter knowledge base** (open it from the Counters page). Search by team, character or mode. Each counter shows the enemy squad, the squad to use, how to run it, what it needs (zetas, omicrons, relic), where it came from, the date checked, and how many guildmates use it. Territory War, Grand Arena 5v5 and 3v3 are kept strictly apart.
+- **Anyone can add a counter**, and say how they know it works. Officers check every one before it goes live, on a new review page that also shows what's covered and what needs another look.
+- **"This is what I use"**: one tap on any counter, so the ones the guild actually relies on stand out.
+- **"I need a counter"**: ask the guild for help with a squad. It appears on a Wanted list and, once a Discord channel is connected, is posted there. It's marked answered when a counter for that squad is published.
+- **Counters from the Datacron era end:** a counter that needs a Datacron is flagged, and once the Datacron has ended it's shown as "don't rely on this" and B-Lue3 won't use it.
+- **B-Lue3 uses it.** He looks here first, says which game mode each counter is for and how many guildmates use it, and can file a counter he finds on the web (with its source) for officers to review.
+- It starts empty: nothing is made up. It fills from members, officers and imports.
+
 ## 0.71.3 — 2026-10-14
 
 - **A failed B-Lue3 question no longer uses up your weekly five.** When something goes wrong behind the scenes you get the question back.
