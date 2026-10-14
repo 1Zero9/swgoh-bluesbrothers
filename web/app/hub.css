@@ -291,3 +291,31 @@ html[data-hub="on"] .site-header .header-controls .theme-picker { display: none 
 .hub-note h3 { font-weight: 600; }
 .hub-note footer { margin: 0; padding: 0; border: 0; }
 .hub-note small { text-transform: none; letter-spacing: 0; font-family: inherit; }
+
+/* First sign-in */
+.hub-welcome-page { display: grid; place-items: start center; }
+.hub-onboard { width: min(100%, 560px); }
+.hub-link-brand { display: flex; align-items: center; gap: 12px; }
+.hub-link-brand img { width: 56px; height: 56px; object-fit: contain; }
+.hub-link-brand strong { display: block; font-size: 16px; }
+.hub-link-brand small { color: var(--hub-muted); font: 10px var(--font-geist-mono), monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+.hub-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hub-progress li { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1px solid var(--hub-line); border-radius: 12px; background: var(--hub-surface); color: var(--hub-muted); font-size: 13px; font-weight: 500; }
+.hub-progress li span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--hub-muted); font-size: 12px; }
+.hub-progress li.is-now { border-color: var(--hub-accent); color: var(--hub-text); }
+.hub-progress li.is-now span { background: var(--hub-accent); border-color: var(--hub-accent); color: var(--hub-on-accent); }
+.hub-progress li.is-done { color: var(--hub-text); }
+.hub-progress li.is-done span { background: var(--hub-good); border-color: var(--hub-good); color: var(--hub-on-accent); }
+.hub-link-card { display: grid; gap: 12px; padding: 22px; }
+.hub-link-card h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); letter-spacing: -0.02em; text-wrap: balance; }
+.hub-link-card .hub-intro { margin: 0; }
+.hub-link-card .hub-eyebrow { margin: 0; }
+.hub-link-card input { font-size: 20px; letter-spacing: 0.08em; text-align: center; min-height: 52px; }
+.hub-help { color: var(--hub-muted); font-size: 13px; }
+.hub-help summary { cursor: pointer; color: var(--hub-accent); font-weight: 600; }
+.hub-help p { margin: 6px 0 0; line-height: 1.5; }
+.hub-problem { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--hub-bad); border-radius: 12px; background: var(--hub-surface-2); }
+.hub-problem strong { color: var(--hub-bad); }
+.hub-problem p { margin: 0; color: var(--hub-muted); font-size: 14px; line-height: 1.5; }
+.hub-problem .hub-button { justify-self: start; }
+.hub-note-line a { color: var(--hub-accent); }
