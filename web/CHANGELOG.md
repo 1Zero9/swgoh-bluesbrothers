@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.70.0 — 2026-10-14
+
+- **Meet B-LU3.** Tap Blue's picture on My Page (the play badge) and he appears over the page in a 10-second clip, with sound, waving and showing off a hologram screen. When it ends there's a button to ask him a question. The clip only loads when you tap it.
+
 ## 0.69.1 — 2026-10-13
 
 - **New members get the top spot.** A green "Welcome to the band" banner now sits right under your status line on the home page, naming anyone who joined in the last three weeks and linking to chat to say hello. It disappears when no one is new.
