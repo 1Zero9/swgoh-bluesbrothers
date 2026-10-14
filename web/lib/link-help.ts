@@ -9,7 +9,7 @@ export function linkProblem(status: number, serverMessage: string | null): LinkP
   const message = serverMessage || "That didn't work.";
   switch (status) {
     case 401:
-      return { message, next: "sign-in-again", hint: "Your Discord sign-in only lasts a few minutes. Sign in again and it will remember you." };
+      return { message, next: "sign-in-again", hint: "Your Discord sign-in only lasts about ten minutes. Sign in again and it will remember you." };
     case 400:
       return { message, next: "retry", hint: "It's nine digits, shown in the game as 123-456-789." };
     case 404:

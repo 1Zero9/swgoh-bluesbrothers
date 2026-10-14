@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.78.1 — 2026-10-14
+
+- **If the Discord sign-in doesn't finish, you're told.** Cancelling on Discord, a timeout or a hiccup used to drop you back on the front page with no message. Now the top of the page says the sign-in didn't finish, that nothing was changed, and gives a button to try again and a way to ask an officer.
+
 ## 0.78.0 — 2026-10-14
 
 - **The older pages follow your theme.** Territory War, Territory Battles, Raids, the roster, the Wins, Counters, Field Guides, My page and the rest now go light in **Rebel** and navy in **Deep**, instead of staying dark next to the new navigation.

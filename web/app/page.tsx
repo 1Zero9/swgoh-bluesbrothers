@@ -3,6 +3,7 @@ import { getViewerAccess } from "@/lib/access-control";
 import { getPublicHomeData } from "@/lib/public-stats";
 import { getStarWarsNews } from "@/lib/news";
 import LinkWelcome from "./link-welcome";
+import SignInProblem from "./sign-in-problem";
 import { getDiscordUrl } from "@/lib/discord";
 import HubHome, { type HubHomeProps } from "./hub-home";
 import { getGuildWire } from "@/lib/guild-wire";
@@ -36,14 +37,16 @@ async function safely<T>(load: () => Promise<T>, fallback: T): Promise<T> {
   try { return await load(); } catch { return fallback; }
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ link?: string | string[] }> }) {
   // Visitors get the public front page; signed-in members and officers get the hub.
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) {
     const [data, context, news] = await Promise.all([getPublicHomeData(), getMemberContext(), getStarWarsNews(5)]);
     // Signed in with Discord but not yet matched to a game account: a short guided step, not a block lower down the page.
     if (context.status === "linking") return <LinkWelcome discordUsername={context.discordUsername} discordUrl={getDiscordUrl()} />;
-    return <PublicHome data={data} news={news} />;
+    // The Discord sign-in sends people back here with ?link=error when it did not finish.
+    const { link } = await searchParams;
+    return <PublicHome data={data} news={news} notice={link === "error" ? <SignInProblem discordUrl={getDiscordUrl()} /> : null} />;
   }
 
   const [context, wire, requests, queue, noteCount] = await Promise.all([
