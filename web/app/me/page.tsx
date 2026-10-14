@@ -4,6 +4,7 @@ import Link from "next/link";
 import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
 import BlueChat from "@/app/blue-chat";
+import BlueIntro from "@/app/blue-intro";
 import PageHero from "@/app/page-hero";
 import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
@@ -83,7 +84,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
       </PageHero>
 
       <section className="blue-briefing public-block" aria-labelledby="blue-briefing-title">
-        <Image src="/blue.png" alt="Blue, Dougie's guild operations droid" className="blue-briefing-avatar" width={300} height={300} priority />
+        <BlueIntro />
         <div className="blue-briefing-copy">
           <p className="eyebrow">B-LU3 · Blue&apos;s briefing</p>
           <h2 id="blue-briefing-title">{briefing.title}</h2>

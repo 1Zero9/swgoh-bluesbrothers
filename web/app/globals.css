@@ -9007,3 +9007,21 @@ svg.ni:only-child { margin-right: 0; vertical-align: middle; }
 html[data-theme="light"] .welcome-banner { background: #f0fbf6; border-color: rgba(34,150,100,.4); }
 html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome-banner-copy small, html[data-theme="light"] .welcome-banner-go { color: #15795a; }
 @media (max-width: 560px) { .welcome-banner { padding: 12px 14px; gap: 12px; } .welcome-banner-icon { width: 40px; height: 40px; } .welcome-banner-copy strong { font-size: 16px; } }
+
+/* Meet B-LU3 clip */
+.blue-intro-btn { position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer; align-self: end; }
+.blue-intro-play { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); padding: 4px 10px; border-radius: 999px; background: rgba(41,119,226,.92); color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+.blue-intro-btn:hover .blue-intro-play { background: #3b8cf0; }
+.blue-intro-overlay { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; }
+.blue-intro-backdrop { position: absolute; inset: 0; border: 0; background: rgba(3,6,10,.86); cursor: default; }
+.blue-intro-stage { position: relative; display: grid; gap: 10px; justify-items: center; width: min(92vw, 640px); }
+.blue-intro-canvas { width: 100%; height: auto; aspect-ratio: 16 / 9; }
+.blue-intro-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.blue-intro-actions { display: flex; gap: 10px; }
+.blue-intro-actions a, .blue-intro-actions button { padding: 10px 16px; border: 1px solid rgba(97,174,255,.5); border-radius: 10px; background: rgba(41,119,226,.2); color: #dbeeff; font: inherit; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+@media (max-width: 560px) {
+  .blue-intro-btn { float: left; margin: 0 12px 4px 0; }
+  .blue-intro-btn .blue-briefing-avatar { float: none; margin: 0; width: 64px; height: 64px; }
+  .blue-intro-play b { display: none; }
+  .blue-intro-play { bottom: -2px; padding: 3px 9px; }
+}
