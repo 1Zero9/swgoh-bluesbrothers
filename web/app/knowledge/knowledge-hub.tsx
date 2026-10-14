@@ -18,8 +18,8 @@ const TABS: { key: Tab; label: string }[] = [
 const ADD_LABELS: Record<Adding, string> = { COUNTER: "Counter", TIP: "Tip", IDEA: "Idea" };
 
 /** The knowledge hub: counters, tips and ideas, and one place to add what you know. */
-export default function KnowledgeHub({ names, canAct }: { names: Record<string, string>; canAct: boolean }) {
-  const [tab, setTab] = useState<Tab>("counters");
+export default function KnowledgeHub({ names, canAct, initialTab = "counters" }: { names: Record<string, string>; canAct: boolean; initialTab?: Tab }) {
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [adding, setAdding] = useState<Adding | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const sheetOpen = adding !== null;

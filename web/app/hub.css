@@ -115,10 +115,11 @@ html[data-hub="on"] .site-header .header-controls .theme-picker { display: none 
 .hub-main {
   /* Older components (the B-Lue3 chat, push settings) read these names; inside a hub screen they follow the chosen theme. */
   --ink: var(--hub-bg); --panel: var(--hub-surface); --line: var(--hub-line); --text: var(--hub-text); --muted: var(--hub-muted); --blue: var(--hub-accent);
-  min-height: 100vh; background: var(--hub-bg); color: var(--hub-text);
-  padding: clamp(18px, 3vw, 40px) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px));
+  position: relative; isolation: isolate; min-height: 100vh; background: var(--hub-bg); color: var(--hub-text);
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px));
 }
-.hub-wrap { width: min(100%, 880px); margin: 0 auto; display: grid; gap: 22px; }
+.hub-main > .hub-wrap { padding-top: clamp(18px, 3vw, 36px); }
+.hub-wrap { position: relative; width: min(100%, 1560px); margin: 0 auto; display: grid; gap: 22px; }
 .hub-wrap > * { min-width: 0; }
 .hub-eyebrow { margin: 0 0 6px; color: var(--hub-accent); font: 11px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
 .hub-heading h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.02em; text-wrap: balance; }
@@ -371,3 +372,111 @@ html[data-hub="on"] .site-header .version-label { display: none; }
 .hub-blue-play:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 4px; border-radius: 12px; }
 .blue-intro-overlay { z-index: 1100; }
 .hub-ladder .hub-ladder-left strong { display: inline; }
+
+/* ---------- The ground: stars in Deep space, a grid in Classic, plain in Rebel ---------- */
+.hub-ground { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+html[data-theme="deep"] .hub-ground {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(220, 235, 255, 0.9), transparent 60%), radial-gradient(1px 1px at 33% 72%, rgba(220, 235, 255, 0.8), transparent 60%),
+    radial-gradient(1.5px 1.5px at 58% 34%, rgba(220, 235, 255, 0.9), transparent 60%), radial-gradient(1px 1px at 81% 61%, rgba(220, 235, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 92% 12%, rgba(220, 235, 255, 0.9), transparent 60%), radial-gradient(1.5px 1.5px at 7% 88%, rgba(220, 235, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 47% 93%, rgba(220, 235, 255, 0.9), transparent 60%), radial-gradient(1px 1px at 70% 8%, rgba(220, 235, 255, 0.8), transparent 60%);
+  background-size: 520px 460px, 380px 340px, 640px 560px, 450px 410px, 700px 620px, 560px 500px, 420px 380px, 600px 540px;
+}
+html[data-theme="dark"] .hub-ground {
+  background-image: linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 85%); mask-image: linear-gradient(180deg, #000, transparent 85%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="deep"] .hub-ground { animation: hub-twinkle 7s ease-in-out infinite alternate; }
+  @keyframes hub-twinkle { from { opacity: 0.6; } to { opacity: 1; } }
+}
+
+/* ---------- Home banner: the whole picture, edge to edge ---------- */
+.hub-banner { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: 300px; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 26px clamp(18px, 3vw, 48px); overflow: hidden; background-color: #0b1220; border-bottom: 1px solid var(--hub-line); color: #fff; }
+/* A blurred, darkened copy of the picture carries its colours to the left edge, where the words sit. */
+.hub-banner::before { content: ""; position: absolute; inset: -48px; z-index: -2; background: linear-gradient(90deg, rgba(5, 10, 20, 0.55), rgba(5, 10, 20, 0) 75%), url("/bb-title.webp") center / cover; filter: blur(26px) saturate(1.15) brightness(0.62); }
+/* The sharp picture sits at its own proportions on the right, so the sign is never cut. */
+.hub-banner::after { content: ""; position: absolute; z-index: -1; top: 0; right: 0; bottom: 0; width: min(72%, calc(300px * 2.333)); background: url("/bb-title.webp") right center / contain no-repeat; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); }
+@media (min-width: 1500px) { .hub-banner { min-height: 380px; } .hub-banner::after { width: min(72%, calc(380px * 2.333)); } }
+.hub-banner-copy { display: grid; gap: 16px; width: min(100%, 640px); }
+.hub-banner .hub-eyebrow { color: #bfe8ff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+.hub-banner h1 { margin: 0; font-size: clamp(26px, 3vw, 38px); letter-spacing: -0.02em; text-wrap: balance; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
+.hub-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.hub-stats li { min-width: 108px; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(6px); }
+.hub-stats strong { display: block; font-size: 21px; }
+.hub-stats small { color: rgba(255, 255, 255, 0.85); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (max-width: 760px) { .hub-banner { min-height: 220px; } .hub-banner::after { width: 100%; opacity: 0.55; -webkit-mask-image: none; mask-image: none; background-position: 70% center; background-size: cover; } .hub-stats li { min-width: 92px; padding: 8px 10px; } }
+
+/* ---------- Home on a wide screen ---------- */
+.hub-home-top { display: grid; gap: 18px; align-items: start; }
+@media (min-width: 1000px) { .hub-home-top { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.hub-home-cols { display: grid; gap: 18px; align-items: start; }
+@media (min-width: 760px) { .hub-home-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1250px) { .hub-home-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hub-feed { display: grid; gap: 0; margin: 0 0 12px; padding: 0; list-style: none; }
+.hub-feed li { display: grid; gap: 1px; padding: 10px 0; border-top: 1px solid var(--hub-line); }
+.hub-feed li:first-child { border-top: 0; padding-top: 0; }
+.hub-feed small { color: var(--hub-muted); font-size: 12.5px; }
+.hub-quiet { margin: 0 0 12px; color: var(--hub-muted); font-size: 14px; line-height: 1.5; }
+.hub-card h2 { margin: 0 0 10px; font-size: 17px; }
+.hub-status { display: grid; gap: 18px; }
+@media (min-width: 900px) { .hub-status { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hub-status-card { display: grid; gap: 4px; align-content: start; color: var(--hub-text); text-decoration: none; }
+.hub-status-card:hover { border-color: var(--hub-accent); }
+.hub-status-card strong { font-size: 18px; }
+.hub-status-card small { color: var(--hub-muted); font-size: 13px; line-height: 1.45; }
+.hub-status-card.is-good { border-left: 4px solid var(--hub-good); }
+.hub-status-card.is-warn { border-left: 4px solid var(--hub-amber); }
+.hub-bar { display: block; height: 6px; margin-top: 8px; border-radius: 4px; background: var(--hub-surface-2); overflow: hidden; }
+.hub-bar b { display: block; height: 100%; background: var(--hub-accent); }
+.hub-askbox-head > div { min-width: 0; }
+.hub-askbox-head .hub-eyebrow { margin: 0 0 3px; }
+
+/* ---------- Sidebar: every page, in groups ---------- */
+.hub-side { overflow-y: auto; }
+.hub-side-nav { display: grid; gap: 2px; }
+.hub-side-group { display: grid; gap: 1px; }
+.hub-side-group > p { margin: 12px 0 3px; padding: 0 10px; color: var(--hub-muted); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.hub-side-group .hub-side-link { padding: 7px 10px; font-size: 14px; gap: 10px; }
+.hub-side-dot { width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; opacity: 0.5; }
+.hub-side-link.is-ask { color: var(--hub-text); font-weight: 600; }
+.hub-side-link.is-ask .hub-side-dot { background: var(--hub-amber); opacity: 1; }
+.hub-side-foot { position: sticky; bottom: 0; background: var(--hub-surface); padding-bottom: 4px; }
+
+/* Home, second pass: welcome row, "act now" column, community row */
+.hub-home-welcome { display: grid; gap: 14px; align-items: stretch; }
+@media (min-width: 1000px) { .hub-home-welcome { grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); } .hub-home-welcome:not(:has(.hub-standing)) { grid-template-columns: minmax(0, 1fr); } }
+.hub-home-welcome:empty { display: none; }
+@media (min-width: 1000px) {
+  .hub-start ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hub-start li { height: 100%; }
+}
+.hub-act { display: grid; gap: 10px; align-content: start; }
+.hub-act h2 { margin: 0; }
+.hub-act h3 { margin: 8px 0 0; color: var(--hub-muted); font: 500 11px var(--font-geist-mono), monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+.hub-act .hub-feed { margin: 0; }
+.hub-act .hub-button { justify-self: start; }
+.hub-act .hub-how { margin: 0; justify-self: start; }
+.hub-officer-note { display: grid; gap: 2px; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--hub-accent); border-radius: 12px; color: var(--hub-text); text-decoration: none; }
+.hub-chatcard { display: grid; gap: 8px; align-content: start; }
+.hub-chatcard h2 { margin: 0; }
+.hub-chat-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+.hub-chat-links .hub-how { margin: 0; }
+.hub-chat-links .hub-button { min-height: 40px; padding: 0 16px; }
+.hub-chatcard input, .hub-chatcard textarea { background: var(--hub-bg); border: 1px solid var(--hub-line); color: var(--hub-text); border-radius: 10px; }
+.hub-chatcard button:not(.hub-button) { color: var(--hub-text); }
+
+/* Fit more of the sidebar on a laptop screen without scrolling. */
+.hub-side-group .hub-side-link { padding: 5px 10px; font-size: 13.5px; }
+.hub-side-group > p { margin: 8px 0 2px; }
+.hub-side-brand { padding-bottom: 8px; }
+
+/* On a phone the question comes first, then the checklist. */
+@media (max-width: 999.98px) {
+  .hub-home-top { order: 0; }
+  .hub-home-welcome { order: 1; }
+  .hub-home-cols { order: 2; }
+  .hub-status { order: 3; }
+}

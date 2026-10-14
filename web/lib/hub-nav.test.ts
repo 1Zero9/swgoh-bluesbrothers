@@ -29,3 +29,20 @@ test("five sections, each reachable from its own link", () => {
   assert.equal(HUB_SECTIONS.length, 5);
   for (const section of HUB_SECTIONS) assert.equal(sectionFor(section.href), section.key);
 });
+
+import { activeSidebarHref, SIDEBAR_GROUPS } from "./hub-nav";
+
+test("the sidebar lights the most specific link", () => {
+  assert.equal(activeSidebarHref("/knowledge"), "/knowledge");
+  assert.equal(activeSidebarHref("/knowledge/tips"), "/knowledge/tips");
+  assert.equal(activeSidebarHref("/knowledge/review"), "/knowledge/review");
+  assert.equal(activeSidebarHref("/members"), "/members");
+  assert.equal(activeSidebarHref("/"), "/");
+  assert.equal(activeSidebarHref("/nowhere"), null);
+});
+
+test("every sidebar page belongs to a hub section so the phone tabs agree", () => {
+  for (const link of SIDEBAR_GROUPS.flatMap((group) => group.links)) {
+    assert.notEqual(sectionFor(link.href), null, link.href);
+  }
+});

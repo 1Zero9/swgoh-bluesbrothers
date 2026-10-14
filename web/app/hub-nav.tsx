@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
-import { HUB_SECTIONS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
+import { activeSidebarHref, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -31,6 +31,8 @@ export default function HubNav() {
   const isPreview = process.env.NODE_ENV !== "production" && pathname.startsWith("/dev/hub");
   const isMember = isPreview || (viewer?.signedIn === true && (viewer.role === "MEMBER" || viewer.role === "OFFICER"));
   const active = sectionFor(pathname);
+  const activeHref = activeSidebarHref(pathname);
+  const isOfficer = isPreview || viewer?.role === "OFFICER";
 
   useEffect(() => {
     if (!viewer && !isPreview) return;
@@ -52,14 +54,20 @@ export default function HubNav() {
           <Image src="/bb-logo.webp" alt="" width={44} height={44} />
           <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
         </Link>
-        <nav className="hub-side-nav" aria-label="Main">
-          {HUB_SECTIONS.map((section) => {
-            const Icon = ICONS[section.key];
+        <nav className="hub-side-nav" aria-label="All pages">
+          {SIDEBAR_GROUPS.map((group) => {
+            const links = group.links.filter((link) => !link.officerOnly || isOfficer);
+            if (!links.length) return null;
             return (
-              <Link key={section.key} href={section.href} className={`hub-side-link${section.key === "ask" ? " is-ask" : ""}`} aria-current={active === section.key ? "page" : undefined}>
-                <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
-                <span>{section.label}</span>
-              </Link>
+              <div key={group.title ?? "top"} className="hub-side-group">
+                {group.title ? <p>{group.title}</p> : null}
+                {links.map((link) => (
+                  <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
+                    <span className="hub-side-dot" aria-hidden="true" />
+                    <span>{link.label}</span>
+                  </Link>
+                ))}
+              </div>
             );
           })}
         </nav>
