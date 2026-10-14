@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.75.0 — 2026-10-14
+
+- **A new front door for members.** Signed-in members now see five sections: **Home**, **Ask B-Lue3**, **Knowledge**, **Guild** and **More**. On a phone they sit in a bar along the bottom; on a laptop they are a sidebar. Every page you already used is still there, just grouped.
+- **Home tells you what to do.** A welcome picture, a box to ask B-Lue3, a short "Get started" list, the counters the guild is asking for, and what's new. The old dashboard (power, tickets, Wall of Fame, the Wire) is now **Guild overview**, under Guild.
+- **B-Lue3 has his own page.** It says how he answers: the guild's own knowledge first (free), the web only when you tap it, AI for everything else.
+- **Pick your look.** Rebel (light, the default), Deep (navy) or Classic (the original dark). Choose it under More, or at the bottom of the sidebar.
+- Older pages keep their dark look for now and will move across one by one.
+
 ## 0.74.0 — 2026-10-14
 
 - **B-Lue3 checks the guild's own database first, and that's free.** Ask how to beat a squad ("how do I beat Lord Vader in Territory War?", "counter for night sisters") or "who has Jabba?" and the answer comes straight from the guild's counters and rosters, with no AI and none of your weekly questions used. It works even when your five are gone, and the answer says so.

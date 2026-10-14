@@ -1,0 +1,360 @@
+import { Suspense } from "react";
+import MembersOnly from "@/app/members-only";
+import { getViewerAccess } from "@/lib/access-control";
+import { enabledChatChannels } from "@/lib/chat-config";
+import HomeChat from "@/app/home-chat";
+import Image from "next/image";
+import Link from "next/link";
+import { getDashboardSummary } from "@/lib/dashboard";
+import { getDiscordUrl } from "@/lib/discord";
+import { getGuildWire } from "@/lib/guild-wire";
+import { getMemberContext } from "@/lib/member-context";
+import { getWallOfFame } from "@/lib/wall-of-fame";
+import { getWallOfShame } from "@/lib/wall-of-shame";
+import { getRosterChanges } from "@/lib/members";
+import AccountLink from "@/app/account-link";
+import { BuiltByBadge } from "@/app/built-by-badge";
+import OfficerDesk from "@/app/officer-desk";
+import BlueLine from "@/app/blue-line";
+import PhoneFold from "@/app/phone-fold";
+import WelcomeBanner from "@/app/welcome-banner";
+import { buildWelcome } from "@/lib/welcome";
+import QuickLaunch from "@/app/quick-launch";
+import WorldClocks from "@/app/world-clocks";
+import SiteHeader, { APP_VERSION } from "@/app/site-header";
+import WallOfFameBoard from "@/app/wall-of-fame-board";
+
+const WIRE_SHOWN = 3;
+
+export const dynamic = "force-dynamic";
+
+function Mark({ label }: { label: string }) {
+  return <span className="nav-mark" aria-hidden="true">{label}</span>;
+}
+
+function formatPower(value: bigint) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return { value: "0", unit: "" };
+  if (num >= 1_000_000_000) return { value: (num / 1_000_000_000).toFixed(2), unit: "B" };
+  if (num >= 1_000_000) return { value: (num / 1_000_000).toFixed(1), unit: "M" };
+  if (num >= 1_000) return { value: (num / 1_000).toFixed(1), unit: "K" };
+  return { value: num.toLocaleString("en-GB"), unit: "" };
+}
+
+function formatRelativeTime(date: Date) {
+  const diffHours = (Date.now() - date.getTime()) / 3_600_000;
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${Math.round(diffHours)}h ago`;
+  const diffDays = diffHours / 24;
+  if (diffDays < 7) return `${Math.round(diffDays)}d ago`;
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function wireIcon(kind: string) {
+  if (kind === "welcome") return "+";
+  if (kind === "departure") return "↗";
+  if (kind === "notice") return "\u270E";
+  return "↻";
+}
+
+export default async function Overview() {
+  const access = await getViewerAccess();
+  if (!(access.isMember || access.isOfficer)) return <MembersOnly path="/overview" area="The guild overview" />;
+
+  const [guildWire, summary, wallOfFame, memberContext, changes, wallOfShame] = await Promise.all([
+    getGuildWire(),
+    getDashboardSummary(),
+    getWallOfFame(),
+    getMemberContext(),
+    getRosterChanges(),
+    // The watchlist names members who missed tickets, so it is for officers only.
+    access.isOfficer ? getWallOfShame() : Promise.resolve([]),
+  ]);
+  const chatChannel = enabledChatChannels()[0];
+  const isOfficer = access.isOfficer;
+  const discordUrl = getDiscordUrl();
+  const discordGuildId = process.env.DISCORD_GUILD_ID;
+  const showDiscordWidget = process.env.DISCORD_WIDGET_ENABLED === "true" && Boolean(discordGuildId);
+
+  const power = formatPower(summary.guildPower);
+  const openSeats = summary.capacity - summary.memberCount;
+  const ticketPct = summary.live && summary.ticketTarget > 0
+    ? Math.min(100, Math.round((summary.dailyTickets / summary.ticketTarget) * 1000) / 10)
+    : 0;
+
+  const heroStatusLabel = summary.live ? "Comlink connected" : "Awaiting first sync";
+  const heroStatusDate = summary.capturedAt
+    ? summary.capturedAt.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+    : new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+  const syncLabel = summary.capturedAt
+    ? `Comlink connected · Last capture ${formatRelativeTime(summary.capturedAt)}`
+    : "Awaiting first Comlink sync";
+  return (
+    <main className="app-shell">
+      <SiteHeader syncLabel={syncLabel} />
+      <section className="workspace" id="top">
+        <section className="hero hero-compact" id="command-centre" aria-labelledby="mission-heading">
+          <Image
+            className="hero-image"
+            src="/bb-title.webp"
+            alt="The Blues Brothers outside their cantina in a desert spaceport"
+            fill
+            priority
+            sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"
+          />
+          <div className="hero-shade" />
+          <div className="hero-copy">
+            <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
+            <WorldClocks />
+            <p className="eyebrow">The roster. The plan. The next mission.</p>
+            <h1 id="mission-heading">On a mission<br /><em>from the Force.</em></h1>
+            <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
+            <div className="hero-actions">
+              {isOfficer
+                ? <a className="primary-action" href="#administration">Review officer actions</a>
+                : <Link className="primary-action" href="/me">Open my page</Link>}
+              <Link className="secondary-action" href="/members">View guild roster <span>→</span></Link>
+            </div>
+          </div>
+        </section>
+
+        <div className="dashboard-content home-launch">
+          {memberContext.status === "linked" ? (
+            <Link className={`personal-strip${memberContext.player.onWallOfShame ? " needs-checkin" : ""}`} href="/me">
+              <span className="personal-avatar" aria-hidden="true">{memberContext.player.name.charAt(0).toUpperCase()}</span>
+              <span className="personal-main">
+                <strong>{memberContext.player.name}</strong>
+                <small>
+                  {formatPower(memberContext.player.galacticPower).value}{formatPower(memberContext.player.galacticPower).unit} GP · {memberContext.player.raidTickets} raid tickets
+                </small>
+              </span>
+              <span className="personal-note">
+                {memberContext.player.onWallOfShame
+                  ? `Check-in needed: ${memberContext.player.reasons[0]?.toLowerCase() ?? "see my page"}`
+                  : "All good · my page"}
+                <i aria-hidden="true"> →</i>
+              </span>
+            </Link>
+          ) : null}
+          <WelcomeBanner welcome={buildWelcome(changes.newMembers, new Date().getTime())} />
+          <Suspense fallback={null}><BlueLine /></Suspense>
+          <QuickLaunch />
+        </div>
+
+        {chatChannel ? (
+          <div className="dashboard-content home-chat-wrap">
+            <HomeChat channelKey={chatChannel.key} channelLabel={chatChannel.label} signedInAsMember={access.isMember && Boolean(access.playerId)} />
+          </div>
+        ) : null}
+
+        <div className="dashboard-content">
+        <section className="metric-grid" aria-label="Guild health">
+          <article className="metric-card">
+            <div className="metric-head"><span>Active members</span><Mark label="MB" /></div>
+            <strong>{summary.live ? summary.memberCount : "—"}<span>/{summary.capacity}</span></strong>
+            <p>
+              {summary.live
+                ? openSeats > 0
+                  ? <><b className="good">●</b> {openSeats} place{openSeats === 1 ? "" : "s"} available</>
+                  : "Cantina's full up tonight"
+                : "Awaiting first roster sync"}
+            </p>
+          </article>
+          <article className="metric-card">
+            <div className="metric-head"><span>Guild power</span><Mark label="GP" /></div>
+            <strong>{summary.live ? power.value : "—"}<span>{summary.live ? power.unit : ""}</span></strong>
+            <p>{summary.live ? "Live from the latest Comlink sync" : "Baseline appears after first sync"}</p>
+          </article>
+          <article className="metric-card">
+            <div className="metric-head"><span>Daily tickets</span><Mark label="TK" /></div>
+            <strong>{summary.live ? summary.dailyTickets.toLocaleString("en-GB") : "—"}</strong>
+            <div className="progress-track"><i style={{ width: `${summary.live ? ticketPct : 0}%` }} /></div>
+            <p>{summary.live ? `${ticketPct}% of ${summary.ticketTarget.toLocaleString("en-GB")} target` : "Tracking starts with the first sync"}</p>
+          </article>
+          {isOfficer ? (
+          <article className={`metric-card${wallOfShame.length ? " attention" : ""}`}>
+            <div className="metric-head"><span>Needs attention</span><Mark label="!" /></div>
+            <strong>{wallOfShame.length}</strong>
+            <p>
+              {wallOfShame.length
+                ? "On the Wall of Shame right now"
+                : summary.live
+                  ? "Everyone is pulling their weight"
+                  : "Awaiting first roster sync"}
+            </p>
+          </article>
+          ) : null}
+        </section>
+
+        <section className="guild-wire" id="guild-wire" aria-labelledby="guild-wire-heading">
+          <div className="wire-feed">
+            <div className="section-heading wire-heading">
+              <div><p className="eyebrow">Guild communications</p><h2 id="guild-wire-heading">The Guild Wire</h2></div>
+              <span className="wire-sync"><i /> Website + Discord</span>
+            </div>
+            <p className="wire-intro">Guild news lives here. The same membership announcements are sent into Discord, where the conversation continues.</p>
+            <div className="wire-list">
+              {guildWire.slice(0, WIRE_SHOWN).map((item) => (
+                <article className={`wire-item wire-${item.kind}`} key={item.id}>
+                  <span className="wire-icon" aria-hidden="true">{wireIcon(item.kind)}</span>
+                  <div>
+                    <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
+                    <p>{item.summary}</p>
+                  </div>
+                  {isOfficer ? <span className={`wire-state state-${item.status}`}>{item.status}</span> : null}
+                </article>
+              ))}
+              {guildWire.length > WIRE_SHOWN ? (
+                <PhoneFold title={`Older news (${guildWire.length - WIRE_SHOWN})`} className="wire-older">
+              {guildWire.slice(WIRE_SHOWN).map((item) => (
+                <article className={`wire-item wire-${item.kind}`} key={item.id}>
+                  <span className="wire-icon" aria-hidden="true">{wireIcon(item.kind)}</span>
+                  <div>
+                    <div className="wire-meta"><span>{item.title}</span><time dateTime={item.occurredAt.toISOString()}>{item.occurredAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></div>
+                    <p>{item.summary}</p>
+                  </div>
+                  {isOfficer ? <span className={`wire-state state-${item.status}`}>{item.status}</span> : null}
+                </article>
+              ))}
+                </PhoneFold>
+              ) : null}
+            </div>
+          </div>
+
+          <aside className="discord-handoff" aria-label="Guild chat">
+            <div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Discord</p><strong>Prefer the app?</strong></div></div>
+            {showDiscordWidget ? (
+              <iframe
+                className="discord-widget"
+                src={`https://discord.com/widget?id=${discordGuildId}&theme=dark`}
+                title="Blues Brothers Discord server presence"
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              />
+            ) : (
+              <div className="widget-placeholder">
+                <span><i /> Discord connected</span>
+                <p>The chat above is the same conversation. Reactions, threads and the officers&apos; channels live in Discord itself.</p>
+              </div>
+            )}
+            <a className="discord-open" href={discordUrl} target="_blank" rel="noreferrer">Open Discord <span>→</span></a>
+          </aside>
+        </section>
+
+        <PhoneFold title="Legends & watchlist" className="section-block standings-section">
+          <div className="section-heading standings-heading">
+            <div><p className="eyebrow">Guild standings</p><h2 id="standings-heading">Legends &amp; watchlist</h2></div>
+            <span>One board to celebrate. One board to act on.</span>
+          </div>
+          <div className="standings-grid">
+            <section className="standing-panel fame-panel" id="wall-of-fame" aria-labelledby="wof-heading">
+              <header className="standing-panel-head">
+                <div><span className="standing-symbol">★</span><p>Cantina legends</p><h3 id="wof-heading">Wall of Fame</h3></div>
+                <strong>{wallOfFame[0]?.entries.length ?? 0}<small>per board</small></strong>
+              </header>
+              <p className="standing-copy">Guild leaderboards across power, tickets and roster depth — pick a board to see who&apos;s leading.</p>
+              {wallOfFame.length ? (
+                <WallOfFameBoard categories={wallOfFame} />
+              ) : (
+                <div className="standing-empty"><strong>No legends crowned yet</strong><p>{summary.live ? "Power rankings appear once enough members are tracked." : "The board opens after the first roster sync."}</p></div>
+              )}
+            </section>
+
+            {isOfficer ? (
+            <section className="standing-panel watch-panel" id="wall-of-shame" aria-labelledby="wos-heading">
+              <header className="standing-panel-head">
+                <div><span className="standing-symbol">!</span><p>Officer watchlist</p><h3 id="wos-heading">Needs a check-in</h3></div>
+                <strong>{wallOfShame.length}<small>flagged</small></strong>
+              </header>
+              <p className="standing-copy">A practical shortlist for activity and roster follow-up—not a permanent label.</p>
+              {wallOfShame.length ? (
+                <ul className="standing-list watch-list">
+                  {wallOfShame.map((entry) => (
+                    <li key={entry.playerId}>
+                      <a href={`/members#member-${entry.playerId}`}>
+                        <span className="standing-avatar" aria-hidden="true">{entry.name.charAt(0).toUpperCase()}</span>
+                        <span className="standing-member"><strong>{entry.name}</strong><small>{entry.reasons.join(" · ")}</small></span>
+                        <span className="standing-value"><strong>{entry.raidTickets}</strong><small>tickets</small></span>
+                        <span className="standing-arrow">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="standing-empty standing-clear"><strong>All clear tonight</strong><p>{summary.live ? "No members currently need an officer check-in." : "The watchlist opens after the first roster sync."}</p></div>
+              )}
+            </section>
+            ) : null}
+          </div>
+        </PhoneFold>
+
+        <div className={`lower-grid${memberContext.status === "linked" ? " lower-grid-single" : ""}`}>
+          {memberContext.status !== "linked" ? (
+          <section className="panel member-account-panel">
+            <div className="panel-heading"><div><p className="eyebrow">Personal view</p><h2>Your cantina card</h2></div><span className="private-pill">Private</span></div>
+            <p className="panel-intro">Link Discord once to see your own live standing and keep your guild identity connected.</p>
+            <AccountLink context={memberContext} />
+          </section>
+          ) : null}
+
+          <section className="panel" id="administration">
+            <PhoneFold title="New crew welcomes">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Roster additions</p>
+                <h2>New Crew Welcomes</h2>
+              </div>
+              <span className="live-pill" style={{ background: "rgba(83, 214, 154, 0.15)", color: "#53d69a" }}>
+                Welcome
+              </span>
+            </div>
+            <p className="panel-intro">Give a warm welcome to the latest players to join the Blues Brothers guild roster.</p>
+            
+            <div className="activity-list welcome-list">
+              {changes.newMembers.length ? (
+                changes.newMembers.map((member) => {
+                  const memberPower = member.galacticPower ? formatPower(member.galacticPower) : null;
+                  return (
+                    <div className="activity-row welcome-member-row" key={member.playerId}>
+                      <div className="welcome-member-profile">
+                        <span className="activity-icon activity-welcome">+</span>
+                        <div>
+                          <strong>{member.name}</strong>
+                          <span className="welcome-member-date">Joined {formatRelativeTime(new Date(member.joinedAt))}</span>
+                        </div>
+                      </div>
+                      {memberPower && (
+                        <span className="welcome-member-power">
+                          {memberPower.value}{memberPower.unit} GP
+                        </span>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="empty-copy">Roster is stable. No new band members checked in this week.</p>
+              )}
+            </div>
+            </PhoneFold>
+
+            {isOfficer ? (
+            <div className="officer-desk" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
+              <p className="officer-desk-heading">Officer&apos;s desk</p>
+              <OfficerDesk signedIn={isOfficer} />
+              {isOfficer ? <Link className="officer-roster-link" href="/officer/roster">Open the full roster report →</Link> : null}
+            </div>
+            ) : null}
+          </section>
+        </div>
+
+        <footer>
+          <div className="footer-left">
+            <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
+            <BuiltByBadge />
+          </div>
+          <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/dougies-discs">Dougie&apos;s Discs</Link><Link href="/credits">Sources &amp; credits</Link></span>
+        </footer>
+        </div>
+      </section>
+    </main>
+  );
+}

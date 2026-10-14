@@ -20,9 +20,9 @@ type Usage = { limit: number; used: number; left: number; resetsOn: string };
 
 const resetLabel = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" });
 
-export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { usage: Usage; webSearch: boolean; isOfficer: boolean; rawLimit: string | null }) {
+export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initialText = "" }: { usage: Usage; webSearch: boolean; isOfficer: boolean; rawLimit: string | null; initialText?: string }) {
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [left, setLeft] = useState<number>(usage.left);

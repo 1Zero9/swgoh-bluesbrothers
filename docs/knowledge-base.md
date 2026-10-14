@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.62.0 · **Last updated:** 2026-10-13 · tracks site `v0.74.0`
+**Doc version:** 1.63.0 · **Last updated:** 2026-10-14 · tracks site `v0.75.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -247,6 +247,17 @@ Runner choice now controls presentation as well as mechanics: Jake carries the e
 Free Play saves a versioned JSON envelope under `bb-mission-from-god-free-play-v1` in browser `localStorage`; it contains the engine version, game state, pending encounter and recent log. Saves with a mismatched engine version are discarded rather than migrated silently. This storage is convenience-only and deliberately untrusted: there is still no database write, account identity, public score or leaderboard. Phase 3 must move competitive state and mutations to the server before Daily results can count.
 
 ---
+
+### 5.17 Member hub: navigation, themes and new home (`app/hub-*.tsx`, `app/hub.css`, `lib/hub-nav.ts`, `lib/hub-links.ts`)
+
+Signed-in members and officers get a five-section shell: **Home** (`/`), **Ask B-Lue3** (`/ask`), **Knowledge** (`/knowledge`, with `/counters` and `/guides`), **Guild** (`/guild`, which groups the roster and war-room pages) and **More** (`/more`: account, notifications, Dougie's Discs, the Cantina, Mission From God, officer links). `lib/hub-nav.ts` maps every path to a section (`sectionFor`, tested); `lib/hub-links.ts` holds the link lists for Guild and More. No route was removed.
+
+- **Navigation.** `HubNav` is rendered by `SiteHeader` (so every older page gets it) and by `HubPage` (new screens that do not use the old header). It renders only for signed-in members/officers (`useViewer`), as a fixed sidebar at >=1024px and a bottom tab bar below. It sets `html[data-hub="on"]` and remembers it in `localStorage["bb-hub"]` so `layout.tsx` can set it before first paint; CSS then hides the old dropdown nav and hamburger. Visitors keep the old header.
+- **Themes.** Three, set on `html[data-theme]` and stored in `localStorage["bb-theme"]`: `rebel` (light, the default), `deep` (navy dark), `dark` (the original look, shown as "Classic"). Tokens are `--hub-*` in `app/hub.css`. New hub screens style only through those tokens. Older pages still use `globals.css` (about 1,660 hard-coded colours) and keep their dark look under every theme until moved over; inside `.hub-main` a few legacy variable names are remapped so the B-Lue3 chat and push settings follow the theme. The old `gradient`/`light` choices are gone (saved values fall back to `rebel`).
+- **Home.** `app/page.tsx` shows the public front page to visitors and `HubHome` to members: an ask box (GET to `/ask?q=`), a first-visit checklist (`get-started.tsx`, progress in `localStorage["bb-get-started"]`, account step from the server), open calls for help, the Guild Wire (3 items) and, for officers, the review-queue count. Loaders are wrapped so a missing table does not take the page down. The previous member dashboard now lives at `/overview` unchanged.
+- **Ask page.** `/ask` shows how B-Lue3 answers (free guild knowledge, then web on a tap, then AI) above the existing `BlueChat`; `?q=` pre-fills the box (it never auto-sends). The search order itself is unchanged (§9).
+- **Local preview.** `/dev/hub?screen=ask|guild|more` renders the hub screens with sample data in development builds only (404 in production), because a member view cannot be signed in locally.
+- **Not done yet:** tips and ideas in the knowledge base (schema and review), moving older pages to the theme tokens, Home for first-time members who have not linked an account.
 
 ## 6. Data model
 
@@ -510,6 +521,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.63.0 — 2026-10-14**: member hub, phase 1 (§5.17): five-section navigation, three selectable themes (Rebel default), new member Home, `/ask`, `/guild`, `/more`, the old dashboard moved to `/overview`.
 - **1.62.0 — 2026-10-14**: database-first search order for B-Lue3 (section above): free counter and "who has" answers from the guild database, an explicit paid web-search choice when nothing is saved, AI only for the rest. `findKnownCounters` now shares `lookupKnownCounters` with the free path.
 - **1.61.2 — 2026-10-14**: B-Lue3 replies render **bold**, *italics*, bullets and numbered lists (`lib/blue/format.ts` parser → `app/blue-text.tsx`, React elements only, never raw HTML; a numbered list interrupted by sub-bullets carries on at its own number). First end-to-end proof in production: a web-search answer filed a candidate (`via BLUE`, Reddit thread, GAC 5v5, General Veers vs Mother Talzin) that sat in the review queue unpublished.
 - **1.61.1 — 2026-10-14**: fixed web-search answers coming back empty. The officer diagnostic read `empty answer (finish=length, steps=5, tools=…, server:GOOGLE_SEARCH_WEB…)`: web search and the roster tools do work together, but `maxOutputTokens` 900 was used up by Gemini's thinking. Chat now allows 8000 output tokens (search attempt timeout 45 s); research allows 10 000 / 6000. If finish=length ever reappears, raise `MAX_OUTPUT_TOKENS` in `lib/blue/ask.ts`.

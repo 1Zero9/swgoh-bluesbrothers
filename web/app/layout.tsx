@@ -23,8 +23,10 @@ const themeScript = `
   try {
     const savedTheme = localStorage.getItem("bb-theme");
     document.documentElement.dataset.theme = savedTheme === "deep" || savedTheme === "dark" ? savedTheme : "rebel";
+    document.documentElement.dataset.hub = localStorage.getItem("bb-hub") === "1" ? "on" : "off";
   } catch {
     document.documentElement.dataset.theme = "rebel";
+    document.documentElement.dataset.hub = "off";
   }
 `;
 
