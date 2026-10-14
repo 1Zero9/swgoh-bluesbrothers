@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.70.2 — 2026-10-14
+
+- **Fixed: "Ask Blue" on the home page note** took you to Counters (or another page) instead of Blue. It now opens the Ask Blue box on My Page.
+
 ## 0.70.1 — 2026-10-14
 
 - **Blue welcomes new members.** On the green Welcome banner, Blue's face now has a play button. Tapping it plays his clip over the page, and at the end there's a "Say hello in chat" button. Tapping the names still goes straight to chat.

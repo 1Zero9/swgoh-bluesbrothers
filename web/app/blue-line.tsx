@@ -13,7 +13,7 @@ export default async function BlueLine() {
   if (!data) return null;
   const briefing = blueBriefing(data, advice);
   return (
-    <Link className="blue-line" href={briefing.href}>
+    <Link className="blue-line" href="/me#ask-blue">
       <Image src="/blue.png" alt="" width={44} height={44} />
       <span className="blue-line-copy">
         <small>B-LU3 · {briefing.label}</small>

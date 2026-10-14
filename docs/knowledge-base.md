@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.58.1 · **Last updated:** 2026-10-13 · tracks site `v0.70.1`
+**Doc version:** 1.58.2 · **Last updated:** 2026-10-13 · tracks site `v0.70.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -484,6 +484,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.58.2 — 2026-10-14**: the home-page Blue note (`app/blue-line.tsx`) always links to `/me#ask-blue`; it used to follow `briefing.href`, which sent people to Counters or Territory Battles when they clicked "Ask Blue".
 - **1.58.1 — 2026-10-14**: the Welcome banner plays the same clip: `BlueIntro` has a `variant="welcome"` (Blue's face in a green circle with a play badge; end-of-clip button goes to `/chat`). The banner is now a `div` with the play button and a separate link to `/chat` (a button cannot sit inside a link).
 - **1.58.0 — 2026-10-14**: "Meet B-LU3" clip. `public/blue-intro.mp4` (10 s, 1280×720, H.264/AAC, 3.3 MB, shot on a green screen) plays from a tap on Blue's avatar on `/me` (`app/blue-intro.tsx`). The green is removed live in the browser: each frame goes to a 640×360 canvas and `keyGreen` (`lib/chroma-key.ts`, tested) makes it transparent (greenness = G − max(R,B), so blue and cyan survive; edges are despilled). The video only downloads on tap, plays with sound (falls back to muted if refused), closes on Esc/backdrop/Skip. Verified in Chromium and WebKit. To change the clip, replace the mp4 with another green-screen clip; if the key looks ragged adjust `KEY_LOW`/`KEY_HIGH`.
 - **1.57.1 — 2026-10-13**: `app/welcome-banner.tsx` — green "Welcome to the band" banner at the top of the member home page for anyone who joined in the last `FRESH_DAYS` (21), up to four names, links to `/chat`; renders nothing when no one is new. The lower "New crew welcomes" list remains (folded on phones).
