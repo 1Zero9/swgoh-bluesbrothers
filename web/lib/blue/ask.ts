@@ -7,6 +7,7 @@ import { buildBlueTools, type BlueViewer } from "@/lib/blue/tools";
 
 /** Cheap and quick is right for lookups. Change either with BLUE_MODEL. */
 const MAX_STEPS = 8;
+const MAX_OUTPUT_TOKENS = 8000;
 const DEFAULT_GEMINI = "gemini-flash-latest";
 const DEFAULT_GATEWAY_MODEL = "anthropic/claude-haiku-5-5";
 
@@ -44,8 +45,9 @@ async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boo
     stopWhen: isStepCount(MAX_STEPS),
     // On the last step he must write the answer, not call another tool (an unfinished tool loop used to end with no text at all).
     prepareStep: ({ stepNumber }) => (stepNumber >= MAX_STEPS - 1 ? { toolChoice: "none" as const } : undefined),
-    maxOutputTokens: 900,
-    timeout: withSearch ? 30_000 : 40_000,
+    // Gemini's thinking counts against this limit: at 900 he spent it all thinking and wrote nothing (finish=length).
+    maxOutputTokens: MAX_OUTPUT_TOKENS,
+    timeout: withSearch ? 45_000 : 40_000,
   });
   const sources = cleanSources(result.steps.flatMap((step) => step.sources));
   if (!result.text.trim() && withSearch) {

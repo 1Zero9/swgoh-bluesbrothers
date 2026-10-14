@@ -87,8 +87,8 @@ export async function researchCounters(
     prompt: `Enemy squad led by: ${leader}\nGame mode: ${MODE_LABELS[args.mode]}\nFind up to 5 current counters, with the page each came from.`,
     tools: { google_search: google.tools.googleSearch({}) },
     stopWhen: isStepCount(4),
-    maxOutputTokens: 2500,
-    timeout: 60_000,
+    maxOutputTokens: 10_000,
+    timeout: 70_000,
   });
   const sources = cleanSources(search.steps.flatMap((step) => step.sources));
   const notes = search.text.trim();
@@ -100,8 +100,8 @@ export async function researchCounters(
     instructions: EXTRACT_INSTRUCTIONS,
     prompt: `Enemy squad led by ${leader} in ${MODE_LABELS[args.mode]}.\n\nResearch notes:\n${notes}\n\nPages found: ${sources.map((source) => source.host).join(", ") || "none"}`,
     output: Output.object({ schema: ExtractSchema }),
-    maxOutputTokens: 2500,
-    timeout: 40_000,
+    maxOutputTokens: 6000,
+    timeout: 45_000,
   });
 
   const hosts = foundHosts(sources);

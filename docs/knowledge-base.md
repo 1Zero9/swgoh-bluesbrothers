@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.61.0 · **Last updated:** 2026-10-13 · tracks site `v0.73.0`
+**Doc version:** 1.61.1 · **Last updated:** 2026-10-13 · tracks site `v0.73.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -502,6 +502,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.61.1 — 2026-10-14**: fixed web-search answers coming back empty. The officer diagnostic read `empty answer (finish=length, steps=5, tools=…, server:GOOGLE_SEARCH_WEB…)`: web search and the roster tools do work together, but `maxOutputTokens` 900 was used up by Gemini's thinking. Chat now allows 8000 output tokens (search attempt timeout 45 s); research allows 10 000 / 6000. If finish=length ever reappears, raise `MAX_OUTPUT_TOKENS` in `lib/blue/ask.ts`.
 - **1.61.0 — 2026-10-14**: officer **Research with B-Lue3** on `/knowledge/review` (`lib/blue/research.ts`, `POST /api/knowledge/research`, officers only, `BLUE_RESEARCH_LIMIT` a week). Step 1 is a web-search-only Gemini call (no database access); step 2 extracts structured counters (`Output.object`); then the code filters each one — real unit names, squad shape for the mode (`checkSquad`), and the source link must be on a site the search actually returned (`foundHosts`/`sourceWasFound`; Google's redirect links are titled with the site's domain) — and files survivors as BLUE candidates via `submitMatchup`. Set-aside counters are listed with the reason. The model never writes to the database and nothing is published. Tested with a scripted fake model (`MockLanguageModelV4`), not against a live key.
 - **1.60.3 — 2026-10-14**: fixed "I came up empty on that one": with web search the model could spend every step on tools and end with no text. Now `MAX_STEPS` is 8, the final step forces `toolChoice: "none"` (`prepareStep`), and an empty answer from the search run counts as a failed run (falls back to the no-search run; officers see `empty answer (finish=…, steps=…, tools=…)` as the reason).
 - **1.60.2 — 2026-10-14**: B-Lue3 status is visible. `/me` shows dots for questions left this week, the reset date (`nextReset`, next Monday UTC) and a Web search on/off badge; at zero the starter buttons and the box are disabled. Officers also see the limit, the raw `BLUE_WEEKLY_LIMIT` value, how many are used, and a **Reset my count** button (`POST /api/blue/reset`, officers only). Bug fixed: `takeQuestion` used to leave a blocked attempt counted, so the count kept climbing after the limit and never recovered; it now gives the blocked try back. `getUsage` reads the count without using anything up.
