@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.80.2 — 2026-10-14
+
+- **A slimmer Home banner.** The picture is about half the height, so it sets the scene without taking over the page. The sign still shows. B-Lue3 still stands on its lower edge.
+- **The guild numbers moved onto a bar under the banner** (members, guild power, tickets today, Galactic Legends), so they read clearly on any picture.
+
 ## 0.80.1 — 2026-10-14
 
 - **A bigger, fuller Home banner.** The picture now fills the whole width and shows the sign large, with the guild numbers over its left side.
