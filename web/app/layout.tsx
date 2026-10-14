@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./hub.css";
 import InstallPrompt from "./install-prompt";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -21,9 +22,11 @@ export const viewport: Viewport = {
 const themeScript = `
   try {
     const savedTheme = localStorage.getItem("bb-theme");
-    document.documentElement.dataset.theme = savedTheme || "dark";
+    document.documentElement.dataset.theme = savedTheme === "deep" || savedTheme === "dark" ? savedTheme : "rebel";
+    document.documentElement.dataset.hub = localStorage.getItem("bb-hub") === "1" ? "on" : "off";
   } catch {
-    document.documentElement.dataset.theme = "dark";
+    document.documentElement.dataset.theme = "rebel";
+    document.documentElement.dataset.hub = "off";
   }
 `;
 

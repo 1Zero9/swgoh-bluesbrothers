@@ -8,6 +8,7 @@ import AccountMenu from "./account-menu";
 import ThemeToggle from "./theme-toggle";
 import NavLinks from "./nav-links";
 import ScrollTracker from "./scroll-tracker";
+import HubNav from "./hub-nav";
 
 export const APP_VERSION = `v${packageInfo.version}`;
 
@@ -118,6 +119,8 @@ export default async function SiteHeader({
   const commsLabel = syncLabel ?? (summary.capturedAt ? `Synced ${formatSyncedAgo(summary.capturedAt)}` : "Awaiting first sync");
 
   return (
+    <>
+    <HubNav />
     <header className="site-header">
       <ScrollTracker />
       <Link className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
@@ -139,5 +142,6 @@ export default async function SiteHeader({
       </div>
       <MobileMenu discordUrl={discordUrl} />
     </header>
+    </>
   );
 }

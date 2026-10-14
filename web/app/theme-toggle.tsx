@@ -1,14 +1,18 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
-type Theme = "gradient" | "light" | "dark";
+type Theme = "rebel" | "deep" | "dark";
 const THEME_CHANGE_EVENT = "bb-theme-change";
+const CHOICES: { theme: Theme; label: string; title: string }[] = [
+  { theme: "rebel", label: "Rebel", title: "Rebel base: light" },
+  { theme: "deep", label: "Deep", title: "Deep space: navy dark" },
+  { theme: "dark", label: "Classic", title: "Classic dark: the original look" },
+];
 
 function getThemeSnapshot(): Theme {
   const theme = document.documentElement.dataset.theme;
-  return theme === "light" || theme === "gradient" ? theme : "dark";
+  return theme === "deep" || theme === "dark" ? theme : "rebel";
 }
 
 function subscribeToTheme(onChange: () => void) {
@@ -16,20 +20,30 @@ function subscribeToTheme(onChange: () => void) {
   return () => window.removeEventListener(THEME_CHANGE_EVENT, onChange);
 }
 
-export default function ThemeToggle() {
-  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "dark");
+function setTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  try { window.localStorage.setItem("bb-theme", theme); } catch { /* private mode: the choice lasts for this visit */ }
+  window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+}
 
-  function setTheme(theme: Theme) {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("bb-theme", theme);
-    window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
-  }
+export default function ThemeToggle() {
+  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "rebel");
 
   return (
     <div className="theme-picker" role="group" aria-label="Colour theme">
-      <button type="button" data-theme-choice="gradient" onClick={(event) => { event.stopPropagation(); setTheme("gradient"); }} aria-label="Use gradient theme" aria-pressed={activeTheme === "gradient"} title="Gradient theme">◐</button>
-      <button type="button" data-theme-choice="light" onClick={(event) => { event.stopPropagation(); setTheme("light"); }} aria-label="Use light theme" aria-pressed={activeTheme === "light"} title="Light theme"><Sun size={15} aria-hidden="true" /></button>
-      <button type="button" data-theme-choice="dark" onClick={(event) => { event.stopPropagation(); setTheme("dark"); }} aria-label="Use dark theme" aria-pressed={activeTheme === "dark"} title="Dark theme"><Moon size={15} aria-hidden="true" /></button>
+      {CHOICES.map((choice) => (
+        <button
+          key={choice.theme}
+          type="button"
+          className="theme-choice"
+          data-theme-choice={choice.theme}
+          onClick={(event) => { event.stopPropagation(); setTheme(choice.theme); }}
+          aria-pressed={activeTheme === choice.theme}
+          title={choice.title}
+        >
+          {choice.label}
+        </button>
+      ))}
     </div>
   );
 }

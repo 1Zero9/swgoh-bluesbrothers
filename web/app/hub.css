@@ -1,0 +1,235 @@
+/* Guild hub design tokens.
+   Three themes, chosen by the member and stored in localStorage ("bb-theme"):
+   - rebel: light, the default
+   - deep:  navy dark
+   - dark:  the original near-black look
+   New hub screens style themselves only through these --hub-* tokens, so they follow the chosen theme.
+   Older pages still use globals.css and keep their dark look until they are moved over. */
+
+html[data-theme="rebel"] {
+  color-scheme: light;
+  --hub-bg: #e9eef4;
+  --hub-surface: #ffffff;
+  --hub-surface-2: #f2f5f9;
+  --hub-line: rgba(10, 25, 50, 0.13);
+  --hub-text: #0d1726;
+  --hub-muted: #51607a;
+  --hub-accent: #0b6fb0;
+  --hub-accent-soft: rgba(11, 111, 176, 0.1);
+  --hub-on-accent: #ffffff;
+  --hub-amber: #9a5a00;
+  --hub-amber-soft: rgba(154, 90, 0, 0.1);
+  --hub-good: #0c7f53;
+  --hub-bad: #b3261e;
+  --hub-shadow: 0 1px 2px rgba(20, 40, 70, 0.08), 0 8px 24px rgba(20, 40, 70, 0.08);
+}
+
+html[data-theme="deep"] {
+  color-scheme: dark;
+  --hub-bg: #0a1020;
+  --hub-surface: #121b33;
+  --hub-surface-2: #1a2545;
+  --hub-line: rgba(150, 185, 255, 0.16);
+  --hub-text: #f1f5f9;
+  --hub-muted: #a3b3d0;
+  --hub-accent: #62ccff;
+  --hub-accent-soft: rgba(98, 204, 255, 0.15);
+  --hub-on-accent: #031018;
+  --hub-amber: #ffcb45;
+  --hub-amber-soft: rgba(255, 203, 69, 0.14);
+  --hub-good: #53d69a;
+  --hub-bad: #f87171;
+  --hub-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] {
+  --hub-bg: #05070a;
+  --hub-surface: #0d1117;
+  --hub-surface-2: #131a23;
+  --hub-line: rgba(255, 255, 255, 0.09);
+  --hub-text: #f1f5f9;
+  --hub-muted: #8b9bb0;
+  --hub-accent: #38bdf8;
+  --hub-accent-soft: rgba(56, 189, 248, 0.14);
+  --hub-on-accent: #031018;
+  --hub-amber: #fbbf24;
+  --hub-amber-soft: rgba(251, 191, 36, 0.13);
+  --hub-good: #53d69a;
+  --hub-bad: #f87171;
+  --hub-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Theme picker (replaces the old gradient / light / dark icons) */
+.theme-picker button.theme-choice { width: auto; min-width: 0; padding: 0 9px; font: 500 11px var(--font-geist-sans), system-ui, sans-serif; letter-spacing: 0.01em; white-space: nowrap; }
+html[data-theme="rebel"] .theme-picker [data-theme-choice="rebel"],
+html[data-theme="deep"] .theme-picker [data-theme-choice="deep"] { color: #d9edff; background: rgba(39, 105, 218, 0.72); box-shadow: 0 0 10px rgba(33, 112, 255, 0.22); }
+
+/* ---------- Hub navigation ---------- */
+.hub-side, .hub-tabs { display: none; }
+html[data-hub="on"] .site-header > .main-nav,
+html[data-hub="on"] .mobile-menu,
+html[data-hub="on"] .site-header .header-controls .theme-picker { display: none !important; }
+
+.hub-side-brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; color: var(--hub-text); text-decoration: none; }
+.hub-side-brand img { width: 44px; height: 44px; object-fit: contain; }
+.hub-side-brand strong { display: block; font-size: 14px; letter-spacing: 0.01em; }
+.hub-side-brand small { display: block; margin-top: 2px; color: var(--hub-muted); font: 10px var(--font-geist-mono), monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+.hub-side-nav { display: grid; gap: 4px; }
+.hub-side-link { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; color: var(--hub-muted); text-decoration: none; font-weight: 500; font-size: 14.5px; }
+.hub-side-link:hover { background: var(--hub-surface-2); color: var(--hub-text); }
+.hub-side-link[aria-current="page"] { background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-side-link.is-ask[aria-current="page"] { background: var(--hub-amber-soft); color: var(--hub-amber); }
+.hub-side-link:focus-visible, .hub-tabs a:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 2px; }
+.hub-side-foot { margin-top: auto; display: grid; gap: 10px; padding: 14px 8px 0; border-top: 1px solid var(--hub-line); }
+.hub-side-foot p { margin: 0; color: var(--hub-muted); font-size: 12.5px; overflow-wrap: anywhere; }
+.hub-side-foot .theme-picker { border-color: var(--hub-line); background: var(--hub-surface-2); }
+.hub-side-foot .theme-picker button { color: var(--hub-muted); }
+.hub-side-foot .theme-picker button:hover { color: var(--hub-text); background: var(--hub-line); }
+
+/* Laptops: a fixed sidebar, with the page and the header pushed over to make room. */
+@media (min-width: 1024px) {
+  html[data-hub="on"] body { padding-left: 216px; }
+  html[data-hub="on"] .hub-side {
+    display: flex; flex-direction: column; position: fixed; z-index: 900; inset: 0 auto 0 0; width: 216px;
+    padding: 18px 12px 16px; background: var(--hub-surface); border-right: 1px solid var(--hub-line);
+    box-shadow: var(--hub-shadow);
+  }
+  html[data-hub="on"] .site-header { left: 216px; }
+  html[data-hub="on"] .site-header > .brand { display: none; }
+}
+
+/* Phones and tablets: a tab bar along the bottom. */
+@media (max-width: 1023.98px) {
+  html[data-hub="on"] body { padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px)); }
+  html[data-hub="on"] .hub-tabs {
+    display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; z-index: 900; inset: auto 0 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--hub-surface); border-top: 1px solid var(--hub-line);
+    box-shadow: 0 -4px 18px rgba(20, 40, 70, 0.1);
+  }
+  .hub-tabs a { display: grid; justify-items: center; gap: 3px; padding: 9px 2px 8px; color: var(--hub-muted); text-decoration: none; font-size: 11px; font-weight: 500; }
+  .hub-tabs a[aria-current="page"] { color: var(--hub-accent); }
+  .hub-tabs a.is-ask[aria-current="page"] { color: var(--hub-amber); }
+}
+
+/* ---------- Hub screens ---------- */
+.hub-main {
+  /* Older components (the B-Lue3 chat, push settings) read these names; inside a hub screen they follow the chosen theme. */
+  --ink: var(--hub-bg); --panel: var(--hub-surface); --line: var(--hub-line); --text: var(--hub-text); --muted: var(--hub-muted); --blue: var(--hub-accent);
+  min-height: 100vh; background: var(--hub-bg); color: var(--hub-text);
+  padding: clamp(18px, 3vw, 40px) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px));
+}
+.hub-wrap { width: min(100%, 880px); margin: 0 auto; display: grid; gap: 22px; }
+.hub-wrap > * { min-width: 0; }
+.hub-eyebrow { margin: 0 0 6px; color: var(--hub-accent); font: 11px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.hub-heading h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.02em; text-wrap: balance; }
+.hub-intro { margin: 8px 0 0; max-width: 62ch; color: var(--hub-muted); line-height: 1.55; }
+.hub-section { display: grid; gap: 10px; }
+.hub-section-title { margin: 0; color: var(--hub-muted); font: 500 11px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.hub-card { padding: 16px; border: 1px solid var(--hub-line); border-radius: 14px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
+
+.hub-links { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 720px) { .hub-links { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hub-link { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--hub-line); border-radius: 13px; background: var(--hub-surface); color: var(--hub-text); text-decoration: none; box-shadow: var(--hub-shadow); }
+.hub-link:hover { border-color: var(--hub-accent); }
+.hub-link:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 2px; }
+.hub-link-icon { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-link-text { min-width: 0; flex: 1; }
+.hub-link-text strong { display: block; font-size: 15px; }
+.hub-link-text small { display: block; margin-top: 1px; color: var(--hub-muted); font-size: 12.5px; }
+.hub-link > svg:last-child { flex: none; color: var(--hub-muted); }
+.hub-links.is-quiet .hub-link-icon { background: var(--hub-surface-2); color: var(--hub-muted); }
+
+.hub-photo { position: relative; min-height: 120px; border-radius: 14px; overflow: hidden; border: 1px solid var(--hub-line); }
+.hub-photo img { object-fit: cover; }
+.hub-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 10, 20, 0) 35%, rgba(5, 10, 20, 0.78)); }
+.hub-photo span { position: absolute; z-index: 1; left: 14px; bottom: 10px; color: #fff; font-weight: 600; font-size: 17px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+
+.hub-actions { display: grid; gap: 8px; margin-top: 8px; }
+.hub-action, .hub-action-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--hub-line); border-radius: 13px; background: var(--hub-surface); color: var(--hub-text); text-align: left; text-decoration: none; font: inherit; cursor: pointer; }
+.hub-action:hover { border-color: var(--hub-accent); }
+.hub-action strong, .hub-action-row strong { display: block; font-size: 15px; }
+.hub-action small, .hub-action-row small { display: block; margin-top: 1px; color: var(--hub-muted); font-size: 12.5px; }
+.hub-action.is-quiet strong { color: var(--hub-bad); }
+.hub-action-row { cursor: default; flex-wrap: wrap; }
+.hub-action-row .theme-picker { border-color: var(--hub-line); background: var(--hub-surface-2); }
+.hub-action-row .theme-picker button { color: var(--hub-muted); height: 28px; }
+.hub-action-row .theme-picker button:hover { color: var(--hub-text); background: var(--hub-line); }
+
+/* Ask B-Lue3 */
+.hub-ask-intro { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
+.hub-ask-intro img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(20, 40, 70, 0.25)); }
+.hub-order { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.hub-order li { display: flex; gap: 10px; align-items: flex-start; }
+.hub-order strong { display: block; font-size: 14px; }
+.hub-order small { display: block; margin-top: 1px; color: var(--hub-muted); font-size: 12.5px; line-height: 1.4; }
+.hub-badge { flex: none; min-width: 78px; text-align: center; padding: 3px 8px; border: 1px solid var(--hub-line); border-radius: 999px; color: var(--hub-muted); font: 500 11px var(--font-geist-mono), monospace; white-space: nowrap; }
+.hub-badge.is-free { color: var(--hub-good); border-color: var(--hub-good); }
+.hub-badge.is-paid { color: var(--hub-amber); border-color: var(--hub-amber); }
+@media (max-width: 560px) { .hub-ask-intro { grid-template-columns: 1fr; justify-items: start; } .hub-ask-intro img { width: 84px; height: 84px; } }
+
+/* The chat was written for a dark page: make its controls follow the theme. */
+.hub-chat .blue-chat { padding: 16px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
+.hub-chat .blue-question-actions a, .hub-chat .blue-question-actions button { background: var(--hub-accent-soft); border-color: var(--hub-accent); color: var(--hub-text); box-shadow: none; }
+.hub-chat .blue-question-actions a:hover, .hub-chat .blue-question-actions button:hover:not(:disabled) { filter: none; background: var(--hub-surface-2); }
+.hub-chat .blue-form input { background: var(--hub-bg); border-color: var(--hub-line); color: var(--hub-text); }
+.hub-chat .blue-form button { background: var(--hub-accent); border-color: var(--hub-accent); color: var(--hub-on-accent); font-weight: 600; }
+.hub-chat .blue-turn-user p { background: var(--hub-accent-soft); color: var(--hub-text); }
+.hub-chat .blue-turn-assistant > p, .hub-chat .blue-turn-body { border-color: var(--hub-line); background: var(--hub-surface-2); color: var(--hub-text); }
+.hub-chat .blue-answer { background: var(--hub-surface-2); border-color: var(--hub-line); }
+.hub-chat .kb-primary { background: var(--hub-amber-soft); border: 1px solid var(--hub-amber); color: var(--hub-amber); border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+.hub-chat .kb-link { color: var(--hub-accent); }
+.hub-chat .blue-error { color: var(--hub-bad); }
+
+/* Home */
+.hub-welcome { position: relative; display: flex; align-items: flex-end; min-height: clamp(190px, 24vw, 230px); border-radius: 18px; overflow: hidden; border: 1px solid var(--hub-line); box-shadow: var(--hub-shadow); }
+.hub-welcome img { object-fit: cover; object-position: 70% 40%; }
+.hub-welcome::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 10, 20, 0) 25%, rgba(5, 10, 20, 0.85)); }
+.hub-welcome > div { position: relative; z-index: 1; padding: clamp(14px, 3vw, 24px); color: #fff; }
+.hub-welcome .hub-eyebrow { color: #bfe8ff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+.hub-welcome h1 { margin: 0; max-width: 20ch; font-size: clamp(22px, 3.6vw, 32px); letter-spacing: -0.02em; text-wrap: balance; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
+.hub-home-grid { display: grid; gap: 22px; align-items: start; }
+@media (min-width: 900px) { .hub-home-grid { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); } }
+.hub-home-main, .hub-home-side { display: grid; gap: 16px; min-width: 0; }
+
+.hub-askbox { padding: 18px; border: 1px solid var(--hub-accent); border-radius: 18px; background: linear-gradient(180deg, var(--hub-accent-soft), var(--hub-surface)); box-shadow: var(--hub-shadow); }
+.hub-askbox-head { display: flex; align-items: center; gap: 12px; }
+.hub-askbox-head img { width: 56px; height: 56px; object-fit: contain; flex: none; filter: drop-shadow(0 4px 6px rgba(20, 40, 70, 0.25)); }
+.hub-askbox h2 { margin: 0; font-size: clamp(18px, 2.4vw, 22px); letter-spacing: -0.01em; text-wrap: balance; }
+.hub-askbox > p { margin: 8px 0 0; color: var(--hub-muted); font-size: 14px; }
+.hub-askform { display: flex; gap: 8px; margin-top: 14px; }
+.hub-askform input { flex: 1; min-width: 0; min-height: 46px; padding: 0 14px; border: 1px solid var(--hub-line); border-radius: 12px; background: var(--hub-bg); color: var(--hub-text); font: inherit; }
+.hub-askform input:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+.hub-askform button, .hub-button { min-height: 46px; padding: 0 20px; border: 0; border-radius: 12px; background: var(--hub-accent); color: var(--hub-on-accent); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+.hub-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.hub-chips a { padding: 8px 13px; border: 1px solid var(--hub-line); border-radius: 999px; background: var(--hub-surface); color: var(--hub-text); font-size: 13px; text-decoration: none; }
+.hub-chips a:hover { border-color: var(--hub-accent); }
+.hub-how { display: inline-block; margin-top: 12px; color: var(--hub-accent); font-size: 13px; font-weight: 600; text-decoration: none; }
+.hub-how:hover { text-decoration: underline; }
+
+.hub-eyebrow.is-amber { color: var(--hub-amber); }
+.hub-needs { border-color: var(--hub-amber); }
+.hub-needs h2 { margin: 0 0 8px; font-size: 18px; }
+.hub-needs ul { display: grid; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; }
+.hub-needs li strong { margin-right: 8px; }
+.hub-needs li small, .hub-wire small, .hub-start small, .hub-standing small, .hub-officer-note small { color: var(--hub-muted); font-size: 12.5px; }
+.hub-officer-note { display: grid; gap: 2px; color: var(--hub-text); text-decoration: none; border-color: var(--hub-accent); }
+
+.hub-standing { display: grid; gap: 2px; color: var(--hub-text); text-decoration: none; }
+.hub-standing span { margin-top: 6px; color: var(--hub-good); font-size: 13px; font-weight: 600; }
+.hub-standing.needs-checkin { border-color: var(--hub-amber); }
+.hub-standing.needs-checkin span { color: var(--hub-amber); }
+
+.hub-start-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.hub-start h2 { margin: 0; font-size: 16px; }
+.hub-start ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hub-start li { display: flex; align-items: center; gap: 11px; padding: 10px; border: 1px solid var(--hub-line); border-radius: 12px; background: var(--hub-surface-2); }
+.hub-start li a { color: inherit; text-decoration: none; display: block; flex: 1; min-width: 0; }
+.hub-start li strong { display: block; font-size: 14px; }
+.hub-start li.is-done strong { color: var(--hub-muted); text-decoration: line-through; }
+.hub-tick { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border: 1.5px solid var(--hub-muted); border-radius: 50%; color: var(--hub-on-accent); }
+.hub-start li.is-done .hub-tick { background: var(--hub-good); border-color: var(--hub-good); }
+.hub-text-button { margin-top: 10px; padding: 4px 0; border: 0; background: none; color: var(--hub-muted); font: inherit; font-size: 12.5px; cursor: pointer; text-decoration: underline; }
+
+.hub-wire { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hub-wire li { padding: 11px 13px; border: 1px solid var(--hub-line); border-radius: 12px; background: var(--hub-surface); }
+.hub-wire strong { display: block; font-size: 14px; }
