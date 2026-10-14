@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.61.1 · **Last updated:** 2026-10-13 · tracks site `v0.73.1`
+**Doc version:** 1.61.2 · **Last updated:** 2026-10-13 · tracks site `v0.73.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -502,6 +502,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.61.2 — 2026-10-14**: B-Lue3 replies render **bold**, *italics*, bullets and numbered lists (`lib/blue/format.ts` parser → `app/blue-text.tsx`, React elements only, never raw HTML; a numbered list interrupted by sub-bullets carries on at its own number). First end-to-end proof in production: a web-search answer filed a candidate (`via BLUE`, Reddit thread, GAC 5v5, General Veers vs Mother Talzin) that sat in the review queue unpublished.
 - **1.61.1 — 2026-10-14**: fixed web-search answers coming back empty. The officer diagnostic read `empty answer (finish=length, steps=5, tools=…, server:GOOGLE_SEARCH_WEB…)`: web search and the roster tools do work together, but `maxOutputTokens` 900 was used up by Gemini's thinking. Chat now allows 8000 output tokens (search attempt timeout 45 s); research allows 10 000 / 6000. If finish=length ever reappears, raise `MAX_OUTPUT_TOKENS` in `lib/blue/ask.ts`.
 - **1.61.0 — 2026-10-14**: officer **Research with B-Lue3** on `/knowledge/review` (`lib/blue/research.ts`, `POST /api/knowledge/research`, officers only, `BLUE_RESEARCH_LIMIT` a week). Step 1 is a web-search-only Gemini call (no database access); step 2 extracts structured counters (`Output.object`); then the code filters each one — real unit names, squad shape for the mode (`checkSquad`), and the source link must be on a site the search actually returned (`foundHosts`/`sourceWasFound`; Google's redirect links are titled with the site's domain) — and files survivors as BLUE candidates via `submitMatchup`. Set-aside counters are listed with the reason. The model never writes to the database and nothing is published. Tested with a scripted fake model (`MockLanguageModelV4`), not against a live key.
 - **1.60.3 — 2026-10-14**: fixed "I came up empty on that one": with web search the model could spend every step on tools and end with no text. Now `MAX_STEPS` is 8, the final step forces `toolChoice: "none"` (`prepareStep`), and an empty answer from the search run counts as a failed run (falls back to the no-search run; officers see `empty answer (finish=…, steps=…, tools=…)` as the reason).

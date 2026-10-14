@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.73.2 — 2026-10-14
+
+- **B-Lue3's answers are easier to read.** Bold, italics, bullets and numbered lists now show properly instead of as stray `**` and `*` symbols.
+
 ## 0.73.1 — 2026-10-14
 
 - **Fixed: web search answers coming back empty.** B-Lue3 was running out of room while thinking, before he could write the answer. He now has far more room, so questions that need a web search should come back with sources.
