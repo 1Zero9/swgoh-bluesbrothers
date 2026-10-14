@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.63.0 · **Last updated:** 2026-10-14 · tracks site `v0.75.0`
+**Doc version:** 1.64.0 · **Last updated:** 2026-10-14 · tracks site `v0.76.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -405,6 +405,7 @@ Own database of what beats what, with provenance. Tables `KbTeam` (family, alias
 - **Calls for help:** `POST /api/knowledge/request` (3 a day per member, shared if one is already open for that leader+mode) posts to `DISCORD_COUNTERS_WEBHOOK_URL` when set (`callToArmsMessage`: no pings, member text defanged) and is marked ANSWERED when a counter for that leader and mode is published.
 - **Import:** `npx tsx scripts/import-knowledge.ts file.json [--write] [--offset N --limit N]`: dry run by default, idempotent (`importKey = source:sourceRef`), reports invalid rows, stages candidates. Plan logic is `lib/knowledge/import-plan.ts` (pure, tested).
 - **B-Lue3:** `findKnownCounters` (published, not expired, by enemy leader and optional mode, with use counts, evidence, whether the member can run it) and `submitCounterCandidate`.
+- **Tips and ideas (`KbNote`, `KbNoteHelpful`, migration `20261014020000_knowledge_notes`).** The plain-words side: `kind` TIP or IDEA, a title (4-100 chars), a body (10-1500), an optional topic from a fixed list and an optional "how do you know". They reuse the counter lifecycle (`lifecycle.ts`): members submit, always as CANDIDATE; only officers publish or reject (`/api/knowledge/notes/review`); published ones can be outdated or restored; DISPUTED is not used for notes. Pure checks and search are in `lib/knowledge/notes.ts` (tested); database access in `lib/knowledge/notes-data.ts`. Routes: `GET/POST /api/knowledge/notes` (10 submissions a day per member; a member also sees their own waiting notes), `POST /api/knowledge/notes/helpful` ("this helped", one per member), `GET/POST /api/knowledge/notes/review` (officers). UI: `app/knowledge/knowledge-hub.tsx` (tabs Counters/Tips/Ideas and the shared "Add what you know" sheet), `note-form.tsx`, `note-list.tsx`, and `review/note-review.tsx` at the top of the review page. B-Lue3 gets a read-only `findGuildTips` tool (published notes only, credited to the author, framed as guild advice); the free database-first search order for counters and "who has" is unchanged, and tips are not part of that free path.
 - **Not built yet:** encounter guides (Conquest/TB/raids), mod profiles, an editing UI for reviewers, a swgoh.gg adapter (no usable key/docs located), fleet entry in the web form (API and import support fleets).
 - **Sources:** none imported. Open sources were checked 2026-10-14: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the swgoh.wiki TW/GA counter list was last edited February 2020. The database starts empty and fills from members, officers, B-Lue3 candidates and structured imports.
 
@@ -521,6 +522,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.64.0 — 2026-10-14**: tips and ideas in the knowledge base (§9 "Counter knowledge base"): `KbNote`/`KbNoteHelpful`, officer-checked, "this helped" marks, one "Add what you know" sheet, B-Lue3 `findGuildTips`. Knowledge page moved onto the hub frame (`/knowledge` no longer uses the old hero).
 - **1.63.0 — 2026-10-14**: member hub, phase 1 (§5.17): five-section navigation, three selectable themes (Rebel default), new member Home, `/ask`, `/guild`, `/more`, the old dashboard moved to `/overview`.
 - **1.62.0 — 2026-10-14**: database-first search order for B-Lue3 (section above): free counter and "who has" answers from the guild database, an explicit paid web-search choice when nothing is saved, AI only for the rest. `findKnownCounters` now shares `lookupKnownCounters` with the free path.
 - **1.61.2 — 2026-10-14**: B-Lue3 replies render **bold**, *italics*, bullets and numbered lists (`lib/blue/format.ts` parser → `app/blue-text.tsx`, React elements only, never raw HTML; a numbered list interrupted by sub-bullets carries on at its own number). First end-to-end proof in production: a web-search answer filed a candidate (`via BLUE`, Reddit thread, GAC 5v5, General Veers vs Mother Talzin) that sat in the review queue unpublished.

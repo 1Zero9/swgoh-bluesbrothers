@@ -71,7 +71,6 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
 
       {canAct ? (
         <div className="kb-actions">
-          <button type="button" className="kb-primary" onClick={() => { setPrefill(null); setPanel(panel === "add" ? "none" : "add"); }}><NavIcon name="check" size={18} />Add a counter</button>
           <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />I need a counter</button>
         </div>
       ) : null}
