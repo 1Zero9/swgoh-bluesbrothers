@@ -8997,7 +8997,7 @@ svg.ni:only-child { margin-right: 0; vertical-align: middle; }
 }
 
 /* Welcome banner: new arrivals, first thing on the member home page */
-.welcome-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 18px; border: 1px solid rgba(83,214,154,.45); border-radius: 16px; background: linear-gradient(130deg, rgba(14,40,32,.9), rgba(11,18,16,.95)); color: inherit; text-decoration: none; }
+.welcome-banner { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 14px 18px; border: 1px solid rgba(83,214,154,.45); border-radius: 16px; background: linear-gradient(130deg, rgba(14,40,32,.9), rgba(11,18,16,.95)); color: inherit; }
 .welcome-banner-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgba(83,214,154,.16); color: #53d69a; }
 .welcome-banner-copy { display: grid; gap: 2px; min-width: 0; }
 .welcome-banner-copy small { color: #53d69a; font: 10px var(--font-geist-mono); letter-spacing: .12em; text-transform: uppercase; }
@@ -9025,3 +9025,9 @@ html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome
   .blue-intro-play b { display: none; }
   .blue-intro-play { bottom: -2px; padding: 3px 9px; }
 }
+
+.welcome-banner-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; }
+.blue-intro-welcome { position: relative; width: 56px; height: 56px; padding: 0; border: 1px solid rgba(83,214,154,.5); border-radius: 50%; background: rgba(83,214,154,.14); cursor: pointer; }
+.blue-intro-welcome img { width: 100%; height: 100%; object-fit: contain; }
+.blue-intro-welcome span { position: absolute; right: -4px; bottom: -4px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #1f9d6c; color: #fff; font-size: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+@media (max-width: 560px) { .blue-intro-welcome { width: 48px; height: 48px; } }

@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.70.1 — 2026-10-14
+
+- **Blue welcomes new members.** On the green Welcome banner, Blue's face now has a play button. Tapping it plays his clip over the page, and at the end there's a "Say hello in chat" button. Tapping the names still goes straight to chat.
+
 ## 0.70.0 — 2026-10-14
 
 - **Meet B-LU3.** Tap Blue's picture on My Page (the play badge) and he appears over the page in a 10-second clip, with sound, waving and showing off a hologram screen. When it ends there's a button to ask him a question. The clip only loads when you tap it.
