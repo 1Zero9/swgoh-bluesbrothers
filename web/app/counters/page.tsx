@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
 import PageHero from "@/app/page-hero";
@@ -24,6 +25,11 @@ export default async function CountersPage() {
         priority
       />
       <section className="public-block">
+        <aside className="counters-ask">
+          <strong>Not on the list?</strong>
+          <span>Ask B-Lue3. It checks what the guild has saved first, then searches the web for current counters and checks them against your roster. B-Lue3 can sometimes get it wrong, so check in game before you commit a squad.</span>
+          <Link href="/me#ask-blue">Ask B-Lue3 →</Link>
+        </aside>
         <CountersClient />
       </section>
       <IntelFooter message="Counters are added by guild members. Try one before you rely on it." />

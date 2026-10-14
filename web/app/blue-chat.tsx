@@ -4,7 +4,8 @@ import Image from "next/image";
 import NavIcon from "./nav-icon";
 import { useRef, useState } from "react";
 
-type Turn = { role: "user" | "assistant"; content: string };
+type Source = { title: string; url: string; host: string };
+type Turn = { role: "user" | "assistant"; content: string; sources?: Source[] };
 
 const SUGGESTIONS = [
   { icon: "sprout", text: "What should I farm next?" },
@@ -35,9 +36,9 @@ export default function BlueChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
       });
-      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; left?: number; error?: string } | null;
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string } | null;
       if (data?.ok && data.answer) {
-        setTurns([...next, { role: "assistant", content: data.answer }]);
+        setTurns([...next, { role: "assistant", content: data.answer, sources: data.sources }]);
         setLeft(data.left ?? null);
       } else {
         setError(data?.error ?? "B-Lue3 lost the signal. Try again.");
@@ -63,7 +64,17 @@ export default function BlueChat() {
           {turns.map((turn, index) => (
             <div key={index} className={`blue-turn blue-turn-${turn.role}`}>
               {turn.role === "assistant" ? <Image src="/blue.png" alt="" width={36} height={36} /> : null}
-              <p>{turn.content}</p>
+              <div className="blue-turn-body">
+                <p>{turn.content}</p>
+                {turn.role === "assistant" ? (
+                  <>
+                    {turn.sources?.length ? (
+                      <p className="blue-sources">From the web: {turn.sources.map((source, i) => <span key={source.url}>{i ? " · " : ""}<a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></span>)}</p>
+                    ) : null}
+                    <p className="blue-caveat">B-Lue3 can get it wrong. Check in game before you commit a squad.</p>
+                  </>
+                ) : null}
+              </div>
             </div>
           ))}
           {busy ? <div className="blue-turn blue-turn-assistant"><Image src="/blue.png" alt="" width={36} height={36} /><p className="blue-thinking">Checking the roster…</p></div> : null}
@@ -83,7 +94,7 @@ export default function BlueChat() {
         />
         <button type="submit" disabled={busy || !text.trim()}>Ask</button>
       </form>
-      <p className="blue-fineprint">B-Lue3 looks things up in the guild&apos;s synced data. It can&apos;t see mods or farm locations, and can be wrong, so check in game.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
+      <p className="blue-fineprint"><strong>B-Lue3 can sometimes get it wrong.</strong> It looks things up in the guild&apos;s synced data and, for counters, the web. It can&apos;t see mods or farm locations, so check in game before you commit a squad.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
     </div>
   );
 }

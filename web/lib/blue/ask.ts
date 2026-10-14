@@ -2,6 +2,7 @@ import { google } from "@ai-sdk/google";
 import { generateText, isStepCount } from "ai";
 import { BLUE_INSTRUCTIONS } from "@/lib/blue/prompt";
 import type { ChatTurn } from "@/lib/blue/limits";
+import { cleanSources, type AnswerSource } from "@/lib/blue/sources";
 import { buildBlueTools, type BlueViewer } from "@/lib/blue/tools";
 
 /** Cheap and quick is right for lookups. Change either with BLUE_MODEL. */
@@ -19,15 +20,34 @@ export function blueEnabled() {
   return process.env.BLUE_AI === "on";
 }
 
-export async function askBlue(viewer: BlueViewer, conversation: ChatTurn[]): Promise<string> {
+/** With a Google key, B-Lue3 may search the web for current counters. BLUE_WEB_SEARCH=off turns that off. */
+function webSearchOn() {
+  return Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY) && process.env.BLUE_WEB_SEARCH !== "off";
+}
+
+export type BlueAnswer = { text: string; sources: AnswerSource[] };
+
+async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boolean): Promise<BlueAnswer> {
   const result = await generateText({
     model: blueModel(),
     instructions: BLUE_INSTRUCTIONS,
     messages: conversation,
-    tools: buildBlueTools(viewer),
+    tools: { ...buildBlueTools(viewer), ...(withSearch ? { google_search: google.tools.googleSearch({}) } : {}) },
     stopWhen: isStepCount(6),
-    maxOutputTokens: 700,
+    maxOutputTokens: 900,
     timeout: 45_000,
   });
-  return result.text.trim() || "I came up empty on that one. Try asking it another way.";
+  const sources = cleanSources(result.steps.flatMap((step) => step.sources));
+  return { text: result.text.trim() || "I came up empty on that one. Try asking it another way.", sources };
+}
+
+export async function askBlue(viewer: BlueViewer, conversation: ChatTurn[]): Promise<BlueAnswer> {
+  if (!webSearchOn()) return run(viewer, conversation, false);
+  try {
+    return await run(viewer, conversation, true);
+  } catch (error) {
+    // Some models can't mix web search with the roster tools. Don't fail the member's question: answer without it.
+    console.error("blue: web search run failed, retrying without it", error instanceof Error ? error.message : "unknown error");
+    return run(viewer, conversation, false);
+  }
 }
