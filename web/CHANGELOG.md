@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.71.1 — 2026-10-14
+
+- **Easier to diagnose when B-Lue3's typing box is missing.** If the AI switch isn't on, officers now see a short note on My Page saying what the server has it set to.
+
 ## 0.71.0 — 2026-10-14
 
 - **B-Lue3 can now search the web for counters.** Ask "how do I beat Lord Vader?" and he checks what the guild has saved first, then looks up current counters online, tells you they come from the web and aren't guild-tested, names the source (links shown under the answer), says whether it's for Territory War or Grand Arena, and checks the team against your roster.

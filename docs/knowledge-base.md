@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.59.0 · **Last updated:** 2026-10-13 · tracks site `v0.71.0`
+**Doc version:** 1.59.1 · **Last updated:** 2026-10-13 · tracks site `v0.71.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -485,6 +485,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.59.1 — 2026-10-14**: when `BLUE_AI` is not exactly `on`, officers see a dashed note above the Ask section on `/me` saying what the server has it set to (members just get the preset questions). Verified with a production build that `/me` includes the type box only when `BLUE_AI=on` at runtime.
 - **1.59.0 — 2026-10-14**: B-Lue3 can search the web for counters. `lib/blue/ask.ts` adds `google.tools.googleSearch({})` alongside the roster tools when a Google key is set; if that run errors (some models cannot mix web search with function tools) it retries without search. Web pages used come back as `sources` (`lib/blue/sources.ts` `cleanSources`: http(s) only, deduped, max 5) and show under the answer. The prompt orders it: guild-saved counters first, then web, labelled "from the web, not guild-tested", TW vs GAC (omicrons), checked against the member's roster. Every answer carries a "can get it wrong" caveat; `/counters` has an Ask B-Lue3 note. Why not scrape: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the one readable wiki list (swgoh.wiki) dates from 2020. Untested against a live Google key at release.
 - **1.58.4 — 2026-10-14**: user-facing "Blue" labels now read "B-Lue3" (tile, menus, home note, My Page, errors). The three starter questions on `/me` (`.blue-question-actions`) are large filled buttons with icons (`sprout`, `roster`, `help` in `NavIcon`), 3 across on laptops and stacked on phones; the Ask button uses the same fill.
 - **1.58.3 — 2026-10-14**: the droid is spelled **B-Lue3** ("Blue") everywhere, including the AI persona in `lib/blue/prompt.ts`. Eyebrows are CSS-uppercased, so they show as B-LUE3.

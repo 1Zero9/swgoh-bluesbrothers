@@ -100,6 +100,11 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
           <h2 id="ask-blue-title">What do you need?</h2>
           <p>{aiOn ? "Type a question, or tap one. B-Lue3 checks your synced roster and the guild's data before answering." : "B-Lue3 reads your synced roster against the guild's current needs and gives you the straight answer."}</p>
         </header>
+        {!aiOn && access.isOfficer ? (
+          <p className="blue-off-note" role="note">
+            Officers only: B-Lue3&apos;s typing box is off because the server&apos;s BLUE_AI setting is {process.env.BLUE_AI ? `"${process.env.BLUE_AI}"` : "not set"}. It must be exactly on (lower case), then redeploy.
+          </p>
+        ) : null}
         {aiOn ? <BlueChat /> : (
           <>
             <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
