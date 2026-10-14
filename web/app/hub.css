@@ -1,0 +1,65 @@
+/* Guild hub design tokens.
+   Three themes, chosen by the member and stored in localStorage ("bb-theme"):
+   - rebel: light, the default
+   - deep:  navy dark
+   - dark:  the original near-black look
+   New hub screens style themselves only through these --hub-* tokens, so they follow the chosen theme.
+   Older pages still use globals.css and keep their dark look until they are moved over. */
+
+html[data-theme="rebel"] {
+  color-scheme: light;
+  --hub-bg: #e9eef4;
+  --hub-surface: #ffffff;
+  --hub-surface-2: #f2f5f9;
+  --hub-line: rgba(10, 25, 50, 0.13);
+  --hub-text: #0d1726;
+  --hub-muted: #51607a;
+  --hub-accent: #0b6fb0;
+  --hub-accent-soft: rgba(11, 111, 176, 0.1);
+  --hub-on-accent: #ffffff;
+  --hub-amber: #9a5a00;
+  --hub-amber-soft: rgba(154, 90, 0, 0.1);
+  --hub-good: #0c7f53;
+  --hub-bad: #b3261e;
+  --hub-shadow: 0 1px 2px rgba(20, 40, 70, 0.08), 0 8px 24px rgba(20, 40, 70, 0.08);
+}
+
+html[data-theme="deep"] {
+  color-scheme: dark;
+  --hub-bg: #0a1020;
+  --hub-surface: #121b33;
+  --hub-surface-2: #1a2545;
+  --hub-line: rgba(150, 185, 255, 0.16);
+  --hub-text: #f1f5f9;
+  --hub-muted: #a3b3d0;
+  --hub-accent: #62ccff;
+  --hub-accent-soft: rgba(98, 204, 255, 0.15);
+  --hub-on-accent: #031018;
+  --hub-amber: #ffcb45;
+  --hub-amber-soft: rgba(255, 203, 69, 0.14);
+  --hub-good: #53d69a;
+  --hub-bad: #f87171;
+  --hub-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] {
+  --hub-bg: #05070a;
+  --hub-surface: #0d1117;
+  --hub-surface-2: #131a23;
+  --hub-line: rgba(255, 255, 255, 0.09);
+  --hub-text: #f1f5f9;
+  --hub-muted: #8b9bb0;
+  --hub-accent: #38bdf8;
+  --hub-accent-soft: rgba(56, 189, 248, 0.14);
+  --hub-on-accent: #031018;
+  --hub-amber: #fbbf24;
+  --hub-amber-soft: rgba(251, 191, 36, 0.13);
+  --hub-good: #53d69a;
+  --hub-bad: #f87171;
+  --hub-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Theme picker (replaces the old gradient / light / dark icons) */
+.theme-picker button.theme-choice { width: auto; min-width: 0; padding: 0 9px; font: 500 11px var(--font-geist-sans), system-ui, sans-serif; letter-spacing: 0.01em; white-space: nowrap; }
+html[data-theme="rebel"] .theme-picker [data-theme-choice="rebel"],
+html[data-theme="deep"] .theme-picker [data-theme-choice="deep"] { color: #d9edff; background: rgba(39, 105, 218, 0.72); box-shadow: 0 0 10px rgba(33, 112, 255, 0.22); }
