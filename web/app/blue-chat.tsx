@@ -36,12 +36,12 @@ export default function BlueChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
       });
-      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string } | null;
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string; detail?: string } | null;
       if (data?.ok && data.answer) {
         setTurns([...next, { role: "assistant", content: data.answer, sources: data.sources }]);
         setLeft(data.left ?? null);
       } else {
-        setError(data?.error ?? "B-Lue3 lost the signal. Try again.");
+        setError(`${data?.error ?? "B-Lue3 lost the signal. Try again."}${data?.detail ? ` [${data.detail}]` : ""}`);
       }
     } catch {
       setError("B-Lue3 lost the signal. Try again.");

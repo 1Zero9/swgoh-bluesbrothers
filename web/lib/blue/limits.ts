@@ -52,3 +52,14 @@ export async function takeQuestion(who: string, now = new Date()): Promise<numbe
   const limit = weeklyLimit();
   return row.count > limit ? null : limit - row.count;
 }
+
+/** Gives a question back when the AI itself failed, so a broken day never eats a member's weekly allowance. */
+export async function refundQuestion(who: string, now = new Date()) {
+  await getPrisma().blueUsage.updateMany({ where: { who, day: weekStart(now), count: { gt: 0 } }, data: { count: { decrement: 1 } } });
+}
+
+/** An error message safe to show an officer: shortened, with anything key-shaped removed. */
+export function safeErrorDetail(error: unknown) {
+  const text = error instanceof Error ? `${error.name}: ${error.message}` : "unknown error";
+  return text.replace(/AIza[0-9A-Za-z_\-]{20,}/g, "[key]").replace(/(key|token|bearer)[=: ]+[^\s"']{12,}/gi, "$1=[hidden]").slice(0, 400);
+}

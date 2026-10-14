@@ -40,7 +40,7 @@ async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boo
     tools: { ...buildBlueTools(viewer), ...(withSearch ? { google_search: google.tools.googleSearch({}) } : {}) },
     stopWhen: isStepCount(6),
     maxOutputTokens: 900,
-    timeout: 45_000,
+    timeout: withSearch ? 30_000 : 40_000,
   });
   const sources = cleanSources(result.steps.flatMap((step) => step.sources));
   return { text: result.text.trim() || "I came up empty on that one. Try asking it another way.", sources };

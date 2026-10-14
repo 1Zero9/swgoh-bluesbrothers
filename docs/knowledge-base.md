@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.59.2 · **Last updated:** 2026-10-13 · tracks site `v0.71.2`
+**Doc version:** 1.59.3 · **Last updated:** 2026-10-13 · tracks site `v0.71.3`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -485,6 +485,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.59.3 — 2026-10-14**: failed B-Lue3 calls no longer cost a question (`refundQuestion`), officers see the reason in the chat error (`safeErrorDetail`: shortened, key-shaped strings removed), the web-search attempt times out at 30 s and the plain retry at 40 s (a search run that hung used to eat the whole 60 s function budget, so the retry never answered), and `/api/blue` allows `maxDuration` 120.
 - **1.59.2 — 2026-10-14**: `BLUE_AI` is read forgivingly (`isSwitchOn` in `lib/blue/ask.ts`): case, spaces, quotes, line breaks and non-breaking spaces ignored; on/true/yes/1 all count. A pasted value like `"on\n"` used to read as off with no visible clue. The officer note on `/me` now prints the value with `JSON.stringify` so hidden characters show.
 - **1.59.1 — 2026-10-14**: when `BLUE_AI` is not exactly `on`, officers see a dashed note above the Ask section on `/me` saying what the server has it set to (members just get the preset questions). Verified with a production build that `/me` includes the type box only when `BLUE_AI=on` at runtime.
 - **1.59.0 — 2026-10-14**: B-Lue3 can search the web for counters. `lib/blue/ask.ts` adds `google.tools.googleSearch({})` alongside the roster tools when a Google key is set; if that run errors (some models cannot mix web search with function tools) it retries without search. Web pages used come back as `sources` (`lib/blue/sources.ts` `cleanSources`: http(s) only, deduped, max 5) and show under the answer. The prompt orders it: guild-saved counters first, then web, labelled "from the web, not guild-tested", TW vs GAC (omicrons), checked against the member's roster. Every answer carries a "can get it wrong" caveat; `/counters` has an Ask B-Lue3 note. Why not scrape: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the one readable wiki list (swgoh.wiki) dates from 2020. Untested against a live Google key at release.

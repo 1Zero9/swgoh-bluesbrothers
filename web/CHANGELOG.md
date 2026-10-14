@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.71.3 — 2026-10-14
+
+- **A failed B-Lue3 question no longer uses up your weekly five.** When something goes wrong behind the scenes you get the question back.
+- **Faster fallback.** If the web search takes too long, B-Lue3 now gives up on it after 30 seconds and answers from the guild's data instead of timing out.
+- Officers now see the reason in the error message, to help fix problems.
+
 ## 0.71.2 — 2026-10-14
 
 - **Fixed: B-Lue3's typing box didn't appear even with the switch on.** The setting was being read too strictly, so a hidden space or line break in the value turned it off. It now accepts on, ON, true, yes or 1 however it was pasted.
