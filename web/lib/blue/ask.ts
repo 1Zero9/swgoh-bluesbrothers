@@ -15,9 +15,14 @@ function blueModel() {
   return process.env.GOOGLE_GENERATIVE_AI_API_KEY ? google(chosen || DEFAULT_GEMINI) : chosen || DEFAULT_GATEWAY_MODEL;
 }
 
-/** B-Lue3's AI chat is off until BLUE_AI=on is set on the server, so nothing is billed by accident. */
+/** Reads the BLUE_AI switch forgivingly: any case, stray spaces or line breaks from pasting, and on/true/yes/1 all count as on. */
+export function isSwitchOn(value: string | undefined) {
+  return ["on", "true", "yes", "1"].includes((value ?? "").replace(/[\s"'\u00a0\u200b\ufeff]/g, "").toLowerCase());
+}
+
+/** B-Lue3's AI chat is off until BLUE_AI is switched on at the server, so nothing is billed by accident. */
 export function blueEnabled() {
-  return process.env.BLUE_AI === "on";
+  return isSwitchOn(process.env.BLUE_AI);
 }
 
 /** With a Google key, B-Lue3 may search the web for current counters. BLUE_WEB_SEARCH=off turns that off. */

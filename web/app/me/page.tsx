@@ -102,7 +102,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
         </header>
         {!aiOn && access.isOfficer ? (
           <p className="blue-off-note" role="note">
-            Officers only: B-Lue3&apos;s typing box is off because the server&apos;s BLUE_AI setting is {process.env.BLUE_AI ? `"${process.env.BLUE_AI}"` : "not set"}. It must be exactly on (lower case), then redeploy.
+            Officers only: B-Lue3&apos;s typing box is off because the server&apos;s BLUE_AI setting is {process.env.BLUE_AI ? JSON.stringify(process.env.BLUE_AI) : "not set"}. Set it to on, then redeploy.
           </p>
         ) : null}
         {aiOn ? <BlueChat /> : (
