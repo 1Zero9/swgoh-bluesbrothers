@@ -209,3 +209,27 @@ test("the Discord post cannot ping anyone or carry links from member text", () =
   assert.ok(post.description.length <= 1800);
   assert.equal(defang("a@b"), "a@​b");
 });
+
+// ── web research: nothing invented gets in ─────────────────────────────────────────────
+import { foundHosts, sourceWasFound, toSquad } from "../blue/research";
+
+test("a quoted source must be on a site the search really found", () => {
+  const hosts = foundHosts([
+    { title: "reddit.com", url: "https://vertexaisearch.cloud.google.com/grounding-api-redirect/abc", host: "vertexaisearch.cloud.google.com" },
+    { title: "Guide to counters", url: "https://swgoh.gg/counters/x", host: "swgoh.gg" },
+  ]);
+  assert.ok(sourceWasFound("https://www.reddit.com/r/SWGalaxyOfHeroes/comments/1", hosts));
+  assert.ok(sourceWasFound("https://old.reddit.com/r/x", hosts));
+  assert.ok(sourceWasFound("https://swgoh.gg/anything", hosts));
+  assert.equal(sourceWasFound("https://made-up-site.example/counter", hosts), false);
+  assert.equal(sourceWasFound("https://notreddit.com/x", hosts), false);
+  assert.equal(sourceWasFound("not a url", hosts), false);
+  assert.equal(hosts.has("vertexaisearch.cloud.google.com"), false); // the redirect host proves nothing
+});
+
+test("research squads: real units only, leader first", () => {
+  const ok = toSquad(["Lord Vader", "Darth Maul"]);
+  assert.ok(ok.ok && ok.members[0].role === "LEADER" && ok.members[1].role === "CORE");
+  const bad = toSquad(["Lord Vader", "Definitely Not A Unit"]);
+  assert.ok(!bad.ok && bad.unknown === "Definitely Not A Unit");
+});

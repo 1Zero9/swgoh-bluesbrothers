@@ -40,7 +40,7 @@ export function cleanConversation(input: unknown): ChatTurn[] | null {
 }
 
 /** Counts this question against this week's allowance. Returns how many are left, or null when used up. */
-export async function takeQuestion(who: string, now = new Date()): Promise<number | null> {
+export async function takeQuestion(who: string, now = new Date(), limit = weeklyLimit()): Promise<number | null> {
   const prisma = getPrisma();
   const day = weekStart(now);
   const row = await prisma.blueUsage.upsert({
@@ -49,7 +49,6 @@ export async function takeQuestion(who: string, now = new Date()): Promise<numbe
     update: { count: { increment: 1 } },
     select: { count: true },
   });
-  const limit = weeklyLimit();
   if (row.count > limit) {
     // A blocked try must not use anything up, or the count keeps climbing and the allowance never recovers.
     await prisma.blueUsage.updateMany({ where: { who, day, count: { gt: 0 } }, data: { count: { decrement: 1 } } });
@@ -89,4 +88,10 @@ export async function refundQuestion(who: string, now = new Date()) {
 export function safeErrorDetail(error: unknown) {
   const text = error instanceof Error ? `${error.name}: ${error.message}` : "unknown error";
   return text.replace(/AIza[0-9A-Za-z_\-]{20,}/g, "[key]").replace(/(key|token|bearer)[=: ]+[^\s"']{12,}/gi, "$1=[hidden]").slice(0, 400);
+}
+
+/** Officer web research runs per week (each is two AI calls with web search). BLUE_RESEARCH_LIMIT overrides. */
+export function researchLimit() {
+  const set = Number(process.env.BLUE_RESEARCH_LIMIT);
+  return Number.isInteger(set) && set > 0 ? set : 15;
 }

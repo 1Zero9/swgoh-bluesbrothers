@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.73.0 — 2026-10-14
+
+- **Research with B-Lue3 (officers).** On the counter review page, pick a game mode and an enemy squad's leader and press Research. B-Lue3 searches the web, and every counter he finds goes into the review queue with its source page. He can't publish anything, and the site checks each one before filing: real characters, the right squad size for the mode, and a source page that the search really found. Anything that fails is listed with the reason.
+
 ## 0.72.3 — 2026-10-14
 
 - **Fixed "I came up empty on that one."** When B-Lue3 searched the web he could use up all his steps looking things up and never write an answer. He now always writes one, and if a web search still ends with nothing, he answers from the guild's own data and says the search didn't work.
