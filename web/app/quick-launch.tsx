@@ -6,7 +6,7 @@ type Tool = { label: string; hint: string; href: string; icon: string };
 // The things members come back for, in the order they matter. Everything else is in the menu.
 const TOOLS: Tool[] = [
   { label: "My Page", hint: "Your standing and callouts", href: "/me", icon: "me" },
-  { label: "Ask Blue", hint: "Your guild droid", href: "/me#ask-blue", icon: "blue" },
+  { label: "Ask B-Lue3", hint: "Your guild droid", href: "/me#ask-blue", icon: "blue" },
   { label: "Guild Chat", hint: "Talk to the band", href: "/chat", icon: "chat" },
   { label: "The Wins", hint: "What the guild just did", href: "/wins", icon: "wins" },
   { label: "Who has…?", hint: "Find a unit in the guild", href: "/members#who-has", icon: "search" },

@@ -16,21 +16,21 @@ export async function POST(request: Request) {
   if (origin && new URL(origin).host !== request.headers.get("host")) return fail("Not allowed.", 403);
 
   const access = await getViewerAccess();
-  if (!(access.isMember || access.isOfficer)) return fail("Sign in with Discord to talk to Blue.", 401);
-  if (!blueEnabled()) return fail("Blue is on a break. Check back soon.", 503);
+  if (!(access.isMember || access.isOfficer)) return fail("Sign in with Discord to talk to B-Lue3.", 401);
+  if (!blueEnabled()) return fail("B-Lue3 is on a break. Check back soon.", 503);
 
   const body = (await request.json().catch(() => null)) as { messages?: unknown } | null;
   const conversation = cleanConversation(body?.messages);
-  if (!conversation) return fail("Ask Blue a question first.", 400);
+  if (!conversation) return fail("Ask B-Lue3 a question first.", 400);
 
   const left = await takeQuestion(access.playerId ?? "officer");
-  if (left === null) return fail("You've used this week's questions for Blue. Your roster report below is still here, and it resets on Monday.", 429);
+  if (left === null) return fail("You've used this week's questions for B-Lue3. Your roster report below is still here, and it resets on Monday.", 429);
 
   try {
     const answer = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
     return Response.json({ ok: true, answer, left }, { headers: NO_STORE });
   } catch (error) {
     console.error("blue: ask failed", error instanceof Error ? error.message : "unknown error");
-    return fail("Blue lost the signal. Try again in a minute.", 502);
+    return fail("B-Lue3 lost the signal. Try again in a minute.", 502);
   }
 }

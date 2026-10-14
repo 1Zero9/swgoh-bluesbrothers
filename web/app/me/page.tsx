@@ -5,6 +5,7 @@ import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
 import BlueChat from "@/app/blue-chat";
 import BlueIntro from "@/app/blue-intro";
+import NavIcon from "@/app/nav-icon";
 import PageHero from "@/app/page-hero";
 import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
@@ -86,7 +87,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
       <section className="blue-briefing public-block" aria-labelledby="blue-briefing-title">
         <BlueIntro />
         <div className="blue-briefing-copy">
-          <p className="eyebrow">B-Lue3 · Blue&apos;s briefing</p>
+          <p className="eyebrow">B-Lue3 · Briefing</p>
           <h2 id="blue-briefing-title">{briefing.title}</h2>
           <p>{briefing.message}</p>
           <Link href={briefing.href} className="blue-briefing-action">{briefing.action} <span>→</span></Link>
@@ -97,14 +98,14 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
         <header>
           <p className="eyebrow">Ask B-Lue3</p>
           <h2 id="ask-blue-title">What do you need?</h2>
-          <p>{aiOn ? "Type a question, or tap one. Blue checks your synced roster and the guild's data before answering." : "Blue reads your synced roster against the guild's current needs and gives you the straight answer."}</p>
+          <p>{aiOn ? "Type a question, or tap one. B-Lue3 checks your synced roster and the guild's data before answering." : "B-Lue3 reads your synced roster against the guild's current needs and gives you the straight answer."}</p>
         </header>
         {aiOn ? <BlueChat /> : (
           <>
-            <nav className="blue-question-actions" aria-label="Questions for Blue">
-          <Link href="/me?blue=farm#ask-blue">What should I farm next?</Link>
-          <Link href="/me?blue=team#ask-blue">What team should I finish?</Link>
-          <Link href="/me?blue=help#ask-blue">How can I help the band?</Link>
+            <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
+          <Link href="/me?blue=farm#ask-blue"><NavIcon name="sprout" size={20} />What should I farm next?</Link>
+          <Link href="/me?blue=team#ask-blue"><NavIcon name="roster" size={20} />What team should I finish?</Link>
+          <Link href="/me?blue=help#ask-blue"><NavIcon name="help" size={20} />How can I help the band?</Link>
         </nav>
         {answer ? <article className="blue-answer" aria-live="polite"><Image src="/blue.png" alt="" width={72} height={72} /><div><p className="eyebrow">{answer.title}</p><p>{answer.message}</p></div></article> : null}
           </>
@@ -114,21 +115,21 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
       {advice ? (
         <section className="public-block" id="blue-report">
           <header>
-            <p className="eyebrow">Blue&apos;s roster report</p>
+            <p className="eyebrow">B-Lue3&apos;s roster report</p>
             <h2>Your next useful move</h2>
-            <p>Blue compares your synced roster with saved guild counter squads and current TB callouts. Each saved counter checks every listed unit against your roster.</p>
+            <p>B-Lue3 compares your synced roster with saved guild counter squads and current TB callouts. Each saved counter checks every listed unit against your roster.</p>
           </header>
           <div className="blue-report-grid">
             <article className="blue-report-card">
               <p className="eyebrow">Gig-ready leaders · {advice.ready.length}</p>
-              {advice.ready.length ? <ul>{advice.ready.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label}</strong><span>{item.leader} meets the {item.targetStars}★{item.targetRelic >= 0 ? ` R${item.targetRelic}+` : item.targetGear > 0 ? ` G${item.targetGear}+` : ""} leader target{item.thin ? ` · only ${item.qualifiers} guild members meet it` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked leader target is ready yet. Blue will call out the closest one.</p>}
+              {advice.ready.length ? <ul>{advice.ready.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label}</strong><span>{item.leader} meets the {item.targetStars}★{item.targetRelic >= 0 ? ` R${item.targetRelic}+` : item.targetGear > 0 ? ` G${item.targetGear}+` : ""} leader target{item.thin ? ` · only ${item.qualifiers} guild members meet it` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked leader target is ready yet. B-Lue3 will call out the closest one.</p>}
             </article>
             <article className="blue-report-card">
               <p className="eyebrow">Closest guild builds · {advice.close.length}</p>
-              {advice.close.length ? <ul>{advice.close.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label} · {item.gap}</strong><span>{item.leader}{item.haveStars !== null ? ` · currently ${item.haveStars}★${item.haveRelic ? ` R${item.haveRelic}` : item.haveGear ? ` G${item.haveGear}` : ""}` : " · not unlocked"}{item.thin ? ` · only ${item.qualifiers} members currently meet the target` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked target is close to completion right now. Blue will keep watching the roster.</p>}
+              {advice.close.length ? <ul>{advice.close.slice(0, 4).map((item) => <li key={item.key}><strong>{item.label} · {item.gap}</strong><span>{item.leader}{item.haveStars !== null ? ` · currently ${item.haveStars}★${item.haveRelic ? ` R${item.haveRelic}` : item.haveGear ? ` G${item.haveGear}` : ""}` : " · not unlocked"}{item.thin ? ` · only ${item.qualifiers} members currently meet the target` : ""}</span></li>)}</ul> : <p className="my-empty">No tracked target is close to completion right now. B-Lue3 will keep watching the roster.</p>}
             </article>
             <article className="blue-report-card">
-              <p className="eyebrow">Blue&apos;s next team</p>
+              <p className="eyebrow">B-Lue3&apos;s next team</p>
               {personalCounters.next ? <div className="blue-counter-pick"><strong>{personalCounters.next.title} into {personalCounters.next.enemy.name}</strong><span>{personalCounters.next.readiness.you?.gaps.length ? `Still needed: ${personalCounters.next.readiness.you.gaps.join("; ")}` : "This saved team matches your synced roster."}</span><small>{personalCounters.next.readiness.ready.length} guild member{personalCounters.next.readiness.ready.length === 1 ? "" : "s"} currently meet this counter&apos;s full requirements.</small></div> : personalCounters.ready.length ? <p className="my-empty">You meet the requirements for all saved counters in this report. Pick one from your ready list below.</p> : <p className="my-empty">No saved counter squad is available yet. Add trusted counters as the guild discovers them.</p>}
               <p className="eyebrow blue-counter-ready-label">Ready counters · {personalCounters.ready.length}</p>
               {personalCounters.ready.length ? <ul>{personalCounters.ready.slice(0, 4).map((counter) => <li key={counter.id}><strong>{counter.title} · into {counter.enemy.name}</strong><span>{counter.squad.map((slot) => `${slot.name}${slot.minRelic > 0 ? ` R${slot.minRelic}+` : ` ${slot.minStars}★`}`).join(" · ")}{counter.notes ? ` · ${counter.notes}` : ""}</span></li>)}</ul> : <p className="my-empty">No saved counter squad is fully ready from the latest synced roster.</p>}
@@ -136,8 +137,8 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
               <Link href="/counters">Open the counters library →</Link>
             </article>
             <article className="blue-report-card blue-report-limits">
-              <p className="eyebrow">What Blue can read</p>
-              <p>Saved counter readiness checks each listed character&apos;s stars and relic requirement. The separate TW target list checks squad leaders only. Blue does not yet score mod loadouts or know farm locations, so it won&apos;t guess at either.</p>
+              <p className="eyebrow">What B-Lue3 can read</p>
+              <p>Saved counter readiness checks each listed character&apos;s stars and relic requirement. The separate TW target list checks squad leaders only. B-Lue3 does not yet score mod loadouts or know farm locations, so it won&apos;t guess at either.</p>
               <Link href="/members#who-has">Find who has a unit →</Link>
             </article>
           </div>

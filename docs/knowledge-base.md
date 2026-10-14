@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.58.3 · **Last updated:** 2026-10-13 · tracks site `v0.70.3`
+**Doc version:** 1.58.4 · **Last updated:** 2026-10-13 · tracks site `v0.70.4`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -484,6 +484,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.58.4 — 2026-10-14**: user-facing "Blue" labels now read "B-Lue3" (tile, menus, home note, My Page, errors). The three starter questions on `/me` (`.blue-question-actions`) are large filled buttons with icons (`sprout`, `roster`, `help` in `NavIcon`), 3 across on laptops and stacked on phones; the Ask button uses the same fill.
 - **1.58.3 — 2026-10-14**: the droid is spelled **B-Lue3** ("Blue") everywhere, including the AI persona in `lib/blue/prompt.ts`. Eyebrows are CSS-uppercased, so they show as B-LUE3.
 - **1.58.2 — 2026-10-14**: the home-page Blue note (`app/blue-line.tsx`) always links to `/me#ask-blue`; it used to follow `briefing.href`, which sent people to Counters or Territory Battles when they clicked "Ask Blue".
 - **1.58.1 — 2026-10-14**: the Welcome banner plays the same clip: `BlueIntro` has a `variant="welcome"` (Blue's face in a green circle with a play badge; end-of-clip button goes to `/chat`). The banner is now a `div` with the play button and a separate link to `/chat` (a button cannot sit inside a link).

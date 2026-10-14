@@ -19,7 +19,7 @@ export function blueBriefing(data: NonNullable<Awaited<ReturnType<typeof getMyPa
     return {
       label: "Your next move",
       title: "You are close to a guild need.",
-      message: `${closeCallout.headline}: ${closeCallout.gap}. Finish that and Blue will put your name on the board.`,
+      message: `${closeCallout.headline}: ${closeCallout.gap}. Finish that and B-Lue3 will put your name on the board.`,
       href: "/territory-battles#callouts",
       action: "See what is needed",
     };
@@ -39,7 +39,7 @@ export function blueBriefing(data: NonNullable<Awaited<ReturnType<typeof getMyPa
   return {
     label: "Systems check",
     title: "You are clear for the next gig.",
-    message: "No urgent callouts have your name on them. Keep tickets rolling, check the latest counters, and Blue will flag the next useful move.",
+    message: "No urgent callouts have your name on them. Keep tickets rolling, check the latest counters, and B-Lue3 will flag the next useful move.",
     href: "/counters",
     action: "Check counters",
   };
@@ -74,29 +74,29 @@ export function blueAnswer(question: BlueQuestion, data: NonNullable<Awaited<Ret
 
   if (question === "farm") {
     return counter.next
-      ? { title: "Blue's farm call", message: `Your next team target is ${counter.next.title} into ${counter.next.enemy.name}. Work on: ${counter.next.readiness.you?.gaps.join("; ")}. ${counter.next.readiness.ready.length ? `${counter.next.readiness.ready.length} guild member${counter.next.readiness.ready.length === 1 ? "" : "s"} can already run this counter.` : "No one currently meets this saved counter's full requirements."} These are roster goals; the site does not map them to game farm locations.` }
+      ? { title: "B-Lue3's farm call", message: `Your next team target is ${counter.next.title} into ${counter.next.enemy.name}. Work on: ${counter.next.readiness.you?.gaps.join("; ")}. ${counter.next.readiness.ready.length ? `${counter.next.readiness.ready.length} guild member${counter.next.readiness.ready.length === 1 ? "" : "s"} can already run this counter.` : "No one currently meets this saved counter's full requirements."} These are roster goals; the site does not map them to game farm locations.` }
       : closest
-        ? { title: "Blue's farm call", message: `Focus your next gear or relic push on ${closest.leader}: ${closest.gap}. That moves your ${closest.label} leader toward its guild target${closest.thin ? `, currently met by only ${closest.qualifiers} member${closest.qualifiers === 1 ? "" : "s"}` : ""}. Blue can identify the target, but this report does not include game farm locations.` }
-      : { title: "Blue's farm call", message: "Your synced roster does not show a close guild squad yet. Check the guild counters; Blue will turn the next roster sync into a clearer farm recommendation." };
+        ? { title: "B-Lue3's farm call", message: `Focus your next gear or relic push on ${closest.leader}: ${closest.gap}. That moves your ${closest.label} leader toward its guild target${closest.thin ? `, currently met by only ${closest.qualifiers} member${closest.qualifiers === 1 ? "" : "s"}` : ""}. B-Lue3 can identify the target, but this report does not include game farm locations.` }
+      : { title: "B-Lue3's farm call", message: "Your synced roster does not show a close guild squad yet. Check the guild counters; B-Lue3 will turn the next roster sync into a clearer farm recommendation." };
   }
 
   if (question === "team") {
     return counter.ready[0]
-      ? { title: "Blue's team call", message: `You can run ${counter.ready[0].title} into ${counter.ready[0].enemy.name}. The saved squad is ${counter.ready[0].squad.map((slot) => `${slot.name}${slot.minRelic > 0 ? ` R${slot.minRelic}+` : ` ${slot.minStars}★`}`).join(", ")}.${counter.ready[0].notes ? ` Guild notes: ${counter.ready[0].notes}` : " Check the in-game mod setup before you go."}` }
+      ? { title: "B-Lue3's team call", message: `You can run ${counter.ready[0].title} into ${counter.ready[0].enemy.name}. The saved squad is ${counter.ready[0].squad.map((slot) => `${slot.name}${slot.minRelic > 0 ? ` R${slot.minRelic}+` : ` ${slot.minStars}★`}`).join(", ")}.${counter.ready[0].notes ? ` Guild notes: ${counter.ready[0].notes}` : " Check the in-game mod setup before you go."}` }
       : counter.next
-        ? { title: "Blue's team call", message: `${counter.next.title} is your best next saved counter into ${counter.next.enemy.name}. Your gaps: ${counter.next.readiness.you?.gaps.join("; ")}. ${counter.next.readiness.ready.length} guild member${counter.next.readiness.ready.length === 1 ? "" : "s"} can already run it.` }
+        ? { title: "B-Lue3's team call", message: `${counter.next.title} is your best next saved counter into ${counter.next.enemy.name}. Your gaps: ${counter.next.readiness.you?.gaps.join("; ")}. ${counter.next.readiness.ready.length} guild member${counter.next.readiness.ready.length === 1 ? "" : "s"} can already run it.` }
         : closest
-          ? { title: "Blue's team call", message: `${closest.label} is your closest guild squad leader target. Bring ${closest.leader} from ${closest.gap}. This is a leader target, not a complete squad recommendation.` }
+          ? { title: "B-Lue3's team call", message: `${closest.label} is your closest guild squad leader target. Bring ${closest.leader} from ${closest.gap}. This is a leader target, not a complete squad recommendation.` }
       : ready
-        ? { title: "Blue's team call", message: `${ready.leader} meets the guild's ${ready.label} leader target${ready.thin ? `, and only ${ready.qualifiers} members meet it` : ""}. The planner checks leader requirements; check the squad and mods in game before battle.` }
-        : { title: "Blue's team call", message: "Blue needs one more roster sync before calling your next team. Your data is safe; it simply has not reported enough units yet." };
+        ? { title: "B-Lue3's team call", message: `${ready.leader} meets the guild's ${ready.label} leader target${ready.thin ? `, and only ${ready.qualifiers} members meet it` : ""}. The planner checks leader requirements; check the squad and mods in game before battle.` }
+        : { title: "B-Lue3's team call", message: "B-Lue3 needs one more roster sync before calling your next team. Your data is safe; it simply has not reported enough units yet." };
   }
 
   if (callout) {
-    return { title: "Blue's guild-help call", message: callout.status === "ready" ? `You are ready for ${callout.headline}. That is your best way to help the band today.` : `You are ${callout.gap} away from ${callout.headline}. Finish that gap and you can answer the call.` };
+    return { title: "B-Lue3's guild-help call", message: callout.status === "ready" ? `You are ready for ${callout.headline}. That is your best way to help the band today.` : `You are ${callout.gap} away from ${callout.headline}. Finish that gap and you can answer the call.` };
   }
 
   return closest
-    ? { title: "Blue's guild-help call", message: `${closest.label} is the clearest way you can strengthen the band. ${closest.thin ? `The guild is thin there—only ${closest.qualifiers} members currently qualify.` : "It also keeps another useful option in reserve."}` }
-    : { title: "Blue's guild-help call", message: "No urgent callout has your name on it. Keep tickets moving and check Blue's briefing after the next roster sync." };
+    ? { title: "B-Lue3's guild-help call", message: `${closest.label} is the clearest way you can strengthen the band. ${closest.thin ? `The guild is thin there—only ${closest.qualifiers} members currently qualify.` : "It also keeps another useful option in reserve."}` }
+    : { title: "B-Lue3's guild-help call", message: "No urgent callout has your name on it. Keep tickets moving and check B-Lue3's briefing after the next roster sync." };
 }

@@ -9031,3 +9031,15 @@ html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome
 .blue-intro-welcome img { width: 100%; height: 100%; object-fit: contain; }
 .blue-intro-welcome span { position: absolute; right: -4px; bottom: -4px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #1f9d6c; color: #fff; font-size: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
 @media (max-width: 560px) { .blue-intro-welcome { width: 48px; height: 48px; } }
+
+/* Ask B-Lue3: the three starter questions are real buttons, and the way to ask your own is obvious */
+.blue-question-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.blue-question-actions a, .blue-question-actions button { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border: 1px solid rgba(120,185,255,.75); border-radius: 14px; background: linear-gradient(180deg, #2f7be0, #1b55ad); color: #fff; font: inherit; font-size: 15px; font-weight: 700; line-height: 1.25; text-align: left; text-decoration: none; box-shadow: 0 6px 18px rgba(27,85,173,.4), inset 0 1px 0 rgba(255,255,255,.18); cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, filter .12s ease; }
+.blue-question-actions a:hover, .blue-question-actions button:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.12); box-shadow: 0 10px 22px rgba(27,85,173,.5), inset 0 1px 0 rgba(255,255,255,.22); }
+.blue-question-actions a:active, .blue-question-actions button:active:not(:disabled) { transform: translateY(0); filter: brightness(.95); }
+.blue-question-actions svg.ni { margin: 0; }
+.blue-question-actions button:disabled { opacity: .55; cursor: default; }
+.blue-form input { border: 1px solid rgba(120,185,255,.45); }
+.blue-form input:focus { outline: 2px solid rgba(97,174,255,.7); outline-offset: 1px; }
+.blue-form button { background: linear-gradient(180deg, #2f7be0, #1b55ad); color: #fff; border-color: rgba(120,185,255,.75); padding: 0 22px; font-size: 15px; box-shadow: 0 4px 12px rgba(27,85,173,.4); }
+@media (max-width: 700px) { .blue-question-actions { grid-template-columns: minmax(0, 1fr); } .blue-question-actions a, .blue-question-actions button { padding: 16px; font-size: 16px; } }

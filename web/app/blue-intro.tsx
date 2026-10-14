@@ -8,10 +8,10 @@ const WIDTH = 640; // the clip is 16:9; keying at this size keeps phones smooth
 const HEIGHT = 360;
 
 /**
- * "Meet B-Lue3": Blue's avatar with a play badge. A tap opens a short clip of Blue with the green screen
+ * "Meet B-Lue3": B-Lue3's avatar with a play badge. A tap opens a short clip of B-Lue3 with the green screen
  * removed live, so he floats over the page. The video only downloads when someone taps.
  */
-export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", endLabel = "Ask Blue a question" }: { variant?: "avatar" | "welcome"; endHref?: string; endLabel?: string }) {
+export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", endLabel = "Ask B-Lue3 a question" }: { variant?: "avatar" | "welcome"; endHref?: string; endLabel?: string }) {
   const [open, setOpen] = useState(false);
   const [ended, setEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -67,7 +67,7 @@ export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", e
       ) : (
         <button type="button" className="blue-intro-btn" onClick={() => setOpen(true)} aria-label="Meet B-Lue3: play a short clip">
           <Image src="/blue.png" alt="" className="blue-briefing-avatar" width={300} height={300} priority />
-          <span className="blue-intro-play" aria-hidden="true">▶<b> Meet Blue</b></span>
+          <span className="blue-intro-play" aria-hidden="true">▶<b> Meet B-Lue3</b></span>
         </button>
       )}
       {open ? (
