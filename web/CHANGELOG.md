@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.74.0 — 2026-10-14
+
+- **B-Lue3 checks the guild's own database first, and that's free.** Ask how to beat a squad ("how do I beat Lord Vader in Territory War?", "counter for night sisters") or "who has Jabba?" and the answer comes straight from the guild's counters and rosters, with no AI and none of your weekly questions used. It works even when your five are gone, and the answer says so.
+- **If the database has nothing**, he says so and gives you a clear choice: a **Search the web with B-Lue3** button that says it uses one question, or ask the guild for help. The AI is never used without you tapping it.
+- Anything else (like "what should I farm next?") still goes to the AI. A failed AI call is still given back.
+
 ## 0.73.2 — 2026-10-14
 
 - **B-Lue3's answers are easier to read.** Bold, italics, bullets and numbered lists now show properly instead of as stray `**` and `*` symbols.

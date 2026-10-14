@@ -6,7 +6,8 @@ import NavIcon from "./nav-icon";
 import { useRef, useState } from "react";
 
 type Source = { title: string; url: string; host: string };
-type Turn = { role: "user" | "assistant"; content: string; sources?: Source[]; searchDown?: boolean; searchError?: string };
+type Offer = { leaderUnitId: string; leaderName: string; mode: string | null };
+type Turn = { role: "user" | "assistant"; content: string; sources?: Source[]; searchDown?: boolean; searchError?: string; route?: "database" | "ai"; needsWebSearch?: boolean; offer?: Offer | null };
 
 const SUGGESTIONS = [
   { icon: "sprout", text: "What should I farm next?" },
@@ -28,23 +29,26 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { us
   const [used, setUsed] = useState<number>(usage.used);
   const endRef = useRef<HTMLDivElement>(null);
 
-  async function send(question: string) {
+  /** Sends a question. The server answers from the guild database first (free); `web: true` asks it to use the AI and web search instead. */
+  async function send(question: string, web = false) {
     const content = question.trim();
-    if (!content || busy || left <= 0) return;
-    const next: Turn[] = [...turns, { role: "user", content }];
-    setTurns(next);
-    setText("");
+    if (!content || busy) return;
+    const next: Turn[] = web ? turns : [...turns, { role: "user", content }];
+    if (!web) { setTurns(next); setText(""); }
     setError("");
     setBusy(true);
     try {
+      // Only plain questions and answers go to the server: it re-reads the last question itself.
+      const history = (web ? turns : next).map(({ role, content: body }) => ({ role, content: body }));
+      const lastUser = history.map((turn) => turn.role).lastIndexOf("user");
       const response = await fetch("/api/blue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: history.slice(0, lastUser + 1), webSearch: web }),
       });
-      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string; detail?: string; webSearch?: string; searchError?: string } | null;
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string; detail?: string; webSearch?: string; searchError?: string; route?: "database" | "ai"; needsWebSearch?: boolean; offer?: Offer | null } | null;
       if (data?.ok && data.answer) {
-        setTurns([...next, { role: "assistant", content: data.answer, sources: data.sources, searchDown: data.webSearch === "unavailable", searchError: data.searchError }]);
+        setTurns([...(web ? turns.map((turn) => ({ ...turn, needsWebSearch: false })) : next), { role: "assistant", content: data.answer, sources: data.sources, searchDown: data.webSearch === "unavailable", searchError: data.searchError, route: data.route, needsWebSearch: data.needsWebSearch, offer: data.offer }]);
         setLeft(data.left ?? left);
         setUsed(usage.limit - (data.left ?? left));
       } else {
@@ -65,14 +69,14 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { us
     if (data?.ok && data.usage) { setLeft(data.usage.left); setUsed(data.usage.used); setError(""); }
   }
 
-  const noneLeft = left <= 0;
+  const noneLeft = left <= 0; // AI questions only: counter and "who has" questions are answered from the database and stay free
   return (
     <div className="blue-chat">
       <div className="blue-status" role="status">
         {usage.limit <= 12 ? (
           <span className="blue-pips" aria-hidden="true">{Array.from({ length: usage.limit }, (_, i) => <i key={i} className={i < left ? "on" : ""} />)}</span>
         ) : null}
-        <span>{noneLeft ? `No questions left this week. Back on ${resetLabel(usage.resetsOn)}.` : `${left} of ${usage.limit} question${usage.limit === 1 ? "" : "s"} left this week · resets ${resetLabel(usage.resetsOn)}`}</span>
+        <span>{noneLeft ? `No AI questions left this week (back on ${resetLabel(usage.resetsOn)}). Counter and "who has" questions are still free.` : `${left} of ${usage.limit} question${usage.limit === 1 ? "" : "s"} left this week · resets ${resetLabel(usage.resetsOn)}`}</span>
         <span className={`blue-ws ${webSearch ? "is-on" : "is-off"}`}>Web search {webSearch ? "on" : "off"}</span>
       </div>
       {isOfficer ? (
@@ -97,6 +101,16 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { us
                       <p className="blue-sources">From the web: {turn.sources.map((source, i) => <span key={source.url}>{i ? " · " : ""}<a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></span>)}</p>
                     ) : null}
                     {turn.searchDown ? <p className="blue-caveat">I couldn&apos;t search the web just now, so this is only from the guild&apos;s own data. Try again in a few minutes.{turn.searchError ? ` [Officers: ${turn.searchError}]` : ""}</p> : null}
+                    {turn.needsWebSearch && turns[index - 1]?.role === "user" ? (
+                      <div className="blue-offer">
+                        <button type="button" className="kb-primary" disabled={busy || left <= 0} onClick={() => void send(turns[index - 1].content, true)}>
+                          <NavIcon name="search" size={18} />Search the web with B-Lue3 · uses 1 question
+                        </button>
+                        <a href="/knowledge" className="kb-link">Ask the guild for help instead</a>
+                        {left <= 0 ? <small>No AI questions left this week.</small> : null}
+                      </div>
+                    ) : null}
+                    {turn.route === "ai" ? <p className="blue-caveat">Answered by B-Lue3&apos;s AI · used 1 question.</p> : null}
                     <p className="blue-caveat">B-Lue3 can get it wrong. Check in game before you commit a squad.</p>
                   </>
                 ) : null}
@@ -116,9 +130,9 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { us
           placeholder="Ask B-Lue3 anything"
           aria-label="Ask B-Lue3"
           enterKeyHint="send"
-          disabled={busy || noneLeft}
+          disabled={busy}
         />
-        <button type="submit" disabled={busy || noneLeft || !text.trim()}>Ask</button>
+        <button type="submit" disabled={busy || !text.trim()}>Ask</button>
       </form>
       <p className="blue-fineprint"><strong>B-Lue3 can sometimes get it wrong.</strong> It looks things up in the guild&apos;s synced data and, for counters, the web. It can&apos;t see mods or farm locations, so check in game before you commit a squad.</p>
     </div>

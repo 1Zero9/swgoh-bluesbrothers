@@ -233,3 +233,20 @@ test("research squads: real units only, leader first", () => {
   const bad = toSquad(["Lord Vader", "Definitely Not A Unit"]);
   assert.ok(!bad.ok && bad.unknown === "Definitely Not A Unit");
 });
+
+// ── database first: the free answer ────────────────────────────────────────────────────
+import { formatCounterAnswer } from "../blue/db-answer";
+
+test("the free database answer lists counters with whether you can run them, and says no AI was used", () => {
+  const text = formatCounterAnswer("Lord Vader", "TW", [{
+    id: "m1", mode: "TW", modeLabel: "Territory War", exactMatch: false, attackingSquad: ["Boba Fett", "Bossk"], strategy: "Cad Bane opens.",
+    requirements: { zetas: ["Boba lead"] }, datacronDependent: true, datacronEnds: "2026-12-01", guildmatesWhoUseIt: 2, evidence: [{ type: "COMMUNITY_REPORT", source: "forum", url: null, date: "2026-10-01" }],
+    lastReviewed: "2026-10-10", memberCanRunIt: false, memberStillNeeds: ["Bossk: R5 → R7"],
+  }], []);
+  assert.match(text, /Counters for Lord Vader/);
+  assert.match(text, /Territory War/);
+  assert.match(text, /You still need: Bossk: R5 → R7/);
+  assert.match(text, /Needs a particular Datacron, until/);
+  assert.match(text, /2 guildmates use it/);
+  assert.match(text, /No AI used/);
+});

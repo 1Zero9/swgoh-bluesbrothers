@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.61.2 · **Last updated:** 2026-10-13 · tracks site `v0.73.2`
+**Doc version:** 1.62.0 · **Last updated:** 2026-10-13 · tracks site `v0.74.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -397,6 +397,14 @@ Own database of what beats what, with provenance. Tables `KbTeam` (family, alias
 - **Not built yet:** encounter guides (Conquest/TB/raids), mod profiles, an editing UI for reviewers, a swgoh.gg adapter (no usable key/docs located), fleet entry in the web form (API and import support fleets).
 - **Sources:** none imported. Open sources were checked 2026-10-14: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the swgoh.wiki TW/GA counter list was last edited February 2020. The database starts empty and fills from members, officers, B-Lue3 candidates and structured imports.
 
+### B-Lue3 search order (cheapest first)
+
+Every question follows the same order (`POST /api/blue`):
+1. **Guild database, free.** `lib/blue/intent.ts` (pure) recognises counter questions ("how do I beat X", with aliases like GAS, JMK, "night sisters", "pirate king hondo", and a mode from "TW"/"3v3"/"GAC") and "who has X". `lib/blue/db-answer.ts` answers from the knowledge base (`lookupKnownCounters` in `lib/knowledge/lookup.ts`, published and unexpired only, mode-exact), the older saved counters list and `whoHas`. No AI call, no allowance used, and the chat keeps working at zero questions left.
+2. **Nothing found:** the reply says so (and "no AI used") and offers two choices: **Search the web with B-Lue3 (uses 1 question)** — the client resends with `webSearch: true`, which skips step 1 — or "Ask the guild for help" (`/knowledge`). The AI is never used without that tap.
+3. **Anything else** ("what should I farm next?", free-form questions) goes to the AI with its tools and optional Google Search, using one question; a failed call is refunded.
+Responses carry `route` ("database" or "ai") so the chat can label each answer. Ambiguous names (plain "hondo" matches two units) are deliberately left to the AI to clarify.
+
 ## 10. CI/CD
 
 | Workflow | Trigger | What it does |
@@ -502,6 +510,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.62.0 — 2026-10-14**: database-first search order for B-Lue3 (section above): free counter and "who has" answers from the guild database, an explicit paid web-search choice when nothing is saved, AI only for the rest. `findKnownCounters` now shares `lookupKnownCounters` with the free path.
 - **1.61.2 — 2026-10-14**: B-Lue3 replies render **bold**, *italics*, bullets and numbered lists (`lib/blue/format.ts` parser → `app/blue-text.tsx`, React elements only, never raw HTML; a numbered list interrupted by sub-bullets carries on at its own number). First end-to-end proof in production: a web-search answer filed a candidate (`via BLUE`, Reddit thread, GAC 5v5, General Veers vs Mother Talzin) that sat in the review queue unpublished.
 - **1.61.1 — 2026-10-14**: fixed web-search answers coming back empty. The officer diagnostic read `empty answer (finish=length, steps=5, tools=…, server:GOOGLE_SEARCH_WEB…)`: web search and the roster tools do work together, but `maxOutputTokens` 900 was used up by Gemini's thinking. Chat now allows 8000 output tokens (search attempt timeout 45 s); research allows 10 000 / 6000. If finish=length ever reappears, raise `MAX_OUTPUT_TOKENS` in `lib/blue/ask.ts`.
 - **1.61.0 — 2026-10-14**: officer **Research with B-Lue3** on `/knowledge/review` (`lib/blue/research.ts`, `POST /api/knowledge/research`, officers only, `BLUE_RESEARCH_LIMIT` a week). Step 1 is a web-search-only Gemini call (no database access); step 2 extracts structured counters (`Output.object`); then the code filters each one — real unit names, squad shape for the mode (`checkSquad`), and the source link must be on a site the search actually returned (`foundHosts`/`sourceWasFound`; Google's redirect links are titled with the site's domain) — and files survivors as BLUE candidates via `submitMatchup`. Set-aside counters are listed with the reason. The model never writes to the database and nothing is published. Tested with a scripted fake model (`MockLanguageModelV4`), not against a live key.
