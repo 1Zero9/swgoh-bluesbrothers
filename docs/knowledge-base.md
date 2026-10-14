@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.59.3 · **Last updated:** 2026-10-13 · tracks site `v0.71.3`
+**Doc version:** 1.60.0 · **Last updated:** 2026-10-13 · tracks site `v0.72.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -369,6 +369,7 @@ Set in three places independently — **they do not sync automatically**:
 | `BLUE_AI` | Set to `on` to switch on B-Lue3's AI chat on `/me`. Off (unset) means only the three preset questions, rule-based, and nothing is billed |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini API key for B-Lue3 (used directly, default model `gemini-flash-latest`). Takes priority over the AI Gateway |
 | `BLUE_WEEKLY_LIMIT` | Questions per member per week to B-Lue3 (default 5; resets Monday UTC) |
+| `DISCORD_COUNTERS_WEBHOOK_URL` | Webhook of the Discord channel for "I need a counter" calls for help (optional: without it the call still shows on the site's Wanted list) |
 | `BLUE_WEB_SEARCH` | Set to `off` to stop B-Lue3 searching the web (Gemini Google Search grounding, on by default when `GOOGLE_GENERATIVE_AI_API_KEY` is set) |
 | `BLUE_MODEL` | Optional model override: a Gemini id when the Google key is set, otherwise an AI Gateway `provider/model` id (default `anthropic/claude-haiku-5-5`) |
 | `AI_GATEWAY_API_KEY` | Vercel AI Gateway key the AI SDK reads for B-Lue3 (not needed if the project's AI Gateway/OIDC is enabled) |
@@ -379,6 +380,21 @@ Set in three places independently — **they do not sync automatically**:
 | `SITE_URL` | Required for Discord OAuth redirect URI construction |
 
 ---
+
+### Counter knowledge base (`/knowledge`)
+
+Own database of what beats what, with provenance. Tables `KbTeam` (family, aliases), `KbVariant` (exact squad; unique `key` from kind + leader + sorted members), `KbMatchup` (defender variant × attacker variant × **mode**, strategy fields, requirements JSON, Datacron flag + end date, status, who/via, `importKey`), `KbEvidence` (immutable facts about a match-up with source URL/provider/ref, dates, season, game version, battles/wins/losses/banners — **null means unknown, never zero**), `KbEvent` (history), `KbUse` ("this is what I use", one per member per counter, separate from evidence) and `KbRequest` (calls for help, keyed by enemy leader + mode).
+
+- **Modes are never mixed:** `GAC_5V5`, `GAC_3V3`, `TW`, `GAC_FLEET`, `TW_FLEET` (`lib/knowledge/modes.ts`); squad shape is checked per mode (`squad.ts`). Mode is an exact filter in search (`search.ts`), exact variant beats leader-family beats text.
+- **Lifecycle** (`lifecycle.ts`): CANDIDATE → PUBLISHED / REJECTED; PUBLISHED ↔ DISPUTED, → OUTDATED; OUTDATED/REJECTED → RESTORE (back to CANDIDATE) only. A Datacron-dependent counter whose end date has passed is unusable (hidden from B-Lue3, flagged and sorted last for members, listed under "Datacron has ended" in coverage). Published counters unreviewed for 120 days are flagged "Not checked lately".
+- **Permissions** (`permissions.ts`): members/officers submit (always CANDIDATE); only officers review/publish (`/api/knowledge/review`); B-Lue3 can only file candidates with a source link (`submitCounterCandidate`, evidence COMMUNITY_REPORT/THEORY, 5 a day per member); only an IMPORT can claim AGGREGATED stats; auto-publish exists only for imports from sources listed in `TRUSTED_IMPORT_SOURCES` (empty) with ≥100 battles aggregated evidence.
+- **Validation** (`validate.ts`): unit ids must exist in `unit-names.json`; http(s) links only; control characters stripped; wins+losses ≤ battles. Member/web text is data, never instructions.
+- **Duplicates:** same defender+attacker+mode (not rejected/outdated) never creates a second record; the new evidence is attached (de-duplicated by source ref).
+- **Calls for help:** `POST /api/knowledge/request` (3 a day per member, shared if one is already open for that leader+mode) posts to `DISCORD_COUNTERS_WEBHOOK_URL` when set (`callToArmsMessage`: no pings, member text defanged) and is marked ANSWERED when a counter for that leader and mode is published.
+- **Import:** `npx tsx scripts/import-knowledge.ts file.json [--write] [--offset N --limit N]`: dry run by default, idempotent (`importKey = source:sourceRef`), reports invalid rows, stages candidates. Plan logic is `lib/knowledge/import-plan.ts` (pure, tested).
+- **B-Lue3:** `findKnownCounters` (published, not expired, by enemy leader and optional mode, with use counts, evidence, whether the member can run it) and `submitCounterCandidate`.
+- **Not built yet:** encounter guides (Conquest/TB/raids), mod profiles, an editing UI for reviewers, a swgoh.gg adapter (no usable key/docs located), fleet entry in the web form (API and import support fleets).
+- **Sources:** none imported. Open sources were checked 2026-10-14: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the swgoh.wiki TW/GA counter list was last edited February 2020. The database starts empty and fills from members, officers, B-Lue3 candidates and structured imports.
 
 ## 10. CI/CD
 
@@ -485,6 +501,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.60.0 — 2026-10-14**: counter knowledge base foundation (see the section above): schema + migration `20261014010000_knowledge_base`, `lib/knowledge/*`, `/api/knowledge*`, `/knowledge` and `/knowledge/review`, "This is what I use" marks, calls for help to a Discord channel, B-Lue3 tools, import script. 33 new tests; the full flow was exercised against a throwaway Postgres (PGlite) with 16 migrations applied.
 - **1.59.3 — 2026-10-14**: failed B-Lue3 calls no longer cost a question (`refundQuestion`), officers see the reason in the chat error (`safeErrorDetail`: shortened, key-shaped strings removed), the web-search attempt times out at 30 s and the plain retry at 40 s (a search run that hung used to eat the whole 60 s function budget, so the retry never answered), and `/api/blue` allows `maxDuration` 120.
 - **1.59.2 — 2026-10-14**: `BLUE_AI` is read forgivingly (`isSwitchOn` in `lib/blue/ask.ts`): case, spaces, quotes, line breaks and non-breaking spaces ignored; on/true/yes/1 all count. A pasted value like `"on\n"` used to read as off with no visible clue. The officer note on `/me` now prints the value with `JSON.stringify` so hidden characters show.
 - **1.59.1 — 2026-10-14**: when `BLUE_AI` is not exactly `on`, officers see a dashed note above the Ask section on `/me` saying what the server has it set to (members just get the preset questions). Verified with a production build that `/me` includes the type box only when `BLUE_AI=on` at runtime.

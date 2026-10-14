@@ -29,6 +29,7 @@ export default async function CountersPage() {
           <strong>Not on the list?</strong>
           <span>Ask B-Lue3. It checks what the guild has saved first, then searches the web for current counters and checks them against your roster. B-Lue3 can sometimes get it wrong, so check in game before you commit a squad.</span>
           <Link href="/me#ask-blue">Ask B-Lue3 →</Link>
+          <Link href="/knowledge">Browse the counter knowledge base →</Link>
         </aside>
         <CountersClient />
       </section>
