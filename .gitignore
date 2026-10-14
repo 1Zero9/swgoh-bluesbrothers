@@ -13,3 +13,8 @@ data/logs/*.log
 !data/.gitkeep
 !data/logs/.gitkeep
 .vercel
+
+# local tooling
+.claude/
+.agents/
+skills-lock.json
