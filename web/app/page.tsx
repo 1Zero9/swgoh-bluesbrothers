@@ -7,6 +7,7 @@ import HubHome, { type HubHomeProps } from "./hub-home";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
 import { openRequests, reviewQueue } from "@/lib/knowledge/data";
+import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 
 export const dynamic = "force-dynamic";
@@ -42,11 +43,12 @@ export default async function Home() {
     return <PublicHome data={data} news={news} linking={context.status === "linking" ? <AccountLink context={context} /> : null} />;
   }
 
-  const [context, wire, requests, queue] = await Promise.all([
+  const [context, wire, requests, queue, noteCount] = await Promise.all([
     getMemberContext(),
     safely(getGuildWire, []),
     safely(() => openRequests(access.playerId ?? null), []),
     access.isOfficer ? safely(reviewQueue, []) : Promise.resolve([]),
+    access.isOfficer ? safely(countNotesAwaitingReview, 0) : Promise.resolve(0),
   ]);
   const linked = context.status === "linked";
 
@@ -58,7 +60,7 @@ export default async function Home() {
     requests: requests.slice(0, 3).map((request) => ({ id: request.id, leaderName: request.leaderName, modeLabel: MODE_LABELS[request.mode as KbMode] ?? request.mode })),
     wire: wire.slice(0, 3).map((item) => ({ id: item.id, title: item.title, summary: item.summary, when: relativeTime(item.occurredAt) })),
     isOfficer: access.isOfficer,
-    reviewCount: queue.length,
+    reviewCount: queue.length + noteCount,
   };
   return <HubHome {...props} />;
 }

@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.76.0 — 2026-10-14
+
+- **Add what you know.** The Knowledge page now has one button for adding a **counter**, a **tip** or an **idea**. Tips and ideas are plain words: "spend raid tickets at reset", "we should plan TW defence on Thursday". Say where it applies and how you know.
+- **Checked before shown.** An officer reads each tip and idea and publishes or rejects it. You can see your own while it waits. Everyone else only sees published ones.
+- **"This helped."** Mark a tip or idea that helped you, so the useful ones are easy to spot.
+- **B-Lue3 can quote them.** For how-to questions he now looks at published tips and ideas, names who wrote them, and says they are guild advice, not official game facts.
+- Counters, calls for help and the search order are unchanged. Officers find tips and ideas in the same review queue as counters.
+
 ## 0.75.0 — 2026-10-14
 
 - **A new front door for members.** Signed-in members now see five sections: **Home**, **Ask B-Lue3**, **Knowledge**, **Guild** and **More**. On a phone they sit in a bar along the bottom; on a laptop they are a sidebar. Every page you already used is still there, just grouped.

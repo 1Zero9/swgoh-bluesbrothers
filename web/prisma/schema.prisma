@@ -678,3 +678,44 @@ model KbRequest {
   @@index([status, mode])
   @@index([leaderUnitId])
 }
+
+/// A tip or an idea from a member. Plain words, not a squad: "use your ticket at reset", "TW would be easier if...".
+/// Follows the same lifecycle as counters (candidate, then published after an officer checks it).
+model KbNote {
+  id              String          @id @default(cuid())
+  /// TIP or IDEA.
+  kind            String
+  title           String
+  body            String
+  /// A game area such as Territory War or Farming. Optional.
+  topic           String?
+  /// How the author knows: "I do this every war", "saw it in a video". Optional.
+  howKnown        String?
+  /// CANDIDATE, PUBLISHED, OUTDATED or REJECTED.
+  status          String          @default("CANDIDATE")
+  /// MEMBER or OFFICER.
+  via             String
+  submittedById   String?
+  submittedByName String
+  reviewedByName  String?
+  reviewedAt      DateTime?
+  reviewNote      String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  helpful         KbNoteHelpful[]
+
+  @@index([status, kind])
+  @@index([submittedById])
+}
+
+/// "This helped me": one mark per member per note.
+model KbNoteHelpful {
+  id        String   @id @default(cuid())
+  noteId    String
+  playerId  String
+  createdAt DateTime @default(now())
+  note      KbNote   @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId, playerId])
+  @@index([playerId])
+}

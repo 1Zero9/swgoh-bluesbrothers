@@ -8,6 +8,7 @@ import { getActiveTbPlanDetail, getActiveTwPlanDetail, getCurrentTbEventId, getC
 import { buildMyOrders } from "@/lib/tw-my-orders";
 import { countRecentSubmissions, knownUnitIds, submitMatchup } from "@/lib/knowledge/data";
 import { lookupKnownCounters } from "@/lib/knowledge/lookup";
+import { findNotesForBlue } from "@/lib/knowledge/notes-data";
 import { MODES, isMode } from "@/lib/knowledge/modes";
 import { validateSubmission } from "@/lib/knowledge/validate";
 import { getPrisma } from "@/lib/prisma";
@@ -149,6 +150,12 @@ export function buildBlueTools(viewer: BlueViewer) {
         const result = await lookupKnownCounters(unit.id, mode && isMode(mode) ? mode : null, me);
         return { enemy: unit.name, published: result.published, counters: result.counters.map((counter) => ({ mode: counter.modeLabel, exactMatch: counter.exactMatch, attackingSquad: counter.attackingSquad, strategy: counter.strategy, requirements: counter.requirements, datacronDependent: counter.datacronDependent, datacronEnds: counter.datacronEnds, guildmatesWhoUseIt: counter.guildmatesWhoUseIt, evidence: counter.evidence, lastReviewed: counter.lastReviewed, memberCanRunIt: counter.memberCanRunIt, memberStillNeeds: counter.memberStillNeeds })) };
       },
+    }),
+
+    findGuildTips: tool({
+      description: "Look up tips and ideas that guild members wrote and officers checked. Use it for general how-to or strategy questions ('when should I use raid tickets?', 'any tips for Territory War?'), after the counters tools for counters. Returns only published notes. Say they are from guildmates, name the author, and never present one as official game fact.",
+      inputSchema: z.object({ topic: z.string().min(1).max(80).describe("Words to look for, e.g. 'raid tickets' or 'territory war defence'") }),
+      execute: async ({ topic }) => ({ notes: await findNotesForBlue(topic, 5) }),
     }),
 
     submitCounterCandidate: tool({
