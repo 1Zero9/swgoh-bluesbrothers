@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.71.2 — 2026-10-14
+
+- **Fixed: B-Lue3's typing box didn't appear even with the switch on.** The setting was being read too strictly, so a hidden space or line break in the value turned it off. It now accepts on, ON, true, yes or 1 however it was pasted.
+
 ## 0.71.1 — 2026-10-14
 
 - **Easier to diagnose when B-Lue3's typing box is missing.** If the AI switch isn't on, officers now see a short note on My Page saying what the server has it set to.
