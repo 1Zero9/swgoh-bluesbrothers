@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.72.0 · **Last updated:** 2026-10-14 · tracks site `v0.81.0`
+**Doc version:** 1.73.0 · **Last updated:** 2026-10-14 · tracks site `v0.81.1`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -525,6 +525,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.73.0 — 2026-10-14**: B-Lue3 quick panel layout fix; `BlueIntro` gains a plain `text` variant (a pill button).
 - **1.72.0 — 2026-10-14**: B-Lue3 is a draggable floating chat icon; Home banner taller (250–330px) with words and numbers at the top.
 - **1.71.0 — 2026-10-14**: Home banner slimmed to a strip; stats moved to a bar under it. To swap the picture, replace `/bb-title.webp` (best around 4:1, e.g. 2400x600, with the focal point in the upper third).
 - **1.70.0 — 2026-10-14**: Home banner is fill-width and no longer clips icons; B-Lue3 stands on it; long content wraps.

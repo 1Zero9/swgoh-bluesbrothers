@@ -9,7 +9,7 @@ import BlueIntro from "./blue-intro";
 
 const KEY = "bb-blue-pos";
 const CHANGE = "bb-blue-pos-change";
-const PANEL_W = 300;
+const PANEL_W = 320;
 const PANEL_H = 330;
 
 function readRaw() {
@@ -140,7 +140,7 @@ export default function BlueFloat() {
           <p className="hub-blue-note">Free from the guild&apos;s knowledge first. The AI and web search use a question and can be wrong.</p>
           <div className="hub-blue-links">
             <Link href="/ask" onClick={() => setOpen(false)}>Open the full Ask page</Link>
-            <BlueIntro variant="hub" size={36} endHref="/ask" endLabel="Ask B-Lue3 a question" />
+            <BlueIntro variant="text" endHref="/ask" endLabel="Ask B-Lue3 a question" />
           </div>
           <button type="button" className="hub-text-button" onClick={() => { save(null); setLive(null); }}>Put me back in the corner</button>
         </div>

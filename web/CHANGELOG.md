@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.81.1 — 2026-10-14
+
+- **B-Lue3's quick ask box is tidied.** The Ask button no longer sticks out past the edge, and "Meet B-Lue3" is a plain play button instead of a tiny picture with a label stuck under it.
+
 ## 0.81.0 — 2026-10-14
 
 - **B-Lue3 is a floating chat icon you can move anywhere.** Drag him around the screen and he stays where you leave him, on this device. Tap him for a quick ask box (free from the guild's knowledge first) with a link to the full Ask page, the Meet B-Lue3 clip and a "Put me back in the corner" button. With the keyboard, focus him and use the arrow keys (hold Shift for bigger steps). He starts in the bottom corner, above the tab bar on a phone, and steps aside on the Ask page.
