@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import AnswerLadder from "./answer-ladder";
+import BlueIntro from "./blue-intro";
 import GetStarted from "./get-started";
 import HubPage from "./hub-page";
 
@@ -16,6 +18,8 @@ export type HubHomeProps = {
   wire: HomeWireItem[];
   isOfficer: boolean;
   reviewCount: number;
+  /** B-Lue3 allowance this week, when his AI is switched on. */
+  questions: { left: number; limit: number; resetsLabel: string } | null;
 };
 
 const STARTERS = [
@@ -29,7 +33,7 @@ const STEPS = [
   { key: "share", title: "Add one thing you know", hint: "A counter, a tip or an idea", href: "/knowledge" },
 ];
 
-export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount }: HubHomeProps) {
+export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions }: HubHomeProps) {
   return (
     <HubPage>
       <section className="hub-welcome">
@@ -44,7 +48,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         <div className="hub-home-main">
           <section className="hub-askbox" aria-labelledby="hub-ask-title">
             <div className="hub-askbox-head">
-              <Image src="/blue.png" alt="" width={56} height={56} />
+              <BlueIntro variant="hub" size={64} endHref="/ask" endLabel="Ask B-Lue3 a question" />
               <h2 id="hub-ask-title">Ask B-Lue3 anything about the game</h2>
             </div>
             <p>He checks what the guild already knows first. That costs you nothing.</p>
@@ -55,7 +59,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             <div className="hub-chips">
               {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
             </div>
-            <Link className="hub-how" href="/ask">How B-Lue3 answers, and what it costs</Link>
+            <AnswerLadder left={questions} compact />
           </section>
 
           {requests.length ? (

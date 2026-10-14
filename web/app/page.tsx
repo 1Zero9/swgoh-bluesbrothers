@@ -9,6 +9,9 @@ import HubHome, { type HubHomeProps } from "./hub-home";
 import { getGuildWire } from "@/lib/guild-wire";
 import { getMemberContext } from "@/lib/member-context";
 import { openRequests, reviewQueue } from "@/lib/knowledge/data";
+import { blueEnabled } from "@/lib/blue/ask";
+import { getUsage } from "@/lib/blue/limits";
+import { resetLabel } from "@/lib/blue/reset-label";
 import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 
@@ -49,12 +52,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
     return <PublicHome data={data} news={news} notice={link === "error" ? <SignInProblem discordUrl={getDiscordUrl()} /> : null} />;
   }
 
-  const [context, wire, requests, queue, noteCount] = await Promise.all([
+  const [context, wire, requests, queue, noteCount, usage] = await Promise.all([
     getMemberContext(),
     safely(getGuildWire, []),
     safely(() => openRequests(access.playerId ?? null), []),
     access.isOfficer ? safely(reviewQueue, []) : Promise.resolve([]),
     access.isOfficer ? safely(countNotesAwaitingReview, 0) : Promise.resolve(0),
+    blueEnabled() ? safely(() => getUsage(access.playerId ?? "officer"), null) : Promise.resolve(null),
   ]);
   const linked = context.status === "linked";
 
@@ -67,6 +71,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
     wire: wire.slice(0, 3).map((item) => ({ id: item.id, title: item.title, summary: item.summary, when: relativeTime(item.occurredAt) })),
     isOfficer: access.isOfficer,
     reviewCount: queue.length + noteCount,
+    questions: usage ? { left: usage.left, limit: usage.limit, resetsLabel: resetLabel(usage.resetsOn) } : null,
   };
   return <HubHome {...props} />;
 }

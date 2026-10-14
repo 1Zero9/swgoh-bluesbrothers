@@ -4,6 +4,7 @@ import Image from "next/image";
 import BlueText from "./blue-text";
 import NavIcon from "./nav-icon";
 import { useRef, useState } from "react";
+import { resetLabel } from "@/lib/blue/reset-label";
 
 type Source = { title: string; url: string; host: string };
 type Offer = { leaderUnitId: string; leaderName: string; mode: string | null };
@@ -18,7 +19,6 @@ const SUGGESTIONS = [
 /** Talk to B-Lue3. The conversation lives only in this page; the server keeps nothing but a daily count. */
 type Usage = { limit: number; used: number; left: number; resetsOn: string };
 
-const resetLabel = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" });
 
 export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initialText = "" }: { usage: Usage; webSearch: boolean; isOfficer: boolean; rawLimit: string | null; initialText?: string }) {
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -106,11 +106,12 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
                         <button type="button" className="kb-primary" disabled={busy || left <= 0} onClick={() => void send(turns[index - 1].content, true)}>
                           <NavIcon name="search" size={18} />Search the web with B-Lue3 · uses 1 question
                         </button>
+                        <small className="blue-ai-note">AI web search can be wrong or out of date. Check in game.</small>
                         <a href="/knowledge" className="kb-link">Ask the guild for help instead</a>
                         {left <= 0 ? <small>No AI questions left this week.</small> : null}
                       </div>
                     ) : null}
-                    {turn.route === "ai" ? <p className="blue-caveat">Answered by B-Lue3&apos;s AI · used 1 question.</p> : null}
+                    {turn.route === "ai" ? <p className="blue-caveat blue-ai-note"><strong>AI answer</strong> · used 1 question. It can be wrong or out of date.</p> : null}
                     <p className="blue-caveat">B-Lue3 can get it wrong. Check in game before you commit a squad.</p>
                   </>
                 ) : null}

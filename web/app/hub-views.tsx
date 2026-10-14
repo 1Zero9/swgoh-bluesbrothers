@@ -1,5 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import AnswerLadder from "./answer-ladder";
+import BlueIntro from "./blue-intro";
 import HubLinkList from "./hub-link-list";
 import HubPage, { HubHeading } from "./hub-page";
 import MoreActions from "./more-actions";
@@ -57,7 +59,7 @@ export function MoreView({ isOfficer, discordUrl }: { isOfficer: boolean; discor
   );
 }
 
-export function AskView({ children }: { children: ReactNode }) {
+export function AskView({ children, left }: { children: ReactNode; left?: { left: number; limit: number; resetsLabel: string } | null }) {
   return (
     <HubPage>
       <HubHeading
@@ -66,12 +68,8 @@ export function AskView({ children }: { children: ReactNode }) {
         intro="Ask about the game, the guild or a counter. He looks at what the guild already knows before anything else, and that never costs you a question."
       />
       <div className="hub-ask-intro">
-        <Image src="/blue.png" alt="B-Lue3, the guild droid" width={160} height={160} priority />
-        <ol className="hub-order" aria-label="How B-Lue3 answers">
-          <li><span className="hub-badge is-free">Free</span><div><strong>The guild&apos;s own knowledge</strong><small>Counters and who has what. No AI, no question used.</small></div></li>
-          <li><span className="hub-badge is-paid">1 question</span><div><strong>The web, only when you tap it</strong><small>If the guild has nothing, you choose whether to search.</small></div></li>
-          <li><span className="hub-badge">1 question</span><div><strong>AI for everything else</strong><small>Things like &ldquo;what should I farm next?&rdquo;.</small></div></li>
-        </ol>
+        <BlueIntro variant="hub" size={120} endHref="#ask-blue" />
+        <AnswerLadder left={left ?? null} />
       </div>
       <section className="hub-section hub-chat" id="ask-blue" aria-label="Chat with B-Lue3">{children}</section>
     </HubPage>

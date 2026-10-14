@@ -15,7 +15,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage><HubHeading eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band." /><KnowledgeHub names={{}} canAct /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
-  if (screen === "ask") return <AskView><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
+  if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
     <HubHome
       name="Steve"
@@ -30,6 +30,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       ]}
       isOfficer
       reviewCount={3}
+      questions={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}
     />
   );
 }

@@ -156,16 +156,11 @@ html[data-hub="on"] .site-header .header-controls .theme-picker { display: none 
 .hub-action-row .theme-picker button:hover { color: var(--hub-text); background: var(--hub-line); }
 
 /* Ask B-Lue3 */
-.hub-ask-intro { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
-.hub-ask-intro img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(20, 40, 70, 0.25)); }
-.hub-order { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.hub-order li { display: flex; gap: 10px; align-items: flex-start; }
-.hub-order strong { display: block; font-size: 14px; }
-.hub-order small { display: block; margin-top: 1px; color: var(--hub-muted); font-size: 12.5px; line-height: 1.4; }
+.hub-ask-intro { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
 .hub-badge { flex: none; min-width: 78px; text-align: center; padding: 3px 8px; border: 1px solid var(--hub-line); border-radius: 999px; color: var(--hub-muted); font: 500 11px var(--font-geist-mono), monospace; white-space: nowrap; }
 .hub-badge.is-free { color: var(--hub-good); border-color: var(--hub-good); }
 .hub-badge.is-paid { color: var(--hub-amber); border-color: var(--hub-amber); }
-@media (max-width: 560px) { .hub-ask-intro { grid-template-columns: 1fr; justify-items: start; } .hub-ask-intro img { width: 84px; height: 84px; } }
+@media (max-width: 700px) { .hub-ask-intro { grid-template-columns: 1fr; justify-items: start; } }
 
 /* The chat was written for a dark page: make its controls follow the theme. */
 .hub-chat .blue-chat { padding: 16px; border: 1px solid var(--hub-line); border-radius: 16px; background: var(--hub-surface); box-shadow: var(--hub-shadow); }
@@ -341,3 +336,38 @@ html[data-theme="deep"] body { background: #0a1020; }
 
 /* The version number and the sync pill are for officers and the build log, not for the member header. */
 html[data-hub="on"] .site-header .version-label { display: none; }
+
+/* The answer ladder: what each step costs, and a plain warning about the AI ones. */
+.hub-ladder { display: grid; gap: 12px; min-width: 0; width: 100%; }
+.hub-ladder ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 760px) { .hub-ladder ol { grid-template-columns: 1fr; } }
+.hub-ladder li { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid var(--hub-line); border-radius: 13px; background: var(--hub-surface-2); }
+.hub-ladder li.is-free { border-color: var(--hub-good); }
+.hub-ladder li.is-paid { border-color: var(--hub-amber); }
+.hub-ladder-n { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--hub-surface); border: 1.5px solid var(--hub-muted); color: var(--hub-muted); font-size: 12px; font-weight: 700; }
+.hub-ladder-top { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+.hub-cost { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.hub-cost.is-free { background: var(--hub-good); color: var(--hub-on-accent); }
+.hub-cost.is-paid { background: var(--hub-amber-soft); color: var(--hub-amber); border: 1px solid var(--hub-amber); }
+.hub-aitag { padding: 3px 7px; border-radius: 6px; border: 1px solid var(--hub-amber); color: var(--hub-amber); font: 700 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.06em; }
+.hub-ladder strong { display: block; font-size: 14.5px; }
+.hub-ladder small { display: block; margin-top: 2px; color: var(--hub-muted); font-size: 12.5px; line-height: 1.4; }
+.hub-ladder-left { margin: 0; font-size: 13.5px; color: var(--hub-muted); }
+.hub-ladder-left strong { color: var(--hub-text); }
+.hub-disclaimer { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 12px 14px; border: 1px solid var(--hub-amber); border-left-width: 4px; border-radius: 12px; background: var(--hub-amber-soft); color: var(--hub-text); font-size: 13.5px; line-height: 1.5; }
+.hub-disclaimer svg { flex: none; margin-top: 1px; color: var(--hub-amber); }
+.hub-ladder.is-compact { margin-top: 14px; }
+.hub-ladder.is-compact small { display: none; }
+.hub-ladder.is-compact li { padding: 10px 12px; align-items: center; }
+.hub-ladder.is-compact .hub-ladder-top { margin-bottom: 4px; }
+.hub-chat .blue-ai-note, .hub-chat .blue-caveat.blue-ai-note { color: var(--hub-amber); }
+.hub-chat .blue-offer .blue-ai-note { display: block; margin: 4px 0; font-size: 12.5px; }
+
+/* Meet B-Lue3: the clip, back on the Ask page and Home. */
+.hub-blue-play { position: relative; display: grid; justify-items: center; gap: 6px; padding: 0; border: 0; background: none; color: var(--hub-text); cursor: pointer; flex: none; }
+.hub-blue-play img { object-fit: contain; filter: drop-shadow(0 6px 10px rgba(20, 40, 70, 0.3)); }
+.hub-blue-play span { padding: 4px 11px; border-radius: 999px; background: var(--hub-accent); color: var(--hub-on-accent); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.hub-blue-play:hover span { filter: brightness(1.1); }
+.hub-blue-play:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 4px; border-radius: 12px; }
+.blue-intro-overlay { z-index: 1100; }
+.hub-ladder .hub-ladder-left strong { display: inline; }
