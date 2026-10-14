@@ -6,10 +6,10 @@ import { getSquadAdvice } from "@/lib/roster-advice";
 import { calloutHeadline, listCallouts } from "@/lib/tb-callouts";
 import { getActiveTbPlanDetail, getActiveTwPlanDetail, getCurrentTbEventId, getCurrentTwEventId, getDefaultGuildId } from "@/lib/tw-plans";
 import { buildMyOrders } from "@/lib/tw-my-orders";
-import { countRecentSubmissions, findMatchups, knownUnitIds, submitMatchup, unitLabel } from "@/lib/knowledge/data";
-import { MODES, MODE_LABELS, isMode } from "@/lib/knowledge/modes";
+import { countRecentSubmissions, knownUnitIds, submitMatchup } from "@/lib/knowledge/data";
+import { lookupKnownCounters } from "@/lib/knowledge/lookup";
+import { MODES, isMode } from "@/lib/knowledge/modes";
 import { validateSubmission } from "@/lib/knowledge/validate";
-import { squadStatus, type SquadSlot } from "@/lib/counters";
 import { getPrisma } from "@/lib/prisma";
 import { resolveUnit, searchUnits, whoHas } from "@/lib/who-has";
 
@@ -146,32 +146,8 @@ export function buildBlueTools(viewer: BlueViewer) {
       execute: async ({ defender, mode }) => {
         const unit = resolveUnit(defender);
         if (!unit) return { found: false, suggestions: searchUnits(defender, 5).map((match) => match.name) };
-        const hits = (await findMatchups({ defenderUnitId: unit.id, mode: mode && isMode(mode) ? mode : undefined, usableOnly: true }, me)).slice(0, 5);
-        const mine = me ? (await loadMemberUnits([...new Set(hits.flatMap((hit) => hit.attacker.memberIds))])).find((member) => member.playerId === me) : undefined;
-        const evidence = hits.length ? await getPrisma().kbEvidence.findMany({ where: { matchupId: { in: hits.map((hit) => hit.id) } }, orderBy: { createdAt: "desc" }, select: { matchupId: true, type: true, sourceProvider: true, sourceUrl: true, observedAt: true, publishedAt: true } }) : [];
-        return {
-          enemy: unit.name,
-          published: hits.length,
-          counters: hits.map((hit) => {
-            const needs = (hit.requirements as { minRelic?: Record<string, number> } | null)?.minRelic ?? {};
-            const slots: SquadSlot[] = hit.attacker.memberIds.map((unitId) => ({ unitId, minStars: 7, minRelic: needs[unitId] ?? 0 }));
-            const status = me ? squadStatus(slots, mine, unitLabel) : null;
-            return {
-              mode: MODE_LABELS[hit.mode as keyof typeof MODE_LABELS] ?? hit.mode,
-              exactMatch: hit.match === "EXACT",
-              attackingSquad: hit.attacker.memberIds.map(unitLabel),
-              strategy: hit.strategy,
-              requirements: hit.requirements,
-              datacronDependent: hit.datacronDependent,
-              datacronEnds: hit.datacronExpiresAt?.toISOString().slice(0, 10) ?? null,
-              guildmatesWhoUseIt: hit.useCount,
-              evidence: evidence.filter((item) => item.matchupId === hit.id).slice(0, 3).map((item) => ({ type: item.type, source: item.sourceProvider, url: item.sourceUrl, date: (item.observedAt ?? item.publishedAt)?.toISOString().slice(0, 10) ?? "date unknown" })),
-              lastReviewed: hit.reviewedAt?.toISOString().slice(0, 10) ?? null,
-              memberCanRunIt: status ? status.ready : null,
-              memberStillNeeds: status && !status.ready ? status.gaps : [],
-            };
-          }),
-        };
+        const result = await lookupKnownCounters(unit.id, mode && isMode(mode) ? mode : null, me);
+        return { enemy: unit.name, published: result.published, counters: result.counters.map((counter) => ({ mode: counter.modeLabel, exactMatch: counter.exactMatch, attackingSquad: counter.attackingSquad, strategy: counter.strategy, requirements: counter.requirements, datacronDependent: counter.datacronDependent, datacronEnds: counter.datacronEnds, guildmatesWhoUseIt: counter.guildmatesWhoUseIt, evidence: counter.evidence, lastReviewed: counter.lastReviewed, memberCanRunIt: counter.memberCanRunIt, memberStillNeeds: counter.memberStillNeeds })) };
       },
     }),
 
