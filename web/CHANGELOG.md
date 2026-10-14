@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.73.1 — 2026-10-14
+
+- **Fixed: web search answers coming back empty.** B-Lue3 was running out of room while thinking, before he could write the answer. He now has far more room, so questions that need a web search should come back with sources.
+
 ## 0.73.0 — 2026-10-14
 
 - **Research with B-Lue3 (officers).** On the counter review page, pick a game mode and an enemy squad's leader and press Research. B-Lue3 searches the web, and every counter he finds goes into the review queue with its source page. He can't publish anything, and the site checks each one before filing: real characters, the right squad size for the mode, and a source page that the search really found. Anything that fails is listed with the reason.
