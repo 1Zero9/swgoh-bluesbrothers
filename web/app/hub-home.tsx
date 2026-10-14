@@ -47,6 +47,7 @@ const STEPS = [
 export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, chat, discordUrl }: HubHomeProps) {
   const banner = (
     <section className="hub-banner" aria-label="Welcome">
+      <div className="hub-banner-bg" aria-hidden="true" />
       <div className="hub-banner-copy">
         <div>
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
@@ -60,6 +61,9 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             {stats.legends ? <li><strong>{stats.legends}</strong><small>Galactic Legends</small></li> : null}
           </ul>
         ) : null}
+      </div>
+      <div className="hub-banner-icon">
+        <BlueIntro variant="hub" size={150} endHref="/ask" endLabel="Ask B-Lue3 a question" />
       </div>
     </section>
   );
@@ -80,7 +84,6 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
       <div className="hub-home-top">
         <section className="hub-askbox" aria-labelledby="hub-ask-title">
           <div className="hub-askbox-head">
-            <BlueIntro variant="hub" size={64} endHref="/ask" endLabel="Ask B-Lue3 a question" />
             <div>
               <p className="hub-eyebrow is-amber">B-Lue3 · your guild droid</p>
               <h2 id="hub-ask-title">Ask anything about the game</h2>

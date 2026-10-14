@@ -393,21 +393,30 @@ html[data-theme="dark"] .hub-ground {
   @keyframes hub-twinkle { from { opacity: 0.6; } to { opacity: 1; } }
 }
 
-/* ---------- Home banner: the whole picture, edge to edge ---------- */
-.hub-banner { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: 300px; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 26px clamp(18px, 3vw, 48px); overflow: hidden; background-color: #0b1220; border-bottom: 1px solid var(--hub-line); color: #fff; }
-/* A blurred, darkened copy of the picture carries its colours to the left edge, where the words sit. */
-.hub-banner::before { content: ""; position: absolute; inset: -48px; z-index: -2; background: linear-gradient(90deg, rgba(5, 10, 20, 0.55), rgba(5, 10, 20, 0) 75%), url("/bb-title.webp") center / cover; filter: blur(26px) saturate(1.15) brightness(0.62); }
-/* The sharp picture sits at its own proportions on the right, so the sign is never cut. */
-.hub-banner::after { content: ""; position: absolute; z-index: -1; top: 0; right: 0; bottom: 0; width: min(72%, calc(300px * 2.333)); background: url("/bb-title.webp") right center / contain no-repeat; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); }
-@media (min-width: 1500px) { .hub-banner { min-height: 380px; } .hub-banner::after { width: min(72%, calc(380px * 2.333)); } }
+/* ---------- Home banner: a big picture, edge to edge, that never clips what stands on it ---------- */
+.hub-banner { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; height: clamp(300px, 25vw, 470px); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 56px; padding: 26px clamp(18px, 3vw, 48px); border-bottom: 1px solid var(--hub-line); color: #fff; }
+/* The picture lives in its own clipped layer, so things placed on the banner (B-Lue3, badges) can overhang its edge. */
+.hub-banner-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #0b1220 url("/bb-title.webp") 72% 14% / cover no-repeat; }
+.hub-banner-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5, 10, 20, 0.82), rgba(5, 10, 20, 0.35) 45%, rgba(5, 10, 20, 0) 72%); }
+.hub-banner > :not(.hub-banner-bg) { position: relative; z-index: 2; }
 .hub-banner-copy { display: grid; gap: 16px; width: min(100%, 640px); }
 .hub-banner .hub-eyebrow { color: #bfe8ff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
-.hub-banner h1 { margin: 0; font-size: clamp(26px, 3vw, 38px); letter-spacing: -0.02em; text-wrap: balance; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
+.hub-banner h1 { margin: 0; font-size: clamp(26px, 3vw, 40px); letter-spacing: -0.02em; text-wrap: balance; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6); }
 .hub-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.hub-stats li { min-width: 108px; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(6px); }
+.hub-stats li { min-width: 108px; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 12px; background: rgba(8, 14, 28, 0.45); backdrop-filter: blur(6px); }
 .hub-stats strong { display: block; font-size: 21px; }
-.hub-stats small { color: rgba(255, 255, 255, 0.85); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-@media (max-width: 760px) { .hub-banner { min-height: 220px; } .hub-banner::after { width: 100%; opacity: 0.55; -webkit-mask-image: none; mask-image: none; background-position: 70% center; background-size: cover; } .hub-stats li { min-width: 92px; padding: 8px 10px; } }
+.hub-stats small { color: rgba(255, 255, 255, 0.88); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+/* An icon slot: stands on the banner's lower edge and hangs over it. */
+.hub-banner-icon { margin-bottom: -44px; align-self: flex-end; }
+.hub-banner-icon .hub-blue-play { filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45)); }
+.hub-banner-icon .hub-blue-play span { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); }
+@media (max-width: 760px) {
+  .hub-banner { height: auto; min-height: 230px; margin-bottom: 44px; }
+  .hub-banner-bg { background-position: 70% 10%; }
+  .hub-banner-bg::after { background: linear-gradient(180deg, rgba(5, 10, 20, 0.2), rgba(5, 10, 20, 0.8)); }
+  .hub-banner-icon { position: absolute !important; right: 14px; bottom: -34px; margin: 0; }
+  .hub-stats li { min-width: 92px; padding: 8px 10px; }
+}
 
 /* ---------- Home on a wide screen ---------- */
 .hub-home-top { display: grid; gap: 18px; align-items: start; }
@@ -480,3 +489,19 @@ html[data-theme="dark"] .hub-ground {
   .hub-home-cols { order: 2; }
   .hub-status { order: 3; }
 }
+
+/* B-Lue3 stands beside the headline rather than over the picture, and hangs over the banner's lower edge. */
+.hub-banner { justify-content: flex-start; margin-bottom: 44px; }
+.hub-banner + .hub-wrap { padding-top: 0; }
+@media (max-width: 760px) {
+  .hub-banner { min-height: 270px; }
+  .hub-banner-icon .hub-blue-play img { width: 92px !important; height: 92px !important; }
+  .hub-banner-icon { bottom: -52px; right: 12px; }
+}
+
+/* Long names or messages from real data must wrap, never widen a column past the screen. */
+.hub-banner-copy { width: auto; max-width: 600px; }
+.hub-banner h1 { max-width: 20ch; }
+.hub-card, .hub-askbox, .hub-act, .hub-chatcard, .hub-status-card, .hub-start { min-width: 0; }
+.hub-feed strong, .hub-feed small, .hub-start strong, .hub-start small, .hub-status-card strong, .hub-status-card small { overflow-wrap: anywhere; }
+.hub-home-top > *, .hub-home-cols > *, .hub-home-welcome > *, .hub-status > * { min-width: 0; }
