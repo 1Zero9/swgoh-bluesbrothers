@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.80.1 — 2026-10-14
+
+- **A bigger, fuller Home banner.** The picture now fills the whole width and shows the sign large, with the guild numbers over its left side.
+- **B-Lue3 stands on the banner.** He is no longer boxed into the ask card. He sits beside the headline and hangs over the banner's lower edge, with his "Meet B-Lue3" play button underneath. The banner has room for other icons to do the same.
+- Long names and messages now wrap inside their card instead of stretching the page.
+
 ## 0.80.0 — 2026-10-14
 
 - **A proper desktop layout.** On a laptop the sidebar now lists every page in groups (Knowledge, Guild, War room, Off duty, You, and Officers if you are one), so nothing is hidden behind a menu. Phones keep the five tabs.
