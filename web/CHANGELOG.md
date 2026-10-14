@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.70.3 — 2026-10-14
+
+- **The droid's name is spelled B-Lue3** everywhere on the site, and Blue introduces himself that way.
+
 ## 0.70.2 — 2026-10-14
 
 - **Fixed: "Ask Blue" on the home page note** took you to Counters (or another page) instead of Blue. It now opens the Ask Blue box on My Page.
@@ -12,7 +16,7 @@ This project uses semantic versioning while it is under active development.
 
 ## 0.70.0 — 2026-10-14
 
-- **Meet B-LU3.** Tap Blue's picture on My Page (the play badge) and he appears over the page in a 10-second clip, with sound, waving and showing off a hologram screen. When it ends there's a button to ask him a question. The clip only loads when you tap it.
+- **Meet B-Lue3.** Tap Blue's picture on My Page (the play badge) and he appears over the page in a 10-second clip, with sound, waving and showing off a hologram screen. When it ends there's a button to ask him a question. The clip only loads when you tap it.
 
 ## 0.69.1 — 2026-10-13
 
@@ -37,7 +41,7 @@ This project uses semantic versioning while it is under active development.
 
 ## 0.68.0 — 2026-10-13
 
-- **Blue is on the home page.** Under your status line there is now a short note from B-LU3 (what you're needed for, or your closest next finish) with an **Ask Blue** link. It costs nothing to show.
+- **Blue is on the home page.** Under your status line there is now a short note from B-Lue3 (what you're needed for, or your closest next finish) with an **Ask Blue** link. It costs nothing to show.
 - **Ask Blue is easy to find:** it has a tile in the tool grid (which also gains Raids), and an entry in the Roster menu and the phone menu.
 - **My Page:** Blue's card is tidier on phones, with the droid beside the heading and the text running full width below it.
 
@@ -51,7 +55,7 @@ This project uses semantic versioning while it is under active development.
 
 ## 0.67.0 — 2026-10-13
 
-- **Meet B-LU3, "Blue".** The guild's operations droid now lives on **My Page**. Members can type a question ("who has Darth Revan?", "which counter can I run into Revan?", "what am I needed for?") or tap one of three suggestions. Blue looks things up in the guild's own data (rosters, saved counters, Territory Battle callouts, Territory War orders) before answering, and says so when it doesn't know. It can see across the whole guild, like an officer, but only reports what helps the member asking, and it is read-only: it can't change plans or post anywhere. It lives on the site only, not in Discord.
+- **Meet B-Lue3, "Blue".** The guild's operations droid now lives on **My Page**. Members can type a question ("who has Darth Revan?", "which counter can I run into Revan?", "what am I needed for?") or tap one of three suggestions. Blue looks things up in the guild's own data (rosters, saved counters, Territory Battle callouts, Territory War orders) before answering, and says so when it doesn't know. It can see across the whole guild, like an officer, but only reports what helps the member asking, and it is read-only: it can't change plans or post anywhere. It lives on the site only, not in Discord.
 - **Blue is switched off until the AI key is added.** Until then My Page keeps the three preset questions and the roster report, which work without any AI. Each member gets 25 questions a day.
 - **My Page** has Blue's briefing at the top (what you are needed for right now) and a roster report: leaders you can field, the ones you're closest to, and saved counters you can run or nearly can.
 - **Faster pages.** Pages that check the roster for squad leaders and Territory Battle callouts now read only the units they need, so My Page and the callouts load several times faster (about 9 seconds down to 1.4 locally).

@@ -9,7 +9,7 @@ export const maxDuration = 60;
 const NO_STORE = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number) => Response.json({ ok: false, error }, { status, headers: NO_STORE });
 
-/** Ask B-LU3 a question. Signed-in members and officers only; a weekly allowance each. */
+/** Ask B-Lue3 a question. Signed-in members and officers only; a weekly allowance each. */
 export async function POST(request: Request) {
   // Only the site itself may call this: a page on another origin must not spend the guild's AI budget.
   const origin = request.headers.get("origin");

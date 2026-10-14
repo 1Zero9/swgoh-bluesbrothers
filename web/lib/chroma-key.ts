@@ -1,5 +1,5 @@
 /**
- * Green-screen removal for B-LU3's intro clip. Works on RGBA pixel data in place: pixels that are
+ * Green-screen removal for B-Lue3's intro clip. Works on RGBA pixel data in place: pixels that are
  * clearly green become transparent, edge pixels fade out and lose their green fringe.
  * "Greenness" is how far green sits above the stronger of red and blue, so blue and cyan stay.
  */

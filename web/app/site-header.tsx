@@ -53,7 +53,7 @@ export const SITE_NAVIGATION: NavCategoryItem[] = [
     children: [
       { label: "Guild Chat", mark: "CH", href: "/chat", description: "The Discord channels, on the site", icon: "chat" },
       { label: "My Page", mark: "ME", href: "/me", description: "Your standing, wins and callouts", icon: "me" },
-      { label: "Ask Blue", mark: "BL", href: "/me#ask-blue", description: "B-LU3, the guild droid, answers roster questions", icon: "blue" },
+      { label: "Ask Blue", mark: "BL", href: "/me#ask-blue", description: "B-Lue3, the guild droid, answers roster questions", icon: "blue" },
       { label: "Who has…?", mark: "WH", href: "/members#who-has", description: "Find a unit across the whole guild", icon: "search" },
       { label: "Member Roster", mark: "MB", href: "/members", description: "50-member profiles, GP & GL counts", icon: "roster" },
       { label: "The Wins", mark: "WN", href: "/wins", description: "Galactic Legends, ultimates & relics as they happen", icon: "wins" },
