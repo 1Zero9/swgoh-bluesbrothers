@@ -53,23 +53,23 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
           <h1>This is where the guild keeps what it knows.</h1>
         </div>
-        {stats ? (
-          <ul className="hub-stats" aria-label="The guild now">
-            <li><strong>{stats.members}</strong><small>members</small></li>
-            <li><strong>{stats.power}</strong><small>guild power</small></li>
-            {stats.tickets ? <li><strong>{stats.tickets}</strong><small>tickets today</small></li> : null}
-            {stats.legends ? <li><strong>{stats.legends}</strong><small>Galactic Legends</small></li> : null}
-          </ul>
-        ) : null}
       </div>
       <div className="hub-banner-icon">
-        <BlueIntro variant="hub" size={150} endHref="/ask" endLabel="Ask B-Lue3 a question" />
+        <BlueIntro variant="hub" size={120} endHref="/ask" endLabel="Ask B-Lue3 a question" />
       </div>
     </section>
   );
 
   return (
     <HubPage banner={banner}>
+      {stats ? (
+        <ul className="hub-stats hub-statsbar" aria-label="The guild now">
+          <li><strong>{stats.members}</strong><small>members</small></li>
+          <li><strong>{stats.power}</strong><small>guild power</small></li>
+          {stats.tickets ? <li><strong>{stats.tickets}</strong><small>tickets today</small></li> : null}
+          {stats.legends ? <li><strong>{stats.legends}</strong><small>Galactic Legends</small></li> : null}
+        </ul>
+      ) : null}
       <div className="hub-home-welcome">
         {standing ? (
           <Link className={`hub-card hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
