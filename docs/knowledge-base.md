@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.58.4 · **Last updated:** 2026-10-13 · tracks site `v0.70.4`
+**Doc version:** 1.59.0 · **Last updated:** 2026-10-13 · tracks site `v0.71.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -369,6 +369,7 @@ Set in three places independently — **they do not sync automatically**:
 | `BLUE_AI` | Set to `on` to switch on B-Lue3's AI chat on `/me`. Off (unset) means only the three preset questions, rule-based, and nothing is billed |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini API key for B-Lue3 (used directly, default model `gemini-flash-latest`). Takes priority over the AI Gateway |
 | `BLUE_WEEKLY_LIMIT` | Questions per member per week to B-Lue3 (default 5; resets Monday UTC) |
+| `BLUE_WEB_SEARCH` | Set to `off` to stop B-Lue3 searching the web (Gemini Google Search grounding, on by default when `GOOGLE_GENERATIVE_AI_API_KEY` is set) |
 | `BLUE_MODEL` | Optional model override: a Gemini id when the Google key is set, otherwise an AI Gateway `provider/model` id (default `anthropic/claude-haiku-5-5`) |
 | `AI_GATEWAY_API_KEY` | Vercel AI Gateway key the AI SDK reads for B-Lue3 (not needed if the project's AI Gateway/OIDC is enabled) |
 | `DISCORD_INVITE_URL` | Public invite link shown on the site |
@@ -484,6 +485,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.59.0 — 2026-10-14**: B-Lue3 can search the web for counters. `lib/blue/ask.ts` adds `google.tools.googleSearch({})` alongside the roster tools when a Google key is set; if that run errors (some models cannot mix web search with function tools) it retries without search. Web pages used come back as `sources` (`lib/blue/sources.ts` `cleanSources`: http(s) only, deduped, max 5) and show under the answer. The prompt orders it: guild-saved counters first, then web, labelled "from the web, not guild-tested", TW vs GAC (omicrons), checked against the member's roster. Every answer carries a "can get it wrong" caveat; `/counters` has an Ask B-Lue3 note. Why not scrape: swgoh.gg, Reddit and the EA forums return 403 to automated reads; the one readable wiki list (swgoh.wiki) dates from 2020. Untested against a live Google key at release.
 - **1.58.4 — 2026-10-14**: user-facing "Blue" labels now read "B-Lue3" (tile, menus, home note, My Page, errors). The three starter questions on `/me` (`.blue-question-actions`) are large filled buttons with icons (`sprout`, `roster`, `help` in `NavIcon`), 3 across on laptops and stacked on phones; the Ask button uses the same fill.
 - **1.58.3 — 2026-10-14**: the droid is spelled **B-Lue3** ("Blue") everywhere, including the AI persona in `lib/blue/prompt.ts`. Eyebrows are CSS-uppercased, so they show as B-LUE3.
 - **1.58.2 — 2026-10-14**: the home-page Blue note (`app/blue-line.tsx`) always links to `/me#ask-blue`; it used to follow `briefing.href`, which sent people to Counters or Territory Battles when they clicked "Ask Blue".
