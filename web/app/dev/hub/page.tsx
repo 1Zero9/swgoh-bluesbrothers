@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
 import { buildStatusRow } from "@/lib/home-status";
-import HubPage, { HubHeading } from "@/app/hub-page";
+import HubBanner from "@/app/hub-banner";
+import HubPage from "@/app/hub-page";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -14,7 +15,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   const { screen } = await searchParams;
   if (screen === "welcome") return <LinkWelcome discordUsername="steve_c" discordUrl="https://discord.gg/example" preview />;
   if (screen === "guild") return <GuildView />;
-  if (screen === "knowledge") return <HubPage><HubHeading eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band." /><KnowledgeHub names={{}} canAct /></HubPage>;
+  if (screen === "knowledge") return <HubPage banner={<HubBanner image="/arsnel-banner.webp" eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band." />}><KnowledgeHub names={{}} canAct /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

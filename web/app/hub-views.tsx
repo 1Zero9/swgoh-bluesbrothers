@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import AnswerLadder from "./answer-ladder";
 import BlueIntro from "./blue-intro";
 import HubLinkList from "./hub-link-list";
-import HubPage, { HubHeading } from "./hub-page";
+import HubBanner from "./hub-banner";
+import HubPage from "./hub-page";
 import MoreActions from "./more-actions";
 import PushSettings from "./push-settings";
 import { GUILD_GROUPS, OFF_DUTY_LINKS, OFFICER_LINKS } from "@/lib/hub-links";
@@ -12,8 +13,7 @@ import { GUILD_GROUPS, OFF_DUTY_LINKS, OFFICER_LINKS } from "@/lib/hub-links";
 
 export function GuildView() {
   return (
-    <HubPage>
-      <HubHeading eyebrow="Guild" title="The people and the war" intro="Who is in the band, and everything for Territory War, Territory Battles and raids." />
+    <HubPage banner={<HubBanner image="/members-banner.webp" eyebrow="Guild" title="The people and the war" intro="Who is in the band, and everything for Territory War, Territory Battles and raids." />}>
       {GUILD_GROUPS.map((group) => (
         <section key={group.title} className="hub-section">
           <h2 className="hub-section-title">{group.title}</h2>
@@ -26,8 +26,7 @@ export function GuildView() {
 
 export function MoreView({ isOfficer, discordUrl }: { isOfficer: boolean; discordUrl: string }) {
   return (
-    <HubPage>
-      <HubHeading eyebrow="More" title="Account, alerts and downtime" />
+    <HubPage banner={<HubBanner image="/cantin-bannera.webp" eyebrow="More" title="Account, alerts and downtime" intro="Your page, notifications, the theme, and the off-duty corner." />}>
 
       <section className="hub-section">
         <h2 className="hub-section-title">Account</h2>
@@ -61,12 +60,7 @@ export function MoreView({ isOfficer, discordUrl }: { isOfficer: boolean; discor
 
 export function AskView({ children, left }: { children: ReactNode; left?: { left: number; limit: number; resetsLabel: string } | null }) {
   return (
-    <HubPage>
-      <HubHeading
-        eyebrow="B-Lue3 · your guild droid"
-        title="Ask B-Lue3"
-        intro="Ask about the game, the guild or a counter. He looks at what the guild already knows before anything else, and that never costs you a question."
-      />
+    <HubPage banner={<HubBanner image="/tw-banner.webp" position="center 40%" eyebrow="B-Lue3 · your guild droid" title="Ask B-Lue3" intro="Ask about the game, the guild or a counter. He looks at what the guild already knows before anything else, and that never costs you a question." />}>
       <div className="hub-ask-intro">
         <BlueIntro variant="hub" size={120} endHref="#ask-blue" />
         <AnswerLadder left={left ?? null} />

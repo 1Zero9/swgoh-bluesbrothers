@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.82.0 — 2026-10-14
+
+- **Every page has the same banner as Home.** Ask B-Lue3, Knowledge, Guild and More now open with the slim picture banner and the page's own title and a line of explanation. Territory War, Territory Battles, Raids, the roster, the Wins, Counters, Field Guides, My page and the other older pages have their big picture headers cut down to the same slim shape.
+- **The old floating header is gone for members.** The sync pill, version and Open Discord button no longer float over the pictures. Open Discord is on Home and under More.
+
 ## 0.81.1 — 2026-10-14
 
 - **B-Lue3's quick ask box is tidied.** The Ask button no longer sticks out past the edge, and "Meet B-Lue3" is a plain play button instead of a tiny picture with a label stuck under it.
