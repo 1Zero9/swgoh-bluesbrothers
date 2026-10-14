@@ -26,7 +26,7 @@ export function blueEnabled() {
 }
 
 /** With a Google key, B-Lue3 may search the web for current counters. BLUE_WEB_SEARCH=off turns that off. */
-function webSearchOn() {
+export function webSearchOn() {
   return Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY) && process.env.BLUE_WEB_SEARCH !== "off";
 }
 

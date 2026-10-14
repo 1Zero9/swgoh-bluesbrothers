@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.60.1 · **Last updated:** 2026-10-13 · tracks site `v0.72.1`
+**Doc version:** 1.60.2 · **Last updated:** 2026-10-13 · tracks site `v0.72.2`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -501,6 +501,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.60.2 — 2026-10-14**: B-Lue3 status is visible. `/me` shows dots for questions left this week, the reset date (`nextReset`, next Monday UTC) and a Web search on/off badge; at zero the starter buttons and the box are disabled. Officers also see the limit, the raw `BLUE_WEEKLY_LIMIT` value, how many are used, and a **Reset my count** button (`POST /api/blue/reset`, officers only). Bug fixed: `takeQuestion` used to leave a blocked attempt counted, so the count kept climbing after the limit and never recovered; it now gives the blocked try back. `getUsage` reads the count without using anything up.
 - **1.60.1 — 2026-10-14**: B-Lue3 is honest about web search. `askBlue` returns `webSearch` (`used`/`unavailable`/`off`); when the search attempt fails and the retry runs without it, `instructionsFor(false)` tells the model it has no web search (it had been claiming it lacked the ability in general), the chat shows "I couldn't search the web just now", and officers also see the sanitised reason (`searchError`). The original failures were Google's free tier (429/503); moving the key to a paid plan fixed them.
 - **1.60.0 — 2026-10-14**: counter knowledge base foundation (see the section above): schema + migration `20261014010000_knowledge_base`, `lib/knowledge/*`, `/api/knowledge*`, `/knowledge` and `/knowledge/review`, "This is what I use" marks, calls for help to a Discord channel, B-Lue3 tools, import script. 33 new tests; the full flow was exercised against a throwaway Postgres (PGlite) with 16 migrations applied.
 - **1.59.3 — 2026-10-14**: failed B-Lue3 calls no longer cost a question (`refundQuestion`), officers see the reason in the chat error (`safeErrorDetail`: shortened, key-shaped strings removed), the web-search attempt times out at 30 s and the plain retry at 40 s (a search run that hung used to eat the whole 60 s function budget, so the retry never answered), and `/api/blue` allows `maxDuration` 120.

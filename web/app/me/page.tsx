@@ -10,7 +10,8 @@ import PageHero from "@/app/page-hero";
 import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
 import { blueAnswer, blueBriefing, counterOptions, type BlueQuestion } from "@/lib/blue/advice";
-import { blueEnabled } from "@/lib/blue/ask";
+import { blueEnabled, webSearchOn } from "@/lib/blue/ask";
+import { getUsage } from "@/lib/blue/limits";
 import { listCounters } from "@/lib/counters-data";
 import { getMyPage } from "@/lib/my-page";
 import { getSquadAdvice } from "@/lib/roster-advice";
@@ -59,6 +60,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
     ? data.lastActivityAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" })
     : "—";
   const aiOn = blueEnabled();
+  const usage = aiOn ? await getUsage(access.playerId ?? "officer") : null;
   const briefing = blueBriefing(data, advice);
   const query = await searchParams;
   const requested = typeof query.blue === "string" && ["farm", "team", "help"].includes(query.blue) ? query.blue as BlueQuestion : null;
@@ -105,7 +107,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
             Officers only: B-Lue3&apos;s typing box is off because the server&apos;s BLUE_AI setting is {process.env.BLUE_AI ? JSON.stringify(process.env.BLUE_AI) : "not set"}. Set it to on, then redeploy.
           </p>
         ) : null}
-        {aiOn ? <BlueChat /> : (
+        {aiOn && usage ? <BlueChat usage={usage} webSearch={webSearchOn()} isOfficer={access.isOfficer} rawLimit={access.isOfficer ? (process.env.BLUE_WEEKLY_LIMIT ?? null) : null} /> : (
           <>
             <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
           <Link href="/me?blue=farm#ask-blue"><NavIcon name="sprout" size={20} />What should I farm next?</Link>

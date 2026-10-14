@@ -50,7 +50,34 @@ export async function takeQuestion(who: string, now = new Date()): Promise<numbe
     select: { count: true },
   });
   const limit = weeklyLimit();
-  return row.count > limit ? null : limit - row.count;
+  if (row.count > limit) {
+    // A blocked try must not use anything up, or the count keeps climbing and the allowance never recovers.
+    await prisma.blueUsage.updateMany({ where: { who, day, count: { gt: 0 } }, data: { count: { decrement: 1 } } });
+    return null;
+  }
+  return limit - row.count;
+}
+
+/** The Monday (UTC, YYYY-MM-DD) the allowance next resets. */
+export function nextReset(now = new Date()) {
+  const start = new Date(`${weekStart(now)}T00:00:00Z`);
+  start.setUTCDate(start.getUTCDate() + 7);
+  return start.toISOString().slice(0, 10);
+}
+
+export type Usage = { limit: number; used: number; left: number; resetsOn: string };
+
+/** Where a member stands this week, without using anything up. */
+export async function getUsage(who: string, now = new Date()): Promise<Usage> {
+  const row = await getPrisma().blueUsage.findUnique({ where: { who_day: { who, day: weekStart(now) } }, select: { count: true } });
+  const limit = weeklyLimit();
+  const used = row?.count ?? 0;
+  return { limit, used, left: Math.max(0, limit - used), resetsOn: nextReset(now) };
+}
+
+/** Start the member's week again (officers, for testing and for putting right a bad count). */
+export async function resetUsage(who: string, now = new Date()) {
+  await getPrisma().blueUsage.deleteMany({ where: { who, day: weekStart(now) } });
 }
 
 /** Gives a question back when the AI itself failed, so a broken day never eats a member's weekly allowance. */

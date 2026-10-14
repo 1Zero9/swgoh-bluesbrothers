@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.72.2 — 2026-10-14
+
+- **You can see where you stand with B-Lue3.** Above the questions there's now a row of dots for how many you have left this week, when it resets (Monday), and a badge showing whether web search is on. When you've used them all, the buttons and box are greyed out with the reset day, instead of failing.
+- **Fixed:** trying again after hitting the limit kept adding to your count, so it never recovered. A blocked try no longer uses anything up.
+- Officers also see the real limit and how many are used, with a button to reset their own count.
+
 ## 0.72.1 — 2026-10-14
 
 - **B-Lue3 is straight about web search.** If the web search doesn't work for a question, he now says "I couldn't search the web just now, try again in a few minutes" instead of claiming he can't search at all. Officers also see why it failed.

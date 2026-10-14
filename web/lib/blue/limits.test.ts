@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cleanConversation, MAX_HISTORY, MAX_QUESTION_CHARS, safeErrorDetail, weekStart } from "./limits";
+import { cleanConversation, MAX_HISTORY, MAX_QUESTION_CHARS, nextReset, safeErrorDetail, weekStart } from "./limits";
 
 test("keeps a plain question", () => {
   assert.deepEqual(cleanConversation([{ role: "user", content: "  who has JKR? " }]), [{ role: "user", content: "who has JKR?" }]);
@@ -35,4 +35,10 @@ test("error details for officers never carry a key", () => {
   assert.ok(!detail.includes("AIza"));
   assert.ok(detail.length <= 400);
   assert.equal(safeErrorDetail("odd"), "unknown error");
+});
+
+test("the allowance resets on the next Monday", () => {
+  assert.equal(nextReset(new Date("2026-10-14T12:00:00Z")), "2026-10-19"); // Wednesday
+  assert.equal(nextReset(new Date("2026-10-19T00:00:01Z")), "2026-10-26"); // Monday itself
+  assert.equal(nextReset(new Date("2026-10-18T23:59:59Z")), "2026-10-19"); // Sunday night
 });

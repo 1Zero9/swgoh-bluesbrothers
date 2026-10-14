@@ -14,17 +14,22 @@ const SUGGESTIONS = [
 ];
 
 /** Talk to B-Lue3. The conversation lives only in this page; the server keeps nothing but a daily count. */
-export default function BlueChat() {
+type Usage = { limit: number; used: number; left: number; resetsOn: string };
+
+const resetLabel = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" });
+
+export default function BlueChat({ usage, webSearch, isOfficer, rawLimit }: { usage: Usage; webSearch: boolean; isOfficer: boolean; rawLimit: string | null }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [left, setLeft] = useState<number | null>(null);
+  const [left, setLeft] = useState<number>(usage.left);
+  const [used, setUsed] = useState<number>(usage.used);
   const endRef = useRef<HTMLDivElement>(null);
 
   async function send(question: string) {
     const content = question.trim();
-    if (!content || busy) return;
+    if (!content || busy || left <= 0) return;
     const next: Turn[] = [...turns, { role: "user", content }];
     setTurns(next);
     setText("");
@@ -39,8 +44,10 @@ export default function BlueChat() {
       const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string; detail?: string; webSearch?: string; searchError?: string } | null;
       if (data?.ok && data.answer) {
         setTurns([...next, { role: "assistant", content: data.answer, sources: data.sources, searchDown: data.webSearch === "unavailable", searchError: data.searchError }]);
-        setLeft(data.left ?? null);
+        setLeft(data.left ?? left);
+        setUsed(usage.limit - (data.left ?? left));
       } else {
+        if (response?.status === 429) setLeft(0);
         setError(`${data?.error ?? "B-Lue3 lost the signal. Try again."}${data?.detail ? ` [${data.detail}]` : ""}`);
       }
     } catch {
@@ -51,8 +58,25 @@ export default function BlueChat() {
     }
   }
 
+  async function resetCount() {
+    const response = await fetch("/api/blue/reset", { method: "POST" }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; usage?: Usage } | null;
+    if (data?.ok && data.usage) { setLeft(data.usage.left); setUsed(data.usage.used); setError(""); }
+  }
+
+  const noneLeft = left <= 0;
   return (
     <div className="blue-chat">
+      <div className="blue-status" role="status">
+        {usage.limit <= 12 ? (
+          <span className="blue-pips" aria-hidden="true">{Array.from({ length: usage.limit }, (_, i) => <i key={i} className={i < left ? "on" : ""} />)}</span>
+        ) : null}
+        <span>{noneLeft ? `No questions left this week. Back on ${resetLabel(usage.resetsOn)}.` : `${left} of ${usage.limit} question${usage.limit === 1 ? "" : "s"} left this week · resets ${resetLabel(usage.resetsOn)}`}</span>
+        <span className={`blue-ws ${webSearch ? "is-on" : "is-off"}`}>Web search {webSearch ? "on" : "off"}</span>
+      </div>
+      {isOfficer ? (
+        <p className="blue-officer-line">Officers: limit {usage.limit} (BLUE_WEEKLY_LIMIT is {rawLimit === null ? "not set, so the default of 5 applies" : JSON.stringify(rawLimit)}), used {used}. <button type="button" className="kb-link" onClick={resetCount}>Reset my count</button></p>
+      ) : null}
       {turns.length === 0 ? (
         <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
           {SUGGESTIONS.map((question) => (
@@ -91,11 +115,11 @@ export default function BlueChat() {
           placeholder="Ask B-Lue3 anything"
           aria-label="Ask B-Lue3"
           enterKeyHint="send"
-          disabled={busy}
+          disabled={busy || noneLeft}
         />
-        <button type="submit" disabled={busy || !text.trim()}>Ask</button>
+        <button type="submit" disabled={busy || noneLeft || !text.trim()}>Ask</button>
       </form>
-      <p className="blue-fineprint"><strong>B-Lue3 can sometimes get it wrong.</strong> It looks things up in the guild&apos;s synced data and, for counters, the web. It can&apos;t see mods or farm locations, so check in game before you commit a squad.{left !== null ? ` ${left} question${left === 1 ? "" : "s"} left this week.` : ""}</p>
+      <p className="blue-fineprint"><strong>B-Lue3 can sometimes get it wrong.</strong> It looks things up in the guild&apos;s synced data and, for counters, the web. It can&apos;t see mods or farm locations, so check in game before you commit a squad.</p>
     </div>
   );
 }

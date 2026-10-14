@@ -9122,3 +9122,13 @@ html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome
   .kb-search { grid-template-columns: minmax(0, 1fr); }
   .kb-actions > button { flex: 1 1 100%; justify-content: center; }
 }
+
+/* B-Lue3 status: allowance and web search, always visible */
+.blue-status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--muted); font-size: 13px; }
+.blue-pips { display: inline-flex; gap: 4px; }
+.blue-pips i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(120,185,255,.6); }
+.blue-pips i.on { background: #3b8cf0; }
+.blue-ws { margin-left: auto; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); font-size: 11px; font-weight: 700; }
+.blue-ws.is-on { border-color: rgba(83,214,154,.6); color: #53d69a; }
+.blue-ws.is-off { border-color: rgba(251,191,36,.5); color: #fde68a; }
+.blue-officer-line { margin: 0; color: #fde68a; font-size: 12px; line-height: 1.5; }
