@@ -1,10 +1,10 @@
 import { getViewerAccess } from "@/lib/access-control";
 import { askBlue, blueEnabled } from "@/lib/blue/ask";
-import { cleanConversation, takeQuestion } from "@/lib/blue/limits";
+import { cleanConversation, refundQuestion, safeErrorDetail, takeQuestion } from "@/lib/blue/limits";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const NO_STORE = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number) => Response.json({ ok: false, error }, { status, headers: NO_STORE });
@@ -30,7 +30,10 @@ export async function POST(request: Request) {
     const { text, sources } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
     return Response.json({ ok: true, answer: text, sources, left }, { headers: NO_STORE });
   } catch (error) {
-    console.error("blue: ask failed", error instanceof Error ? error.message : "unknown error");
-    return fail("B-Lue3 lost the signal. Try again in a minute.", 502);
+    const detail = safeErrorDetail(error);
+    console.error("blue: ask failed", detail);
+    await refundQuestion(access.playerId ?? "officer").catch(() => undefined);
+    // Officers get the reason so a broken key or model can be fixed; members just get the friendly line.
+    return Response.json({ ok: false, error: "B-Lue3 lost the signal. Try again in a minute.", ...(access.isOfficer ? { detail } : {}) }, { status: 502, headers: NO_STORE });
   }
 }

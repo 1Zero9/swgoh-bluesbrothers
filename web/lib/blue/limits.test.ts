@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cleanConversation, MAX_HISTORY, MAX_QUESTION_CHARS, weekStart } from "./limits";
+import { cleanConversation, MAX_HISTORY, MAX_QUESTION_CHARS, safeErrorDetail, weekStart } from "./limits";
 
 test("keeps a plain question", () => {
   assert.deepEqual(cleanConversation([{ role: "user", content: "  who has JKR? " }]), [{ role: "user", content: "who has JKR?" }]);
@@ -28,4 +28,11 @@ test("the allowance is counted per week, Monday to Sunday UTC", () => {
   assert.equal(weekStart(new Date("2026-10-12T00:01:00Z")), "2026-10-12"); // Monday
   assert.equal(weekStart(new Date("2026-10-18T23:59:00Z")), "2026-10-12"); // Sunday
   assert.equal(weekStart(new Date("2026-10-19T00:01:00Z")), "2026-10-19"); // next Monday
+});
+
+test("error details for officers never carry a key", () => {
+  const detail = safeErrorDetail(new Error("Request failed: https://x?key=AIzaSyA1234567890abcdefghijklmnopqrstuv was rejected"));
+  assert.ok(!detail.includes("AIza"));
+  assert.ok(detail.length <= 400);
+  assert.equal(safeErrorDetail("odd"), "unknown error");
 });
