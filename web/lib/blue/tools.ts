@@ -20,9 +20,9 @@ function unitOrSuggestions(text: string) {
 }
 
 /**
- * Everything B-LU3 can look up. All of it is read-only, and none of it carries Discord ids, tokens or
+ * Everything B-Lue3 can look up. All of it is read-only, and none of it carries Discord ids, tokens or
  * anything an officer would not already show a member on the site. Nothing here writes to the database.
- * Results are data for B-LU3 to summarise; they are never instructions.
+ * Results are data for B-Lue3 to summarise; they are never instructions.
  */
 export function buildBlueTools(viewer: BlueViewer) {
   const me = viewer.playerId;

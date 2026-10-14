@@ -8,7 +8,7 @@ const WIDTH = 640; // the clip is 16:9; keying at this size keeps phones smooth
 const HEIGHT = 360;
 
 /**
- * "Meet B-LU3": Blue's avatar with a play badge. A tap opens a short clip of Blue with the green screen
+ * "Meet B-Lue3": Blue's avatar with a play badge. A tap opens a short clip of Blue with the green screen
  * removed live, so he floats over the page. The video only downloads when someone taps.
  */
 export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", endLabel = "Ask Blue a question" }: { variant?: "avatar" | "welcome"; endHref?: string; endLabel?: string }) {
@@ -60,18 +60,18 @@ export default function BlueIntro({ variant = "avatar", endHref = "#ask-blue", e
   return (
     <>
       {variant === "welcome" ? (
-        <button type="button" className="blue-intro-welcome" onClick={() => setOpen(true)} aria-label="Play a welcome from B-LU3">
+        <button type="button" className="blue-intro-welcome" onClick={() => setOpen(true)} aria-label="Play a welcome from B-Lue3">
           <Image src="/blue.png" alt="" width={60} height={60} />
           <span aria-hidden="true">▶</span>
         </button>
       ) : (
-        <button type="button" className="blue-intro-btn" onClick={() => setOpen(true)} aria-label="Meet B-LU3: play a short clip">
+        <button type="button" className="blue-intro-btn" onClick={() => setOpen(true)} aria-label="Meet B-Lue3: play a short clip">
           <Image src="/blue.png" alt="" className="blue-briefing-avatar" width={300} height={300} priority />
           <span className="blue-intro-play" aria-hidden="true">▶<b> Meet Blue</b></span>
         </button>
       )}
       {open ? (
-        <div className="blue-intro-overlay" role="dialog" aria-modal="true" aria-label="Meet B-LU3">
+        <div className="blue-intro-overlay" role="dialog" aria-modal="true" aria-label="Meet B-Lue3">
           <button type="button" className="blue-intro-backdrop" aria-label="Close" onClick={close} />
           <div className="blue-intro-stage">
             <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="blue-intro-canvas" />

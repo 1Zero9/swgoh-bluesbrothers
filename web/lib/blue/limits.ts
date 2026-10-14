@@ -1,6 +1,6 @@
 import { getPrisma } from "@/lib/prisma";
 
-/** Questions one member may put to B-LU3 per week (Monday to Sunday, UTC). Each one is a paid AI call. BLUE_WEEKLY_LIMIT overrides it. */
+/** Questions one member may put to B-Lue3 per week (Monday to Sunday, UTC). Each one is a paid AI call. BLUE_WEEKLY_LIMIT overrides it. */
 export const DEFAULT_WEEKLY_LIMIT = 5;
 
 export function weeklyLimit() {

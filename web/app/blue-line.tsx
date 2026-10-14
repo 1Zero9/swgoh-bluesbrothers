@@ -16,7 +16,7 @@ export default async function BlueLine() {
     <Link className="blue-line" href="/me#ask-blue">
       <Image src="/blue.png" alt="" width={44} height={44} />
       <span className="blue-line-copy">
-        <small>B-LU3 · {briefing.label}</small>
+        <small>B-Lue3 · {briefing.label}</small>
         <strong>{briefing.title}</strong>
         <span>{briefing.message}</span>
       </span>

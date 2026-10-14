@@ -9008,7 +9008,7 @@ html[data-theme="light"] .welcome-banner { background: #f0fbf6; border-color: rg
 html[data-theme="light"] .welcome-banner-icon, html[data-theme="light"] .welcome-banner-copy small, html[data-theme="light"] .welcome-banner-go { color: #15795a; }
 @media (max-width: 560px) { .welcome-banner { padding: 12px 14px; gap: 12px; } .welcome-banner-icon { width: 40px; height: 40px; } .welcome-banner-copy strong { font-size: 16px; } }
 
-/* Meet B-LU3 clip */
+/* Meet B-Lue3 clip */
 .blue-intro-btn { position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer; align-self: end; }
 .blue-intro-play { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); padding: 4px 10px; border-radius: 999px; background: rgba(41,119,226,.92); color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
 .blue-intro-btn:hover .blue-intro-play { background: #3b8cf0; }

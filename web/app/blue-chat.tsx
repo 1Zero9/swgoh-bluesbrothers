@@ -7,7 +7,7 @@ type Turn = { role: "user" | "assistant"; content: string };
 
 const SUGGESTIONS = ["What should I farm next?", "What team should I finish?", "How can I help the band?"];
 
-/** Talk to B-LU3. The conversation lives only in this page; the server keeps nothing but a daily count. */
+/** Talk to B-Lue3. The conversation lives only in this page; the server keeps nothing but a daily count. */
 export default function BlueChat() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState("");

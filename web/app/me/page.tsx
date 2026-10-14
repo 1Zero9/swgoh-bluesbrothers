@@ -86,7 +86,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
       <section className="blue-briefing public-block" aria-labelledby="blue-briefing-title">
         <BlueIntro />
         <div className="blue-briefing-copy">
-          <p className="eyebrow">B-LU3 · Blue&apos;s briefing</p>
+          <p className="eyebrow">B-Lue3 · Blue&apos;s briefing</p>
           <h2 id="blue-briefing-title">{briefing.title}</h2>
           <p>{briefing.message}</p>
           <Link href={briefing.href} className="blue-briefing-action">{briefing.action} <span>→</span></Link>
@@ -95,7 +95,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
 
       <section className="blue-questions public-block" id="ask-blue" aria-labelledby="ask-blue-title">
         <header>
-          <p className="eyebrow">Ask B-LU3</p>
+          <p className="eyebrow">Ask B-Lue3</p>
           <h2 id="ask-blue-title">What do you need?</h2>
           <p>{aiOn ? "Type a question, or tap one. Blue checks your synced roster and the guild's data before answering." : "Blue reads your synced roster against the guild's current needs and gives you the straight answer."}</p>
         </header>

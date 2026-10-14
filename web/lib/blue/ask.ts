@@ -14,7 +14,7 @@ function blueModel() {
   return process.env.GOOGLE_GENERATIVE_AI_API_KEY ? google(chosen || DEFAULT_GEMINI) : chosen || DEFAULT_GATEWAY_MODEL;
 }
 
-/** B-LU3's AI chat is off until BLUE_AI=on is set on the server, so nothing is billed by accident. */
+/** B-Lue3's AI chat is off until BLUE_AI=on is set on the server, so nothing is billed by accident. */
 export function blueEnabled() {
   return process.env.BLUE_AI === "on";
 }
