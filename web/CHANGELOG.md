@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.78.0 — 2026-10-14
+
+- **The older pages follow your theme.** Territory War, Territory Battles, Raids, the roster, the Wins, Counters, Field Guides, My page and the rest now go light in **Rebel** and navy in **Deep**, instead of staying dark next to the new navigation.
+- **Dougie's Discs and the Cantina stay dark on purpose.** They are the off-duty corner and look best as dark rooms.
+- **Pictures sit properly beside the sidebar.** The big banner pictures used to run underneath it on a laptop; they now fit the space.
+- The version number no longer shows in the header for signed-in members.
+
 ## 0.77.0 — 2026-10-14
 
 - **A proper first sign-in.** After you sign in with Discord for the first time, you now get one clear page: three steps (Discord, ally code, you're in), a single box for your 9-digit ally code, and a "Where do I find it?" hint. Before, the ally code box sat further down the front page.

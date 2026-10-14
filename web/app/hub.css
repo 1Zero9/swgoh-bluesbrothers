@@ -319,3 +319,25 @@ html[data-hub="on"] .site-header .header-controls .theme-picker { display: none 
 .hub-problem p { margin: 0; color: var(--hub-muted); font-size: 14px; line-height: 1.5; }
 .hub-problem .hub-button { justify-self: start; }
 .hub-note-line a { color: var(--hub-accent); }
+
+/* Older pages under Deep space: the original dark design with the navy ground and lifted line colours. */
+html[data-theme="deep"] {
+  --ink: #0a1020;
+  --line: rgba(150, 185, 255, 0.16);
+  --muted: #a3b3d0;
+  --blue: #62ccff;
+}
+html[data-theme="deep"] body { background: #0a1020; }
+
+/* Full-width heroes assume a page centred in the window. With the sidebar the page is narrower, so size them to it. */
+@media (min-width: 1024px) {
+  html[data-hub="on"] .page-hero,
+  html[data-hub="on"] .credits-hero,
+  html[data-hub="on"] .dougies-discs-page .page-hero {
+    width: calc(100vw - 216px);
+    margin-left: calc(50% - (100vw - 216px) / 2);
+  }
+}
+
+/* The version number and the sync pill are for officers and the build log, not for the member header. */
+html[data-hub="on"] .site-header .version-label { display: none; }
