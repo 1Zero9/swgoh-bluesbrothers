@@ -1,12 +1,17 @@
 import type { ReactNode } from "react";
 import HubNav from "./hub-nav";
 
-/** The frame for hub screens: the five-section navigation plus a themed page body. */
-export default function HubPage({ children }: { children: ReactNode }) {
+/**
+ * The frame for hub screens: the navigation, a themed ground (stars in Deep, a grid in Classic) and the page body.
+ * A `banner` runs edge to edge above the padded content.
+ */
+export default function HubPage({ children, banner }: { children: ReactNode; banner?: ReactNode }) {
   return (
     <>
       <HubNav />
       <main className="hub-main">
+        <div className="hub-ground" aria-hidden="true" />
+        {banner}
         <div className="hub-wrap">{children}</div>
       </main>
     </>

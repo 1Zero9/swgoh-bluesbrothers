@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.80.0 — 2026-10-14
+
+- **A proper desktop layout.** On a laptop the sidebar now lists every page in groups (Knowledge, Guild, War room, Off duty, You, and Officers if you are one), so nothing is hidden behind a menu. Phones keep the five tabs.
+- **Edge-to-edge banner with the whole picture.** The Home banner spans the full width and shows the whole cantina scene, sign included. The scene fades into the banner behind the headline and the guild numbers (members, power, tickets today, Galactic Legends).
+- **A ground behind the pages.** Stars in **Deep**, a grid in **Classic**, plain in **Rebel**.
+- **Home puts the important things where you can see them.** "Act now" sits beside the ask box: the counters the guild is asking for and the open Territory Battle callouts. Below: **new members**, **achievements** (the wins), and **guild chat** with an Open Discord button. At the bottom, a status row for Territory War (the last finished war), Territory Battles (open callouts) and raids (tickets and the last raid).
+- **Tips and Ideas have their own pages** (`/knowledge/tips`, `/knowledge/ideas`) so the sidebar can link straight to them.
+
 ## 0.79.0 — 2026-10-14
 
 - **How B-Lue3 answers is now impossible to miss.** Three clear steps with big cost labels: **Free** (the guild's own knowledge), **Uses 1 question** (a web search, only if you tap it) and **Uses 1 question** (the AI). The AI steps carry an **AI** tag. It shows on Home and on the Ask page, with how many questions you have left this week.
