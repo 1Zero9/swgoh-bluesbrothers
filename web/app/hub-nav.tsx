@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
 import { activeSidebarHref, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
+import BlueFloat from "./blue-float";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -76,6 +77,7 @@ export default function HubNav() {
           <ThemeToggle />
         </div>
       </aside>
+      <BlueFloat />
       <nav className="hub-tabs" aria-label="Main">
         {HUB_SECTIONS.map((section) => {
           const Icon = ICONS[section.key];
