@@ -6,6 +6,7 @@ import { cleanSources, type AnswerSource } from "@/lib/blue/sources";
 import { buildBlueTools, type BlueViewer } from "@/lib/blue/tools";
 
 /** Cheap and quick is right for lookups. Change either with BLUE_MODEL. */
+const MAX_STEPS = 8;
 const DEFAULT_GEMINI = "gemini-flash-latest";
 const DEFAULT_GATEWAY_MODEL = "anthropic/claude-haiku-5-5";
 
@@ -40,11 +41,18 @@ async function run(viewer: BlueViewer, conversation: ChatTurn[], withSearch: boo
     instructions: instructionsFor(withSearch),
     messages: conversation,
     tools: { ...buildBlueTools(viewer), ...(withSearch ? { google_search: google.tools.googleSearch({}) } : {}) },
-    stopWhen: isStepCount(6),
+    stopWhen: isStepCount(MAX_STEPS),
+    // On the last step he must write the answer, not call another tool (an unfinished tool loop used to end with no text at all).
+    prepareStep: ({ stepNumber }) => (stepNumber >= MAX_STEPS - 1 ? { toolChoice: "none" as const } : undefined),
     maxOutputTokens: 900,
     timeout: withSearch ? 30_000 : 40_000,
   });
   const sources = cleanSources(result.steps.flatMap((step) => step.sources));
+  if (!result.text.trim() && withSearch) {
+    // An empty answer from the search run is a failed run: fall back, and keep the reason for officers.
+    const tools = [...new Set(result.steps.flatMap((step) => step.toolCalls.map((call) => call?.toolName ?? "?")))].join(", ") || "none";
+    throw new Error(`empty answer (finish=${result.finishReason}, steps=${result.steps.length}, tools=${tools})`);
+  }
   return { text: result.text.trim() || "I came up empty on that one. Try asking it another way.", sources, webSearch: withSearch ? "used" : "off" };
 }
 

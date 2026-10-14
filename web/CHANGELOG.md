@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.72.3 — 2026-10-14
+
+- **Fixed "I came up empty on that one."** When B-Lue3 searched the web he could use up all his steps looking things up and never write an answer. He now always writes one, and if a web search still ends with nothing, he answers from the guild's own data and says the search didn't work.
+
 ## 0.72.2 — 2026-10-14
 
 - **You can see where you stand with B-Lue3.** Above the questions there's now a row of dots for how many you have left this week, when it resets (Monday), and a badge showing whether web search is on. When you've used them all, the buttons and box are greyed out with the reset day, instead of failing.
