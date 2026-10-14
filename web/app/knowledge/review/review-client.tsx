@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import MatchCard, { type Listing } from "../match-card";
+import ResearchPanel from "./research-panel";
 
 type Coverage = { teams: number; variants: number; evidence: number; byStatus: Record<string, number>; byMode: Record<string, number>; needRefresh: { id: string; label: string }[]; expiredDatacron: { id: string; label: string }[] };
 
@@ -31,6 +32,7 @@ export default function ReviewClient({ names }: { names: Record<string, string> 
 
   return (
     <div className="kb">
+      <ResearchPanel onDone={() => void load()} />
       {coverage ? (
         <section className="kb-coverage" aria-label="Coverage">
           <div><strong>{coverage.byStatus.PUBLISHED ?? 0}</strong><small>published</small></div>

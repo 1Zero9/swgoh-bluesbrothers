@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.60.3 · **Last updated:** 2026-10-13 · tracks site `v0.72.3`
+**Doc version:** 1.61.0 · **Last updated:** 2026-10-13 · tracks site `v0.73.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -370,6 +370,7 @@ Set in three places independently — **they do not sync automatically**:
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini API key for B-Lue3 (used directly, default model `gemini-flash-latest`). Takes priority over the AI Gateway |
 | `BLUE_WEEKLY_LIMIT` | Questions per member per week to B-Lue3 (default 5; resets Monday UTC) |
 | `DISCORD_COUNTERS_WEBHOOK_URL` | Webhook of the Discord channel for "I need a counter" calls for help (optional: without it the call still shows on the site's Wanted list) |
+| `BLUE_RESEARCH_LIMIT` | Officer web-research runs per week (default 15; each is two AI calls with Google Search) |
 | `BLUE_WEB_SEARCH` | Set to `off` to stop B-Lue3 searching the web (Gemini Google Search grounding, on by default when `GOOGLE_GENERATIVE_AI_API_KEY` is set) |
 | `BLUE_MODEL` | Optional model override: a Gemini id when the Google key is set, otherwise an AI Gateway `provider/model` id (default `anthropic/claude-haiku-5-5`) |
 | `AI_GATEWAY_API_KEY` | Vercel AI Gateway key the AI SDK reads for B-Lue3 (not needed if the project's AI Gateway/OIDC is enabled) |
@@ -501,6 +502,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.61.0 — 2026-10-14**: officer **Research with B-Lue3** on `/knowledge/review` (`lib/blue/research.ts`, `POST /api/knowledge/research`, officers only, `BLUE_RESEARCH_LIMIT` a week). Step 1 is a web-search-only Gemini call (no database access); step 2 extracts structured counters (`Output.object`); then the code filters each one — real unit names, squad shape for the mode (`checkSquad`), and the source link must be on a site the search actually returned (`foundHosts`/`sourceWasFound`; Google's redirect links are titled with the site's domain) — and files survivors as BLUE candidates via `submitMatchup`. Set-aside counters are listed with the reason. The model never writes to the database and nothing is published. Tested with a scripted fake model (`MockLanguageModelV4`), not against a live key.
 - **1.60.3 — 2026-10-14**: fixed "I came up empty on that one": with web search the model could spend every step on tools and end with no text. Now `MAX_STEPS` is 8, the final step forces `toolChoice: "none"` (`prepareStep`), and an empty answer from the search run counts as a failed run (falls back to the no-search run; officers see `empty answer (finish=…, steps=…, tools=…)` as the reason).
 - **1.60.2 — 2026-10-14**: B-Lue3 status is visible. `/me` shows dots for questions left this week, the reset date (`nextReset`, next Monday UTC) and a Web search on/off badge; at zero the starter buttons and the box are disabled. Officers also see the limit, the raw `BLUE_WEEKLY_LIMIT` value, how many are used, and a **Reset my count** button (`POST /api/blue/reset`, officers only). Bug fixed: `takeQuestion` used to leave a blocked attempt counted, so the count kept climbing after the limit and never recovered; it now gives the blocked try back. `getUsage` reads the count without using anything up.
 - **1.60.1 — 2026-10-14**: B-Lue3 is honest about web search. `askBlue` returns `webSearch` (`used`/`unavailable`/`off`); when the search attempt fails and the retry runs without it, `instructionsFor(false)` tells the model it has no web search (it had been claiming it lacked the ability in general), the chat shows "I couldn't search the web just now", and officers also see the sanitised reason (`searchError`). The original failures were Google's free tier (429/503); moving the key to a paid plan fixed them.

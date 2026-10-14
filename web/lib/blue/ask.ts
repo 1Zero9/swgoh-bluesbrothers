@@ -11,7 +11,7 @@ const DEFAULT_GEMINI = "gemini-flash-latest";
 const DEFAULT_GATEWAY_MODEL = "anthropic/claude-haiku-5-5";
 
 /** A Google key (GOOGLE_GENERATIVE_AI_API_KEY) is used directly; otherwise the Vercel AI Gateway, which wants a "provider/model" id. */
-function blueModel() {
+export function blueModel() {
   const chosen = process.env.BLUE_MODEL?.trim();
   return process.env.GOOGLE_GENERATIVE_AI_API_KEY ? google(chosen || DEFAULT_GEMINI) : chosen || DEFAULT_GATEWAY_MODEL;
 }
