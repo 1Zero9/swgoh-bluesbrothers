@@ -4,6 +4,9 @@ export type FloatPos = { fx: number; fy: number };
 
 export const FLOAT_SIZE = 76;
 export const EDGE = 8;
+/** The laptop sidebar is this wide; the icon never sits on it. */
+export const SIDEBAR_W = 216;
+export const SIDEBAR_FROM = 1024;
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -20,17 +23,17 @@ export function parsePos(raw: string): FloatPos | null {
 }
 
 /** Pixel position (top-left) for a stored share, kept fully on screen. */
-export function toPixels(pos: FloatPos, width: number, height: number, size = FLOAT_SIZE) {
-  const freeX = Math.max(0, width - size - EDGE * 2);
+export function toPixels(pos: FloatPos, width: number, height: number, size = FLOAT_SIZE, inset = 0) {
+  const freeX = Math.max(0, width - inset - size - EDGE * 2);
   const freeY = Math.max(0, height - size - EDGE * 2);
-  return { x: EDGE + pos.fx * freeX, y: EDGE + pos.fy * freeY };
+  return { x: inset + EDGE + pos.fx * freeX, y: EDGE + pos.fy * freeY };
 }
 
 /** The share to store for a pixel position (top-left), clamped on screen. */
-export function fromPixels(x: number, y: number, width: number, height: number, size = FLOAT_SIZE): FloatPos {
-  const freeX = Math.max(1, width - size - EDGE * 2);
+export function fromPixels(x: number, y: number, width: number, height: number, size = FLOAT_SIZE, inset = 0): FloatPos {
+  const freeX = Math.max(1, width - inset - size - EDGE * 2);
   const freeY = Math.max(1, height - size - EDGE * 2);
-  return { fx: clamp01((x - EDGE) / freeX), fy: clamp01((y - EDGE) / freeY) };
+  return { fx: clamp01((x - inset - EDGE) / freeX), fy: clamp01((y - EDGE) / freeY) };
 }
 
 /** A pointer that barely moved is a tap, not a drag. */

@@ -728,3 +728,57 @@ html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90de
 .hub-hero-copy { flex: 0 1 540px; }
 .hub-backdrop { background-position: 50% 0%; }
 @media (max-width: 999.98px) { .hub-hero-copy { flex-basis: 100%; } .hub-backdrop { background-position: 72% 0%; } }
+
+/* ---------- Home, UI polish pass ---------- */
+/* Sidebar: the page list scrolls on its own; the name and theme switch always stay put at the bottom. */
+html[data-hub="on"] .hub-side { overflow: hidden; }
+.hub-side-brand { flex: none; }
+.hub-side-nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; align-content: start; scrollbar-width: thin; padding-right: 2px; }
+.hub-side-foot { position: static; flex: none; margin-top: 8px; padding-bottom: 0; }
+.hub-side-icon { flex: none; color: var(--hub-amber); }
+.hub-side-link.is-ask { color: var(--hub-accent); }
+.hub-side-link.is-ask[aria-current="page"] { color: var(--hub-amber); }
+.hub-side-group > p { font-size: 11px; }
+
+/* Labels: a touch bigger and brighter so they read on the navy. */
+.hub-eyebrow { font-size: 12px; letter-spacing: 0.1em; }
+@media (min-width: 1000px) { .hub-hero .hub-stats small { font-size: 11px; letter-spacing: 0.06em; color: #fff; } }
+.hub-act h3 { font-size: 12px; }
+
+/* The picture sits further back, so the words on it read cleanly. */
+.hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.86), rgba(5, 10, 20, 0.66) 50%, rgba(5, 10, 20, 0.72)), linear-gradient(180deg, transparent 50%, rgba(5, 10, 20, 0.6)); }
+html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.78), rgba(5, 10, 20, 0.55) 55%, rgba(5, 10, 20, 0.6)); }
+
+/* Hero: words and numbers on the left, one welcome box on the page grid's third column, same height. */
+.hub-hero { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 16px; }
+.hub-hero-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; flex: none; }
+.hub-hero h1 { max-width: 24ch; line-height: 1.12; font-size: clamp(24px, 2.4vw, 34px); }
+.hub-hero .hub-banner-side { width: auto; flex: none; align-self: stretch; }
+.hub-banner-side { border-color: rgba(98, 204, 255, 0.5); }
+@media (min-width: 1000px) {
+  .hub-hero { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hub-hero-copy { grid-column: 1 / 3; }
+  .hub-hero .hub-banner-side { grid-column: 3; align-self: start; }
+  .hub-hero .hub-stats { gap: 10px; }
+  .hub-hero .hub-stats li { min-width: 120px; }
+}
+.hub-start.is-compact li.is-next strong { color: #fff; font-size: 14.5px; }
+.hub-start.is-compact li.is-next .hub-tick { border-color: var(--hub-accent); box-shadow: 0 0 0 3px rgba(98, 204, 255, 0.25); }
+.hub-start.is-compact li:not(.is-next):not(.is-done) strong { color: rgba(255, 255, 255, 0.8); }
+.hub-start.is-compact li a:hover strong { text-decoration: underline; }
+
+/* Ask bar: question first, suggestions underneath on the left. */
+@media (min-width: 1000px) { .hub-home-grid .hub-askbox { grid-template-columns: minmax(0, 1fr); align-items: start; } }
+.hub-chips span { align-self: center; color: var(--hub-muted); font-size: 13px; }
+
+/* The work: three columns, cards in a row as tall as the tallest, chat filling the space under the wins. */
+@media (min-width: 1000px) {
+  .hub-home-grid { align-items: stretch; grid-template-areas: "ask ask ask" "status status status" "act wins new" "act chat chat"; grid-template-rows: auto auto auto 1fr; }
+}
+.hub-status-card { align-content: start; }
+
+/* "Act now" is loud only when there is something to act on. */
+.hub-act.is-urgent { border-color: var(--hub-amber); box-shadow: inset 4px 0 0 var(--hub-amber), var(--hub-shadow); }
+.hub-act.is-clear h2 { font-size: 15px; color: var(--hub-muted); font-weight: 600; }
+.hub-act.is-clear .hub-quiet { margin: 0; }
+.hub-hero > * { min-width: 0; max-width: 100%; }

@@ -49,6 +49,7 @@ export default function GetStarted({ linked, steps, compact = false }: { linked:
   const finished = steps.filter((step) => done.includes(step.key)).length + (linked ? 1 : 0);
   const total = steps.length + 1;
   if (hidden) return null;
+  const nextKey = linked ? steps.find((step) => !done.includes(step.key))?.key : "link";
 
   return (
     <section className={compact ? "hub-start is-compact" : "hub-card hub-start"} aria-labelledby="hub-start-title">
@@ -57,14 +58,14 @@ export default function GetStarted({ linked, steps, compact = false }: { linked:
         <span className="hub-badge">{finished} of {total}</span>
       </div>
       <ul>
-        <li className={linked ? "is-done" : undefined}>
+        <li className={`${linked ? "is-done" : ""}${nextKey === "link" ? " is-next" : ""}`.trim() || undefined}>
           <span className="hub-tick">{linked ? <Check size={14} aria-hidden="true" /> : null}</span>
           <span><strong>Link your game account</strong><small>{linked ? "Done. Your ally code is matched." : "Sign in with Discord and enter your ally code."}</small></span>
         </li>
         {steps.map((step) => {
           const isDone = done.includes(step.key);
           return (
-            <li key={step.key} className={isDone ? "is-done" : undefined}>
+            <li key={step.key} className={`${isDone ? "is-done" : ""}${nextKey === step.key ? " is-next" : ""}`.trim() || undefined}>
               <span className="hub-tick">{isDone ? <Check size={14} aria-hidden="true" /> : null}</span>
               <Link href={step.href} onClick={() => save(done.includes(step.key) ? done : [...done, step.key], false)}>
                 <strong>{step.title}</strong><small>{step.hint}</small>
