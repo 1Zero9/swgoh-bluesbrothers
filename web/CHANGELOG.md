@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.83.0 — 2026-10-15
+
+- **Home is built for a phone.** The welcome to the guild, your standing and the get-started steps now live inside the banner at the top and can be dismissed. On a phone the big AI box is gone: B-Lue3's floating icon is the way in. On a laptop it is one slim ask bar, with how B-Lue3 answers (and what it costs) folded away under it.
+- **A bigger banner.** The picture is taller so the sign and both brothers show, with the numbers on it instead of boxes underneath.
+- **Deep is the default look** for anyone who has not picked one. Choices already made are kept.
+
 ## 0.82.0 — 2026-10-14
 
 - **Every page has the same banner as Home.** Ask B-Lue3, Knowledge, Guild and More now open with the slim picture banner and the page's own title and a line of explanation. Territory War, Territory Battles, Raids, the roster, the Wins, Counters, Field Guides, My page and the other older pages have their big picture headers cut down to the same slim shape.
