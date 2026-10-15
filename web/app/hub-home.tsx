@@ -56,6 +56,20 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
           <h1>Ask B-Lue3. Add what you know.</h1>
         </div>
+      <section className="hub-askbox" aria-label="Ask B-Lue3">
+        <form action="/ask" method="get" className="hub-askform">
+          <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
+          <button type="submit">Ask</button>
+        </form>
+        <div className="hub-chips">
+          <span>Try:</span>
+          {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
+        </div>
+        <details className="hub-ask-how">
+          <summary>How B-Lue3 answers, and what it costs</summary>
+          <AnswerLadder left={questions} compact />
+        </details>
+      </section>
         {stats ? (
           <ul className="hub-stats" aria-label="The guild now">
             <li><strong>{stats.members}</strong><small>members</small></li>
@@ -83,21 +97,6 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
       {hero}
       <div className="hub-home-grid">
         <div className="hub-home-top">
-        <section className="hub-askbox" aria-label="Ask B-Lue3">
-          <form action="/ask" method="get" className="hub-askform">
-            <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
-            <button type="submit">Ask</button>
-          </form>
-          <div className="hub-chips">
-            <span>Try:</span>
-            {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
-          </div>
-          <details className="hub-ask-how">
-            <summary>How B-Lue3 answers, and what it costs</summary>
-            <AnswerLadder left={questions} compact />
-          </details>
-        </section>
-
         <section className={`hub-card hub-act ${hasWork ? "is-urgent" : "is-clear"}`} aria-labelledby="hub-act-title">
           <p className={`hub-eyebrow${hasWork ? " is-amber" : ""}`}>Act now</p>
           <h2 id="hub-act-title">{hasWork ? "Where the guild needs you" : "Nothing needs you right now"}</h2>

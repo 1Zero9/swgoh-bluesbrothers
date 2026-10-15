@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.84.1 — 2026-10-15
+
+- **One look for every box on Home.** The stat tiles, ask box, welcome box and all the cards are now the same frosted-glass panel over the picture, so nothing looks like a different system.
+- **The ask box moved up beside the welcome box**, under the headline, instead of running the full width of the page. The cards start higher, and "Act now" shrinks out of the way when nothing needs doing.
+
 ## 0.84.0 — 2026-10-15
 
 - **Home layout fixes.** The sidebar now scrolls on its own, with your name and the theme switch always visible at the bottom. B-Lue3's floating icon can no longer sit on top of the sidebar. The welcome box lines up with the card column under it and matches the headline's height.
