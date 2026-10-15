@@ -61,7 +61,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           </ul>
         ) : null}
       </div>
-      <div className="hub-banner-side">
+      <div className="hub-banner-side" aria-label="You">
         {standing ? (
           <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
             <strong>{name}</strong>
@@ -76,7 +76,8 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
 
   return (
     <HubPage banner={banner}>
-      <div className="hub-home-top">
+      <div className="hub-home-grid">
+        <div className="hub-home-top">
         <section className="hub-askbox" aria-label="Ask B-Lue3">
           <form action="/ask" method="get" className="hub-askform">
             <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
@@ -112,14 +113,14 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
       </div>
 
       <div className="hub-home-cols">
-        <section className="hub-card" aria-labelledby="hub-new-title">
+        <section className="hub-card is-new" aria-labelledby="hub-new-title">
           <p className="hub-eyebrow">New members</p>
           <h2 id="hub-new-title">Welcome to the band</h2>
           {newMembers.length ? <ul className="hub-feed">{newMembers.map((member) => <li key={member.id}><strong>{member.name}</strong><small>Joined {member.when}{member.power ? ` · ${member.power} GP` : ""}</small></li>)}</ul> : <p className="hub-quiet">No one new this month.</p>}
           {wire.length ? <Link className="hub-how" href="/overview">More from the Guild Wire</Link> : null}
         </section>
 
-        <section className="hub-card" aria-labelledby="hub-wins-title">
+        <section className="hub-card is-wins" aria-labelledby="hub-wins-title">
           <p className="hub-eyebrow">Achievements</p>
           <h2 id="hub-wins-title">The Wins this week</h2>
           {wins.length ? <ul className="hub-feed">{wins.map((win) => <li key={win.id}><strong>{win.who}</strong><small>{win.text} · {win.when}</small></li>)}</ul> : <p className="hub-quiet">Level a unit and it shows up here.</p>}
@@ -146,6 +147,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
           </Link>
         ))}
+      </div>
       </div>
     </HubPage>
   );
