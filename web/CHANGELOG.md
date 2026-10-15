@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.83.2 — 2026-10-15
+
+- **The picture is now the page's background**, not a banner block that pushes everything down. The headline, numbers, welcome box and cards start at the top of the page and sit over the fixed picture. The ask bar and cards no longer run off the right edge on a wide screen.
+
 ## 0.83.1 — 2026-10-15
 
 - **Home is one tidy grid.** The headline and numbers sit at the top of the banner, with a single welcome box (your standing and the get-started steps) beside the brothers so the sign stays visible. The ask bar is one slim line, the war room strip (Territory War, Territory Battles, Raids) moved up under it, and the cards below no longer leave gaps.
