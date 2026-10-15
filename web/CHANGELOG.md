@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.83.1 — 2026-10-15
+
+- **Home is one tidy grid.** The headline and numbers sit at the top of the banner, with a single welcome box (your standing and the get-started steps) beside the brothers so the sign stays visible. The ask bar is one slim line, the war room strip (Territory War, Territory Battles, Raids) moved up under it, and the cards below no longer leave gaps.
+
 ## 0.83.0 — 2026-10-15
 
 - **Home is built for a phone.** The welcome to the guild, your standing and the get-started steps now live inside the banner at the top and can be dismissed. On a phone the big AI box is gone: B-Lue3's floating icon is the way in. On a laptop it is one slim ask bar, with how B-Lue3 answers (and what it costs) folded away under it.
