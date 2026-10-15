@@ -44,10 +44,9 @@ const STEPS = [
 ];
 
 export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, chat, discordUrl }: HubHomeProps) {
-  const banner = (
-    <section className="hub-banner is-home" aria-label="Welcome">
-      <div className="hub-banner-bg" aria-hidden="true" />
-      <div className="hub-banner-copy">
+  const hero = (
+    <section className="hub-hero" aria-label="Welcome">
+      <div className="hub-hero-copy">
         <div>
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
           <h1>This is where the guild keeps what it knows.</h1>
@@ -75,7 +74,8 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
   );
 
   return (
-    <HubPage banner={banner}>
+    <HubPage backdrop="/bb-title.webp">
+      {hero}
       <div className="hub-home-grid">
         <div className="hub-home-top">
         <section className="hub-askbox" aria-label="Ask B-Lue3">

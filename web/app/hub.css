@@ -696,3 +696,35 @@ html[data-hub="on"] .page-hero .public-cta { margin-top: 12px; }
 @media (max-width: 759.98px) {
   .hub-home-grid .hub-askbox { display: none; }
 }
+
+/* ---------- Home, backdrop pass: the picture is the page's background, not a block that pushes everything down ---------- */
+.hub-backdrop { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: #0b1220 var(--hub-backdrop-image) 68% 0% / cover no-repeat; }
+.hub-backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5, 10, 20, 0.78), rgba(5, 10, 20, 0.42) 50%, rgba(5, 10, 20, 0.5)), linear-gradient(180deg, transparent 55%, rgba(5, 10, 20, 0.55)); }
+html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.7), rgba(5, 10, 20, 0.3) 55%, rgba(5, 10, 20, 0.35)); }
+.hub-main:has(.hub-backdrop) .hub-ground { display: none; }
+
+.hub-hero { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 18px 28px; color: #fff; }
+.hub-hero-copy { display: grid; gap: 12px; min-width: 0; flex: 1 1 420px; }
+.hub-hero .hub-eyebrow { color: #bfe8ff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+.hub-hero h1 { margin: 0; max-width: 22ch; font-size: clamp(24px, 2.6vw, 36px); letter-spacing: -0.02em; text-wrap: balance; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6); }
+.hub-hero .hub-banner-side { flex: 0 1 340px; width: 340px; max-width: 100%; align-self: flex-start; }
+@media (max-width: 999.98px) {
+  .hub-hero-copy { flex-basis: 100%; }
+  .hub-hero .hub-banner-side { width: 100%; flex-basis: 100%; }
+  .hub-backdrop { background-position: 72% 0%; }
+}
+
+/* Nothing on the grid may push past the page edge. */
+.hub-home-grid > *, .hub-askbox { min-width: 0; max-width: 100%; }
+.hub-askbox .hub-chips { flex-wrap: wrap; }
+@media (min-width: 1000px) { .hub-home-grid .hub-askbox { grid-template-columns: minmax(0, 1fr) minmax(0, auto); } }
+@media (max-width: 999.98px) {
+  .hub-hero .hub-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .hub-hero .hub-stats li { min-width: 0; padding: 7px 6px; text-align: center; }
+  .hub-hero .hub-stats strong { font-size: 16px; }
+  .hub-hero .hub-stats small { font-size: 9px; letter-spacing: 0.04em; }
+}
+.hub-hero { justify-content: flex-start; }
+.hub-hero-copy { flex: 0 1 540px; }
+.hub-backdrop { background-position: 50% 0%; }
+@media (max-width: 999.98px) { .hub-hero-copy { flex-basis: 100%; } .hub-backdrop { background-position: 72% 0%; } }
