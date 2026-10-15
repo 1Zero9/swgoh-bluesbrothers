@@ -821,3 +821,54 @@ html[data-theme="rebel"] { --hub-glass: rgba(255, 255, 255, 0.74); --hub-glass-l
 .hub-links-feed a { display: grid; gap: 1px; color: inherit; text-decoration: none; }
 .hub-links-feed a:hover strong { color: var(--hub-accent); text-decoration: underline; }
 .hub-links-feed li:first-child { padding-top: 0; }
+
+/* ---------- Calm Home: one focal point (headline + ask), quiet numbers, three panels ---------- */
+.hub-hero { align-items: start; gap: 24px 16px; }
+.hub-hero-copy { justify-content: flex-start; gap: 22px; }
+.hub-hero .hub-askbox { background: none; border: 0; padding: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; width: min(100%, 620px); gap: 12px; }
+.hub-hero .hub-askform input { min-height: 54px; border-radius: 14px; font-size: 16px; background: rgba(12, 20, 40, 0.58); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.hub-hero .hub-askform button { min-height: 54px; border-radius: 14px; padding: 0 26px; font-size: 16px; }
+.hub-hero .hub-chips { margin-top: 0; gap: 8px; }
+.hub-hero .hub-chips a { padding: 7px 14px; background: rgba(12, 20, 40, 0.45); }
+.hub-hero .hub-ask-how { margin-top: 0; }
+.hub-hero .hub-ask-how summary { font-size: 12.5px; opacity: 0.85; }
+.hub-glance { display: flex; flex-wrap: wrap; gap: 6px 26px; margin: 0; padding: 0; list-style: none; color: rgba(255, 255, 255, 0.82); font-size: 14px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7); }
+.hub-glance strong { margin-right: 3px; color: #fff; font-size: 18px; font-weight: 700; }
+
+.hub-home-calm { display: grid; gap: 20px; min-width: 0; }
+.hub-home-calm > * { min-width: 0; }
+.hub-home-calm .hub-card, .hub-strip {
+  background: var(--hub-glass); border: 1px solid var(--hub-glass-line); border-radius: 18px; box-shadow: none;
+  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+}
+.hub-home-calm .hub-card { padding: 20px 22px; }
+.hub-home-calm .hub-act.is-urgent { border-color: var(--hub-amber); }
+
+.hub-strip { display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; }
+@media (min-width: 900px) { .hub-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hub-strip-item { position: relative; display: grid; gap: 4px; align-content: start; padding: 16px 22px; color: var(--hub-text); text-decoration: none; }
+.hub-strip-item:hover { background: rgba(255, 255, 255, 0.05); }
+.hub-strip-item + .hub-strip-item { border-top: 1px solid var(--hub-glass-line); }
+@media (min-width: 900px) { .hub-strip-item + .hub-strip-item { border-top: 0; border-left: 1px solid var(--hub-glass-line); } }
+.hub-strip-item strong { font-size: 17px; }
+.hub-strip-item small { color: var(--hub-muted); font-size: 13px; line-height: 1.45; }
+.hub-strip-item .hub-eyebrow { margin: 0 0 2px; display: flex; align-items: center; gap: 7px; }
+.hub-strip-item.is-warn .hub-eyebrow::before, .hub-strip-item.is-good .hub-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--hub-amber); }
+.hub-strip-item.is-good .hub-eyebrow::before { background: var(--hub-good); }
+
+.hub-feeds { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+@media (min-width: 760px) { .hub-feeds { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hub-feeds.has-act .hub-act { grid-column: 1 / -1; } }
+@media (min-width: 1100px) { .hub-feeds.has-act { grid-template-columns: repeat(3, minmax(0, 1fr)); } .hub-feeds.has-act .hub-act { grid-column: auto; } }
+.hub-home-calm .hub-card h2 { margin-bottom: 12px; }
+
+.hub-home-foot { display: flex; justify-content: center; gap: 24px; margin: 4px 0 0; font-size: 13px; }
+.hub-home-foot a { color: rgba(255, 255, 255, 0.78); text-decoration: none; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+.hub-home-foot a:hover { color: #fff; text-decoration: underline; }
+
+/* Sidebar groups fold: the page you are on, and the daily ones, stay open. */
+.hub-side-title { display: flex; align-items: center; gap: 6px; width: 100%; margin: 10px 0 2px; padding: 4px 10px; border: 0; background: none; color: var(--hub-muted); font: 11px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; text-align: left; cursor: pointer; border-radius: 8px; }
+.hub-side-title:hover { color: var(--hub-text); background: var(--hub-surface-2); }
+.hub-side-title:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+.hub-side-title svg { flex: none; transition: transform 0.15s; transform: rotate(90deg); }
+.hub-side-group.is-folded .hub-side-title svg { transform: none; }
+.hub-feeds.has-act { align-items: start; }
