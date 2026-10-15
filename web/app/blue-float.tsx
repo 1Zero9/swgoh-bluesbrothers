@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { EDGE, FLOAT_SIZE, fromPixels, isTap, parsePos, toPixels, type FloatPos } from "@/lib/blue-float";
+import { EDGE, FLOAT_SIZE, SIDEBAR_FROM, SIDEBAR_W, fromPixels, isTap, parsePos, toPixels, type FloatPos } from "@/lib/blue-float";
 import BlueIntro from "./blue-intro";
 
 const KEY = "bb-blue-pos";
@@ -54,7 +54,8 @@ export default function BlueFloat() {
 
   const [width, height] = size.split("x").map(Number);
   const saved = parsePos(raw);
-  const base = saved ? toPixels(saved, width, height) : defaultPixels(width, height);
+  const inset = width >= SIDEBAR_FROM ? SIDEBAR_W : 0;
+  const base = saved ? toPixels(saved, width, height, FLOAT_SIZE, inset) : defaultPixels(width, height);
   const at = live ?? base;
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function BlueFloat() {
 
   if (width === 0 || pathname.startsWith("/ask")) return null;
 
-  const clampX = (x: number) => Math.min(width - FLOAT_SIZE - EDGE, Math.max(EDGE, x));
+  const clampX = (x: number) => Math.min(width - FLOAT_SIZE - EDGE, Math.max(EDGE + inset, x));
   const clampY = (y: number) => Math.min(height - FLOAT_SIZE - EDGE, Math.max(EDGE, y));
 
   function onPointerDown(event: React.PointerEvent<HTMLButtonElement>) {
@@ -92,7 +93,7 @@ export default function BlueFloat() {
     event.currentTarget.releasePointerCapture(event.pointerId);
     if (d.moved && live) {
       justDragged.current = true;
-      save(fromPixels(live.x, live.y, width, height));
+      save(fromPixels(live.x, live.y, width, height, FLOAT_SIZE, inset));
       setLive(null);
     }
   }
@@ -106,12 +107,12 @@ export default function BlueFloat() {
     const delta = move[event.key];
     if (!delta) return;
     event.preventDefault();
-    save(fromPixels(clampX(at.x + delta[0]), clampY(at.y + delta[1]), width, height));
+    save(fromPixels(clampX(at.x + delta[0]), clampY(at.y + delta[1]), width, height, FLOAT_SIZE, inset));
   }
 
   // The ask box opens above or below the icon, and stays on screen.
   const panelTop = at.y > PANEL_H + 24 ? at.y - PANEL_H - 10 : at.y + FLOAT_SIZE + 10;
-  const panelLeft = Math.min(width - PANEL_W - EDGE, Math.max(EDGE, at.x + FLOAT_SIZE / 2 - PANEL_W / 2));
+  const panelLeft = Math.min(width - PANEL_W - EDGE, Math.max(EDGE + inset, at.x + FLOAT_SIZE / 2 - PANEL_W / 2));
 
   return (
     <div ref={rootRef} className="hub-blue-float-root">

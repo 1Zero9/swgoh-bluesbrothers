@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.84.0 — 2026-10-15
+
+- **Home layout fixes.** The sidebar now scrolls on its own, with your name and the theme switch always visible at the bottom. B-Lue3's floating icon can no longer sit on top of the sidebar. The welcome box lines up with the card column under it and matches the headline's height.
+- **Clearer Home.** The headline now says what to do: "Ask B-Lue3. Add what you know." The next step in the checklist is highlighted. "Act now" is only loud when something needs doing, and shrinks to one line when nothing does. The Territory Battle callouts no longer repeat the card above. Lists are capped so the cards in a row line up.
+- **Easier to read.** The picture sits further back behind the words, the small capital labels are bigger, the ask suggestions sit under the box on the left with a "Try:" label, and Ask B-Lue3 in the sidebar has an icon instead of an unexplained dot.
+
 ## 0.83.2 — 2026-10-15
 
 - **The picture is now the page's background**, not a banner block that pushes everything down. The headline, numbers, welcome box and cards start at the top of the page and sit over the fixed picture. The ask bar and cards no longer run off the right edge on a wide screen.

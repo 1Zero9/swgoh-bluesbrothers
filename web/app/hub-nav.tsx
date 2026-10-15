@@ -64,7 +64,7 @@ export default function HubNav() {
                 {group.title ? <p>{group.title}</p> : null}
                 {links.map((link) => (
                   <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
-                    <span className="hub-side-dot" aria-hidden="true" />
+                    {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
                     <span>{link.label}</span>
                   </Link>
                 ))}

@@ -44,12 +44,17 @@ const STEPS = [
 ];
 
 export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, chat, discordUrl }: HubHomeProps) {
+  const hasWork = requests.length > 0 || callouts.length > 0 || (isOfficer && reviewCount > 0);
+  const shownWins = wins.slice(0, 4);
+  const shownRequests = requests.slice(0, 2);
+  const shownCallouts = callouts.slice(0, 2);
+  const shownNew = newMembers.slice(0, 3);
   const hero = (
     <section className="hub-hero" aria-label="Welcome">
       <div className="hub-hero-copy">
         <div>
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
-          <h1>This is where the guild keeps what it knows.</h1>
+          <h1>Ask B-Lue3. Add what you know.</h1>
         </div>
         {stats ? (
           <ul className="hub-stats" aria-label="The guild now">
@@ -84,6 +89,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             <button type="submit">Ask</button>
           </form>
           <div className="hub-chips">
+            <span>Try:</span>
             {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
           </div>
           <details className="hub-ask-how">
@@ -92,23 +98,34 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           </details>
         </section>
 
-        <section className="hub-card hub-act" aria-labelledby="hub-act-title">
-          <p className="hub-eyebrow is-amber">Act now</p>
-          <h2 id="hub-act-title">Where the guild needs you</h2>
+        <section className={`hub-card hub-act ${hasWork ? "is-urgent" : "is-clear"}`} aria-labelledby="hub-act-title">
+          <p className={`hub-eyebrow${hasWork ? " is-amber" : ""}`}>Act now</p>
+          <h2 id="hub-act-title">{hasWork ? "Where the guild needs you" : "Nothing needs you right now"}</h2>
 
-          <h3>Counters wanted</h3>
           {requests.length ? (
-            <ul className="hub-feed">{requests.map((request) => <li key={request.id}><strong>{request.leaderName}</strong><small>{request.modeLabel}</small></li>)}</ul>
-          ) : <p className="hub-quiet">Nobody is asking right now.</p>}
-          <Link className="hub-button" href="/knowledge">I have one, add it</Link>
+            <>
+              <h3>Counters wanted</h3>
+              <ul className="hub-feed">{shownRequests.map((request) => <li key={request.id}><strong>{request.leaderName}</strong><small>{request.modeLabel}</small></li>)}</ul>
+              <Link className="hub-button" href="/knowledge">I have one, add it</Link>
+            </>
+          ) : null}
 
-          <h3>Territory Battle callouts</h3>
           {callouts.length ? (
-            <ul className="hub-feed">{callouts.map((callout) => <li key={callout.id}><strong>{callout.unit}</strong><small>{callout.need}{callout.where ? ` · ${callout.where}` : ""}</small></li>)}</ul>
-          ) : <p className="hub-quiet">No callouts open.</p>}
-          <Link className="hub-how" href="/territory-battles">See all callouts</Link>
+            <>
+              <h3>Territory Battle callouts</h3>
+              <ul className="hub-feed">{shownCallouts.map((callout) => <li key={callout.id}><strong>{callout.unit}</strong><small>{callout.need}{callout.where ? ` · ${callout.where}` : ""}</small></li>)}</ul>
+              <Link className="hub-how" href="/territory-battles">See all callouts</Link>
+            </>
+          ) : null}
 
           {isOfficer && reviewCount > 0 ? <Link className="hub-officer-note" href="/knowledge/review"><strong>{reviewCount} waiting for your check</strong><small>Open the review queue</small></Link> : null}
+
+          {!hasWork ? (
+            <>
+              <p className="hub-quiet">The guild is covered. Know a counter or a tip?</p>
+              <Link className="hub-how" href="/knowledge">Add what you know</Link>
+            </>
+          ) : null}
         </section>
       </div>
 
@@ -116,14 +133,14 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         <section className="hub-card is-new" aria-labelledby="hub-new-title">
           <p className="hub-eyebrow">New members</p>
           <h2 id="hub-new-title">Welcome to the band</h2>
-          {newMembers.length ? <ul className="hub-feed">{newMembers.map((member) => <li key={member.id}><strong>{member.name}</strong><small>Joined {member.when}{member.power ? ` · ${member.power} GP` : ""}</small></li>)}</ul> : <p className="hub-quiet">No one new this month.</p>}
+          {shownNew.length ? <ul className="hub-feed">{shownNew.map((member) => <li key={member.id}><strong>{member.name}</strong><small>Joined {member.when}{member.power ? ` · ${member.power} GP` : ""}</small></li>)}</ul> : <p className="hub-quiet">No one new this month.</p>}
           {wire.length ? <Link className="hub-how" href="/overview">More from the Guild Wire</Link> : null}
         </section>
 
         <section className="hub-card is-wins" aria-labelledby="hub-wins-title">
           <p className="hub-eyebrow">Achievements</p>
           <h2 id="hub-wins-title">The Wins this week</h2>
-          {wins.length ? <ul className="hub-feed">{wins.map((win) => <li key={win.id}><strong>{win.who}</strong><small>{win.text} · {win.when}</small></li>)}</ul> : <p className="hub-quiet">Level a unit and it shows up here.</p>}
+          {shownWins.length ? <ul className="hub-feed">{shownWins.map((win) => <li key={win.id}><strong>{win.who}</strong><small>{win.text} · {win.when}</small></li>)}</ul> : <p className="hub-quiet">Level a unit and it shows up here.</p>}
           <Link className="hub-how" href="/wins">All the wins</Link>
         </section>
 
