@@ -55,6 +55,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         <div>
           <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
           <h1>Ask B-Lue3. Add what you know.</h1>
+          <p className="hub-hero-sub">B-Lue3 is the guild&apos;s droid. Ask him about squads, counters and who has what, then teach him something he doesn&apos;t know yet.</p>
         </div>
       <section className="hub-askbox" aria-label="Ask B-Lue3">
         <form action="/ask" method="get" className="hub-askform">
@@ -121,8 +122,12 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
 
           {!hasWork ? (
             <>
-              <p className="hub-quiet">The guild is covered. Know a counter or a tip?</p>
-              <Link className="hub-how" href="/knowledge">Add what you know</Link>
+              <h3>Ways to help</h3>
+              <ul className="hub-feed hub-links-feed">
+                <li><Link href="/knowledge"><strong>Add a counter</strong><small>Show the guild how you beat a squad</small></Link></li>
+                <li><Link href="/knowledge/tips"><strong>Share a tip</strong><small>Something you wish you had known sooner</small></Link></li>
+                <li><Link href="/knowledge/ideas"><strong>Suggest an idea</strong><small>For the guild, the game plan or this site</small></Link></li>
+              </ul>
             </>
           ) : null}
         </section>

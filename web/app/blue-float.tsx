@@ -67,7 +67,8 @@ export default function BlueFloat() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener("pointerdown", onDown); };
   }, [open]);
 
-  if (width === 0 || pathname.startsWith("/ask")) return null;
+  // Home has its own ask box, and the ask page is the chat itself, so he steps aside on both (phones keep him).
+  if (width === 0 || pathname.startsWith("/ask") || (pathname === "/" && width >= 760)) return null;
 
   const clampX = (x: number) => Math.min(width - FLOAT_SIZE - EDGE, Math.max(EDGE + inset, x));
   const clampY = (y: number) => Math.min(height - FLOAT_SIZE - EDGE, Math.max(EDGE, y));

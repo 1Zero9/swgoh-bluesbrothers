@@ -815,3 +815,9 @@ html[data-theme="rebel"] { --hub-glass: rgba(255, 255, 255, 0.74); --hub-glass-l
   .hub-home-grid:has(.hub-act.is-clear) { grid-template-areas: "status status status" "act wins new" "chat chat chat"; }
 }
 @media (max-width: 759.98px) { .hub-hero .hub-askbox { display: none; } }
+
+/* ---------- First-visit fixes ---------- */
+.hub-hero-sub { margin: 8px 0 0; max-width: 54ch; color: rgba(255, 255, 255, 0.9); font-size: 15px; line-height: 1.5; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6); }
+.hub-links-feed a { display: grid; gap: 1px; color: inherit; text-decoration: none; }
+.hub-links-feed a:hover strong { color: var(--hub-accent); text-decoration: underline; }
+.hub-links-feed li:first-child { padding-top: 0; }

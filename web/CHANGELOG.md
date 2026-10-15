@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.84.2 — 2026-10-15
+
+- **First visit is clearer.** Under the headline there is now one line saying who B-Lue3 is and what to ask him. B-Lue3's floating icon steps off Home on a laptop (the ask box is right there), so he no longer sits on top of it. When nothing needs doing, "Act now" lists three ways to help (add a counter, share a tip, suggest an idea) instead of an empty box.
+
 ## 0.84.1 — 2026-10-15
 
 - **One look for every box on Home.** The stat tiles, ask box, welcome box and all the cards are now the same frosted-glass panel over the picture, so nothing looks like a different system.
