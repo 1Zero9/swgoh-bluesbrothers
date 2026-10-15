@@ -782,3 +782,36 @@ html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90de
 .hub-act.is-clear h2 { font-size: 15px; color: var(--hub-muted); font-weight: 600; }
 .hub-act.is-clear .hub-quiet { margin: 0; }
 .hub-hero > * { min-width: 0; max-width: 100%; }
+
+/* ---------- Glass: every box on Home is the same frosted panel over the picture ---------- */
+html[data-theme="deep"], html[data-theme="dark"] { --hub-glass: rgba(12, 20, 40, 0.58); --hub-glass-line: rgba(255, 255, 255, 0.2); }
+html[data-theme="rebel"] { --hub-glass: rgba(255, 255, 255, 0.74); --hub-glass-line: rgba(255, 255, 255, 0.75); }
+.hub-home-grid .hub-card, .hub-hero .hub-askbox {
+  background: var(--hub-glass); border: 1px solid var(--hub-glass-line);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+}
+/* The hero's boxes share the same glass, with white text over the dark picture. */
+.hub-hero .hub-stats li, .hub-banner-side {
+  background: rgba(12, 20, 40, 0.58); border: 1px solid rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+}
+.hub-hero .hub-askbox { color: #fff; background: rgba(12, 20, 40, 0.58); border-color: rgba(255, 255, 255, 0.2); }
+.hub-hero .hub-chips span, .hub-hero .hub-ask-how summary { color: rgba(255, 255, 255, 0.82); }
+.hub-hero .hub-chips a { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.28); color: #fff; }
+.hub-hero .hub-askform input { background: rgba(5, 10, 20, 0.6); border-color: rgba(255, 255, 255, 0.22); color: #fff; }
+.hub-hero .hub-askform input::placeholder { color: rgba(255, 255, 255, 0.6); }
+.hub-status-card.is-good, .hub-status-card.is-warn { border-left-width: 4px; }
+.hub-status-card.is-good { border-left-color: var(--hub-good); }
+.hub-status-card.is-warn { border-left-color: var(--hub-amber); }
+.hub-act.is-urgent { border-color: var(--hub-amber); }
+/* A little more of the picture shows through the glass. */
+.hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.7), rgba(5, 10, 20, 0.42) 50%, rgba(5, 10, 20, 0.5)), linear-gradient(180deg, transparent 50%, rgba(5, 10, 20, 0.5)); }
+
+/* The ask box lives in the hero now, beside the welcome box, not across the page. */
+.hub-hero .hub-askbox { display: grid; gap: 8px; width: min(100%, 640px); padding: 12px 14px; border-radius: 16px; }
+.hub-hero .hub-askbox .hub-ask-how { margin-top: 0; }
+@media (min-width: 1000px) {
+  .hub-home-grid { grid-template-areas: "status status status" "act wins new" "act chat chat"; grid-template-rows: auto auto 1fr; }
+  .hub-home-grid:has(.hub-act.is-clear) { grid-template-areas: "status status status" "act wins new" "chat chat chat"; }
+}
+@media (max-width: 759.98px) { .hub-hero .hub-askbox { display: none; } }
