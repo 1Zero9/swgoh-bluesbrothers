@@ -651,3 +651,48 @@ html[data-hub="on"] .page-hero .public-cta { margin-top: 12px; }
   .hub-start.is-compact li strong { font-size: 13px; }
   .hub-start.is-compact .hub-text-button { margin-top: 2px; padding: 2px 0; }
 }
+
+/* ---------- Home, first-visit pass: one grid, no holes ---------- */
+/* Banner: headline and numbers top-left, one welcome box beside the brothers. */
+.hub-banner.is-home .hub-banner-copy { align-content: start; padding-top: 6px; }
+.hub-banner-side { gap: 0; padding: 0; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 14px; background: rgba(8, 14, 28, 0.62); backdrop-filter: blur(8px); color: #fff; overflow: hidden; }
+.hub-banner-side .hub-standing, .hub-start.is-compact { border: 0; border-radius: 0; background: none; backdrop-filter: none; }
+.hub-banner-side .hub-standing + .hub-start.is-compact { border-top: 1px solid rgba(255, 255, 255, 0.18); }
+.hub-banner-side:empty { display: none; }
+
+/* The page: ask bar, war-room glance, then the work, on one grid. */
+.hub-home-grid, .hub-home-top, .hub-home-cols { display: contents; }
+.hub-home-grid > *, .hub-home-grid .hub-home-top > *, .hub-home-grid .hub-home-cols > * { min-width: 0; }
+.hub-home-grid { display: grid !important; gap: 16px; align-items: start; grid-template-columns: minmax(0, 1fr); }
+.hub-home-grid .hub-askbox { order: 1; }
+.hub-home-grid .hub-act { order: 2; }
+.hub-home-grid .hub-status { order: 3; margin: 0; }
+.hub-home-grid .is-wins { order: 4; }
+.hub-home-grid .is-new { order: 5; }
+.hub-home-grid .hub-chatcard { order: 6; }
+.hub-askbox { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.hub-askbox .hub-chips { margin-top: 0; }
+@media (min-width: 1000px) {
+  .hub-home-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "ask ask ask" "status status status" "act wins new" "act chat chat"; }
+  .hub-home-grid .hub-askbox { grid-area: ask; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .hub-home-grid .hub-askbox .hub-ask-how { grid-column: 1 / -1; margin-top: 0; }
+  .hub-home-grid .hub-status { grid-area: status; }
+  .hub-home-grid .hub-act { grid-area: act; }
+  .hub-home-grid .is-wins { grid-area: wins; }
+  .hub-home-grid .is-new { grid-area: new; }
+  .hub-home-grid .hub-chatcard { grid-area: chat; }
+}
+@media (min-width: 760px) and (max-width: 999.98px) {
+  .hub-home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hub-home-grid .hub-askbox, .hub-home-grid .hub-status, .hub-home-grid .hub-act, .hub-home-grid .hub-chatcard { grid-column: 1 / -1; }
+}
+@media (max-width: 999.98px) {
+  .hub-banner-side { width: 100%; }
+}
+.hub-banner.is-home .hub-banner-side { align-self: flex-end; }
+@media (min-width: 1000px) {
+  .hub-home-grid { grid-template-rows: auto auto auto 1fr; }
+}
+@media (max-width: 759.98px) {
+  .hub-home-grid .hub-askbox { display: none; }
+}
