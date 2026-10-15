@@ -12,7 +12,7 @@ const CHOICES: { theme: Theme; label: string; title: string }[] = [
 
 function getThemeSnapshot(): Theme {
   const theme = document.documentElement.dataset.theme;
-  return theme === "deep" || theme === "dark" ? theme : "rebel";
+  return theme === "rebel" || theme === "dark" ? theme : "deep";
 }
 
 function subscribeToTheme(onChange: () => void) {
@@ -27,7 +27,7 @@ function setTheme(theme: Theme) {
 }
 
 export default function ThemeToggle() {
-  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "rebel");
+  const activeTheme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "deep");
 
   return (
     <div className="theme-picker" role="group" aria-label="Colour theme">

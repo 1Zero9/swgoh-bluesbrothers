@@ -38,7 +38,7 @@ function write(value: Saved) {
 }
 
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
-export default function GetStarted({ linked, steps }: { linked: boolean; steps: Step[] }) {
+export default function GetStarted({ linked, steps, compact = false }: { linked: boolean; steps: Step[]; compact?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
   const { done, hidden } = parse(raw);
 
@@ -51,9 +51,9 @@ export default function GetStarted({ linked, steps }: { linked: boolean; steps: 
   if (hidden) return null;
 
   return (
-    <section className="hub-card hub-start" aria-labelledby="hub-start-title">
+    <section className={compact ? "hub-start is-compact" : "hub-card hub-start"} aria-labelledby="hub-start-title">
       <div className="hub-start-head">
-        <h2 id="hub-start-title">Get started</h2>
+        <h2 id="hub-start-title">{compact ? "Welcome to the guild" : "Get started"}</h2>
         <span className="hub-badge">{finished} of {total}</span>
       </div>
       <ul>
@@ -73,7 +73,7 @@ export default function GetStarted({ linked, steps }: { linked: boolean; steps: 
           );
         })}
       </ul>
-      {finished >= total ? <button type="button" className="hub-text-button" onClick={() => save(done, true)}>All done. Hide this</button> : <button type="button" className="hub-text-button" onClick={() => save(done, true)}>Hide for now</button>}
+      <button type="button" className="hub-text-button" onClick={() => save(done, true)}>{finished >= total ? "All done. Hide this" : "Dismiss"}</button>
     </section>
   );
 }

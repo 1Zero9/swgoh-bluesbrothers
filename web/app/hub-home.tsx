@@ -45,7 +45,7 @@ const STEPS = [
 
 export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, chat, discordUrl }: HubHomeProps) {
   const banner = (
-    <section className="hub-banner" aria-label="Welcome">
+    <section className="hub-banner is-home" aria-label="Welcome">
       <div className="hub-banner-bg" aria-hidden="true" />
       <div className="hub-banner-copy">
         <div>
@@ -61,30 +61,23 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           </ul>
         ) : null}
       </div>
-    </section>
-  );
-
-  return (
-    <HubPage banner={banner}>
-      <div className="hub-home-welcome">
+      <div className="hub-banner-side">
         {standing ? (
-          <Link className={`hub-card hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
+          <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
             <strong>{name}</strong>
             <small>{standing}</small>
             <span>{checkIn ?? "All good. Open my page"}</span>
           </Link>
         ) : null}
-        <GetStarted linked={linked} steps={STEPS} />
+        <GetStarted linked={linked} steps={STEPS} compact />
       </div>
+    </section>
+  );
 
+  return (
+    <HubPage banner={banner}>
       <div className="hub-home-top">
-        <section className="hub-askbox" aria-labelledby="hub-ask-title">
-          <div className="hub-askbox-head">
-            <div>
-              <p className="hub-eyebrow is-amber">B-Lue3 · your guild droid</p>
-              <h2 id="hub-ask-title">Ask anything about the game</h2>
-            </div>
-          </div>
+        <section className="hub-askbox" aria-label="Ask B-Lue3">
           <form action="/ask" method="get" className="hub-askform">
             <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
             <button type="submit">Ask</button>
@@ -92,7 +85,10 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           <div className="hub-chips">
             {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
           </div>
-          <AnswerLadder left={questions} compact />
+          <details className="hub-ask-how">
+            <summary>How B-Lue3 answers, and what it costs</summary>
+            <AnswerLadder left={questions} compact />
+          </details>
         </section>
 
         <section className="hub-card hub-act" aria-labelledby="hub-act-title">
