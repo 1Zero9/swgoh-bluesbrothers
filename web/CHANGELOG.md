@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.85.0 — 2026-10-15
+
+- **A calmer Home.** One focus now: the headline and the ask bar. The four number tiles became one quiet line of numbers, the ask box lost its frame, and Territory War, Territory Battles and Raids share one slim panel with a coloured dot instead of three cards. "Act now" only appears when something needs doing. The chat card only shows when chat is on, and Discord and Guild chat are two small links at the bottom.
+- **A shorter sidebar.** The groups fold. Knowledge, Guild and War room start open; Off duty, You and Officers stay folded until you are on one of their pages. Tap a group's name to open or close it.
+
 ## 0.84.2 — 2026-10-15
 
 - **First visit is clearer.** Under the headline there is now one line saying who B-Lue3 is and what to ask him. B-Lue3's floating icon steps off Home on a laptop (the ask box is right there), so he no longer sits on top of it. When nothing needs doing, "Act now" lists three ways to help (add a counter, share a tip, suggest an idea) instead of an empty box.

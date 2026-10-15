@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, ChevronRight, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
 import { activeSidebarHref, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
 import BlueFloat from "./blue-float";
 import ThemeToggle from "./theme-toggle";
@@ -19,6 +19,8 @@ const ICONS: Record<HubSectionKey, LucideIcon> = {
 };
 
 const HUB_HINT_KEY = "bb-hub";
+/** Groups a member uses every day start open; the rest fold away until their page is the current one. */
+const OPEN_BY_DEFAULT = new Set(["Knowledge", "Guild", "War room"]);
 
 /**
  * The member hub navigation: five sections, a sidebar on laptops and a tab bar on phones.
@@ -34,6 +36,7 @@ export default function HubNav() {
   const active = sectionFor(pathname);
   const activeHref = activeSidebarHref(pathname);
   const isOfficer = isPreview || viewer?.role === "OFFICER";
+  const [toggled, setToggled] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!viewer && !isPreview) return;
@@ -59,15 +62,23 @@ export default function HubNav() {
           {SIDEBAR_GROUPS.map((group) => {
             const links = group.links.filter((link) => !link.officerOnly || isOfficer);
             if (!links.length) return null;
+            const title = group.title;
+            const hasActive = links.some((link) => link.href === activeHref);
+            const open = title === null || (toggled[title] ?? (hasActive || OPEN_BY_DEFAULT.has(title)));
             return (
-              <div key={group.title ?? "top"} className="hub-side-group">
-                {group.title ? <p>{group.title}</p> : null}
-                {links.map((link) => (
+              <div key={title ?? "top"} className={`hub-side-group${title && !open ? " is-folded" : ""}`}>
+                {title ? (
+                  <button type="button" className="hub-side-title" aria-expanded={open} onClick={() => setToggled((value) => ({ ...value, [title]: !open }))}>
+                    <ChevronRight size={12} aria-hidden="true" />
+                    <span>{title}</span>
+                  </button>
+                ) : null}
+                {open ? links.map((link) => (
                   <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
                     {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
                     <span>{link.label}</span>
                   </Link>
-                ))}
+                )) : null}
               </div>
             );
           })}
