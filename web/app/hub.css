@@ -877,23 +877,47 @@ html[data-theme="rebel"] { --hub-glass: rgba(255, 255, 255, 0.74); --hub-glass-l
 .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.62), rgba(5, 10, 20, 0.22) 55%, rgba(5, 10, 20, 0.3)), linear-gradient(180deg, transparent 55%, rgba(5, 10, 20, 0.45)); }
 html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.2) 55%, rgba(5, 10, 20, 0.28)); }
 @media (min-width: 1000px) {
-  .hub-hero { min-height: max(540px, calc(100vh - 150px)); }
   .hub-hero-copy { align-self: stretch; }
   .hub-hero .hub-glance { margin-top: auto; }
 }
 
-/* The welcome panel is timed: it shows for a few seconds, then folds into a small pill (it waits while you use it). */
-.hub-banner-side { position: relative; }
-.hub-timer { position: absolute; z-index: 1; inset: 0 0 auto 0; height: 3px; background: var(--hub-accent); transform-origin: left; animation: hub-timer linear forwards; }
-.hub-side-panel.is-pinned .hub-timer { animation-play-state: paused; }
-@keyframes hub-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
-@media (prefers-reduced-motion: reduce) { .hub-timer { animation: none; transform: scaleX(0); } }
-.hub-setup-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; background: rgba(12, 20, 40, 0.58); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: #fff; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
-.hub-setup-pill:hover { border-color: var(--hub-accent); }
-.hub-setup-pill:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 2px; }
-.hub-setup-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--hub-amber); }
-.hub-hero .hub-setup-pill { justify-self: start; align-self: start; }
-@media (min-width: 1000px) { .hub-hero .hub-setup-pill { grid-column: 3; justify-self: end; } }
+/* Welcome is a slim banner across the top of the page: name, the three setup steps, my standing. */
+.hub-wbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; padding: 8px 14px; border: 1px solid var(--hub-glass-line); border-radius: 14px; background: rgba(8, 14, 30, 0.72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: #fff; font-size: 13.5px; }
+.hub-wbar-name { font-size: 14px; white-space: nowrap; }
+.hub-wbar-steps { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0; padding: 0; list-style: none; flex: 1 1 auto; min-width: 0; }
+.hub-wbar-steps a { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 7px; border-radius: 999px; color: rgba(255, 255, 255, 0.85); text-decoration: none; }
+.hub-wbar-steps a:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.hub-wbar-steps .is-next a { background: rgba(125, 211, 252, 0.16); color: #fff; font-weight: 600; }
+.hub-wbar-steps .is-done a { color: rgba(255, 255, 255, 0.55); }
+.hub-wbar .hub-tick { width: 18px; height: 18px; flex: none; }
+.hub-wbar-end { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.hub-wbar .hub-standing { display: inline-flex; align-items: baseline; gap: 8px; padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.22); color: #fff; text-decoration: none; background: none; box-shadow: none; }
+.hub-wbar .hub-standing:hover { border-color: var(--hub-accent); }
+.hub-wbar .hub-standing small { color: rgba(255, 255, 255, 0.7); font-size: 12.5px; }
+.hub-wbar .hub-standing span { font-size: 12.5px; font-weight: 600; }
+.hub-wbar .hub-standing.needs-checkin { border-color: var(--hub-amber); }
+.hub-wbar .hub-standing.needs-checkin span { color: var(--hub-amber); }
+.hub-wbar-close { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: none; color: rgba(255, 255, 255, 0.6); cursor: pointer; }
+.hub-wbar-close:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.hub-wbar-close:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+@media (max-width: 759.98px) { .hub-wbar-end { margin-left: 0; width: 100%; justify-content: space-between; } }
+
+/* War room sits on the picture itself, no box: a soft scrim at the foot of the hero and thin dividers. */
+.hub-hero .hub-strip { margin: 12px -2px 0; border: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 0; background: linear-gradient(180deg, rgba(5, 10, 20, 0.5), rgba(5, 10, 20, 0.78)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; }
+.hub-hero .hub-strip-item { padding: 12px 20px; }
+.hub-hero .hub-strip-item strong { font-size: 16px; color: #fff; }
+.hub-hero .hub-strip-item small { color: rgba(255, 255, 255, 0.72); }
+.hub-hero .hub-strip-item .hub-eyebrow { color: #bfe8ff; }
+.hub-hero .hub-strip-item:first-child { padding-left: 4px; }
+.hub-hero .hub-glance { margin-bottom: 0; }
+@media (min-width: 1000px) {
+  .hub-hero { min-height: max(520px, calc(100vh - 96px)); }
+}
+
+/* The cards below are tighter too. */
+.hub-home-calm .hub-card { padding: 14px 18px; border-radius: 16px; }
+.hub-home-calm .hub-card h2 { margin-bottom: 8px; font-size: 16px; }
+@media (min-width: 900px) { .hub-feeds, .hub-feeds.has-act { grid-template-columns: repeat(3, minmax(0, 1fr)); } .hub-feeds.has-act .hub-act { grid-column: auto; } }
 
 /* Guild chat is one slim row until you open it. */
 .hub-home-calm .hub-chatcard { padding: 0; }
@@ -903,3 +927,9 @@ html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90de
 .hub-chatcard summary::after { content: "Open"; margin-left: auto; color: var(--hub-accent); font-size: 13px; font-weight: 600; }
 .hub-chatcard[open] summary::after { content: "Close"; }
 .hub-chatcard[open] > :not(summary) { margin: 0 22px 18px; }
+.hub-wrap { align-content: start; }
+.hub-wbar { align-self: start; }
+.hub-hero-copy { max-width: none; width: 100%; }
+.hub-hero .hub-strip { width: 100%; align-self: stretch; }
+@media (min-width: 1000px) { .hub-hero { min-height: max(520px, calc(100vh - 176px)); } }
+.hub-hero-copy { grid-column: 1 / -1; }
