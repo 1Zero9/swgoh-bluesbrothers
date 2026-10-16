@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.97.3 — 2026-10-16
+
+- **Ask B-Lue3 is Rebel orange** instead of gold: the border, title, + button and Ask button. It follows the theme, a bright orange on Deep and Classic and a deeper burnt orange on Rebel so it still reads on the light boxes.
+
 ## 0.97.2 — 2026-10-16
 
 - **The announcement shows once per visit.** It floats in the first time you open Home, and not again when you move around the site or refresh. Come back four or more hours later (or the next day) and it shows again. Saving a new version still shows it to everyone straight away.
