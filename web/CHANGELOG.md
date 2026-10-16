@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.98.1 — 2026-10-16
+
+- **The Ask button is orange on Rebel too.** The light themes were forcing every submit button blue; Ask B-Lue3's button now keeps its orange.
+
 ## 0.98.0 — 2026-10-16
 
 - **Say hello and Hit it are Rebel orange** now, to match Ask B-Lue3 (and they follow the theme).

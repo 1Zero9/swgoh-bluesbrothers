@@ -1260,3 +1260,6 @@ a.hub-announce-cta:hover { box-shadow: 0 8px 22px rgba(var(--ask-rgb), 0.5); }
 .hub-announce-timer { background: var(--ask); }
 /* A little wider: the boxes are 7 of the 12 columns, and the welcome card lines up. */
 @media (min-width: 1100px) { .hub-dash .hub-newbar { width: calc(58.333% - 7px); } }
+/* Beats the light themes' blanket rule for submit buttons, so Ask is orange on Rebel too. */
+html .hub-dash .hub-askform button[type="submit"] { background: var(--ask) !important; border-color: var(--ask) !important; color: #fff !important; box-shadow: none; }
+html .hub-dash .hub-askform button[type="submit"]:hover { filter: brightness(1.08); }
