@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.92.0 — 2026-10-16
+
+- **Put the boxes anywhere on Home.** Drag a box by its grip and it follows you across the page, left, right, up or down. A dashed outline shows where it will snap on the grid, and a faint grid appears while you drag. If you drop it on another box, that box slides down out of the way. The arrow keys move a focused grip one step at a time.
+- Your layout is kept on that device and "Reset layout" puts it back. On a narrow screen the boxes simply stack, as before.
+
 ## 0.91.0 — 2026-10-16
 
 - **Move the boxes on Home.** Each box (Ask B-Lue3, war room, Act now, the Wins) has a small grip in its top right corner that shows when you hover. Drag it up or down with a mouse or a finger, or focus it and use the arrow keys. Your order is remembered on that device, and "Reset layout" puts it back.
