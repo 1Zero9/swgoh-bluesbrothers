@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.89.0 — 2026-10-16
+
+- **Home is now a clean set of frames on a plain ground.** The photograph is gone from Home, so nothing fights the boxes. Top: "Welcome, name", the guild numbers and the setup pill. Under that, the new-player welcome. Below, two columns: Ask B-Lue3, the war room and the Wins on the left, and Act now on the right. When nothing needs doing, the Wins move to the right.
+- Boxes still light up on hover and the Setup pill still pulses. The picture can come back later: Home just needs it passed to the page frame.
+
 ## 0.88.1 — 2026-10-16
 
 - **The guild numbers lost their box** and now line up with "Welcome, name", written straight onto the picture.
