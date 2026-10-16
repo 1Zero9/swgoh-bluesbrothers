@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.94.0 — 2026-10-16
+
+- **The Blues Brothers have a logo.** The twin fedoras and sunglasses emblem is now the sidebar logo, the site header logo, the browser tab icon, the iPhone home-screen icon and the app icon when the site is installed on a phone.
+- **A banner on the front page.** Visitors who are not signed in now open on the full-width "Blues Brothers" banner (the name, the brothers and the hovering police car), with the welcome words and the Discord button underneath. On a phone the whole banner shows, so the name is never cut off.
+- The full-size originals are kept in `design/logos`.
+
 ## 0.93.3 — 2026-10-16
 
 - **More of the background shows through the boxes.** They are about half see-through now, with a light blur so the words stay easy to read. The new-player welcome card is lighter too.

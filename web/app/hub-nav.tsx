@@ -55,7 +55,7 @@ export default function HubNav() {
     <>
       <aside className="hub-side" aria-label="Guild sections">
         <Link className="hub-side-brand" href="/" aria-label="Blues Brothers home">
-          <Image src="/bb-logo.webp" alt="" width={44} height={44} />
+          <Image src="/bb-emblem.webp" alt="" width={44} height={44} />
           <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
         </Link>
         <nav className="hub-side-nav" aria-label="All pages">

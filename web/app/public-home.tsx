@@ -21,8 +21,9 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
   return (
     <main className="intel-shell destination-shell public-home">
       <PageHero
-        image="/bb-title.webp"
-        imageAlt="The Blues Brothers outside their cantina in a desert spaceport"
+        image="/bb-banner.webp"
+        imageAlt="Blues Brothers: the brothers beside a hovering police car, with a glowing planet behind them"
+        className="public-banner-hero"
         eyebrow="Star Wars: Galaxy of Heroes guild"
         title={<>The Blues Brothers.<br /><em>On a mission from the Force.</em></>}
         description="A friendly, active guild that turns up for Territory War, Territory Battles and raids — and has fun doing it."
