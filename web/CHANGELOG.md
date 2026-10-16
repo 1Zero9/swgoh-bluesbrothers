@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.95.1 — 2026-10-16
+
+- **The new "Blues Brothers in a Cosmic Banner" is in.** It is wide enough to run edge to edge, so on a laptop it fills the whole strip at the top of Home (the emblem, the name, the hovering car and both brothers), and it opens the front page for visitors too. Phones show the whole banner.
+- **The "Welcome to the guild" box moved down,** under the banner, so it no longer covers the brothers.
+- The banner files have new names so everyone sees the new picture straight away instead of a cached copy of the old one.
+
 ## 0.95.0 — 2026-10-16
 
 - **Ask B-Lue3 is gold,** so it stands apart from the blue boxes (gold border, gold title, gold Ask button).

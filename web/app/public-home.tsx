@@ -21,7 +21,7 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
   return (
     <main className="intel-shell destination-shell public-home">
       <PageHero
-        image="/bb-banner.webp"
+        image="/bb-cosmic.webp"
         imageAlt="Blues Brothers: the brothers beside a hovering police car, with a glowing planet behind them"
         className="public-banner-hero"
         eyebrow="Star Wars: Galaxy of Heroes guild"
