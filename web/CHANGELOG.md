@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.96.0 — 2026-10-16
+
+- **The banner is off Home.** It did not work in the layout.
+- **A floating announcement.** A moment after Home opens, a card slides in at the bottom right with the banner faintly behind the words: "We're getting the band back together!", a gold **Hit it!** button to Guild chat, and a Blues Brothers quote. A thin gold bar counts down 20 seconds, it waits while you point at it, and you can close it. Each member sees it once per announcement on each device.
+- To make a new announcement, change the words and the `id` in `web/lib/announcement.ts` (set `enabled` to false to switch it off).
+
 ## 0.95.1 — 2026-10-16
 
 - **The new "Blues Brothers in a Cosmic Banner" is in.** It is wide enough to run edge to edge, so on a laptop it fills the whole strip at the top of Home (the emblem, the name, the hovering car and both brothers), and it opens the front page for visitors too. Phones show the whole banner.
