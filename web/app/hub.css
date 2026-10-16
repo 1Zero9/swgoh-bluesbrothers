@@ -930,3 +930,58 @@ html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90de
 .hub-home-calm .hub-card { padding: 14px 18px; }
 .hub-hero { align-items: stretch; }
 .hub-hero > .hub-hero-top, .hub-hero > .hub-hero-copy { width: 100%; max-width: none; }
+
+/* Home: fit the dashboard into the space beside the sign and the brothers. */
+.hub-main:has(.hub-home-layout) { container-type: inline-size; --hub-home-scene-height: calc(64px + 100cqw * .42872); }
+.hub-main:has(.hub-home-layout) .hub-backdrop { position: absolute; top: 64px; bottom: auto; height: calc(var(--hub-home-scene-height) - 64px); background-size: 100% auto; background-position: center top; }
+.hub-main:has(.hub-home-layout) .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, .55), transparent 65%), linear-gradient(0deg, var(--hub-bg), transparent 18%); }
+.hub-home-layout { display: flow-root; position: relative; width: 100%; }
+/* A float reserves the artwork only for its actual height. Each following
+   card can use the whole row once it passes the bottom of the photograph. */
+.hub-home-layout::before { content: ""; float: right; width: calc(54% - 24px); height: calc(var(--hub-home-scene-height) - clamp(18px, 3vw, 36px)); margin-left: 24px; }
+.hub-home-layout > .hub-glance { position: absolute; top: -12px; right: 0; width: calc(54% - 24px); margin: 0; padding: 8px 14px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 12px; background: rgba(8, 17, 31, .82); }
+.hub-home-layout .hub-hero { min-height: 0; gap: 14px; overflow: hidden; margin-bottom: 14px; }
+.hub-home-layout .hub-hero-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.hub-home-layout .hub-home-greeting { margin: 0; font-size: clamp(22px, 2vw, 30px); line-height: 1.2; }
+.hub-home-layout .hub-newbar { grid-column: 1 / -1; grid-row: 2; border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+.hub-home-layout .hub-hero-top .hub-banner-side { right: 0; width: min(340px, 100%); }
+.hub-home-layout .hub-hero-top .hub-setup-pill { grid-column: 2; grid-row: 1; padding: 8px 10px; font-size: 12px; }
+.hub-home-layout .hub-hero-copy { gap: 14px; }
+.hub-home-layout .hub-glance { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; font-size: 11px; }
+.hub-home-layout .hub-glance li { display: grid; gap: 2px; }
+.hub-home-layout .hub-glance strong { font-size: clamp(17px, 1.5vw, 22px); }
+.hub-home-layout .hub-ask-block { display: block; margin: 0; max-width: none; border: 1px solid rgba(103, 199, 245, .5); border-radius: 16px; background: rgba(10, 23, 43, .88); backdrop-filter: blur(14px); }
+.hub-home-layout .hub-ask-block > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; list-style: none; cursor: pointer; }
+.hub-home-layout .hub-ask-block > summary::-webkit-details-marker { display: none; }
+.hub-home-layout .hub-ask-block > summary strong { display: block; color: #fff; font-size: 20px; }
+.hub-home-layout .hub-ask-block > summary small { display: block; margin-top: 4px; color: #c1d1e3; font-size: 12px; line-height: 1.5; }
+.hub-home-layout .hub-ask-toggle { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; background: rgba(85, 202, 255, .14); color: #67c7f5; font-size: 24px; }
+.hub-home-layout .hub-ask-toggle::after { content: "+"; }
+.hub-home-layout .hub-ask-block[open] .hub-ask-toggle::after { content: "−"; }
+.hub-home-layout .hub-ask-block > summary:focus-visible { outline: 2px solid #67c7f5; outline-offset: 4px; border-radius: 16px; }
+.hub-home-layout .hub-askbox { display: grid; width: auto; margin: 0 16px 16px; }
+.hub-home-layout .hub-askform input { min-height: 46px; font-size: 14px; }
+.hub-home-layout .hub-askform button { min-height: 46px; padding: 0 16px; }
+.hub-home-layout .hub-chips { flex-wrap: wrap; }
+.hub-home-layout .hub-chips a { padding: 6px 10px; font-size: 12px; }
+.hub-home-layout .hub-strip { grid-template-columns: minmax(0, 1fr); margin: 0; border: 1px solid var(--hub-glass-line); border-radius: 16px; background: rgba(8, 17, 31, .83); backdrop-filter: blur(14px); }
+.hub-home-layout .hub-strip-item, .hub-home-layout .hub-strip-item:first-child { padding: 13px 16px; }
+.hub-home-layout .hub-strip-item + .hub-strip-item { border-left: 0; border-top: 1px solid rgba(255, 255, 255, .14); }
+.hub-home-layout .hub-strip-item strong { font-size: 15px; }
+.hub-home-layout .hub-strip-item small { font-size: 12px; }
+.hub-home-layout .hub-bar { margin-top: 4px; height: 4px; }
+.hub-home-layout .hub-home-calm, .hub-home-layout .hub-feeds { display: contents; }
+.hub-home-layout .hub-home-calm .hub-card { display: flow-root; overflow: hidden; margin-bottom: 14px; }
+.hub-home-layout .hub-feeds .hub-act { grid-column: auto; }
+.hub-home-layout .hub-home-foot { clear: both; justify-content: flex-start; margin: 0; padding: 0 4px; }
+.hub-main:has(.hub-home-layout) > .hub-wrap { width: 100%; }
+@media (max-width: 759.98px) {
+  .hub-home-layout::before { display: none; }
+  .hub-home-layout > .hub-glance { top: 370px; width: 100%; padding: 12px; }
+  /* Phones give the photograph its own visible space above the cards. */
+  .hub-main:has(.hub-home-layout) .hub-backdrop { position: absolute; top: 0; height: 460px; background-size: auto 460px; background-position: 72% 0; }
+  .hub-main:has(.hub-home-layout) .hub-backdrop::after { background: linear-gradient(180deg, rgba(5, 10, 20, .3), transparent 320px, var(--hub-bg) 460px); }
+  .hub-home-layout .hub-hero-copy { margin-top: 340px; }
+  .hub-home-layout .hub-glance { padding: 12px; border-radius: 12px; background: rgba(8, 17, 31, .85); }
+  .hub-home-layout .hub-chatcard summary { flex-wrap: wrap; gap: 8px; padding: 14px 16px; }
+}
