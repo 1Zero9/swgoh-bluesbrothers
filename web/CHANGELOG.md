@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.91.0 — 2026-10-16
+
+- **Move the boxes on Home.** Each box (Ask B-Lue3, war room, Act now, the Wins) has a small grip in its top right corner that shows when you hover. Drag it up or down with a mouse or a finger, or focus it and use the arrow keys. Your order is remembered on that device, and "Reset layout" puts it back.
+- **The boxes are more solid,** so the words are easier to read over the picture.
+
 ## 0.90.0 — 2026-10-16
 
 - **A picture for each look.** Home now has a full-page background that changes with the theme: Rebel shows the Bluesmobile on Hoth, Deep shows the brothers at Tatooine twilight, and Classic shows them by the landspeeder in the hangar. The picture stays put while the page scrolls.
