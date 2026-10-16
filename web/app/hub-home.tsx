@@ -2,6 +2,7 @@ import Link from "next/link";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
 import HubPage from "./hub-page";
+import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
 import type { StatusCard } from "@/lib/home-status";
 
@@ -65,6 +66,63 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
       </section>
   );
 
+  const askBox = (
+  <details className="hub-ask-block">
+    <summary>
+      <span><strong>Ask B-Lue3</strong><small>Squads, counters, who has what. Add what you know.</small></span>
+      <span className="hub-ask-toggle" aria-hidden="true" />
+    </summary>
+    <div className="hub-askbox" role="search" aria-label="Ask B-Lue3">
+      <form action="/ask" method="get" className="hub-askform">
+        <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
+        <button type="submit">Ask</button>
+      </form>
+      <div className="hub-chips">
+        {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
+      </div>
+      <details className="hub-ask-how">
+        <summary>How B-Lue3 answers, and what it costs</summary>
+        <AnswerLadder left={questions} compact />
+      </details>
+    </div>
+  </details>
+  );
+
+  const warRoom = (
+  <div className="hub-strip" aria-label="War room">
+    {status.map((card) => (
+      <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
+        <p className="hub-eyebrow">{card.label}</p>
+        <strong>{card.headline}</strong>
+        <small>{card.detail}</small>
+        {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
+      </Link>
+    ))}
+  </div>
+  );
+
+  const actCard = hasWork ? (
+  <section className="hub-card hub-act is-urgent" aria-labelledby="hub-act-title">
+    <p className="hub-eyebrow is-amber">Act now</p>
+    <h2 id="hub-act-title">Where the guild needs you</h2>
+    {requests.length ? (
+      <>
+        <h3>Counters wanted</h3>
+        <ul className="hub-feed">{shownRequests.map((request) => <li key={request.id}><strong>{request.leaderName}</strong><small>{request.modeLabel}</small></li>)}</ul>
+        <Link className="hub-button" href="/knowledge">I have one, add it</Link>
+      </>
+    ) : null}
+    {callouts.length ? (
+      <>
+        <h3>Territory Battle callouts</h3>
+        <ul className="hub-feed">{shownCallouts.map((callout) => <li key={callout.id}><strong>{callout.unit}</strong><small>{callout.need}{callout.where ? ` · ${callout.where}` : ""}</small></li>)}</ul>
+        <Link className="hub-how" href="/territory-battles">See all callouts</Link>
+      </>
+    ) : null}
+    {isOfficer && reviewCount > 0 ? <Link className="hub-officer-note" href="/knowledge/review"><strong>{reviewCount} waiting for your check</strong><small>Open the review queue</small></Link> : null}
+  </section>
+  ) : null;
+
   return (
     <HubPage backdrop="themed">
       <div className="hub-dash">
@@ -90,72 +148,18 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           />
         </header>
         {shownNew.length ? <NewPlayersBanner names={shownNew.map((member) => member.name)} /> : null}
-        <div className="hub-dash-main">
-          <div className="hub-dash-left">
-            <details className="hub-ask-block">
-              <summary>
-                <span><strong>Ask B-Lue3</strong><small>Squads, counters, who has what. Add what you know.</small></span>
-                <span className="hub-ask-toggle" aria-hidden="true" />
-              </summary>
-              <div className="hub-askbox" role="search" aria-label="Ask B-Lue3">
-                <form action="/ask" method="get" className="hub-askform">
-                  <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
-                  <button type="submit">Ask</button>
-                </form>
-                <div className="hub-chips">
-                  {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
-                </div>
-                <details className="hub-ask-how">
-                  <summary>How B-Lue3 answers, and what it costs</summary>
-                  <AnswerLadder left={questions} compact />
-                </details>
-              </div>
-            </details>
-            <div className="hub-strip" aria-label="War room">
-              {status.map((card) => (
-                <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
-                  <p className="hub-eyebrow">{card.label}</p>
-                  <strong>{card.headline}</strong>
-                  <small>{card.detail}</small>
-                  {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
-                </Link>
-              ))}
-            </div>
-            {hasWork ? winsCard : null}
-          </div>
-          <div className="hub-home-calm hub-dash-right">
-          <div className={`hub-feeds${hasWork ? " has-act" : ""}`}>
-            {hasWork ? (
-              <section className="hub-card hub-act is-urgent" aria-labelledby="hub-act-title">
-                <p className="hub-eyebrow is-amber">Act now</p>
-                <h2 id="hub-act-title">Where the guild needs you</h2>
-                {requests.length ? (
-                  <>
-                    <h3>Counters wanted</h3>
-                    <ul className="hub-feed">{shownRequests.map((request) => <li key={request.id}><strong>{request.leaderName}</strong><small>{request.modeLabel}</small></li>)}</ul>
-                    <Link className="hub-button" href="/knowledge">I have one, add it</Link>
-                  </>
-                ) : null}
-                {callouts.length ? (
-                  <>
-                    <h3>Territory Battle callouts</h3>
-                    <ul className="hub-feed">{shownCallouts.map((callout) => <li key={callout.id}><strong>{callout.unit}</strong><small>{callout.need}{callout.where ? ` · ${callout.where}` : ""}</small></li>)}</ul>
-                    <Link className="hub-how" href="/territory-battles">See all callouts</Link>
-                  </>
-                ) : null}
-                {isOfficer && reviewCount > 0 ? <Link className="hub-officer-note" href="/knowledge/review"><strong>{reviewCount} waiting for your check</strong><small>Open the review queue</small></Link> : null}
-              </section>
-            ) : null}
-
-            {hasWork ? null : winsCard}
-          </div>
-
-          <p className="hub-home-foot">
-            <Link href="/chat">Guild chat</Link>
-            <a href={discordUrl} target="_blank" rel="noreferrer">Open Discord</a>
-          </p>
-          </div>
-        </div>
+        <MovableBoxes
+          items={[
+            { id: "ask", label: "Ask B-Lue3", node: askBox },
+            { id: "war", label: "War room", node: warRoom },
+            ...(actCard ? [{ id: "act", label: "Act now", node: actCard }] : []),
+            { id: "wins", label: "The Wins", node: winsCard },
+          ]}
+        />
+        <p className="hub-home-foot">
+          <Link href="/chat">Guild chat</Link>
+          <a href={discordUrl} target="_blank" rel="noreferrer">Open Discord</a>
+        </p>
       </div>
     </HubPage>
   );

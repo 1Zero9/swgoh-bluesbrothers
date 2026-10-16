@@ -1118,3 +1118,22 @@ html[data-theme="rebel"] .hub-backdrop.is-themed::after { background: linear-gra
   .hub-dash-right > .hub-home-foot { order: 5; }
 }
 @media (min-width: 1100px) { .hub-dash .hub-dash-right > .hub-feeds, .hub-dash .hub-dash-right > .hub-feeds.has-act { display: contents; } }
+
+/* ---------- Movable boxes, and more solid frames ---------- */
+.hub-dash { --hub-glass: rgba(10, 18, 36, 0.9); --hub-glass-line: rgba(255, 255, 255, 0.22); }
+html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.95); --hub-glass-line: rgba(15, 23, 42, 0.14); }
+.hub-dash-stack { display: grid; gap: 16px; align-content: start; min-width: 0; }
+@media (min-width: 1100px) { .hub-dash-stack { width: min(100%, 52%); } }
+.hub-box { position: relative; min-width: 0; transition: transform 0.15s, box-shadow 0.15s; }
+.hub-box > .hub-ask-block, .hub-box > .hub-strip, .hub-box > .hub-card { width: 100%; }
+.hub-box-grip { position: absolute; z-index: 2; top: 6px; right: 8px; display: grid; place-items: center; width: 26px; height: 22px; padding: 0; border: 0; border-radius: 7px; background: transparent; color: var(--hub-muted); opacity: 0; cursor: grab; touch-action: none; transition: opacity 0.15s, background-color 0.15s; }
+.hub-box:hover .hub-box-grip, .hub-box-grip:focus-visible, .hub-box.is-dragging .hub-box-grip { opacity: 1; }
+.hub-box-grip:hover { background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-box-grip:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+@media (hover: none) { .hub-box-grip { opacity: 0.7; } }
+.hub-box.is-dragging { z-index: 4; transform: scale(1.015); filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.45)); }
+.hub-box.is-dragging .hub-box-grip { cursor: grabbing; }
+.hub-box-reset { justify-self: start; padding: 4px 6px; border: 0; background: none; color: var(--hub-muted); font: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+.hub-box-reset:hover { color: var(--hub-text); }
+.hub-dash .hub-home-foot { width: min(100%, 52%); }
+@media (max-width: 1099.98px) { .hub-dash .hub-home-foot { width: 100%; } }
