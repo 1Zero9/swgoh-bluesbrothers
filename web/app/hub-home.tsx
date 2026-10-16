@@ -59,47 +59,55 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
   return (
     <HubPage backdrop="/bb-title.webp">
       <section className="hub-hero" aria-label="Welcome">
+        <div className="hub-hero-top">
+          {shownNew.length ? (
+            <p className="hub-newbar">
+              <span>Welcome new players</span>{" "}
+              {shownNew.map((member, index) => <span key={member.id}>{index ? ", " : ""}<strong>{member.name}</strong></span>)}
+              <span> to the Blues Brothers</span>
+            </p>
+          ) : <span />}
+          <GetStarted
+            linked={linked}
+            steps={STEPS}
+            compact
+            alert={Boolean(checkIn)}
+            aside={standing ? (
+              <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
+                <strong>{name}</strong>
+                <small>{standing}</small>
+                <span>{checkIn ?? "All good. Open my page"}</span>
+              </Link>
+            ) : null}
+          />
+        </div>
         <div className="hub-hero-copy">
-          <div>
-            <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
-            <h1>Ask B-Lue3. Add what you know.</h1>
-            <p className="hub-hero-sub">B-Lue3 is the guild&apos;s droid. Ask him about squads, counters and who has what, then teach him something he doesn&apos;t know yet.</p>
-          </div>
-          <div className="hub-askbox" role="search" aria-label="Ask B-Lue3">
-            <form action="/ask" method="get" className="hub-askform">
-              <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
-              <button type="submit">Ask</button>
-            </form>
-            <div className="hub-chips">
-              {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
-            </div>
-            <details className="hub-ask-how">
-              <summary>How B-Lue3 answers, and what it costs</summary>
-              <AnswerLadder left={questions} compact />
-            </details>
-          </div>
+          <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
           {glance.length ? (
             <ul className="hub-glance" aria-label="The guild now">
               {glance.map((item) => <li key={item.label}><strong>{item.value}</strong> {item.label}</li>)}
             </ul>
           ) : null}
+          <div className="hub-ask-block">
+            <div>
+              <h1>Ask B-Lue3. Add what you know.</h1>
+              <p className="hub-hero-sub">B-Lue3 is the guild&apos;s droid. Ask him about squads, counters and who has what, then teach him something he doesn&apos;t know yet.</p>
+            </div>
+            <div className="hub-askbox" role="search" aria-label="Ask B-Lue3">
+              <form action="/ask" method="get" className="hub-askform">
+                <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" enterKeyHint="send" />
+                <button type="submit">Ask</button>
+              </form>
+              <div className="hub-chips">
+                {STARTERS.map((starter) => <Link key={starter.q} href={`/ask?q=${encodeURIComponent(starter.q)}`}>{starter.label}</Link>)}
+              </div>
+              <details className="hub-ask-how">
+                <summary>How B-Lue3 answers, and what it costs</summary>
+                <AnswerLadder left={questions} compact />
+              </details>
+            </div>
+          </div>
         </div>
-        <GetStarted
-          linked={linked}
-          steps={STEPS}
-          compact
-          alert={Boolean(checkIn)}
-          aside={standing ? (
-            <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
-              <strong>{name}</strong>
-              <small>{standing}</small>
-              <span>{checkIn ?? "All good. Open my page"}</span>
-            </Link>
-          ) : null}
-        />
-      </section>
-
-      <div className="hub-home-calm">
         <div className="hub-strip" aria-label="War room">
           {status.map((card) => (
             <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
@@ -111,6 +119,9 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
           ))}
         </div>
 
+      </section>
+
+      <div className="hub-home-calm">
         <div className={`hub-feeds${hasWork ? " has-act" : ""}`}>
           {hasWork ? (
             <section className="hub-card hub-act is-urgent" aria-labelledby="hub-act-title">
@@ -141,12 +152,6 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             <Link className="hub-how" href="/wins">All the wins</Link>
           </section>
 
-          <section className="hub-card is-new" aria-labelledby="hub-new-title">
-            <p className="hub-eyebrow">New members</p>
-            <h2 id="hub-new-title">Welcome to the band</h2>
-            {shownNew.length ? <ul className="hub-feed">{shownNew.map((member) => <li key={member.id}><strong>{member.name}</strong><small>Joined {member.when}{member.power ? ` · ${member.power} GP` : ""}</small></li>)}</ul> : <p className="hub-quiet">No one new this month.</p>}
-            {wire.length ? <Link className="hub-how" href="/overview">More from the Guild Wire</Link> : null}
-          </section>
         </div>
 
         {chat ? (
