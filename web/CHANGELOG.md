@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.99.1 — 2026-10-16
+
+- **A "Squads" tab in the control panel.** Open the panel (expand arrow, top right of Home) and pick **Squads**. It lists the counter squads you saved, each with the enemy leader, the mode, the units, and a green **Ready** or an orange **Not yet** (with the first thing missing, like "Padmé Amidala: R5 → R7"), worked out from your own roster. Under that are the counters you marked "This is what I use". Buttons jump to save a squad or find counters. If you have none yet it says how to add one.
+
 ## 0.99.0 — 2026-10-16
 
 - **The top-right box on Home is now a control panel.** Small, it still shows your name, your standing and check-in, and the setup steps (officers also get a "waiting for your check" nudge). Press the expand arrow and it opens into a panel with tabs:

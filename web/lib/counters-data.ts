@@ -46,9 +46,9 @@ export type CounterView = {
 };
 
 /** Counters (for one enemy leader, or the newest few) with who in the guild can run each one right now. */
-export async function listCounters(options: { enemyId?: string | null; youPlayerId?: string | null; limit?: number }): Promise<CounterView[]> {
+export async function listCounters(options: { enemyId?: string | null; youPlayerId?: string | null; limit?: number; createdById?: string | null }): Promise<CounterView[]> {
   const rows = await getPrisma().counter.findMany({
-    where: options.enemyId ? { enemyLeaderId: options.enemyId } : undefined,
+    where: { ...(options.enemyId ? { enemyLeaderId: options.enemyId } : {}), ...(options.createdById ? { createdById: options.createdById } : {}) },
     orderBy: { createdAt: "desc" },
     take: options.limit ?? 20,
   });
