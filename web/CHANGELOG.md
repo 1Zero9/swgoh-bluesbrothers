@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.92.1 — 2026-10-16
+
+- **The "Welcome to the guild" box stays put.** No more timer. It sits top right until you close it with the ×, then folds into the small "Setup" button (which brings it back). Your choice is remembered on that device.
+
 ## 0.92.0 — 2026-10-16
 
 - **Put the boxes anywhere on Home.** Drag a box by its grip and it follows you across the page, left, right, up or down. A dashed outline shows where it will snap on the grid, and a faint grid appears while you drag. If you drop it on another box, that box slides down out of the way. The arrow keys move a focused grip one step at a time.

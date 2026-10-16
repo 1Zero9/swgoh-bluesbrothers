@@ -1141,3 +1141,9 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.95); --h
 .hub-box.is-dragging .hub-box-grip { cursor: grabbing; }
 .hub-box-reset { justify-self: start; padding: 4px 6px; border: 0; background: none; color: var(--hub-muted); font: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
 .hub-box-reset:hover { color: var(--hub-text); }
+
+/* The welcome panel stays until you close it. */
+.hub-side-close { position: absolute; z-index: 2; top: 8px; right: 8px; display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.08); color: inherit; opacity: 0.8; cursor: pointer; }
+.hub-side-close:hover { opacity: 1; background: rgba(255, 255, 255, 0.2); }
+.hub-side-close:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+.hub-timer { display: none; }
