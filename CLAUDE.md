@@ -24,3 +24,10 @@
 - GitHub flow: branch per change, PR with passing checks, squash-merge,
   bump the version and CHANGELOG (plain words for members), confirm the
   Production deploy succeeded.
+- Inner-page template (the Knowledge page is the reference; roll every other
+  page onto it): `<HubPage backdrop="themed" inner>` + `<HubHeader eyebrow title intro>`
+  (slim frosted bar, actions on the right) instead of a tall banner; all boxes
+  use the shared glass frame and hover glow in the "Inner pages" block of
+  `web/app/hub.css`; orange (`--ask`) is the call to action, blue is
+  everything else; one toolbar row, then content with an optional sticky side
+  column. Check at ~1800px, ~900px and in Rebel before shipping.

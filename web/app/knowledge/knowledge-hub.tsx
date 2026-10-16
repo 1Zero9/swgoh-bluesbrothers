@@ -36,9 +36,11 @@ export default function KnowledgeHub({ names, canAct, initialTab = "counters" }:
 
   return (
     <div className="hub-knowledge">
-      {canAct ? <button type="button" className="hub-button hub-add" onClick={() => openAdd(defaultAdd)}>+ Add what you know</button> : null}
-      <div className="hub-segment" role="group" aria-label="What to browse">
-        {TABS.map((item) => <button key={item.key} type="button" aria-pressed={tab === item.key} onClick={() => setTab(item.key)}>{item.label}</button>)}
+      <div className="hub-kbar">
+        <div className="hub-segment" role="group" aria-label="What to browse">
+          {TABS.map((item) => <button key={item.key} type="button" aria-pressed={tab === item.key} onClick={() => setTab(item.key)}>{item.label}</button>)}
+        </div>
+        {canAct ? <button type="button" className="hub-button hub-add" onClick={() => openAdd(defaultAdd)}>+ Add what you know</button> : null}
       </div>
       <p className="hub-note-line">Everything members add is checked by an officer before others see it. B-Lue3 only answers from checked entries.</p>
 

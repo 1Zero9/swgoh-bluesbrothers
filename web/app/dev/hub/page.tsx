@@ -2,13 +2,14 @@ import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
 import { DEFAULT_ANNOUNCEMENT } from "@/lib/announcement";
 import { buildStatusRow } from "@/lib/home-status";
-import HubBanner from "@/app/hub-banner";
-import HubPage from "@/app/hub-page";
+import HubPage, { HubHeader } from "@/app/hub-page";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
 
 /** Local preview of the hub screens with sample data. Development only: it does not exist in a production build. */
+const KNOW_NAMES = { MOTHERTALZIN: "Mother Talzin", OLDDAKA: "Old Daka", NIGHTSISTERZOMBIE: "Nightsister Zombie", ASAJJVENTRESS: "Asajj Ventress", MERRIN: "Merrin", GENERALVEERS: "General Veers", ADMIRALPIETT: "Admiral Piett", DARKTROOPER: "Dark Trooper", RANGETROOPER: "Range Trooper", MOFFGIDEON: "Moff Gideon" };
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -16,7 +17,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   const { screen } = await searchParams;
   if (screen === "welcome") return <LinkWelcome discordUsername="steve_c" discordUrl="https://discord.gg/example" preview />;
   if (screen === "guild") return <GuildView />;
-  if (screen === "knowledge") return <HubPage banner={<HubBanner image="/arsnel-banner.webp" eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band." />}><KnowledgeHub names={{}} canAct /></HubPage>;
+  if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
