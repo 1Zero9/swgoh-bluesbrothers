@@ -1208,10 +1208,10 @@ html[data-theme="rebel"] .hub-dash .hub-ask-toggle { color: #8a5a00; }
 @media (min-width: 1100px) { .hub-dash .hub-newbar { width: calc(50% - 8px); } }
 
 /* ---------- Floating announcement: the same see-through frame as the Home boxes ---------- */
-.hub-announce { --ann-bg: rgba(10, 18, 36, 0.62); --ann-line: rgba(255, 255, 255, 0.22); --ann-text: #fff; --ann-muted: rgba(255, 255, 255, 0.72); --ann-art: 0.28;
+.hub-announce { --ann-bg: rgba(10, 18, 36, 0.62); --ann-line: rgba(255, 255, 255, 0.22); --ann-text: #fff; --ann-muted: rgba(255, 255, 255, 0.72); --ann-art: 0.14;
   position: fixed; z-index: 1200; right: 22px; bottom: 22px; width: min(420px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--ann-line); border-radius: 16px; background: var(--ann-bg); color: var(--ann-text);
   -webkit-backdrop-filter: blur(8px) saturate(1.15); backdrop-filter: blur(8px) saturate(1.15); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); animation: hub-announce-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; transition: opacity 0.45s, transform 0.45s, border-color 0.18s, box-shadow 0.18s; }
-html[data-theme="rebel"] .hub-announce { --ann-bg: rgba(255, 255, 255, 0.7); --ann-line: rgba(15, 23, 42, 0.16); --ann-text: #0f172a; --ann-muted: #475569; --ann-art: 0.16; box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22); }
+html[data-theme="rebel"] .hub-announce { --ann-bg: rgba(255, 255, 255, 0.7); --ann-line: rgba(15, 23, 42, 0.16); --ann-text: #0f172a; --ann-muted: #475569; --ann-art: 0.1; box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22); }
 .hub-announce:hover { border-color: var(--hub-accent); box-shadow: 0 0 0 1px var(--hub-accent), 0 0 26px rgba(103, 199, 245, 0.28); }
 .hub-announce.is-leaving { opacity: 0; transform: translateY(16px); pointer-events: none; }
 .hub-announce-art { position: absolute; inset: 0; background: url("/bb-cosmic.webp") 18% 50% / cover no-repeat; opacity: var(--ann-art); }
