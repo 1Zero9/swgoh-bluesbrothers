@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { layoutRows, parseLayout, resolveLayout, rowsFor } from "./home-layout";
+import { compactLayout, layoutRows, parseLayout, resolveLayout, rowsFor } from "./home-layout";
 
 const boxes = [
   { id: "ask", w: 6, rows: 4 },
@@ -41,4 +41,14 @@ test("saved data is checked", () => {
 test("row counts and total height", () => {
   assert.equal(rowsFor(100), 5);
   assert.equal(layoutRows(boxes, resolveLayout(boxes, {})), 30);
+});
+
+test("sizes are kept when valid and dropped when not", () => {
+  assert.deepEqual(parseLayout('{"a":{"c":0,"r":2,"w":8,"h":12},"b":{"c":1,"r":1,"w":1,"h":2},"c":{"c":0,"r":0,"w":99}}'), { a: { c: 0, r: 2, w: 8, h: 12 }, b: { c: 1, r: 1 }, c: { c: 0, r: 0 } });
+});
+
+test("tidy up slides boxes up and keeps columns and sizes", () => {
+  const list = [{ id: "a", w: 6, rows: 4 }, { id: "b", w: 6, rows: 4 }, { id: "c", w: 6, rows: 4 }];
+  const out = compactLayout(list, { a: { c: 0, r: 10, w: 6 }, b: { c: 6, r: 30 }, c: { c: 0, r: 20 } });
+  assert.deepEqual(out, { a: { c: 0, r: 0, w: 6 }, b: { c: 6, r: 0 }, c: { c: 0, r: 4 } });
 });

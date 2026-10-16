@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
-import { GripVertical } from "lucide-react";
-import { COLS, GAP, ROW, layoutRows, parseLayout, resolveLayout, rowsFor, type Pos } from "@/lib/home-layout";
+import { GripVertical, LayoutGrid, MoveDiagonal2 } from "lucide-react";
+import { COLS, GAP, MIN_H, MIN_W, ROW, compactLayout, layoutRows, parseLayout, resolveLayout, rowsFor, type Pos } from "@/lib/home-layout";
 
 type Item = { id: string; label: string; node: ReactNode; cols?: number };
 type Drag = { id: string; startLeft: number; startTop: number; x: number; y: number; left: number; top: number };
+type Resize = { id: string; x: number; y: number; startW: number; startH: number; w: number; h: number };
 
-/** Boxes are this many of the 12 grid columns wide. */
+/** Boxes are this many of the 12 grid columns wide until you resize them. */
 const DEFAULT_COLS = 7;
 const STORAGE_KEY = "bb-home-layout";
 const CHANGE_EVENT = "bb-home-layout-change";
@@ -36,8 +37,9 @@ function save(layout: Record<string, Pos> | null) {
 }
 
 /**
- * The Home boxes, placed anywhere on a snap grid. Drag the grip (mouse or touch) or move it with the arrow keys; the
- * spot is kept on this device. On a narrow screen they stack in their usual order.
+ * The Home boxes, placed anywhere on a snap grid. Drag the grip to move a box, drag the corner to resize it (wider, narrower,
+ * taller, shorter; double-click the corner to fit it to its content again), "Tidy up" slides everything up into the gaps.
+ * Your layout is kept on this device. On a narrow screen the boxes stack in their usual order.
  */
 export default function MovableBoxes({ items }: { items: Item[] }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
@@ -45,6 +47,7 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
   const [width, setWidth] = useState(0);
   const [heights, setHeights] = useState<Record<string, number>>({});
   const [drag, setDrag] = useState<Drag | null>(null);
+  const [resize, setResize] = useState<Resize | null>(null);
   const box = useRef(new Map<string, HTMLElement>());
   const wrap = useRef<HTMLDivElement>(null);
 
@@ -79,13 +82,37 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
 
   const free = width >= MIN_FREE_WIDTH;
   const colW = (width + GAP) / COLS;
-  const sized = items.map((item) => ({ id: item.id, w: item.cols ?? DEFAULT_COLS, rows: rowsFor(heights[item.id] ?? 200) }));
+
+  /** Size of each box right now: what you saved, or what it is mid-resize, or nothing (fits its content). */
+  const sizeOf = (id: string): { w: number; h?: number } => {
+    if (resize && resize.id === id) return { w: resize.w, h: resize.h };
+    const item = items.find((candidate) => candidate.id === id);
+    return { w: saved[id]?.w ?? item?.cols ?? DEFAULT_COLS, h: saved[id]?.h };
+  };
+  const sized = items.map((item) => {
+    const size = sizeOf(item.id);
+    return { id: item.id, w: size.w, rows: size.h ?? rowsFor(heights[item.id] ?? 200) };
+  });
   const settled = resolveLayout(sized, saved);
-  const live = drag ? resolveLayout(sized, { ...settled, [drag.id]: { c: Math.round(drag.left / colW), r: Math.round(drag.top / ROW) } }, drag.id) : settled;
+  const live = drag ? resolveLayout(sized, { ...settled, [drag.id]: { c: Math.round(drag.left / colW), r: Math.round(drag.top / ROW) } }, drag.id)
+    : resize ? resolveLayout(sized, settled, resize.id) : settled;
   const rows = layoutRows(sized, live);
 
+  /** Positions plus the sizes you gave, ready to store. */
+  function withSizes(layout: Record<string, Pos>): Record<string, Pos> {
+    const out: Record<string, Pos> = {};
+    for (const item of items) {
+      const pos = layout[item.id];
+      if (!pos) continue;
+      const w = saved[item.id]?.w;
+      const h = saved[item.id]?.h;
+      out[item.id] = { c: pos.c, r: pos.r, ...(w ? { w } : {}), ...(h ? { h } : {}) };
+    }
+    return out;
+  }
+
   function place(id: string, pos: Pos) {
-    save({ ...resolveLayout(sized, { ...settled, [id]: pos }, id) });
+    save(withSizes(resolveLayout(sized, { ...settled, [id]: pos }, id)));
   }
 
   function onPointerDown(id: string, event: PointerEvent<HTMLButtonElement>) {
@@ -97,7 +124,8 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
 
   function onPointerMove(event: PointerEvent<HTMLButtonElement>) {
     if (!drag) return;
-    const maxLeft = (COLS - (items.find((item) => item.id === drag.id)?.cols ?? DEFAULT_COLS)) * colW;
+    const width = sizeOf(drag.id).w;
+    const maxLeft = (COLS - width) * colW;
     setDrag({ ...drag, left: Math.min(Math.max(drag.startLeft + event.clientX - drag.x, 0), maxLeft), top: Math.max(drag.startTop + event.clientY - drag.y, 0) });
   }
 
@@ -105,7 +133,7 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
     if (!drag) return;
     const target = live[drag.id];
     setDrag(null);
-    if (target) save({ ...live });
+    if (target) save(withSizes(live));
   }
 
   function onKeyDown(id: string, event: KeyboardEvent<HTMLButtonElement>) {
@@ -118,41 +146,102 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
     place(id, { c: Math.max(next.c, 0), r: Math.max(next.r, 0) });
   }
 
+  /* ----- resizing ----- */
+  function startResize(id: string, event: PointerEvent<HTMLButtonElement>) {
+    const node = box.current.get(id);
+    const pos = settled[id];
+    if (!free || !node || !pos) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const size = sizeOf(id);
+    setResize({ id, x: event.clientX, y: event.clientY, startW: node.offsetWidth, startH: node.offsetHeight, w: size.w, h: size.h ?? rowsFor(node.offsetHeight) });
+  }
+
+  function moveResize(event: PointerEvent<HTMLButtonElement>) {
+    if (!resize) return;
+    const pos = settled[resize.id];
+    const w = Math.min(Math.max(Math.round((resize.startW + event.clientX - resize.x + GAP) / colW), MIN_W), COLS - (pos?.c ?? 0));
+    const h = Math.max(Math.round((resize.startH + event.clientY - resize.y + GAP) / ROW), MIN_H);
+    if (w !== resize.w || h !== resize.h) setResize({ ...resize, w, h });
+  }
+
+  function endResize() {
+    if (!resize) return;
+    const { id, w, h } = resize;
+    const result = resolveLayout(sized, settled, id);
+    setResize(null);
+    const next = withSizes(result);
+    next[id] = { ...(next[id] ?? { c: 0, r: 0 }), w, h };
+    save(next);
+  }
+
+  /** Back to fitting its content: double-click the corner. */
+  function fit(id: string) {
+    const next = withSizes(settled);
+    const pos = next[id];
+    if (pos) next[id] = { c: pos.c, r: pos.r };
+    save(next);
+  }
+
+  function tidy() {
+    save(withSizes(compactLayout(sized, settled)));
+  }
+
   return (
     <div className="hub-home-calm hub-dash-stack">
       <div ref={wrap} className={`hub-boxes${free ? " is-free" : ""}`} style={free ? { height: rows * ROW } : undefined}>
-        {free && drag && live[drag.id] ? (
-          <div className="hub-box-ghost" aria-hidden="true" style={{ left: live[drag.id].c * colW, top: live[drag.id].r * ROW, width: (items.find((item) => item.id === drag.id)?.cols ?? DEFAULT_COLS) * colW - GAP, height: (rowsFor(heights[drag.id] ?? 200)) * ROW - GAP }} />
+        {free && (drag || resize) && live[(drag ?? resize)!.id] ? (
+          <div className="hub-box-ghost" aria-hidden="true" style={{ left: live[(drag ?? resize)!.id].c * colW, top: live[(drag ?? resize)!.id].r * ROW, width: sizeOf((drag ?? resize)!.id).w * colW - GAP, height: (sized.find((entry) => entry.id === (drag ?? resize)!.id)?.rows ?? 8) * ROW - GAP }} />
         ) : null}
         {items.map((item) => {
           const pos = live[item.id];
           const dragged = drag?.id === item.id;
+          const size = sizeOf(item.id);
           const style = free && pos
-            ? { left: dragged ? drag.left : pos.c * colW, top: dragged ? drag.top : pos.r * ROW, width: (item.cols ?? DEFAULT_COLS) * colW - GAP }
+            ? { left: dragged ? drag.left : pos.c * colW, top: dragged ? drag.top : pos.r * ROW, width: size.w * colW - GAP, ...(size.h ? { height: size.h * ROW - GAP } : {}) }
             : undefined;
           return (
-            <div key={item.id} ref={(node) => measure(item.id, node)} className={`hub-box${dragged ? " is-dragging" : ""}`} style={style}>
+            <div key={item.id} ref={(node) => measure(item.id, node)} className={`hub-box${dragged ? " is-dragging" : ""}${resize?.id === item.id ? " is-resizing" : ""}${free && size.h ? " has-height" : ""}`} style={style}>
               {free ? (
-                <button
-                  type="button"
-                  className="hub-box-grip"
-                  aria-label={`Move ${item.label}. Drag it, or use the arrow keys.`}
-                  title="Drag to move"
-                  onPointerDown={(event) => onPointerDown(item.id, event)}
-                  onPointerMove={onPointerMove}
-                  onPointerUp={onPointerUp}
-                  onPointerCancel={() => setDrag(null)}
-                  onKeyDown={(event) => onKeyDown(item.id, event)}
-                >
-                  <GripVertical size={16} aria-hidden="true" />
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className="hub-box-grip"
+                    aria-label={`Move ${item.label}. Drag it, or use the arrow keys.`}
+                    title="Drag to move"
+                    onPointerDown={(event) => onPointerDown(item.id, event)}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerCancel={() => setDrag(null)}
+                    onKeyDown={(event) => onKeyDown(item.id, event)}
+                  >
+                    <GripVertical size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="hub-box-resize"
+                    aria-label={`Resize ${item.label}. Drag the corner; double-click to fit it to its content.`}
+                    title="Drag to resize, double-click to fit"
+                    onPointerDown={(event) => startResize(item.id, event)}
+                    onPointerMove={moveResize}
+                    onPointerUp={endResize}
+                    onPointerCancel={() => setResize(null)}
+                    onDoubleClick={() => fit(item.id)}
+                  >
+                    <MoveDiagonal2 size={14} aria-hidden="true" />
+                  </button>
+                </>
               ) : null}
               {item.node}
             </div>
           );
         })}
       </div>
-      {raw && free ? <button type="button" className="hub-box-reset" onClick={() => save(null)}>Reset layout</button> : null}
+      {free ? (
+        <div className="hub-box-tools">
+          <button type="button" onClick={tidy}><LayoutGrid size={13} aria-hidden="true" /> Tidy up</button>
+          {raw ? <button type="button" className="hub-box-reset" onClick={() => save(null)}>Reset layout</button> : null}
+        </div>
+      ) : null}
     </div>
   );
 }

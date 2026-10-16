@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.0.0 — 2026-10-16
+
+- **Resize the Home boxes.** Each box now has a small corner handle (bottom right, shows when you hover). Drag it to make the box wider, narrower, taller or shorter. It snaps to the grid, a dashed outline shows where it will land, and the other boxes slide out of the way. If you make a box smaller than its content, it scrolls inside. **Double-click the corner** to fit the box back to its content.
+- **Tidy up.** A new button under the boxes slides everything up into the gaps, keeping your columns and sizes.
+- The war room box wraps its three panels (Territory War, Territory Battles, Raids) as you make it narrower. Sizes are saved on that device with the rest of your layout, and "Reset layout" clears both.
+
 ## 0.99.1 — 2026-10-16
 
 - **A "Squads" tab in the control panel.** Open the panel (expand arrow, top right of Home) and pick **Squads**. It lists the counter squads you saved, each with the enemy leader, the mode, the units, and a green **Ready** or an orange **Not yet** (with the first thing missing, like "Padmé Amidala: R5 → R7"), worked out from your own roster. Under that are the counters you marked "This is what I use". Buttons jump to save a squad or find counters. If you have none yet it says how to add one.
