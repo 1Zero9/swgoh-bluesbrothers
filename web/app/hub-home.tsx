@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
+import AnnouncementPopup from "./announcement-popup";
 import HubPage from "./hub-page";
 import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
@@ -126,6 +126,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
 
   return (
     <HubPage backdrop="themed">
+      <AnnouncementPopup />
       <div className="hub-dash">
         <header className="hub-dash-head">
           <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
@@ -148,9 +149,6 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             ) : null}
           />
         </header>
-        <div className="hub-dash-banner">
-          <Image className="hub-dash-banner-main" src="/bb-cosmic.webp" alt="Blues Brothers" fill sizes="(min-width: 1024px) 70vw, 100vw" priority />
-        </div>
         {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}
         <MovableBoxes
           items={[
