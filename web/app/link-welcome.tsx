@@ -42,7 +42,7 @@ export default function LinkWelcome({ discordUsername, discordUrl, preview = fal
     <main className="hub-main hub-welcome-page">
       <div className="hub-wrap hub-onboard">
         <div className="hub-link-brand">
-          <Image src="/bb-logo.webp" alt="" width={56} height={56} priority />
+          <Image src="/bb-emblem.webp" alt="" width={56} height={56} priority />
           <div><strong>Blues Brothers</strong><small>Guild hub</small></div>
         </div>
 

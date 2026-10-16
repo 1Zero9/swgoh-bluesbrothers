@@ -124,7 +124,7 @@ export default async function SiteHeader({
     <header className="site-header">
       <ScrollTracker />
       <Link className="brand" href={homeHref} aria-label="Blues Brothers guild command centre">
-        <Image className="brand-logo" src="/bb-logo.webp" alt="" width={136} height={136} priority />
+        <Image className="brand-logo" src="/bb-emblem.webp" alt="" width={136} height={136} priority />
         <span><strong>Blues Brothers</strong><small>Guild command</small></span>
       </Link>
       <NavLinks items={SITE_NAVIGATION} />

@@ -9143,3 +9143,14 @@ html:is([data-theme="light"], [data-theme="rebel"]) .welcome-banner-icon, html:i
 
 .blue-offer { display: grid; gap: 8px; justify-items: start; margin-top: 4px; }
 .blue-offer small { color: var(--muted); }
+
+/* The front page opens with the full-width Blues Brothers banner; the words sit under it, not on it. */
+.public-home .page-hero.public-banner-hero { display: block; min-height: 0; padding-top: 84px; background: #020a1c; box-shadow: none; margin-bottom: 0; }
+.public-home .public-banner-hero .page-hero-image { position: relative !important; inset: auto !important; width: 100% !important; height: auto !important; aspect-ratio: 3 / 1; object-fit: cover; object-position: 50% 40%; }
+.public-home .public-banner-hero .page-hero-shade { display: none; }
+.public-home .public-banner-hero .page-hero-copy { position: static; max-width: 1100px; margin: 0 auto; padding: 28px clamp(16px, 4vw, 40px) 40px; }
+.public-home .public-banner-hero .page-hero-copy h1 { font-size: clamp(32px, 4.4vw, 58px); line-height: 1.05; }
+@media (max-width: 720px) {
+  .public-home .page-hero.public-banner-hero { padding-top: 64px; }
+  .public-home .public-banner-hero .page-hero-image { aspect-ratio: 3 / 1; object-position: 50% 50%; }
+}
