@@ -147,7 +147,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             ) : null}
           />
         </header>
-        {shownNew.length ? <NewPlayersBanner names={shownNew.map((member) => member.name)} /> : null}
+        {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}
         <MovableBoxes
           items={[
             { id: "ask", label: "Ask B-Lue3", node: askBox },
