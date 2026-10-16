@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.88.0 — 2026-10-16
+
+- **No more wasted space on Home.** The black bar across the top is gone and the picture now runs from the top of the page down the whole right side, with the sign and both brothers. The cards sit below it, full width, side by side.
+- **"Welcome, Dex" uses the same clear font** as the rest of the page.
+- **Boxes light up when you hover** (a blue glow, amber for "Act now"), and each line in the war room strip highlights.
+- **"Setup 1 of 3" pulses** until all three steps are done.
+- **Guild chat moved to the menu**, right under Home, with a green dot that pulses. The wide chat card at the bottom of Home is gone.
+
 ## 0.87.0 — 2026-10-16
 
 - **Home uses the empty parts of the picture.** "Welcome, name" and the guild numbers now sit top left. The ask bar moved down into the open space under them, so the sign and the brothers are clear.

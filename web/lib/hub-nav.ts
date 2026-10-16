@@ -37,7 +37,7 @@ export type SidebarLink = { label: string; href: string; officerOnly?: boolean }
 export type SidebarGroup = { title: string | null; links: SidebarLink[] };
 
 export const SIDEBAR_GROUPS: SidebarGroup[] = [
-  { title: null, links: [{ label: "Home", href: "/" }, { label: "Ask B-Lue3", href: "/ask" }] },
+  { title: null, links: [{ label: "Home", href: "/" }, { label: "Ask B-Lue3", href: "/ask" }, { label: "Guild chat", href: "/chat" }] },
   {
     title: "Knowledge",
     links: [
@@ -53,7 +53,6 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     links: [
       { label: "Roster", href: "/members" },
       { label: "Who has…?", href: "/members#who-has" },
-      { label: "Guild chat", href: "/chat" },
       { label: "The Wins", href: "/wins" },
       { label: "Overview", href: "/overview" },
     ],
