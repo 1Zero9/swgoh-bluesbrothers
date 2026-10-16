@@ -872,3 +872,34 @@ html[data-theme="rebel"] { --hub-glass: rgba(255, 255, 255, 0.74); --hub-glass-l
 .hub-side-title svg { flex: none; transition: transform 0.15s; transform: rotate(90deg); }
 .hub-side-group.is-folded .hub-side-title svg { transform: none; }
 .hub-feeds.has-act { align-items: start; }
+
+/* ---------- Show the picture: the first screen is the sign and the brothers; the rest is a scroll away ---------- */
+.hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.62), rgba(5, 10, 20, 0.22) 55%, rgba(5, 10, 20, 0.3)), linear-gradient(180deg, transparent 55%, rgba(5, 10, 20, 0.45)); }
+html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.2) 55%, rgba(5, 10, 20, 0.28)); }
+@media (min-width: 1000px) {
+  .hub-hero { min-height: max(540px, calc(100vh - 150px)); }
+  .hub-hero-copy { align-self: stretch; }
+  .hub-hero .hub-glance { margin-top: auto; }
+}
+
+/* The welcome panel is timed: it shows for a few seconds, then folds into a small pill (it waits while you use it). */
+.hub-banner-side { position: relative; }
+.hub-timer { position: absolute; z-index: 1; inset: 0 0 auto 0; height: 3px; background: var(--hub-accent); transform-origin: left; animation: hub-timer linear forwards; }
+.hub-side-panel.is-pinned .hub-timer { animation-play-state: paused; }
+@keyframes hub-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .hub-timer { animation: none; transform: scaleX(0); } }
+.hub-setup-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; background: rgba(12, 20, 40, 0.58); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: #fff; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.hub-setup-pill:hover { border-color: var(--hub-accent); }
+.hub-setup-pill:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 2px; }
+.hub-setup-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--hub-amber); }
+.hub-hero .hub-setup-pill { justify-self: start; align-self: start; }
+@media (min-width: 1000px) { .hub-hero .hub-setup-pill { grid-column: 3; justify-self: end; } }
+
+/* Guild chat is one slim row until you open it. */
+.hub-home-calm .hub-chatcard { padding: 0; }
+.hub-chatcard summary { display: flex; align-items: center; gap: 14px; padding: 13px 22px; cursor: pointer; list-style: none; font-weight: 600; }
+.hub-chatcard summary::-webkit-details-marker { display: none; }
+.hub-chatcard summary .hub-eyebrow { margin: 0; }
+.hub-chatcard summary::after { content: "Open"; margin-left: auto; color: var(--hub-accent); font-size: 13px; font-weight: 600; }
+.hub-chatcard[open] summary::after { content: "Close"; }
+.hub-chatcard[open] > :not(summary) { margin: 0 22px 18px; }

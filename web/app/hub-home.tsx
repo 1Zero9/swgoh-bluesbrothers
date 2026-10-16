@@ -84,16 +84,19 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             </ul>
           ) : null}
         </div>
-        <div className="hub-banner-side" aria-label="You">
-          {standing ? (
+        <GetStarted
+          linked={linked}
+          steps={STEPS}
+          compact
+          alert={Boolean(checkIn)}
+          aside={standing ? (
             <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
               <strong>{name}</strong>
               <small>{standing}</small>
               <span>{checkIn ?? "All good. Open my page"}</span>
             </Link>
           ) : null}
-          <GetStarted linked={linked} steps={STEPS} compact />
-        </div>
+        />
       </section>
 
       <div className="hub-home-calm">
@@ -147,11 +150,10 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         </div>
 
         {chat ? (
-          <section className="hub-card hub-chatcard" aria-labelledby="hub-chat-title">
-            <p className="hub-eyebrow">Guild chat</p>
-            <h2 id="hub-chat-title">Talk to the band</h2>
+          <details className="hub-card hub-chatcard is-folded">
+            <summary><span className="hub-eyebrow">Guild chat</span><span>Talk to the band</span></summary>
             <HomeChat channelKey={chat.channelKey} channelLabel={chat.label} signedInAsMember={chat.signedInAsMember} />
-          </section>
+          </details>
         ) : null}
 
         <p className="hub-home-foot">

@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { Check, ListChecks } from "lucide-react";
 
 type Step = { key: string; title: string; hint: string; href: string };
 type Saved = { done: string[]; hidden: boolean };
 
 const STORAGE_KEY = "bb-get-started";
 const CHANGE_EVENT = "bb-get-started-change";
+/** The compact welcome panel shows for this long on load, then folds into a small pill (it pauses while you use it). */
+const SHOW_MS = 12000;
 
 function readRaw() {
   try { return window.localStorage.getItem(STORAGE_KEY) ?? ""; } catch { return ""; }
@@ -38,9 +40,17 @@ function write(value: Saved) {
 }
 
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
-export default function GetStarted({ linked, steps, compact = false }: { linked: boolean; steps: Step[]; compact?: boolean }) {
+export default function GetStarted({ linked, steps, compact = false, aside, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; aside?: ReactNode; alert?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
   const { done, hidden } = parse(raw);
+  const [open, setOpen] = useState(true);
+  const [pinned, setPinned] = useState(false);
+
+  useEffect(() => {
+    if (!compact || !open || pinned) return;
+    const timer = window.setTimeout(() => setOpen(false), SHOW_MS);
+    return () => window.clearTimeout(timer);
+  }, [compact, open, pinned]);
 
   function save(nextDone: string[], nextHidden: boolean) {
     write({ done: nextDone, hidden: nextHidden });
@@ -48,10 +58,9 @@ export default function GetStarted({ linked, steps, compact = false }: { linked:
 
   const finished = steps.filter((step) => done.includes(step.key)).length + (linked ? 1 : 0);
   const total = steps.length + 1;
-  if (hidden) return null;
   const nextKey = linked ? steps.find((step) => !done.includes(step.key))?.key : "link";
 
-  return (
+  const list = (
     <section className={compact ? "hub-start is-compact" : "hub-card hub-start"} aria-labelledby="hub-start-title">
       <div className="hub-start-head">
         <h2 id="hub-start-title">{compact ? "Welcome to the guild" : "Get started"}</h2>
@@ -76,5 +85,33 @@ export default function GetStarted({ linked, steps, compact = false }: { linked:
       </ul>
       <button type="button" className="hub-text-button" onClick={() => save(done, true)}>{finished >= total ? "All done. Hide this" : "Dismiss"}</button>
     </section>
+  );
+
+  if (!compact) return hidden ? null : list;
+  if (hidden && !aside) return null;
+
+  if (!open) {
+    return (
+      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}`} onClick={() => { setPinned(true); setOpen(true); }}>
+        <ListChecks size={16} aria-hidden="true" />
+        <span>{hidden ? "My standing" : `Setup ${finished} of ${total}`}</span>
+        {alert ? <i aria-label="Check-in needed" /> : null}
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className={`hub-banner-side hub-side-panel${pinned ? " is-pinned" : ""}`}
+      aria-label="You"
+      onPointerEnter={() => setPinned(true)}
+      onPointerLeave={() => setPinned(false)}
+      onFocusCapture={() => setPinned(true)}
+      onBlurCapture={() => setPinned(false)}
+    >
+      <i className="hub-timer" key={String(pinned)} style={{ animationDuration: `${SHOW_MS}ms` }} aria-hidden="true" />
+      {aside}
+      {hidden ? null : list}
+    </div>
   );
 }
