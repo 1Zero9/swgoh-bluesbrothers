@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.90.0 — 2026-10-16
+
+- **A picture for each look.** Home now has a full-page background that changes with the theme: Rebel shows the Bluesmobile on Hoth, Deep shows the brothers at Tatooine twilight, and Classic shows them by the landspeeder in the hangar. The picture stays put while the page scrolls.
+- **The frames sit in the left half** (Ask B-Lue3, the war room, Act now, the Wins) so the brothers stay clear on the right. The welcome, the numbers and the setup pill sit over the sky along the top.
+- The pictures are compressed to about 150 KB each. The full-size originals are kept in `design/backgrounds`.
+
 ## 0.89.0 — 2026-10-16
 
 - **Home is now a clean set of frames on a plain ground.** The photograph is gone from Home, so nothing fights the boxes. Top: "Welcome, name", the guild numbers and the setup pill. Under that, the new-player welcome. Below, two columns: Ask B-Lue3, the war room and the Wins on the left, and Act now on the right. When nothing needs doing, the Wins move to the right.
