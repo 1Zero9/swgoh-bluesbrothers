@@ -1242,5 +1242,17 @@ html[data-theme="rebel"] .hub-dash .hub-ask-toggle { color: #8a5a00; }
 @media (min-width: 1100px) {
   /* The banner keeps its own 3:1 shape in the middle (so its soft edges fade at the picture's edges, not the box's). */
   .hub-dash-banner img.hub-dash-banner-main { left: 50% !important; right: auto !important; width: auto !important; aspect-ratio: 3 / 1; transform: translateX(-50%); object-fit: cover; }
-  .hub-dash-banner::before { content: ""; position: absolute; inset: -30px; background: url("/bb-banner-sm.webp") 85% 15% / auto 330% no-repeat; filter: blur(24px) brightness(0.75) saturate(1.3); }
+  .hub-dash-banner::before { content: ""; position: absolute; inset: -30px; background: url("/bb-cosmic-sm.webp") 85% 15% / auto 330% no-repeat; filter: blur(24px) brightness(0.75) saturate(1.3); }
+}
+
+/* The new banner is wide enough to run edge to edge: on a laptop it fills the strip (a centred crop, never stretched). */
+@media (min-width: 1100px) {
+  .hub-dash-banner { background: #020a1c; height: clamp(190px, 17vw, 290px); }
+  .hub-dash-banner::before { display: none; }
+  .hub-dash-banner img.hub-dash-banner-main { left: 0 !important; right: 0 !important; width: 100% !important; aspect-ratio: auto; transform: none; object-fit: cover; object-position: 50% 50%; -webkit-mask-image: none; mask-image: none; }
+}
+/* The welcome box now stays open, so it sits under the banner instead of covering the brothers. */
+@media (min-width: 1100px) {
+  .hub-dash { --hub-banner-h: clamp(190px, 17vw, 290px); }
+  .hub-dash-head .hub-banner-side { top: calc(100% + 32px + var(--hub-banner-h)); }
 }
