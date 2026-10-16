@@ -66,7 +66,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
   );
 
   return (
-    <HubPage>
+    <HubPage backdrop="themed">
       <div className="hub-dash">
         <header className="hub-dash-head">
           <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>

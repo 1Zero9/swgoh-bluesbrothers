@@ -1096,3 +1096,25 @@ html[data-theme="rebel"] .hub-backdrop::after { background: linear-gradient(90de
 .hub-dash .hub-newbar:hover { box-shadow: 0 0 0 1px var(--hub-accent), 0 0 30px rgba(103, 199, 245, 0.45); }
 .hub-dash .hub-newbar p { margin: 0; }
 .hub-dash .hub-newbar.is-leaving { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+
+/* ---------- One picture per theme behind Home ---------- */
+.hub-backdrop.is-themed { background: #0b1220 var(--hub-backdrop-image, url("/bb-deep.webp")) 62% 100% / cover no-repeat; }
+html[data-theme="deep"] .hub-backdrop.is-themed { --hub-backdrop-image: url("/bb-deep.webp"); }
+html[data-theme="dark"] .hub-backdrop.is-themed { --hub-backdrop-image: url("/bb-classic.webp"); }
+html[data-theme="rebel"] .hub-backdrop.is-themed { --hub-backdrop-image: url("/bb-rebel.webp"); background-color: #dbeafe; }
+@media (min-width: 1024px) { .hub-backdrop.is-themed { left: 216px; } }
+html[data-theme] .hub-backdrop.is-themed::after { background: linear-gradient(90deg, rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.25) 55%, transparent 80%), linear-gradient(180deg, rgba(5, 10, 20, 0.25), transparent 30%); }
+html[data-theme="rebel"] .hub-backdrop.is-themed::after { background: linear-gradient(90deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12) 55%, transparent 80%); }
+
+/* The frames stack in the left half so the brothers stay in view on the right. */
+@media (min-width: 1100px) {
+  .hub-dash > .hub-newbar, .hub-dash-main { width: min(100%, 52%); }
+  .hub-dash-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .hub-dash-left, .hub-dash-right, .hub-dash-right > .hub-feeds { display: contents; }
+  .hub-dash-left > .hub-ask-block { order: 1; }
+  .hub-dash-left > .hub-strip { order: 2; }
+  .hub-dash-right .hub-act { order: 3; }
+  .hub-dash-left > .is-wins, .hub-dash-right .is-wins { order: 4; }
+  .hub-dash-right > .hub-home-foot { order: 5; }
+}
+@media (min-width: 1100px) { .hub-dash .hub-dash-right > .hub-feeds, .hub-dash .hub-dash-right > .hub-feeds.has-act { display: contents; } }
