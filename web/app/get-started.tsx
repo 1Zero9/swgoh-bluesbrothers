@@ -92,7 +92,7 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
 
   if (!open) {
     return (
-      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}`} onClick={() => { setPinned(true); setOpen(true); }}>
+      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}${hidden ? "" : finished < total || alert ? " is-pulsing" : ""}`} onClick={() => { setPinned(true); setOpen(true); }}>
         <ListChecks size={16} aria-hidden="true" />
         <span>{hidden ? "My standing" : `Setup ${finished} of ${total}`}</span>
         {alert ? <i aria-label="Check-in needed" /> : null}

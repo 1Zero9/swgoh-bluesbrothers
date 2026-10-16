@@ -74,7 +74,7 @@ export default function HubNav() {
                   </button>
                 ) : null}
                 {open ? links.map((link) => (
-                  <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
+                  <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}${link.href === "/chat" ? " is-chat" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
                     {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
                     <span>{link.label}</span>
                   </Link>

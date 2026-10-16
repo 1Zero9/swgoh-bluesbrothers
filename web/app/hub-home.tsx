@@ -1,7 +1,6 @@
 import Link from "next/link";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
-import HomeChat from "./home-chat";
 import HubPage from "./hub-page";
 import type { StatusCard } from "@/lib/home-status";
 
@@ -43,7 +42,7 @@ const STEPS = [
   { key: "share", title: "Add one thing you know", hint: "A counter, a tip or an idea", href: "/knowledge" },
 ];
 
-export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, chat, discordUrl }: HubHomeProps) {
+export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, discordUrl }: HubHomeProps) {
   const hasWork = requests.length > 0 || callouts.length > 0 || (isOfficer && reviewCount > 0);
   const shownWins = wins.slice(0, 3);
   const shownRequests = requests.slice(0, 2);
@@ -154,13 +153,6 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             </section>
 
           </div>
-
-          {chat ? (
-            <details className="hub-card hub-chatcard is-folded">
-              <summary><span className="hub-eyebrow">Guild chat</span><span>Talk to the band</span></summary>
-              <HomeChat channelKey={chat.channelKey} channelLabel={chat.label} signedInAsMember={chat.signedInAsMember} />
-            </details>
-          ) : null}
 
           <p className="hub-home-foot">
             <Link href="/chat">Guild chat</Link>
