@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.86.0 — 2026-10-16
+
+- **The picture comes first.** On a laptop, the first screen is the Blues Brothers sign and both brothers, with the headline and ask bar on the left. The war room panel and the cards start just below, a scroll away. The picture is also lighter behind the words.
+- **The welcome box is timed.** It shows for 12 seconds (a thin bar counts it down), then folds into a small "Setup 1 of 3" pill in the corner. It waits while you hover or tap it, and the pill brings it back. A small amber dot on the pill means a check-in is needed.
+- **Guild chat is one slim row** that opens when you tap it.
+
 ## 0.85.0 — 2026-10-15
 
 - **A calmer Home.** One focus now: the headline and the ask bar. The four number tiles became one quiet line of numbers, the ask box lost its frame, and Territory War, Territory Battles and Raids share one slim panel with a coloured dot instead of three cards. "Act now" only appears when something needs doing. The chat card only shows when chat is on, and Discord and Guild chat are two small links at the bottom.
