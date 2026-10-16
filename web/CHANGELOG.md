@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.87.0 — 2026-10-16
+
+- **Home uses the empty parts of the picture.** "Welcome, name" and the guild numbers now sit top left. The ask bar moved down into the open space under them, so the sign and the brothers are clear.
+- **New players are welcomed in a banner at the top:** "Welcome new players … to the Blues Brothers". The "New members" card is gone, since the banner replaces it.
+- **The setup pill sits top right,** and its box drops down from it for 12 seconds as before.
+- **The war room is a bare strip on the picture** at the foot of the first screen, and the cards below are smaller.
+
 ## 0.86.0 — 2026-10-16
 
 - **The picture comes first.** On a laptop, the first screen is the Blues Brothers sign and both brothers, with the headline and ask bar on the left. The war room panel and the cards start just below, a scroll away. The picture is also lighter behind the words.
