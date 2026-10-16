@@ -142,14 +142,8 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             steps={STEPS}
             compact
             alert={Boolean(checkIn)}
-            aside={standing ? (
-              <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
-                <strong>{name}</strong>
-                <small>{standing}</small>
-                <span>{checkIn ?? "All good. Open my page"}</span>
-              </Link>
-            ) : null}
-          />
+            panel={{ name, standing, checkIn, isOfficer, reviewCount, questions }}
+        />
         </header>
         {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}
         <MovableBoxes
