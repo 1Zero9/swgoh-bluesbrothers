@@ -1170,3 +1170,25 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.95); --h
 @media (prefers-reduced-motion: reduce) { .hub-newbar-head > svg { animation: none; } }
 @media (max-width: 559.98px) { .hub-newbar-hello span, .hub-newbar-hello { padding: 8px 10px; } .hub-newbar-people li { min-width: 0; flex: 1 1 100%; } }
 .hub-newbar-people small { font-family: inherit; letter-spacing: 0; text-transform: none; }
+
+/* A fine grid sits behind the left menu, fading out towards the bottom. */
+@media (min-width: 1024px) {
+  html[data-hub="on"] .hub-side {
+    background-image:
+      linear-gradient(to right, rgba(125, 211, 252, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(125, 211, 252, 0.09) 1px, transparent 1px),
+      radial-gradient(120% 60% at 0% 0%, rgba(125, 211, 252, 0.1), transparent 70%);
+    background-size: 24px 24px, 24px 24px, 100% 100%;
+    background-position: -1px -1px, -1px -1px, 0 0;
+  }
+  html[data-theme="rebel"][data-hub="on"] .hub-side {
+    background-image:
+      linear-gradient(to right, rgba(15, 23, 42, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px;
+  }
+  /* keep the labels crisp on top of the lines */
+  html[data-hub="on"] .hub-side-link, html[data-hub="on"] .hub-side-title { background-color: transparent; }
+  html[data-hub="on"] .hub-side-link:hover, html[data-hub="on"] .hub-side-title:hover { background-color: var(--hub-surface-2); }
+  html[data-hub="on"] .hub-side-link[aria-current="page"] { background-color: var(--hub-accent-soft); }
+}

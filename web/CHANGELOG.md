@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.93.1 — 2026-10-16
+
+- **A fine grid behind the left menu,** in blue lines on Deep and Classic and in grey on Rebel. The menu text sits clearly on top.
+
 ## 0.93.0 — 2026-10-16
 
 - **A proper welcome for new players.** The banner is now a card: "Welcome to the Blues Brothers!", with each newcomer on their own tile (a coloured initials badge, their name, when they joined and their power). A yellow **Say hello** button takes you to Guild chat. It stays for 45 seconds and waits while you point at it, or you can close it.
