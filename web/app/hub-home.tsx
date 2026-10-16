@@ -7,6 +7,7 @@ import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
 import type { StatusCard } from "@/lib/home-status";
 import type { Announcement } from "@/lib/announcement";
+import type { MySquads } from "@/lib/my-squads";
 
 export type HomeWireItem = { id: string; title: string; summary: string; when: string };
 export type HomeRequest = { id: string; leaderName: string; modeLabel: string };
@@ -31,6 +32,7 @@ export type HubHomeProps = {
   chat: { channelKey: string; label: string; signedInAsMember: boolean } | null;
   discordUrl: string;
   announcement: Announcement;
+  mySquads: MySquads;
   status: StatusCard[];
   /** B-Lue3 allowance this week, when his AI is switched on. */
   questions: { left: number; limit: number; resetsLabel: string } | null;
@@ -47,7 +49,7 @@ const STEPS = [
   { key: "share", title: "Add one thing you know", hint: "A counter, a tip or an idea", href: "/knowledge" },
 ];
 
-export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, discordUrl, announcement }: HubHomeProps) {
+export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, discordUrl, announcement, mySquads }: HubHomeProps) {
   const hasWork = requests.length > 0 || callouts.length > 0 || (isOfficer && reviewCount > 0);
   const shownWins = wins.slice(0, 3);
   const shownRequests = requests.slice(0, 2);
@@ -142,7 +144,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             steps={STEPS}
             compact
             alert={Boolean(checkIn)}
-            panel={{ name, standing, checkIn, isOfficer, reviewCount, questions }}
+            panel={{ name, standing, checkIn, isOfficer, reviewCount, questions, squads: mySquads }}
         />
         </header>
         {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}

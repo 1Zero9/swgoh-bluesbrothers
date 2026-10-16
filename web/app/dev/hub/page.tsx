@@ -41,6 +41,13 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       chat={null}
       discordUrl="https://discord.gg/example"
       announcement={DEFAULT_ANNOUNCEMENT}
+      mySquads={{
+        saved: [
+          { id: "1", title: "Night Sisters answer", enemy: "Nightsister Zombie", mode: "Territory War", units: ["Mother Talzin", "Asajj Ventress", "Nightsister Acolyte"], ready: true, gap: null },
+          { id: "2", title: "Vader opener", enemy: "Lord Vader", mode: "Any mode", units: ["Jedi Master Kenobi", "Padmé Amidala"], ready: false, gap: "Padmé Amidala: R5 → R7" },
+        ],
+        uses: [{ id: "u1", attacker: "Jedi Knight Revan", defender: "Sith Empire (Malak)", mode: "Grand Arena 5v5" }],
+      }}
       questions={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}
     />
   );

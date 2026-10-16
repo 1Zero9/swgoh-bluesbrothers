@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useSyncExternalStore, type ReactNode } from "react";
 import { BookOpen, ChevronsDownUp, ChevronsUpDown, ClipboardCheck, Megaphone, MessageCircle, MessageCircleQuestion, RotateCcw, Shield, Sparkles, Swords, Users, X, Bell, Ticket, LayoutGrid, Trophy } from "lucide-react";
 import ThemeToggle from "./theme-toggle";
+import type { MySquads } from "@/lib/my-squads";
 
-type Tab = "overview" | "setup" | "shortcuts" | "officers";
+type Tab = "overview" | "squads" | "setup" | "shortcuts" | "officers";
 
 const PANEL_KEY = "bb-panel";
 const PANEL_EVENT = "bb-panel-change";
@@ -28,7 +29,7 @@ function subscribe(onChange: () => void) {
 function parse(raw: string): Saved {
   try {
     const value = JSON.parse(raw || "{}") as Partial<Saved>;
-    const tab = value.tab === "setup" || value.tab === "shortcuts" || value.tab === "officers" ? value.tab : "overview";
+    const tab = value.tab === "squads" || value.tab === "setup" || value.tab === "shortcuts" || value.tab === "officers" ? value.tab : "overview";
     return { tab, expanded: value.expanded === true };
   } catch {
     return { tab: "overview", expanded: false };
@@ -56,7 +57,7 @@ const SHORTCUTS = [
  * your standing, the setup steps, shortcuts and settings, and (for officers) the officer tools.
  */
 export default function ControlPanel({
-  name, standing, checkIn, isOfficer, reviewCount, questions, checklist, finished, total, setupHidden, onFold,
+  name, standing, checkIn, isOfficer, reviewCount, questions, squads, checklist, finished, total, setupHidden, onFold,
 }: {
   name: string | null;
   standing: string | null;
@@ -64,6 +65,7 @@ export default function ControlPanel({
   isOfficer: boolean;
   reviewCount: number;
   questions: { left: number; limit: number; resetsLabel: string } | null;
+  squads: MySquads | null;
   checklist: ReactNode;
   finished: number;
   total: number;
@@ -78,6 +80,7 @@ export default function ControlPanel({
   const parts = (standing ?? "").split(" · ").filter(Boolean);
   const tabs: { key: Tab; label: string; badge?: string }[] = [
     { key: "overview", label: "Overview" },
+    ...(squads ? [{ key: "squads" as const, label: "Squads", badge: squads.saved.length + squads.uses.length ? String(squads.saved.length + squads.uses.length) : undefined }] : []),
     ...(setupHidden ? [] : [{ key: "setup" as const, label: "Setup", badge: `${finished}/${total}` }]),
     { key: "shortcuts", label: "Shortcuts" },
     ...(isOfficer ? [{ key: "officers" as const, label: "Officers", badge: reviewCount ? String(reviewCount) : undefined }] : []),
@@ -142,6 +145,48 @@ export default function ControlPanel({
             <span>{checkIn ?? "All good. Open my page"}</span>
           </Link>
           {questions ? <p className="hub-cpanel-note">Questions to B-Lue3 reset {questions.resetsLabel}.</p> : null}
+        </div>
+      ) : null}
+
+      {expanded && active === "squads" && squads ? (
+        <div className="hub-cpanel-body">
+          {squads.saved.length || squads.uses.length ? null : <p className="hub-cpanel-note">Nothing here yet. Save a counter squad, or mark a counter &ldquo;This is what I use&rdquo;, and it shows up here.</p>}
+          {squads.saved.length ? (
+            <>
+              <p className="hub-cpanel-note">Counters I saved</p>
+              <ul className="hub-cpanel-squads">
+                {squads.saved.map((squad) => (
+                  <li key={squad.id}>
+                    <Link href="/counters">
+                      <span className="hub-cpanel-squad-top"><strong>{squad.title}</strong>{squad.ready === null ? null : <i className={squad.ready ? "is-ready" : "is-gap"}>{squad.ready ? "Ready" : "Not yet"}</i>}</span>
+                      <small>vs {squad.enemy} · {squad.mode}</small>
+                      <small>{squad.units.join(", ")}</small>
+                      {squad.gap ? <small className="hub-cpanel-gap">{squad.gap}</small> : null}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {squads.uses.length ? (
+            <>
+              <p className="hub-cpanel-note">Counters I use</p>
+              <ul className="hub-cpanel-squads">
+                {squads.uses.map((use) => (
+                  <li key={use.id}>
+                    <Link href="/knowledge">
+                      <span className="hub-cpanel-squad-top"><strong>{use.attacker}</strong></span>
+                      <small>beats {use.defender} · {use.mode}</small>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <div className="hub-cpanel-actions">
+            <Link href="/counters"><LayoutGrid size={14} aria-hidden="true" /> Save a squad</Link>
+            <Link href="/knowledge"><BookOpen size={14} aria-hidden="true" /> Find counters</Link>
+          </div>
         </div>
       ) : null}
 
