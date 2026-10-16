@@ -2,6 +2,15 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.1.0 — 2026-10-16
+
+- **Counters / Knowledge gets the new look, and becomes the template for every page.**
+  - The tall picture banner is gone. A slim frosted header now holds the title, one line about the page, and "Review queue" for officers. The page's picture sits quietly behind it, per theme.
+  - **Tabs and "+ Add what you know"** share one line (the button is orange, the call to action). Search, mode and "I need a counter" share the next.
+  - **Wanted: can you help?** moved into a column beside the counters, staying in view as you scroll, with orange "I have one" buttons. On a tablet or phone it sits above the counters.
+  - **Each counter card** is see-through glass with a blue glow on hover. Who you face and what to use are two clear halves, and "This is what I use" is a pill.
+  - **Fixed:** the page ran off the right edge on wide screens (tabs and search were cut off).
+
 ## 1.0.0 — 2026-10-16
 
 - **Resize the Home boxes.** Each box now has a small corner handle (bottom right, shows when you hover). Drag it to make the box wider, narrower, taller or shorter. It snaps to the grid, a dashed outline shows where it will land, and the other boxes slide out of the way. If you make a box smaller than its content, it scrolls inside. **Double-click the corner** to fit the box back to its content.

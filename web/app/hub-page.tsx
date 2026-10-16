@@ -5,17 +5,34 @@ import HubNav from "./hub-nav";
  * The frame for hub screens: the navigation, a themed ground (stars in Deep, a grid in Classic) and the page body.
  * A `banner` runs edge to edge above the padded content; a `backdrop` picture sits fixed behind the whole page instead ("themed" picks the picture for the chosen theme).
  */
-export default function HubPage({ children, banner, backdrop }: { children: ReactNode; banner?: ReactNode; backdrop?: string }) {
+export default function HubPage({ children, banner, backdrop, inner = false }: { children: ReactNode; banner?: ReactNode; backdrop?: string; inner?: boolean }) {
   return (
     <>
       <HubNav />
-      <main className="hub-main">
-        {backdrop === "themed" ? <div className="hub-backdrop is-themed" aria-hidden="true" /> : backdrop ? <div className="hub-backdrop" aria-hidden="true" style={{ "--hub-backdrop-image": `url("${backdrop}")` } as CSSProperties} /> : null}
+      <main className={`hub-main${inner ? " is-inner" : ""}`}>
+        {backdrop === "themed" ? <div className={`hub-backdrop is-themed${inner ? " is-quiet" : ""}`} aria-hidden="true" /> : backdrop ? <div className="hub-backdrop" aria-hidden="true" style={{ "--hub-backdrop-image": `url("${backdrop}")` } as CSSProperties} /> : null}
         <div className="hub-ground" aria-hidden="true" />
         {banner}
         <div className="hub-wrap">{children}</div>
       </main>
     </>
+  );
+}
+
+/**
+ * The header every inner page shares: a slim frosted bar with the page's small label, its title, one line about it, and
+ * (on the right) the page's main actions. The page's picture is the themed background behind it, not a tall banner.
+ */
+export function HubHeader({ eyebrow, title, intro, children }: { eyebrow: string; title: ReactNode; intro?: ReactNode; children?: ReactNode }) {
+  return (
+    <header className="hub-pagehead">
+      <div>
+        <p className="hub-eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        {intro ? <p className="hub-pagehead-intro">{intro}</p> : null}
+      </div>
+      {children ? <div className="hub-pagehead-actions">{children}</div> : null}
+    </header>
   );
 }
 

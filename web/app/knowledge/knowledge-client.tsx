@@ -61,19 +61,14 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
 
   return (
     <div className="kb">
-      <div className="kb-search">
+      <div className="kb-toolbar">
         <input value={text} onChange={(event) => setText(event.target.value)} placeholder="Search a team or character, e.g. Lord Vader, GAS, Jabba" aria-label="Search counters" />
         <select value={mode} onChange={(event) => setMode(event.target.value as "" | KbMode)} aria-label="Game mode">
           <option value="">Every mode</option>
           {SEARCH_MODES.map((m) => <option key={m} value={m}>{MODE_LABELS[m]}</option>)}
         </select>
+        {canAct ? <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />I need a counter</button> : null}
       </div>
-
-      {canAct ? (
-        <div className="kb-actions">
-          <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />I need a counter</button>
-        </div>
-      ) : null}
 
       {panel === "help" ? (
         <form className="kb-form kb-panel" onSubmit={askForHelp}>
@@ -89,8 +84,9 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
       ) : null}
       {panel === "add" ? <div className="kb-panel"><h3>Add a counter</h3><SubmitForm key={prefill?.leader.id ?? "new"} prefill={prefill} onDone={() => void loadWanted()} /></div> : null}
 
+      <div className="kb-layout">
       {wanted.length ? (
-        <section className="kb-wanted" aria-label="Counters the guild is looking for">
+        <aside className="kb-wanted kb-side" aria-label="Counters the guild is looking for">
           <h3>Wanted: can you help?</h3>
           <ul>
             {wanted.map((item) => (
@@ -100,10 +96,10 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
               </li>
             ))}
           </ul>
-        </section>
+        </aside>
       ) : null}
 
-      <section aria-label="Counters">
+      <section className="kb-results" aria-label="Counters">
         {hits === null ? <p className="kb-empty">Loading…</p> : hits.length === 0 ? (
           <div className="kb-empty">
             <strong>{text || mode ? "Nothing here matches yet." : "No counters have been published yet."}</strong>
@@ -111,6 +107,7 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
           </div>
         ) : hits.map((hit) => <MatchCard key={hit.id} item={hit} names={names} canMark={canAct} />)}
       </section>
+      </div>
     </div>
   );
 }
