@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.95.0 — 2026-10-16
+
+- **Ask B-Lue3 is gold,** so it stands apart from the blue boxes (gold border, gold title, gold Ask button).
+- **A wider banner, not a stretched one.** On a laptop the Home banner now runs the full width of the page. The banner keeps its true shape in the middle and its soft edges melt into a blurred glow made from its own colours. Phones still show the whole banner.
+
 ## 0.94.1 — 2026-10-16
 
 - **The Blues Brothers banner is on the members' Home too.** It sits at the top, in the same left half as the boxes, with the whole banner showing so the name and the brothers are never cut off. On a phone it runs full width. The welcome card for new players lines up under it.
