@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.93.2 — 2026-10-16
+
+- **The new-player welcome stays until you close it.** No more timer.
+- **The grid behind the left menu is a touch fainter.**
+
 ## 0.93.1 — 2026-10-16
 
 - **A fine grid behind the left menu,** in blue lines on Deep and Classic and in grey on Rebel. The menu text sits clearly on top.
