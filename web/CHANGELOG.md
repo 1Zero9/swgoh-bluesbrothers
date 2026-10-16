@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.97.1 — 2026-10-16
+
+- **The announcement waits until you are ready.** It is off until an officer ticks "Show the announcement" on Officers → Announcement and saves. Nothing floats over Home before then, and saving with the box unticked keeps it as a draft.
+
 ## 0.97.0 — 2026-10-16
 
 - **Officers can edit the announcement on the site.** New page **Officers → Announcement** (also "Edit announcement" on the card itself). Change the small label, headline, message, button words and link, an optional quote and the seconds on screen, with a live preview, then **Save and show to everyone**. Every save shows it again, once, to each member. A switch turns it off. The button link must be a page on this site (like /chat) or an https link.
