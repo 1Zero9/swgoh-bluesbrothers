@@ -7,6 +7,8 @@ import { COLS, GAP, ROW, layoutRows, parseLayout, resolveLayout, rowsFor, type P
 type Item = { id: string; label: string; node: ReactNode; cols?: number };
 type Drag = { id: string; startLeft: number; startTop: number; x: number; y: number; left: number; top: number };
 
+/** Boxes are this many of the 12 grid columns wide. */
+const DEFAULT_COLS = 7;
 const STORAGE_KEY = "bb-home-layout";
 const CHANGE_EVENT = "bb-home-layout-change";
 /** Below this width the boxes simply stack; there is no room to place them freely. */
@@ -77,7 +79,7 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
 
   const free = width >= MIN_FREE_WIDTH;
   const colW = (width + GAP) / COLS;
-  const sized = items.map((item) => ({ id: item.id, w: item.cols ?? 6, rows: rowsFor(heights[item.id] ?? 200) }));
+  const sized = items.map((item) => ({ id: item.id, w: item.cols ?? DEFAULT_COLS, rows: rowsFor(heights[item.id] ?? 200) }));
   const settled = resolveLayout(sized, saved);
   const live = drag ? resolveLayout(sized, { ...settled, [drag.id]: { c: Math.round(drag.left / colW), r: Math.round(drag.top / ROW) } }, drag.id) : settled;
   const rows = layoutRows(sized, live);
@@ -95,7 +97,7 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
 
   function onPointerMove(event: PointerEvent<HTMLButtonElement>) {
     if (!drag) return;
-    const maxLeft = (COLS - (items.find((item) => item.id === drag.id)?.cols ?? 6)) * colW;
+    const maxLeft = (COLS - (items.find((item) => item.id === drag.id)?.cols ?? DEFAULT_COLS)) * colW;
     setDrag({ ...drag, left: Math.min(Math.max(drag.startLeft + event.clientX - drag.x, 0), maxLeft), top: Math.max(drag.startTop + event.clientY - drag.y, 0) });
   }
 
@@ -120,13 +122,13 @@ export default function MovableBoxes({ items }: { items: Item[] }) {
     <div className="hub-home-calm hub-dash-stack">
       <div ref={wrap} className={`hub-boxes${free ? " is-free" : ""}`} style={free ? { height: rows * ROW } : undefined}>
         {free && drag && live[drag.id] ? (
-          <div className="hub-box-ghost" aria-hidden="true" style={{ left: live[drag.id].c * colW, top: live[drag.id].r * ROW, width: (items.find((item) => item.id === drag.id)?.cols ?? 6) * colW - GAP, height: (rowsFor(heights[drag.id] ?? 200)) * ROW - GAP }} />
+          <div className="hub-box-ghost" aria-hidden="true" style={{ left: live[drag.id].c * colW, top: live[drag.id].r * ROW, width: (items.find((item) => item.id === drag.id)?.cols ?? DEFAULT_COLS) * colW - GAP, height: (rowsFor(heights[drag.id] ?? 200)) * ROW - GAP }} />
         ) : null}
         {items.map((item) => {
           const pos = live[item.id];
           const dragged = drag?.id === item.id;
           const style = free && pos
-            ? { left: dragged ? drag.left : pos.c * colW, top: dragged ? drag.top : pos.r * ROW, width: (item.cols ?? 6) * colW - GAP }
+            ? { left: dragged ? drag.left : pos.c * colW, top: dragged ? drag.top : pos.r * ROW, width: (item.cols ?? DEFAULT_COLS) * colW - GAP }
             : undefined;
           return (
             <div key={item.id} ref={(node) => measure(item.id, node)} className={`hub-box${dragged ? " is-dragging" : ""}`} style={style}>

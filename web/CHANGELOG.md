@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.98.0 — 2026-10-16
+
+- **Say hello and Hit it are Rebel orange** now, to match Ask B-Lue3 (and they follow the theme).
+- **The Home boxes are a little wider** (7 of the 12 grid columns, up from 6), and the new-player welcome card lines up with them. The brothers stay clear on the right.
+
 ## 0.97.3 — 2026-10-16
 
 - **Ask B-Lue3 is Rebel orange** instead of gold: the border, title, + button and Ask button. It follows the theme, a bright orange on Deep and Classic and a deeper burnt orange on Rebel so it still reads on the light boxes.
