@@ -2,6 +2,7 @@ import Link from "next/link";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
 import HubPage from "./hub-page";
+import NewPlayersBanner from "./new-players-banner";
 import type { StatusCard } from "@/lib/home-status";
 
 export type HomeWireItem = { id: string; title: string; summary: string; when: string };
@@ -66,13 +67,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         <section className="hub-hero" aria-label="Welcome">
           <div className="hub-hero-top">
             <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
-            {shownNew.length ? (
-              <p className="hub-newbar">
-                <span>Welcome new players</span>{" "}
-                {shownNew.map((member, index) => <span key={member.id}>{index ? ", " : ""}<strong>{member.name}</strong></span>)}
-                <span> to the Blues Brothers</span>
-              </p>
-            ) : <span />}
+            {shownNew.length ? <NewPlayersBanner names={shownNew.map((member) => member.name)} /> : <span />}
             <GetStarted
               linked={linked}
               steps={STEPS}

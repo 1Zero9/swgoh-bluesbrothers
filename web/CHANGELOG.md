@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.88.1 — 2026-10-16
+
+- **The guild numbers lost their box** and now line up with "Welcome, name", written straight onto the picture.
+- **The new-player welcome is bigger and brighter:** a blue banner with a party icon, "Welcome Juggernaut2000 and Dex to the Blues Brothers!", names in gold. It fades away after 25 seconds, or you can close it.
+
 ## 0.88.0 — 2026-10-16
 
 - **No more wasted space on Home.** The black bar across the top is gone and the picture now runs from the top of the page down the whole right side, with the sign and both brothers. The cards sit below it, full width, side by side.
