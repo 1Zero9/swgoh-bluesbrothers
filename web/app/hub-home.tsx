@@ -56,33 +56,42 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
     ...(stats.legends ? [{ value: stats.legends, label: "Galactic Legends" }] : []),
   ] : [];
 
+  const winsCard = (
+      <section className="hub-card is-wins" aria-labelledby="hub-wins-title">
+        <p className="hub-eyebrow">Achievements</p>
+        <h2 id="hub-wins-title">The Wins this week</h2>
+        {shownWins.length ? <ul className="hub-feed">{shownWins.map((win) => <li key={win.id}><strong>{win.who}</strong><small>{win.text} · {win.when}</small></li>)}</ul> : <p className="hub-quiet">Level a unit and it shows up here.</p>}
+        <Link className="hub-how" href="/wins">All the wins</Link>
+      </section>
+  );
+
   return (
-    <HubPage backdrop="/bb-title.webp">
-      <div className="hub-home-layout">
-        {glance.length ? (
-          <ul className="hub-glance" aria-label="The guild now">
-            {glance.map((item) => <li key={item.label}><strong>{item.value}</strong> {item.label}</li>)}
-          </ul>
-        ) : null}
-        <section className="hub-hero" aria-label="Welcome">
-          <div className="hub-hero-top">
-            <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
-            {shownNew.length ? <NewPlayersBanner names={shownNew.map((member) => member.name)} /> : <span />}
-            <GetStarted
-              linked={linked}
-              steps={STEPS}
-              compact
-              alert={Boolean(checkIn)}
-              aside={standing ? (
-                <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
-                  <strong>{name}</strong>
-                  <small>{standing}</small>
-                  <span>{checkIn ?? "All good. Open my page"}</span>
-                </Link>
-              ) : null}
-            />
-          </div>
-          <div className="hub-hero-copy">
+    <HubPage>
+      <div className="hub-dash">
+        <header className="hub-dash-head">
+          <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
+          {glance.length ? (
+            <ul className="hub-glance" aria-label="The guild now">
+              {glance.map((item) => <li key={item.label}><strong>{item.value}</strong> {item.label}</li>)}
+            </ul>
+          ) : null}
+          <GetStarted
+            linked={linked}
+            steps={STEPS}
+            compact
+            alert={Boolean(checkIn)}
+            aside={standing ? (
+              <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
+                <strong>{name}</strong>
+                <small>{standing}</small>
+                <span>{checkIn ?? "All good. Open my page"}</span>
+              </Link>
+            ) : null}
+          />
+        </header>
+        {shownNew.length ? <NewPlayersBanner names={shownNew.map((member) => member.name)} /> : null}
+        <div className="hub-dash-main">
+          <div className="hub-dash-left">
             <details className="hub-ask-block">
               <summary>
                 <span><strong>Ask B-Lue3</strong><small>Squads, counters, who has what. Add what you know.</small></span>
@@ -102,21 +111,19 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
                 </details>
               </div>
             </details>
+            <div className="hub-strip" aria-label="War room">
+              {status.map((card) => (
+                <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
+                  <p className="hub-eyebrow">{card.label}</p>
+                  <strong>{card.headline}</strong>
+                  <small>{card.detail}</small>
+                  {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
+                </Link>
+              ))}
+            </div>
+            {hasWork ? winsCard : null}
           </div>
-          <div className="hub-strip" aria-label="War room">
-            {status.map((card) => (
-              <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
-                <p className="hub-eyebrow">{card.label}</p>
-                <strong>{card.headline}</strong>
-                <small>{card.detail}</small>
-                {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
-              </Link>
-            ))}
-          </div>
-
-        </section>
-
-        <div className="hub-home-calm">
+          <div className="hub-home-calm hub-dash-right">
           <div className={`hub-feeds${hasWork ? " has-act" : ""}`}>
             {hasWork ? (
               <section className="hub-card hub-act is-urgent" aria-labelledby="hub-act-title">
@@ -140,19 +147,14 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
               </section>
             ) : null}
 
-            <section className="hub-card is-wins" aria-labelledby="hub-wins-title">
-              <p className="hub-eyebrow">Achievements</p>
-              <h2 id="hub-wins-title">The Wins this week</h2>
-              {shownWins.length ? <ul className="hub-feed">{shownWins.map((win) => <li key={win.id}><strong>{win.who}</strong><small>{win.text} · {win.when}</small></li>)}</ul> : <p className="hub-quiet">Level a unit and it shows up here.</p>}
-              <Link className="hub-how" href="/wins">All the wins</Link>
-            </section>
-
+            {hasWork ? null : winsCard}
           </div>
 
           <p className="hub-home-foot">
             <Link href="/chat">Guild chat</Link>
             <a href={discordUrl} target="_blank" rel="noreferrer">Open Discord</a>
           </p>
+          </div>
         </div>
       </div>
     </HubPage>
