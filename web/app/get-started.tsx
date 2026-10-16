@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore, type ReactNode } from "react";
-import { Check, ListChecks, X } from "lucide-react";
+import { useSyncExternalStore } from "react";
+import { Check, ListChecks } from "lucide-react";
+import ControlPanel from "./control-panel";
 
 type Step = { key: string; title: string; hint: string; href: string };
 type Saved = { done: string[]; hidden: boolean; folded: boolean };
@@ -38,7 +39,9 @@ function write(value: Saved) {
 }
 
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
-export default function GetStarted({ linked, steps, compact = false, aside, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; aside?: ReactNode; alert?: boolean }) {
+export type PanelInfo = { name: string | null; standing: string | null; checkIn: string | null; isOfficer: boolean; reviewCount: number; questions: { left: number; limit: number; resetsLabel: string } | null };
+
+export default function GetStarted({ linked, steps, compact = false, panel, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; panel?: PanelInfo; alert?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
   const { done, hidden, folded } = parse(raw);
 
@@ -78,7 +81,7 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
   );
 
   if (!compact) return hidden ? null : list;
-  if (hidden && !aside) return null;
+  if (hidden && !panel?.standing && !panel?.isOfficer) return null;
 
   if (folded) {
     return (
@@ -91,12 +94,18 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
   }
 
   return (
-    <div className="hub-banner-side hub-side-panel" aria-label="You">
-      <button type="button" className="hub-side-close" onClick={() => save(done, hidden, true)} aria-label="Close and keep a small Setup button" title="Close">
-        <X size={15} aria-hidden="true" />
-      </button>
-      {aside}
-      {hidden ? null : list}
-    </div>
+    <ControlPanel
+      name={panel?.name ?? null}
+      standing={panel?.standing ?? null}
+      checkIn={panel?.checkIn ?? null}
+      isOfficer={panel?.isOfficer ?? false}
+      reviewCount={panel?.reviewCount ?? 0}
+      questions={panel?.questions ?? null}
+      checklist={list}
+      finished={finished}
+      total={total}
+      setupHidden={hidden}
+      onFold={() => save(done, hidden, true)}
+    />
   );
 }

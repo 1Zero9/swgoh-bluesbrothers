@@ -2,6 +2,15 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.99.0 — 2026-10-16
+
+- **The top-right box on Home is now a control panel.** Small, it still shows your name, your standing and check-in, and the setup steps (officers also get a "waiting for your check" nudge). Press the expand arrow and it opens into a panel with tabs:
+  - **Overview:** your power, raid tickets and how many B-Lue3 questions you have left, plus your guild check-in.
+  - **Setup:** the three setup steps (when you have not dismissed them).
+  - **Shortcuts:** one-tap links to Ask B-Lue3, Add what you know, Guild chat, Who has…?, Territory War, Raids, The Wins and Notifications; the theme switch; "Reset Home layout"; and "Replay announcement".
+  - **Officers** (officers only): Review queue (with the count), Announcement, Roster report and Discord sync.
+- The panel remembers whether it was open and which tab you were on, on that device. The × still folds it to the small button.
+
 ## 0.98.1 — 2026-10-16
 
 - **The Ask button is orange on Rebel too.** The light themes were forcing every submit button blue; Ask B-Lue3's button now keeps its orange.
