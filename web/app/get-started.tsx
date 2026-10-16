@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
-import { Check, ListChecks } from "lucide-react";
+import { useSyncExternalStore, type ReactNode } from "react";
+import { Check, ListChecks, X } from "lucide-react";
 
 type Step = { key: string; title: string; hint: string; href: string };
-type Saved = { done: string[]; hidden: boolean };
+type Saved = { done: string[]; hidden: boolean; folded: boolean };
 
 const STORAGE_KEY = "bb-get-started";
 const CHANGE_EVENT = "bb-get-started-change";
-/** The compact welcome panel shows for this long on load, then folds into a small pill (it pauses while you use it). */
-const SHOW_MS = 12000;
 
 function readRaw() {
   try { return window.localStorage.getItem(STORAGE_KEY) ?? ""; } catch { return ""; }
@@ -28,9 +26,9 @@ function subscribe(onChange: () => void) {
 function parse(raw: string): Saved {
   try {
     const value = JSON.parse(raw || "{}") as Partial<Saved>;
-    return { done: Array.isArray(value.done) ? value.done : [], hidden: value.hidden === true };
+    return { done: Array.isArray(value.done) ? value.done : [], hidden: value.hidden === true, folded: value.folded === true };
   } catch {
-    return { done: [], hidden: false };
+    return { done: [], hidden: false, folded: false };
   }
 }
 
@@ -42,18 +40,10 @@ function write(value: Saved) {
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
 export default function GetStarted({ linked, steps, compact = false, aside, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; aside?: ReactNode; alert?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
-  const { done, hidden } = parse(raw);
-  const [open, setOpen] = useState(true);
-  const [pinned, setPinned] = useState(false);
+  const { done, hidden, folded } = parse(raw);
 
-  useEffect(() => {
-    if (!compact || !open || pinned) return;
-    const timer = window.setTimeout(() => setOpen(false), SHOW_MS);
-    return () => window.clearTimeout(timer);
-  }, [compact, open, pinned]);
-
-  function save(nextDone: string[], nextHidden: boolean) {
-    write({ done: nextDone, hidden: nextHidden });
+  function save(nextDone: string[], nextHidden: boolean, nextFolded = folded) {
+    write({ done: nextDone, hidden: nextHidden, folded: nextFolded });
   }
 
   const finished = steps.filter((step) => done.includes(step.key)).length + (linked ? 1 : 0);
@@ -90,9 +80,9 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
   if (!compact) return hidden ? null : list;
   if (hidden && !aside) return null;
 
-  if (!open) {
+  if (folded) {
     return (
-      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}${hidden ? "" : finished < total || alert ? " is-pulsing" : ""}`} onClick={() => { setPinned(true); setOpen(true); }}>
+      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}${hidden ? "" : finished < total || alert ? " is-pulsing" : ""}`} onClick={() => save(done, hidden, false)}>
         <ListChecks size={16} aria-hidden="true" />
         <span>{hidden ? "My standing" : `Setup ${finished} of ${total}`}</span>
         {alert ? <i aria-label="Check-in needed" /> : null}
@@ -101,15 +91,10 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
   }
 
   return (
-    <div
-      className={`hub-banner-side hub-side-panel${pinned ? " is-pinned" : ""}`}
-      aria-label="You"
-      onPointerEnter={() => setPinned(true)}
-      onPointerLeave={() => setPinned(false)}
-      onFocusCapture={() => setPinned(true)}
-      onBlurCapture={() => setPinned(false)}
-    >
-      <i className="hub-timer" key={String(pinned)} style={{ animationDuration: `${SHOW_MS}ms` }} aria-hidden="true" />
+    <div className="hub-banner-side hub-side-panel" aria-label="You">
+      <button type="button" className="hub-side-close" onClick={() => save(done, hidden, true)} aria-label="Close and keep a small Setup button" title="Close">
+        <X size={15} aria-hidden="true" />
+      </button>
       {aside}
       {hidden ? null : list}
     </div>
