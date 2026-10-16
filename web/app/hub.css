@@ -1196,15 +1196,15 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.62); --h
 .hub-dash .hub-newbar { background: linear-gradient(90deg, rgba(37, 99, 160, 0.78), rgba(10, 23, 43, 0.66)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .hub-dash .hub-box-ghost { background: var(--hub-accent-soft); }
 
-/* Ask B-Lue3 is gold, so it stands apart from the blue boxes. */
-.hub-dash .hub-ask-block { border-color: rgba(251, 191, 36, 0.7); background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), var(--hub-glass) 60%); }
-.hub-dash .hub-ask-block > summary strong { color: #ffd166; }
-html[data-theme="rebel"] .hub-dash .hub-ask-block > summary strong { color: #8a5a00; }
-.hub-dash .hub-ask-toggle { background: rgba(251, 191, 36, 0.2); color: #ffd166; }
-html[data-theme="rebel"] .hub-dash .hub-ask-toggle { color: #8a5a00; }
-.hub-dash .hub-ask-block:hover { border-color: #fbbf24; box-shadow: 0 0 0 1px #fbbf24, 0 0 26px rgba(251, 191, 36, 0.32); }
-.hub-dash .hub-askform button { background: #fbbf24; border-color: #fbbf24; color: #1b2433; }
-.hub-dash .hub-chips a:hover { border-color: #fbbf24; }
+/* Ask B-Lue3 is Rebel orange, so it stands apart from the blue boxes. --ask follows the theme. */
+.hub-dash { --ask: #ff8a2a; --ask-text: #ffa24d; --ask-rgb: 255, 138, 42; }
+html[data-theme="rebel"] .hub-dash { --ask: #ea580c; --ask-text: #c2410c; --ask-rgb: 234, 88, 12; }
+.hub-dash .hub-ask-block { border-color: rgba(var(--ask-rgb), 0.75); background: linear-gradient(135deg, rgba(var(--ask-rgb), 0.22), var(--hub-glass) 60%); }
+.hub-dash .hub-ask-block > summary strong { color: var(--ask-text); }
+.hub-dash .hub-ask-toggle { background: rgba(var(--ask-rgb), 0.2); color: var(--ask-text); }
+.hub-dash .hub-ask-block:hover { border-color: var(--ask); box-shadow: 0 0 0 1px var(--ask), 0 0 26px rgba(var(--ask-rgb), 0.35); }
+.hub-dash .hub-askform button { background: var(--ask); border-color: var(--ask); color: #fff; }
+.hub-dash .hub-chips a:hover { border-color: var(--ask); }
 @media (min-width: 1100px) { .hub-dash .hub-newbar { width: calc(50% - 8px); } }
 
 /* ---------- Floating announcement: the same see-through frame as the Home boxes ---------- */
