@@ -1120,8 +1120,8 @@ html[data-theme="rebel"] .hub-backdrop.is-themed::after { background: linear-gra
 @media (min-width: 1100px) { .hub-dash .hub-dash-right > .hub-feeds, .hub-dash .hub-dash-right > .hub-feeds.has-act { display: contents; } }
 
 /* ---------- Movable boxes, and more solid frames ---------- */
-.hub-dash { --hub-glass: rgba(10, 18, 36, 0.9); --hub-glass-line: rgba(255, 255, 255, 0.22); }
-html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.95); --hub-glass-line: rgba(15, 23, 42, 0.14); }
+.hub-dash { --hub-glass: rgba(10, 18, 36, 0.5); --hub-glass-line: rgba(255, 255, 255, 0.22); }
+html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.62); --hub-glass-line: rgba(15, 23, 42, 0.14); }
 .hub-dash-stack { display: grid; gap: 10px; align-content: start; min-width: 0; width: 100%; }
 .hub-boxes { display: grid; gap: 16px; min-width: 0; }
 .hub-boxes.is-free { position: relative; display: block; }
@@ -1192,3 +1192,6 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.95); --h
   html[data-hub="on"] .hub-side-link:hover, html[data-hub="on"] .hub-side-title:hover { background-color: var(--hub-surface-2); }
   html[data-hub="on"] .hub-side-link[aria-current="page"] { background-color: var(--hub-accent-soft); }
 }
+.hub-dash .hub-ask-block, .hub-dash .hub-strip, .hub-dash .hub-home-calm .hub-card { -webkit-backdrop-filter: blur(6px) saturate(1.15); backdrop-filter: blur(6px) saturate(1.15); }
+.hub-dash .hub-newbar { background: linear-gradient(90deg, rgba(37, 99, 160, 0.78), rgba(10, 23, 43, 0.66)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.hub-dash .hub-box-ghost { background: var(--hub-accent-soft); }

@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.93.3 — 2026-10-16
+
+- **More of the background shows through the boxes.** They are about half see-through now, with a light blur so the words stay easy to read. The new-player welcome card is lighter too.
+
 ## 0.93.2 — 2026-10-16
 
 - **The new-player welcome stays until you close it.** No more timer.
