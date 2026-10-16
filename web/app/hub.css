@@ -1204,3 +1204,43 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.62); --h
 @media (min-width: 760px) { .hub-dash-banner { aspect-ratio: 3 / 1; height: auto; } .hub-dash-banner img { object-position: 50% 50%; } }
 @media (min-width: 1100px) { .hub-dash-banner { width: min(100%, 52%); } }
 @media (min-width: 1100px) { .hub-dash-banner, .hub-dash .hub-newbar { width: calc(50% - 8px); } }
+
+/* Wider banner without stretching it: the banner keeps its shape in the middle with soft edges, over a blurred copy of itself. */
+.hub-dash-banner-fill { display: none; }
+@media (min-width: 1100px) {
+  .hub-dash-banner { width: 100%; aspect-ratio: auto; height: clamp(200px, 17vw, 280px); }
+  .hub-dash-banner-fill { display: block; object-fit: cover; filter: blur(26px) brightness(0.65) saturate(1.2); transform: scale(1.25); }
+  .hub-dash-banner-main { object-fit: contain; object-position: 50% 50%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+  .hub-dash .hub-newbar { width: calc(50% - 8px); }
+}
+
+/* Ask B-Lue3 is gold, so it stands apart from the blue boxes. */
+.hub-dash .hub-ask-block { border-color: rgba(251, 191, 36, 0.7); background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), var(--hub-glass) 60%); }
+.hub-dash .hub-ask-block > summary strong { color: #ffd166; }
+html[data-theme="rebel"] .hub-dash .hub-ask-block > summary strong { color: #8a5a00; }
+.hub-dash .hub-ask-toggle { background: rgba(251, 191, 36, 0.2); color: #ffd166; }
+html[data-theme="rebel"] .hub-dash .hub-ask-toggle { color: #8a5a00; }
+.hub-dash .hub-ask-block:hover { border-color: #fbbf24; box-shadow: 0 0 0 1px #fbbf24, 0 0 26px rgba(251, 191, 36, 0.32); }
+.hub-dash .hub-askform button { background: #fbbf24; border-color: #fbbf24; color: #1b2433; }
+.hub-dash .hub-chips a:hover { border-color: #fbbf24; }
+@media (min-width: 1100px) {
+  .hub-dash-banner img.hub-dash-banner-main { object-fit: contain; object-position: 50% 50%; }
+  .hub-dash-banner img.hub-dash-banner-fill { object-fit: cover; object-position: 50% 50%; }
+}
+@media (min-width: 1100px) {
+  .hub-dash-banner { background:
+    radial-gradient(1px 1px at 22px 38px, rgba(255,255,255,0.9), transparent 60%),
+    radial-gradient(1px 1px at 97px 71px, rgba(190,220,255,0.8), transparent 60%),
+    radial-gradient(1.5px 1.5px at 141px 18px, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1px 1px at 63px 109px, rgba(150,190,255,0.7), transparent 60%),
+    radial-gradient(520px 230px at 14% 50%, rgba(37, 99, 235, 0.26), transparent 70%),
+    radial-gradient(520px 230px at 90% 35%, rgba(37, 99, 235, 0.34), transparent 70%),
+    #030a1c;
+    background-size: 160px 130px, 160px 130px, 160px 130px, 160px 130px, 100% 100%, 100% 100%, 100% 100%; }
+  .hub-dash-banner img.hub-dash-banner-main { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+}
+@media (min-width: 1100px) {
+  /* The banner keeps its own 3:1 shape in the middle (so its soft edges fade at the picture's edges, not the box's). */
+  .hub-dash-banner img.hub-dash-banner-main { left: 50% !important; right: auto !important; width: auto !important; aspect-ratio: 3 / 1; transform: translateX(-50%); object-fit: cover; }
+  .hub-dash-banner::before { content: ""; position: absolute; inset: -30px; background: url("/bb-banner-sm.webp") 85% 15% / auto 330% no-repeat; filter: blur(24px) brightness(0.75) saturate(1.3); }
+}
