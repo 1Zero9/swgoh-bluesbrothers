@@ -19,8 +19,9 @@ export const CURRENT_ID = "current";
 export const MIN_SECONDS = 5;
 export const MAX_SECONDS = 120;
 
+/** Off until an officer switches it on, so nothing floats over Home before they are ready. */
 export const DEFAULT_ANNOUNCEMENT: Announcement = {
-  enabled: true,
+  enabled: false,
   label: "Announcement",
   title: "We're getting the band back together!",
   text: "Every member, every squad, one mission. Say hello in Guild chat and tell us what you're farming this week.",

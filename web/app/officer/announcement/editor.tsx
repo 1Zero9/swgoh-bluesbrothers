@@ -25,7 +25,7 @@ export default function AnnouncementEditor({ initial }: { initial: Announcement 
       if (!data.ok || !data.announcement) { setState({ kind: "error", message: data.error ?? "That did not save." }); return; }
       setSaved(data.announcement);
       setDraft({ ...data.announcement, seconds: String(data.announcement.seconds) });
-      setState({ kind: "ok", message: draft.enabled ? "Saved. Everyone sees it the next time they open Home." : "Saved, and switched off." });
+      setState({ kind: "ok", message: draft.enabled ? "Saved. Everyone sees it the next time they open Home." : "Saved as a draft. Nobody sees it until you switch it on." });
     } catch {
       setState({ kind: "error", message: "Could not reach the site. Try again." });
     }
@@ -36,7 +36,7 @@ export default function AnnouncementEditor({ initial }: { initial: Announcement 
       <header className="hub-heading">
         <p className="hub-eyebrow">Officers</p>
         <h1>Announcement</h1>
-        <p className="hub-intro">The card that floats over Home. Every save shows it again to everyone, once, and it fades away after the time you set.</p>
+        <p className="hub-intro">The card that floats over Home. It stays hidden until you tick “Show the announcement” and save. Every save shows it again to everyone, once, and it fades away after the time you set.</p>
       </header>
       <div className="hub-ann-grid">
         <form className="hub-card hub-ann-form" onSubmit={save}>
