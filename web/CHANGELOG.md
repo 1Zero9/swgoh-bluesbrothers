@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.87.0 — 2026-10-16
+
+- **Welcome is a slim banner across the top.** It holds your name, the three setup steps (the next one highlighted), your standing and a close button. It stays put, no timer and no pill.
+- **The war room sits on the picture.** Territory War, Territory Battles and Raids are now a bare strip at the foot of the first screen with the guild numbers above it, not boxes. The whole first screen is banner, sign, brothers and war room.
+- **The cards below are smaller** and sit three across.
+
 ## 0.86.0 — 2026-10-16
 
 - **The picture comes first.** On a laptop, the first screen is the Blues Brothers sign and both brothers, with the headline and ask bar on the left. The war room panel and the cards start just below, a scroll away. The picture is also lighter behind the words.

@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
-import { Check, ListChecks } from "lucide-react";
+import { useSyncExternalStore, type ReactNode } from "react";
+import { Check, X } from "lucide-react";
 
 type Step = { key: string; title: string; hint: string; href: string };
 type Saved = { done: string[]; hidden: boolean };
 
 const STORAGE_KEY = "bb-get-started";
 const CHANGE_EVENT = "bb-get-started-change";
-/** The compact welcome panel shows for this long on load, then folds into a small pill (it pauses while you use it). */
-const SHOW_MS = 12000;
 
 function readRaw() {
   try { return window.localStorage.getItem(STORAGE_KEY) ?? ""; } catch { return ""; }
@@ -40,18 +38,9 @@ function write(value: Saved) {
 }
 
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
-export default function GetStarted({ linked, steps, compact = false, aside, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; aside?: ReactNode; alert?: boolean }) {
+export default function GetStarted({ linked, steps, compact = false, aside, name = null }: { linked: boolean; steps: Step[]; compact?: boolean; aside?: ReactNode; name?: string | null }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
   const { done, hidden } = parse(raw);
-  const [open, setOpen] = useState(true);
-  const [pinned, setPinned] = useState(false);
-
-  useEffect(() => {
-    if (!compact || !open || pinned) return;
-    const timer = window.setTimeout(() => setOpen(false), SHOW_MS);
-    return () => window.clearTimeout(timer);
-  }, [compact, open, pinned]);
-
   function save(nextDone: string[], nextHidden: boolean) {
     write({ done: nextDone, hidden: nextHidden });
   }
@@ -88,30 +77,35 @@ export default function GetStarted({ linked, steps, compact = false, aside, aler
   );
 
   if (!compact) return hidden ? null : list;
-  if (hidden && !aside) return null;
 
-  if (!open) {
-    return (
-      <button type="button" className={`hub-setup-pill${alert ? " has-alert" : ""}`} onClick={() => { setPinned(true); setOpen(true); }}>
-        <ListChecks size={16} aria-hidden="true" />
-        <span>{hidden ? "My standing" : `Setup ${finished} of ${total}`}</span>
-        {alert ? <i aria-label="Check-in needed" /> : null}
-      </button>
-    );
-  }
+  const items = [
+    { key: "link", title: "Link your game account", href: "/me", isDone: linked },
+    ...steps.map((step) => ({ key: step.key, title: step.title, href: step.href, isDone: done.includes(step.key) })),
+  ];
 
   return (
-    <div
-      className={`hub-banner-side hub-side-panel${pinned ? " is-pinned" : ""}`}
-      aria-label="You"
-      onPointerEnter={() => setPinned(true)}
-      onPointerLeave={() => setPinned(false)}
-      onFocusCapture={() => setPinned(true)}
-      onBlurCapture={() => setPinned(false)}
-    >
-      <i className="hub-timer" key={String(pinned)} style={{ animationDuration: `${SHOW_MS}ms` }} aria-hidden="true" />
-      {aside}
-      {hidden ? null : list}
+    <div className="hub-wbar" role="region" aria-label="Welcome">
+      <strong className="hub-wbar-name">{name ? `Welcome, ${name}` : "Welcome"}</strong>
+      {hidden ? null : (
+        <ul className="hub-wbar-steps" aria-label={`Setup, ${finished} of ${total} done`}>
+          {items.map((item) => (
+            <li key={item.key} className={`${item.isDone ? "is-done" : ""}${nextKey === item.key ? " is-next" : ""}`.trim() || undefined}>
+              <Link href={item.href} onClick={() => { if (item.key !== "link") save(done.includes(item.key) ? done : [...done, item.key], false); }}>
+                <span className="hub-tick">{item.isDone ? <Check size={12} aria-hidden="true" /> : null}</span>
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="hub-wbar-end">
+        {aside}
+        {hidden ? null : (
+          <button type="button" className="hub-wbar-close" onClick={() => save(done, true)} aria-label={finished >= total ? "All done. Hide setup" : "Dismiss setup"} title={finished >= total ? "All done. Hide setup" : "Dismiss setup"}>
+            <X size={15} aria-hidden="true" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
