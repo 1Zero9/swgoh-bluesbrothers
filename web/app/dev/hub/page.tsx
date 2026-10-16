@@ -40,7 +40,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       callouts={[{ id: "c1", unit: "Lord Vader", need: "relic 7+, 5 needed", where: "Zeffo" }, { id: "c2", unit: "Padmé Amidala", need: "7 stars, 3 needed", where: "phase 3" }]}
       chat={null}
       discordUrl="https://discord.gg/example"
-      announcement={{ ...DEFAULT_ANNOUNCEMENT, enabled: true }}
+      announcement={DEFAULT_ANNOUNCEMENT}
       questions={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}
     />
   );

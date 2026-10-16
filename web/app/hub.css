@@ -1197,8 +1197,8 @@ html[data-theme="rebel"] .hub-dash { --hub-glass: rgba(255, 255, 255, 0.62); --h
 .hub-dash .hub-box-ghost { background: var(--hub-accent-soft); }
 
 /* Ask B-Lue3 is Rebel orange, so it stands apart from the blue boxes. --ask follows the theme. */
-.hub-dash { --ask: #ff8a2a; --ask-text: #ffa24d; --ask-rgb: 255, 138, 42; }
-html[data-theme="rebel"] .hub-dash { --ask: #ea580c; --ask-text: #c2410c; --ask-rgb: 234, 88, 12; }
+.hub-dash, .hub-announce { --ask: #ff8a2a; --ask-text: #ffa24d; --ask-rgb: 255, 138, 42; }
+html[data-theme="rebel"] .hub-dash, html[data-theme="rebel"] .hub-announce { --ask: #ea580c; --ask-text: #c2410c; --ask-rgb: 234, 88, 12; }
 .hub-dash .hub-ask-block { border-color: rgba(var(--ask-rgb), 0.75); background: linear-gradient(135deg, rgba(var(--ask-rgb), 0.22), var(--hub-glass) 60%); }
 .hub-dash .hub-ask-block > summary strong { color: var(--ask-text); }
 .hub-dash .hub-ask-toggle { background: rgba(var(--ask-rgb), 0.2); color: var(--ask-text); }
@@ -1251,3 +1251,12 @@ a.hub-announce-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 22px r
 .hub-ann-ok { color: var(--hub-good); }
 .hub-ann-error { color: var(--hub-bad); }
 .hub-ann-preview { display: grid; gap: 8px; padding: 18px; border: 1px solid var(--hub-line); border-radius: 16px; background: #0b1220 url("/bb-deep.webp") 62% 40% / cover; }
+
+/* Say hello and Hit it match Ask B-Lue3. */
+.hub-newbar-hello, .hub-announce-cta { background: var(--ask); color: #fff; }
+.hub-newbar-hello:hover { box-shadow: 0 6px 18px rgba(var(--ask-rgb), 0.45); }
+a.hub-announce-cta:hover { box-shadow: 0 8px 22px rgba(var(--ask-rgb), 0.5); }
+.hub-announce-body small { color: var(--ask-text); }
+.hub-announce-timer { background: var(--ask); }
+/* A little wider: the boxes are 7 of the 12 columns, and the welcome card lines up. */
+@media (min-width: 1100px) { .hub-dash .hub-newbar { width: calc(58.333% - 7px); } }
