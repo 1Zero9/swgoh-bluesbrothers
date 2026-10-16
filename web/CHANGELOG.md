@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.97.2 — 2026-10-16
+
+- **The announcement shows once per visit.** It floats in the first time you open Home, and not again when you move around the site or refresh. Come back four or more hours later (or the next day) and it shows again. Saving a new version still shows it to everyone straight away.
+
 ## 0.97.1 — 2026-10-16
 
 - **The announcement waits until you are ready.** It is off until an officer ticks "Show the announcement" on Officers → Announcement and saves. Nothing floats over Home before then, and saving with the box unticked keeps it as a draft.

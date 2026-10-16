@@ -1,54 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, X } from "lucide-react";
 import type { Announcement } from "@/lib/announcement";
 
 const DELAY_MS = 1500;
-const CHANGE_EVENT = "bb-announce-change";
+/** Coming back after this long counts as a new visit, so the announcement shows again. */
+const NEW_VISIT_MS = 4 * 60 * 60 * 1000;
 const SEEN_KEY = "bb-announce-seen";
 
-function readSeen() {
-  try { return window.localStorage.getItem(SEEN_KEY) ?? ""; } catch { return ""; }
+/** What this device last showed: which saved version, and when. */
+function lastShown(): { version: string; at: number } | null {
+  try {
+    const value = JSON.parse(window.localStorage.getItem(SEEN_KEY) ?? "null") as { version?: unknown; at?: unknown } | null;
+    return value && typeof value.version === "string" && typeof value.at === "number" ? { version: value.version, at: value.at } : null;
+  } catch { return null; }
 }
 
-function subscribe(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(CHANGE_EVENT, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(CHANGE_EVENT, onChange);
-  };
-}
-
-function markSeen(key: string) {
-  try { window.localStorage.setItem(SEEN_KEY, key); } catch { /* it just shows again next time */ }
-  window.dispatchEvent(new Event(CHANGE_EVENT));
+function markShown(version: string) {
+  try { window.localStorage.setItem(SEEN_KEY, JSON.stringify({ version, at: Date.now() })); } catch { /* it just shows again next time */ }
 }
 
 /**
  * A floating announcement an officer edits on the site. It slides in a moment after Home opens, counts down (and waits
- * while you point at it), and shows once per saved version on each device.
+ * while you point at it). It shows on the first visit to Home, then not again until you come back hours later or an officer
+ * saves a new version.
  */
 export default function AnnouncementPopup({ announcement, isOfficer = false, preview = false }: { announcement: Announcement; isOfficer?: boolean; preview?: boolean }) {
   const key = `v${announcement.version}`;
-  const seen = useSyncExternalStore(subscribe, readSeen, () => key);
   const [shown, setShown] = useState(preview);
   const [paused, setPaused] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const active = preview || (announcement.enabled && seen !== key);
+  const active = preview || announcement.enabled;
 
   useEffect(() => {
     if (!active || preview) return;
-    const timer = window.setTimeout(() => setShown(true), DELAY_MS);
+    const last = lastShown();
+    if (last && last.version === key && Date.now() - last.at < NEW_VISIT_MS) return;
+    const timer = window.setTimeout(() => { markShown(key); setShown(true); }, DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, [active, preview]);
+  }, [active, preview, key]);
 
   function close() {
     if (preview) return;
     setLeaving(true);
-    window.setTimeout(() => { markSeen(key); setShown(false); setLeaving(false); }, 450);
+    window.setTimeout(() => { setShown(false); setLeaving(false); }, 450);
   }
 
   useEffect(() => {
@@ -81,8 +78,8 @@ export default function AnnouncementPopup({ announcement, isOfficer = false, pre
           {preview
             ? <span className="hub-announce-cta">{announcement.cta}</span>
             : external
-              ? <a className="hub-announce-cta" href={announcement.href} target="_blank" rel="noreferrer" onClick={() => markSeen(key)}>{announcement.cta}</a>
-              : <Link className="hub-announce-cta" href={announcement.href} onClick={() => markSeen(key)}>{announcement.cta}</Link>}
+              ? <a className="hub-announce-cta" href={announcement.href} target="_blank" rel="noreferrer">{announcement.cta}</a>
+              : <Link className="hub-announce-cta" href={announcement.href}>{announcement.cta}</Link>}
           {announcement.quote ? <em>{announcement.quote}</em> : null}
         </div>
         {isOfficer && !preview ? <Link className="hub-announce-edit" href="/officer/announcement"><Pencil size={12} aria-hidden="true" /> Edit announcement</Link> : null}
