@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
@@ -147,6 +148,9 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             ) : null}
           />
         </header>
+        <div className="hub-dash-banner">
+          <Image src="/bb-banner.webp" alt="Blues Brothers" fill sizes="(min-width: 1024px) 70vw, 100vw" priority />
+        </div>
         {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}
         <MovableBoxes
           items={[

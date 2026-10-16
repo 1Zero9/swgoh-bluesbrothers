@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.94.1 — 2026-10-16
+
+- **The Blues Brothers banner is on the members' Home too.** It sits at the top, in the same left half as the boxes, with the whole banner showing so the name and the brothers are never cut off. On a phone it runs full width. The welcome card for new players lines up under it.
+
 ## 0.94.0 — 2026-10-16
 
 - **The Blues Brothers have a logo.** The twin fedoras and sunglasses emblem is now the sidebar logo, the site header logo, the browser tab icon, the iPhone home-screen icon and the app icon when the site is installed on a phone.
