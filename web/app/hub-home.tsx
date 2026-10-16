@@ -58,21 +58,10 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
 
   return (
     <HubPage backdrop="/bb-title.webp">
-      <GetStarted
-        linked={linked}
-        steps={STEPS}
-        compact
-        name={name}
-        aside={standing ? (
-          <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
-            <small>{standing}</small>
-            <span>{checkIn ?? "My page"}</span>
-          </Link>
-        ) : null}
-      />
       <section className="hub-hero" aria-label="Welcome">
         <div className="hub-hero-copy">
           <div>
+            <p className="hub-eyebrow">{name ? `Welcome, ${name}` : "Welcome"}</p>
             <h1>Ask B-Lue3. Add what you know.</h1>
             <p className="hub-hero-sub">B-Lue3 is the guild&apos;s droid. Ask him about squads, counters and who has what, then teach him something he doesn&apos;t know yet.</p>
           </div>
@@ -94,20 +83,33 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
               {glance.map((item) => <li key={item.label}><strong>{item.value}</strong> {item.label}</li>)}
             </ul>
           ) : null}
-          <div className="hub-strip" aria-label="War room">
-            {status.map((card) => (
-              <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
-                <p className="hub-eyebrow">{card.label}</p>
-                <strong>{card.headline}</strong>
-                <small>{card.detail}</small>
-                {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
-              </Link>
-            ))}
-          </div>
         </div>
+        <GetStarted
+          linked={linked}
+          steps={STEPS}
+          compact
+          alert={Boolean(checkIn)}
+          aside={standing ? (
+            <Link className={`hub-standing${checkIn ? " needs-checkin" : ""}`} href="/me">
+              <strong>{name}</strong>
+              <small>{standing}</small>
+              <span>{checkIn ?? "All good. Open my page"}</span>
+            </Link>
+          ) : null}
+        />
       </section>
 
       <div className="hub-home-calm">
+        <div className="hub-strip" aria-label="War room">
+          {status.map((card) => (
+            <Link key={card.key} href={card.href} className={`hub-strip-item is-${card.tone}`}>
+              <p className="hub-eyebrow">{card.label}</p>
+              <strong>{card.headline}</strong>
+              <small>{card.detail}</small>
+              {card.bar !== null ? <i className="hub-bar" aria-hidden="true"><b style={{ width: `${card.bar}%` }} /></i> : null}
+            </Link>
+          ))}
+        </div>
 
         <div className={`hub-feeds${hasWork ? " has-act" : ""}`}>
           {hasWork ? (
