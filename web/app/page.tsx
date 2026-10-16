@@ -12,6 +12,7 @@ import { buildStatusRow } from "@/lib/home-status";
 import { getRaidRoom } from "@/lib/raids";
 import { getWinsFeed } from "@/lib/wins-feed";
 import { getPrisma } from "@/lib/prisma";
+import { getAnnouncement } from "@/lib/announcement-data";
 import { getMemberContext } from "@/lib/member-context";
 import { getRosterChanges } from "@/lib/members";
 import { enabledChatChannels } from "@/lib/chat-config";
@@ -60,8 +61,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
     return <PublicHome data={data} news={news} notice={link === "error" ? <SignInProblem discordUrl={getDiscordUrl()} /> : null} />;
   }
 
-  const [context, wire, requests, queue, noteCount, usage, publicData, summary, winsFeed, openCallouts, raidRoom, changes, calloutRows] = await Promise.all([
+  const [context, announcement, wire, requests, queue, noteCount, usage, publicData, summary, winsFeed, openCallouts, raidRoom, changes, calloutRows] = await Promise.all([
     getMemberContext(),
+    getAnnouncement(),
     safely(getGuildWire, []),
     safely(() => openRequests(access.playerId ?? null), []),
     access.isOfficer ? safely(reviewQueue, []) : Promise.resolve([]),
@@ -99,6 +101,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
     callouts: calloutRows.map((row) => ({ id: row.id, unit: row.unitName, need: `${row.minRelic > 0 ? `relic ${row.minRelic}+` : `${row.minStars} stars`}${row.needed ? `, ${row.needed} needed` : ""}`, where: row.planetName ?? (row.phase ? `phase ${row.phase}` : null) })),
     chat: chatChannel ? { channelKey: chatChannel.key, label: chatChannel.label, signedInAsMember: access.isMember && Boolean(access.playerId) } : null,
     discordUrl: discordLink(),
+    announcement,
     questions: usage ? { left: usage.left, limit: usage.limit, resetsLabel: resetLabel(usage.resetsOn) } : null,
   };
   return <HubHome {...props} />;

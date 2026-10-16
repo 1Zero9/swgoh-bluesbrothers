@@ -719,3 +719,19 @@ model KbNoteHelpful {
   @@unique([noteId, playerId])
   @@index([playerId])
 }
+
+/// The floating announcement on Home. One row (id "current"); officers edit it on the site. `version` goes up on every save so everyone sees a changed announcement again.
+model Announcement {
+  id            String   @id
+  enabled       Boolean  @default(true)
+  label         String
+  title         String
+  text          String
+  cta           String
+  href          String
+  quote         String
+  seconds       Int      @default(20)
+  version       Int      @default(1)
+  updatedByName String?
+  updatedAt     DateTime @updatedAt
+}

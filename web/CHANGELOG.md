@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 0.97.0 — 2026-10-16
+
+- **Officers can edit the announcement on the site.** New page **Officers → Announcement** (also "Edit announcement" on the card itself). Change the small label, headline, message, button words and link, an optional quote and the seconds on screen, with a live preview, then **Save and show to everyone**. Every save shows it again, once, to each member. A switch turns it off. The button link must be a page on this site (like /chat) or an https link.
+- **The announcement now looks like the other boxes:** see-through frosted glass that follows the theme (dark on Deep and Classic, white on Rebel), a blue glow on hover, and the banner only faintly behind the words.
+- Needs one new database table (`Announcement`), added by a migration that runs on the next production build.
+
 ## 0.96.0 — 2026-10-16
 
 - **The banner is off Home.** It did not work in the layout.
