@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.12.0 — 2026-10-17
+
+- **The Territory War planner on the new look.** The officer command tool sits in one glass frame: the plan name and a clear ACTIVE / DRAFT pill, the status and "Clone" controls, then the modes (Prepare, Match-up, Defence, Attack, Workload, Discord, Templates) as pills with the current one in orange and a red count of problems on Defence. Zones, commands, defenders and the offence reserve are all glass rows that follow the theme (light and dark), with orange for the main buttons and blue on hover.
+- **Better on a phone:** the zone list stacks above the zone, the side panels drop underneath, and the mode pills scroll sideways.
+- The planner's drag and drop and every action work as before. Only the look changed.
+
 ## 1.11.0 — 2026-10-17
 
 - **My page is now right under Home** in the menu (it left the "You" group).
