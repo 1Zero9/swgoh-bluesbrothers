@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.35.0 — 2026-10-17
+
+- **The front page, the "members only" door and The Gig is In Session now match the rest of the site**: the slim glass header, frosted boxes and the themed background, so there is one look from the first visit. Same content, same sign-in buttons; the front page keeps its stats, how to join, ally-code check, war record and news.
+- Fixed an empty dark strip down the left side of these pages for visitors (it was room kept for the member menu).
+
 ## 1.34.0 — 2026-10-17
 
 - **Field guides and the officer Announcement editor now match the rest of the site** (slim glass header, themed background). The guides themselves are unchanged. The logged-out front page and "The Gig is In Session" door keep their own artwork on purpose.

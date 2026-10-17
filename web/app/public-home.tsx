@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import IntelFooter from "@/app/intel-footer";
-import PageHero from "@/app/page-hero";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import CheckStats from "@/app/check-stats";
 import { getDiscordUrl } from "@/lib/discord";
 import type { NewsItem } from "@/lib/news";
@@ -19,28 +18,18 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
   const full = data.spaces === 0;
 
   return (
-    <main className="intel-shell destination-shell public-home">
-      <PageHero
-        image="/bb-cosmic.webp"
-        imageAlt="Blues Brothers: the brothers beside a hovering police car, with a glowing planet behind them"
-        className="public-banner-hero"
-        eyebrow="Star Wars: Galaxy of Heroes guild"
-        title={<>The Blues Brothers.<br /><em>On a mission from the Force.</em></>}
-        description="A friendly, active guild that turns up for Territory War, Territory Battles and raids — and has fun doing it."
-        priority
-      >
-        {notice}
-        <div className="public-cta">
-          <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
-          <a className="public-cta-link" href="#join">Thinking of joining? →</a>
-        </div>
-        <div className="intel-summary">
-          <div><strong>{data.live ? data.members : "—"}<span>/{data.capacity}</span></strong><small>members</small></div>
-          <div><strong>{data.live ? millions(data.guildPower) : "—"}</strong><small>guild power</small></div>
-          <div><strong>{data.live ? data.galacticLegends : "—"}</strong><small>Galactic Legends</small></div>
-          <div><strong>{full ? "Full" : data.spaces}</strong><small>{full ? "ask about a space" : data.spaces === 1 ? "space open" : "spaces open"}</small></div>
-        </div>
-      </PageHero>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Star Wars: Galaxy of Heroes guild" title={<>The Blues Brothers. On a mission from the Force.</>} intro="A friendly, active guild that turns up for Territory War, Territory Battles and raids, and has fun doing it.">
+        <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
+        <a className="hub-pagehead-link" href="#join">Thinking of joining? →</a>
+      </HubHeader>
+      {notice}
+      <div className="intel-summary">
+        <div><strong>{data.live ? data.members : "—"}<span>/{data.capacity}</span></strong><small>members</small></div>
+        <div><strong>{data.live ? millions(data.guildPower) : "—"}</strong><small>guild power</small></div>
+        <div><strong>{data.live ? data.galacticLegends : "—"}</strong><small>Galactic Legends</small></div>
+        <div><strong>{full ? "Full" : data.spaces}</strong><small>{full ? "ask about a space" : data.spaces === 1 ? "space open" : "spaces open"}</small></div>
+      </div>
 
       {linking ? <section className="public-block">{linking}</section> : null}
 
@@ -133,9 +122,9 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
         <p><Link className="btn-discord-gate" href="/guides">Read the field guides</Link></p>
       </section>
 
-      <IntelFooter message="Already in the guild? Sign in with Discord to see the members' area.">
+      <HubLinks message="Already in the guild? Sign in with Discord to see the members' area.">
         <Link href="/guides">Field guides →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }
