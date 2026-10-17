@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.3.0 — 2026-10-17
+
+- **A guild feedback and to-do board.** New page **Feedback** (in the Guild menu and the control panel shortcuts). Any member can add a **feature request, feedback or "something's broken"** with a short title and some detail (5 a day each). The whole guild can read the list and tap **+1** on what they want too, which floats the popular ones up.
+- **Officers tick things off.** Each item shows a status: New, Planned, In progress, **Done** (ticked and struck through, with the date) or Not doing. Officers change the status from a dropdown, can add a **note to the guild** ("Shipped in 1.3, try it") and can remove an item. Members can take back their own post while it is still New.
+- Tabs show **To do**, **Done** and **All** with counts. Needs one new database table pair (`FeedbackItem`, `FeedbackVote`), added by a migration on the next production build.
+
 ## 1.2.1 — 2026-10-17
 
 - **"Wanted" is gone; the box now says exactly what it is.** It is titled **Members asking for a counter**, with one line: "Know a squad that beats one of these? Add it and the member who asked is helped." Each request reads **"How do I beat Lord Vader?"**, then the mode and any detail, then who asked. The button is **I know a counter**; for your own it is **Cancel request**.
