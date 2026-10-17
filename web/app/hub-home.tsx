@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { UserRound } from "lucide-react";
 import AnswerLadder from "./answer-ladder";
@@ -134,7 +135,13 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
     <HubPage backdrop="themed">
       <AnnouncementPopup announcement={announcement} isOfficer={isOfficer} />
       <div className="hub-dash">
-        <Link href="/me" className={`hub-mypage-icon${checkIn ? " has-alert" : ""}`} aria-label="My page" title="My page"><UserRound size={22} aria-hidden="true" /></Link>
+        <div className="hub-brandbar">
+          <Link href="/" className="hub-brandbar-id" aria-label="Blues Brothers home">
+            <Image src="/bb-emblem.webp" alt="" width={40} height={40} priority />
+            <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
+          </Link>
+          <Link href="/me" className={`hub-mypage-icon${checkIn ? " has-alert" : ""}`} aria-label="My page" title="My page"><UserRound size={22} aria-hidden="true" /></Link>
+        </div>
         <header className="hub-dash-head">
           <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
           {glance.length ? (
