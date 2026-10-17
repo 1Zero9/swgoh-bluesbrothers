@@ -2128,3 +2128,11 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
 .hub-main.is-inner .cafe-heading + .cafe-intro { margin-top: 12px; }
 .hub-main.is-inner .signature-heading h3 { color: inherit; }
 @media (max-width: 759.98px) { .hub-main.is-inner .soul-food-cafe { padding: 16px; border-radius: 16px; } }
+
+/* Phones: show the whole scene (both brothers) instead of a slice of it, sitting at the foot of the page and fading up into the sky. */
+@media (max-width: 759.98px) {
+  .hub-backdrop.is-themed:not(.is-quiet) { background-size: auto 54vh; background-position: 100% 100%; background-repeat: no-repeat; background-color: #0b1220; }
+  html[data-theme="rebel"] .hub-backdrop.is-themed:not(.is-quiet) { background-color: #d9e8f7; }
+  .hub-backdrop.is-themed:not(.is-quiet)::after { background: linear-gradient(180deg, #0b1220 0, #0b1220 36%, rgba(11, 18, 32, 0) 54%), linear-gradient(0deg, rgba(5, 10, 20, 0.25), transparent 30%); }
+  html[data-theme="rebel"] .hub-backdrop.is-themed:not(.is-quiet)::after { background: linear-gradient(180deg, #d9e8f7 0, #d9e8f7 36%, rgba(217, 232, 247, 0) 54%); }
+}
