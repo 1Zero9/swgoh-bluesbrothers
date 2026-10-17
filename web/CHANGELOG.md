@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.1.2 — 2026-10-17
+
+- **Asking the guild for a counter now finishes properly.** After you press Ask for help, the form closes and clears itself, and a green message says it was added to the Wanted list (it fades after a few seconds, or tap ×). Before, the form stayed open with the leader still typed in, which looked unfinished and invited a double send. The submit button is orange like the other calls to action.
+
 ## 1.1.1 — 2026-10-17
 
 - **Fixed the black box on phones.** When you type a unit name (Ask the guild for a counter, saving a squad and similar), the suggestions list was dark on every theme, so on Rebel the names were dark on dark and unreadable. It now follows the theme (white on Rebel, navy on Deep and Classic), and the box is full width.
