@@ -3,7 +3,7 @@ import Link from "next/link";
 import HubPage, { HubHeader } from "@/app/hub-page";
 import MembersOnly from "@/app/members-only";
 import { getViewerAccess } from "@/lib/access-control";
-import { getPlayerCard, type PlayerCard } from "@/lib/player-card";
+import { getStoredCard, type StoredCard } from "@/lib/player-card";
 import MemberCard from "./member-card";
 
 export const dynamic = "force-dynamic";
@@ -13,14 +13,15 @@ export default async function MemberCardPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const access = await getViewerAccess();
   if (!access.isOfficer) return <MembersOnly path={`/officer/member/${id}`} area="Member cards" />;
-  let card: PlayerCard | null = null;
-  try { card = await getPlayerCard(id); } catch { /* shown as not found below */ }
+  let stored: StoredCard | null = null;
+  try { stored = await getStoredCard(id); } catch { /* shown as not found below */ }
+  const card = stored?.card ?? null;
   return (
     <HubPage backdrop="themed" inner>
       <HubHeader eyebrow="Officers" title={card ? card.name : "Member card"} intro={card ? undefined : "We could not find that member in the current roster."}>
         <Link className="hub-pagehead-link" href="/officer/member">← All members</Link>
       </HubHeader>
-      {card ? <MemberCard card={card} /> : null}
+      {stored ? <MemberCard card={stored.card} capturedAt={stored.capturedAt} fromCache={stored.fromCache} history={stored.history} /> : null}
     </HubPage>
   );
 }

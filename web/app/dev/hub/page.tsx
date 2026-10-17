@@ -8,6 +8,7 @@ import CountersClient from "@/app/counters/counters-client";
 import ActivityFeed from "@/app/activity/activity-feed";
 import MemberCard from "@/app/officer/member/[id]/member-card";
 import { assessPlayer } from "@/lib/player-assessment";
+import MemberPicker from "@/app/officer/member/member-picker";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -37,6 +38,8 @@ const CARD_SAMPLE = {
   assessment: assessPlayer({ gpRank: 6, members: 50, galacticPower: 11.1e6, averageGp: 9.8e6, gpChange: 0.042, galacticLegends: 9, relicUnits: 41, raidTickets: 600, ticketTarget: 600, hoursSinceActive: 5, tenureDays: 249, raidsJoined: 2, raidsTotal: 3, joinedWar: true, wins30d: 14, countersAdded: 3, tipsPublished: 3, profileStale: false }),
 };
 
+const HIST_SAMPLE = [["Pillar of the band",4,0,11.1],["Pillar of the band",4,0,10.9],["Pulling their weight",3,1,10.6],["Needs a nudge",1,2,10.3]].map(([headline, strengths, watches, gp], i) => ({ at: new Date(Date.now() - i * 3 * 86400_000).toISOString(), headline: headline as string, strengths: strengths as number, watches: watches as number, galacticPower: String((gp as number) * 1e6) }));
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -48,7 +51,8 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;
   if (screen === "counters") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Saved squads" title="Know the counter. Know who can run it." intro="Pick an enemy squad's leader and see the counters the guild trusts, whether you can run them, and who can. Anyone can add one." /><CountersClient aside={<aside className="kb-side kb-ask-side"><h3>Not on the list?</h3><p>Ask B-Lue3. He checks what the guild has saved first, then searches the web for current counters.</p><span className="kb-ask-link">Ask B-Lue3 →</span></aside>} /></HubPage>;
   if (screen === "activity") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Guild" title="Guild activity" intro="Star promotions, gear, relics and unlocks across the guild, newest first."><span className="hub-pagehead-link">The Wins →</span></HubHeader><ActivityFeed items={ACT_SAMPLE} /></HubPage>;
-  if (screen === "member") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Dex"><span className="hub-pagehead-link">← All members</span></HubHeader><MemberCard card={CARD_SAMPLE} /></HubPage>;
+  if (screen === "member") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Dex"><span className="hub-pagehead-link">← All members</span></HubHeader><MemberCard card={CARD_SAMPLE} capturedAt="2026-10-17T10:00:00Z" fromCache history={HIST_SAMPLE} /></HubPage>;
+  if (screen === "members") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Member cards" intro="Pick a member." /><MemberPicker newest="2026-10-17T09:00:00Z" members={[{ playerId: "1", name: "Dex", role: "OFFICER", galacticPower: "11100000", flags: 0, headline: "Pillar of the band", watches: 0, topWatch: null }, { playerId: "2", name: "ZappAttk", role: "MEMBER", galacticPower: "8200000", flags: 1, headline: null, watches: null, topWatch: "Raid tickets running low" }, { playerId: "3", name: "Igor", role: "MEMBER", galacticPower: "6100000", flags: 3, headline: "Needs a nudge", watches: 3, topWatch: "Quiet for 5 days" }, { playerId: "4", name: "Brian", role: "MEMBER", galacticPower: "9400000", flags: 0, headline: "Pulling their weight", watches: 0, topWatch: null }]} /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

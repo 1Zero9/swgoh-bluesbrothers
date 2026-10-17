@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.8.0 — 2026-10-17
+
+- **A legend on the member cards.** The list has a key at the top: a coloured dot and edge for each member (green = Pillar, blue = Steady, yellow = 1 thing to look at, orange = Needs a nudge) and "the orange number is how many things to look at". Each tile now shows the top thing to watch in words, and a card has its own key too.
+- **Faster, and a record.** Cards are now saved in the database. Opening one is instant when it was worked out in the last 6 hours; older ones are rebuilt and saved. Opening the member list rebuilds every card in the background when the newest is over 12 hours old. **Refresh** (on a card) and **Refresh all** (on the list) rebuild from live data on demand.
+- **Over time.** Every saved card is kept, and each card shows an "Over time" history: date, verdict, strengths and watch-outs, and power, so you can see who is slipping or improving.
+- Needs one new database table (`MemberCardSnapshot`), added by a migration on the next production build.
+
 ## 1.7.0 — 2026-10-17
 
 - **Member cards for officers.** New page **Officers → Member cards**: search the roster, open anyone, and get one card that pulls everything together.
