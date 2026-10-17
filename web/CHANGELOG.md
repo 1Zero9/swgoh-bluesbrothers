@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.18.0 — 2026-10-17
+
+- **Soul Food Cantina on the new look.** The tall banner is replaced by the slim header and the themed picture. The cantina's own dark "kitchen" panel stays (the recipe cards, tap-droid beer advisor and submit-a-recipe form), but its huge duplicate title is gone, so you reach the sandwiches straight away. It is tighter on a phone.
+
 ## 1.17.0 — 2026-10-17
 
 - **A calmer phone.**
