@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.37.0 — 2026-10-18
+
+- **New "Who's online" button.** On a laptop it is at the bottom of the left menu; on a phone it is a small pill just above the tab bar. It shows a green dot and how many members have the site open right now. Tap it to see:
+  - **On the site now**, updated about every minute,
+  - **On Discord now**, if the guild's Discord server has its widget switched on (otherwise this part stays hidden),
+  - **In the game recently**, from the game's own last-activity time (so it can lag a little).
+- Anyone can tick **Appear offline on this device** in that panel. Only names are shown, never where someone is.
+
 ## 1.36.0 — 2026-10-17
 
 - **The logged-out front page has its identity back.** The Blues Brothers logo and name sit at the top with a Sign in button; the full Blues Brothers banner is back under it (shown whole on a phone); and the two real buttons, **Sign in with Discord** and **Thinking of joining?**, are large and full width.

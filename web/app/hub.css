@@ -2481,3 +2481,30 @@ button.sb-chip:hover:not(:disabled) { border-color: var(--hub-bad); }
   .hub-main.is-inner .hub-fold-body > .public-block > header > h2, .hub-main.is-inner .hub-fold-body > .public-block > header > .eyebrow { display: none; }
 }
 @media (min-width: 760px) { .pub-hero img { max-height: 340px; object-fit: cover; object-position: 50% 50%; } }
+
+/* Who's online */
+.whos-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--glass-line, var(--hub-line)); border-radius: 999px; background: var(--glass, var(--hub-surface-2)); color: var(--hub-text); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.whos-btn:hover { border-color: var(--hub-accent); }
+.whos-btn b { margin-left: auto; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--hub-accent-soft, rgba(80, 170, 255, 0.18)); color: var(--hub-accent); font-size: 12.5px; text-align: center; }
+.whos-btn.is-side { width: 100%; gap: 6px; padding: 9px 10px; white-space: nowrap; font-size: 13px; }
+.whos-btn.is-float { display: none; }
+@media (max-width: 1023.98px) {
+  .whos-btn.is-side { display: none; }
+  .whos-btn.is-float { display: inline-flex; position: fixed; z-index: 940; left: 12px; bottom: calc(66px + env(safe-area-inset-bottom, 0px) + 12px); padding: 8px 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+}
+.whos-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--hub-muted); opacity: 0.55; }
+.whos-dot.is-live, .whos-dot.is-online { background: #3ddc84; opacity: 1; box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.18); }
+.whos-dot.is-idle { background: #f5b942; opacity: 1; }
+.whos-dot.is-dnd { background: #ef5b5b; opacity: 1; }
+.whos-scrim { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: end center; padding: 12px; background: rgba(3, 8, 18, 0.55); }
+@media (min-width: 760px) { .whos-scrim { place-items: center; } }
+.whos-sheet { width: min(100%, 440px); max-height: min(80vh, 640px); overflow-y: auto; display: grid; gap: 14px; padding: 16px 18px; border: 1px solid var(--glass-line, var(--hub-line)); border-radius: 18px; background: var(--hub-bg); color: var(--hub-text); }
+.whos-sheet header { display: flex; align-items: center; justify-content: space-between; font-size: 17px; }
+.whos-sheet header button { border: 0; background: none; color: var(--hub-muted); cursor: pointer; }
+.whos-sheet h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--hub-muted); font: 500 11px var(--font-geist-mono), monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+.whos-sheet h3 i { font-style: normal; color: var(--hub-accent); }
+.whos-sheet ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.whos-sheet li { display: flex; align-items: center; gap: 10px; padding: 7px 4px; font-size: 14.5px; }
+.whos-sheet li em { margin-left: auto; color: var(--hub-muted); font-size: 12.5px; font-style: normal; }
+.whos-note { margin: 0; color: var(--hub-muted); font-size: 13.5px; }
+.whos-hide { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid var(--hub-line); color: var(--hub-muted); font-size: 13px; }
