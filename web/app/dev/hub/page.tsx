@@ -25,6 +25,7 @@ import { getSoulFoodRecipes } from "@/lib/recipes";
 import MissionGame from "@/app/mission-from-god/mission-game";
 import ChatClient from "@/app/chat/chat-client";
 import OfficerRosterTable from "@/app/officer-roster-table";
+import CreditsPage from "@/app/credits/page";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -222,6 +223,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <section className="rr-section"><OfficerRosterTable raidLabel="Krayt Dragon" twLabel="Current war" rows={[0, 1, 2].map((i) => ({ playerId: "p" + i, name: ["Dex", "ZappAttk", "Igor"][i], role: i ? null : "OFFICER", state: "ACTIVE" as const, joinedAt: "2026-02-10T10:00:00Z", leftAt: null, tenureDays: 249, galacticPower: String(11e6 - i * 3e6), raidTickets: [600, 310, 80][i], ticketTarget: 600, lastActivityAt: "2026-10-17T06:00:00Z", raidLabel: "Krayt Dragon", raidParticipated: i < 2, raidDamage: 4e6, twLabel: "Current war", twJoined: i < 2, flags: i === 2 ? ["Sat out the last raid"] : [], needsAttention: i === 2 }))} /></section>
     </HubPage>
   );
+  if (screen === "credits") return <CreditsPage />;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

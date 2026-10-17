@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import SiteHeader from "@/app/site-header";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { OneZeroNineLogo } from "@/app/built-by-badge";
 
 export const metadata: Metadata = {
@@ -28,15 +27,11 @@ const projects = [
 
 export default function CreditsPage() {
   return (
-    <main className="intel-shell credits-shell">
-      <SiteHeader homeHref="/" />
-      <section className="credits-hero">
-        <div className="credits-hero-copy">
-          <p className="eyebrow">Studio &amp; Open-source credits</p>
-          <h1>Built with help from<br /><em>the wider holotable.</em></h1>
-          <p>Designed and built at 1Zero9 Studio, with live data sync and borrowed code visible, attributed, and inside the permissions granted by each project.</p>
-        </div>
-      </section>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Studio & open-source credits" title="Built with help from the wider holotable" intro="Designed and built at 1Zero9 Studio, with live data sync and borrowed code visible, attributed, and inside the permissions granted by each project.">
+        <Link className="hub-pagehead-link" href="/">Home →</Link>
+      </HubHeader>
+      <div className="hub-credits">
       <section className="credit-list" aria-label="Studio attribution and open-source projects used by the site">
         <article className="credit-card studio-credit-card">
           <div className="studio-credit-head">
@@ -68,9 +63,10 @@ export default function CreditsPage() {
         <h2>Property and asset notice</h2>
         <p>Star Wars: Galaxy of Heroes, Star Wars, The Blues Brothers, and related names, characters, imagery and marks belong to their respective owners. This independent fan-made guild utility is not sold, separately distributed, affiliated with, sponsored by or endorsed by Electronic Arts, Capital Games, Lucasfilm, Disney, or the owners of The Blues Brothers.</p>
       </section>
-      <IntelFooter message="Full notices are kept in THIRD_PARTY_NOTICES.md.">
+      </div>
+      <HubLinks message="Full notices are kept in THIRD_PARTY_NOTICES.md.">
         <Link href="/arsenal">Open Guild Arsenal →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }
