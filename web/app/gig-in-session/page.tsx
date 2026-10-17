@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getViewerAccess } from "@/lib/access-control";
 import { getDiscordUrl } from "@/lib/discord";
 import { isMemberAuthConfigured } from "@/lib/member-auth";
@@ -31,20 +30,8 @@ export default async function GigInSessionPage() {
   if (access.isMember || access.isOfficer) redirect("/");
 
   return (
-    <main className="intel-shell destination-shell gig-in-session-page">
-      <PageHero
-        image="/gig-in-session.png"
-        imageAlt="Droid bouncer in fedora and sunglasses guarding the entrance under The Gig is in Session neon sign"
-        eyebrow="Blues Brothers Cantina · Restricted Access"
-        title={
-          <>
-            The Gig is In Session.<br />
-            <em>Crew Access Only.</em>
-          </>
-        }
-        description="Behind these doors, the Blues Brothers guild coordinates live Territory Wars, tracks seasonal Datacron super-weapons, and tunes up combat rosters. Present your credentials to enter."
-        priority
-      />
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Blues Brothers Cantina · Restricted access" title="The Gig is In Session. Crew access only." intro="Behind these doors the guild coordinates live Territory Wars, tracks seasonal Datacron super-weapons and tunes up combat rosters. Present your credentials to enter." />
 
       <CrewGate
         discordUrl={discordUrl}
@@ -56,7 +43,7 @@ export default async function GigInSessionPage() {
         playerName={access.playerName}
       />
 
-      <IntelFooter message="The Blues Brothers SWGOH Guild Command Deck · Powered by Comlink & Discord." />
-    </main>
+      <HubLinks message="The Blues Brothers SWGOH Guild Command Deck · Powered by Comlink & Discord." />
+    </HubPage>
   );
 }
