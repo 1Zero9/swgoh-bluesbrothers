@@ -23,6 +23,8 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
   const [helpLeader, setHelpLeader] = useState<PickedUnit | null>(null);
   const [helpNote, setHelpNote] = useState("");
   const [helpMessage, setHelpMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [pickerKey, setPickerKey] = useState(0);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const params = new URLSearchParams();
@@ -44,6 +46,11 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
     return () => clearTimeout(timer);
   }, [load]);
   useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => setNotice(null), 8000);
+    return () => clearTimeout(timer);
+  }, [notice]);
+  useEffect(() => {
     const timer = setTimeout(() => { void loadWanted(); }, 0);
     return () => clearTimeout(timer);
   }, [loadWanted]);
@@ -54,7 +61,9 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
     const response = await fetch("/api/knowledge/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode: helpMode, leaderUnitId: helpLeader.id, note: helpNote }) }).catch(() => null);
     const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string; created?: boolean; posted?: boolean } | null;
     if (data?.ok) {
-      setHelpMessage({ ok: true, text: data.created === false ? "Someone has already asked for that one. It's on the Wanted list." : data.posted ? "Sent. The guild has been asked in Discord, and it's on the Wanted list." : "Added to the Wanted list." });
+      // Done: close and clear the form, and confirm above the list instead.
+      setNotice(data.created === false ? "Someone has already asked for that one. It's on the Wanted list." : data.posted ? "Sent. The guild has been asked in Discord, and it's on the Wanted list." : "Added to the Wanted list.");
+      setHelpMessage(null); setHelpLeader(null); setHelpNote(""); setPickerKey((value) => value + 1); setPanel("none");
       void loadWanted();
     } else setHelpMessage({ ok: false, text: data?.error ?? "That didn't go through. Try again." });
   }
@@ -70,13 +79,15 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
         {canAct ? <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />I need a counter</button> : null}
       </div>
 
+      {notice ? <p className="kb-notice" role="status">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss">×</button></p> : null}
+
       {panel === "help" ? (
         <form className="kb-form kb-panel" onSubmit={askForHelp}>
           <h3>Ask the guild for a counter</h3>
           <label>Where do you need it?
             <select value={helpMode} onChange={(event) => setHelpMode(event.target.value as KbMode)}>{SEARCH_MODES.map((m) => <option key={m} value={m}>{MODE_LABELS[m]}</option>)}</select>
           </label>
-          <label>The enemy squad&apos;s leader<UnitPicker label="Enemy leader" placeholder="e.g. Lord Vader" onPick={setHelpLeader} onClear={() => setHelpLeader(null)} /></label>
+          <label>The enemy squad&apos;s leader<UnitPicker key={pickerKey} label="Enemy leader" placeholder="e.g. Lord Vader" onPick={setHelpLeader} onClear={() => setHelpLeader(null)} /></label>
           <label>Anything else? (optional)<input value={helpNote} onChange={(event) => setHelpNote(event.target.value)} maxLength={300} placeholder="e.g. I only have these toons at R5" /></label>
           <button type="submit" className="kb-primary">Ask for help</button>
           {helpMessage ? <p className={helpMessage.ok ? "kb-ok" : "kb-error"} role="status">{helpMessage.text}</p> : null}
