@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.27.0 — 2026-10-17
+
+- **A usage log for the site admin.** A private page (`/admin/usage`, linked from the control panel's Officers tab, admin only) shows who uses the site and from where: members using it in the last 14 days, who has gone quiet, who has not been seen yet, the countries, US states and cities the band is in (useful for meet-ups), and the latest visits. Needs one new table; recording begins from this release.
+
 ## 1.26.1 — 2026-10-17
 
 - **The B-Lue3 ask box just says "Game questions only."** (the line about questions being recorded is gone).

@@ -220,7 +220,7 @@ export default function ControlPanel({
             <li><Link href="/officer/announcement"><Megaphone size={16} aria-hidden="true" />Announcement</Link></li>
             <li><Link href="/officer/member"><Users size={16} aria-hidden="true" />Member cards</Link></li>
             <li><Link href="/officer/roster"><Shield size={16} aria-hidden="true" />Roster report</Link></li>
-            {isAdmin ? <li><Link href="/admin/blue"><MessageCircleQuestion size={16} aria-hidden="true" />B-Lue3 log</Link></li> : null}
+            {isAdmin ? <><li><Link href="/admin/blue"><MessageCircleQuestion size={16} aria-hidden="true" />B-Lue3 log</Link></li><li><Link href="/admin/usage"><Users size={16} aria-hidden="true" />Who uses it</Link></li></> : null}
             <li><Link href="/officer/discord-sync"><Sparkles size={16} aria-hidden="true" />Discord sync</Link></li>
           </ul>
         </div>
