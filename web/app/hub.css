@@ -2118,3 +2118,13 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
 @keyframes hub-dock-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .hub-dock-menu { animation: none; } }
 @media (min-width: 1024px) { .hub-dock-menu, .hub-tab-btn { display: none; } }
+
+/* ---------- Soul Food Cantina on the inner-page template ---------- */
+.hub-main.is-inner .soul-food-cafe { margin-top: 0; padding: clamp(18px, 3vw, 32px); border-radius: 18px; }
+.hub-main.is-inner .soul-food-cafe::before, .hub-main.is-inner .cafe-heading > div:first-child { display: none; }
+.hub-main.is-inner .cafe-heading { justify-content: flex-start; }
+.hub-main.is-inner .cafe-open-sign { margin: 0; }
+.hub-main.is-inner .cafe-intro { margin-top: 12px; font-size: 15px; max-width: 70ch; }
+.hub-main.is-inner .cafe-heading + .cafe-intro { margin-top: 12px; }
+.hub-main.is-inner .signature-heading h3 { color: inherit; }
+@media (max-width: 759.98px) { .hub-main.is-inner .soul-food-cafe { padding: 16px; border-radius: 16px; } }

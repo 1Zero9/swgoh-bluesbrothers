@@ -20,6 +20,8 @@ import { ACTIVE_DATACRON_SETS } from "@/lib/datacrons";
 import ArsenalInteractive from "@/app/arsenal/arsenal-interactive";
 import DougiesJukebox from "@/app/dougies-discs/dougies-jukebox";
 import { CURATED_DISCS } from "@/lib/discs";
+import SoulFoodCafe from "@/app/soul-food-cafe";
+import { getSoulFoodRecipes } from "@/lib/recipes";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -157,6 +159,12 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <HubHeader eyebrow="Dougie's Discs · Galactic Jukebox" title="Chicago soul. Outer Rim rhythm." intro="The mission has music. Drop a credit into Dougie's Jukebox, spin timeless Blues Brothers classics and Chicago blues legends, or queue your own favourite YouTube record." />
       <DougiesJukebox initialDiscs={CURATED_DISCS} />
       <HubLinks message="Curated vinyl and transmissions from Dougie's Speakeasy databank."><span>Visit Soul Food Cantina →</span></HubLinks>
+    </HubPage>
+  );
+  if (screen === "cantina") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Soul Food Cantina" title="Good food. Across the galaxy." intro="Galactic sandwich recipes, tap-droid beer pairings and community specials from Chicago to the Outer Rim." />
+      <SoulFoodCafe recipes={await getSoulFoodRecipes()} />
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
