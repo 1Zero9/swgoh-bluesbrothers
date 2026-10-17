@@ -18,6 +18,8 @@ import { SQUAD_KEYS } from "@/lib/tw-squads";
 import DatacronsInteractive from "@/app/datacrons/datacrons-interactive";
 import { ACTIVE_DATACRON_SETS } from "@/lib/datacrons";
 import ArsenalInteractive from "@/app/arsenal/arsenal-interactive";
+import DougiesJukebox from "@/app/dougies-discs/dougies-jukebox";
+import { CURATED_DISCS } from "@/lib/discs";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -148,6 +150,13 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <HubHeader eyebrow="Guild arsenal" title="Know what the band can put on the field." intro="Click any card to plan squad coverage and check player eligibility." />
       <div className="hub-stats"><div className="intel-summary"><div><strong>48<span>/50</span></strong><small>profiles synced</small></div><div><strong>96<span>%</span></strong><small>roster coverage</small></div><div><strong>120</strong><small>priority units</small></div></div></div>
       <ArsenalInteractive syncedMembers={48} categories={[{ name: "Galactic Legends" as never, coverage: 80, units: [["Lord Vader", 30, 28, 20, 12, 6.4], ["Jedi Master Kenobi", 44, 40, 30, 22, 7.1], ["Rey", 25, 20, 12, 5, 4.2]].map(([name, owned, sevenStar, relic, relicFive, averageRelic], i) => ({ definitionId: "u" + i, name: name as string, owned: owned as number, sevenStar: sevenStar as number, relic: relic as number, relicFive: relicFive as number, averageRelic: averageRelic as number, owners: [] })) }]} />
+    </HubPage>
+  );
+  if (screen === "discs") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Dougie's Discs · Galactic Jukebox" title="Chicago soul. Outer Rim rhythm." intro="The mission has music. Drop a credit into Dougie's Jukebox, spin timeless Blues Brothers classics and Chicago blues legends, or queue your own favourite YouTube record." />
+      <DougiesJukebox initialDiscs={CURATED_DISCS} />
+      <HubLinks message="Curated vinyl and transmissions from Dougie's Speakeasy databank."><span>Visit Soul Food Cantina →</span></HubLinks>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
