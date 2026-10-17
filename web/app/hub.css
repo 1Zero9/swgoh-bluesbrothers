@@ -2555,3 +2555,26 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
   .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-start { grid-column: 2; grid-row: 2 / span 2; }
   .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-cpanel-nudge { grid-column: 1; grid-row: 3; align-self: start; justify-self: start; }
 }
+
+/* Help me, Obi-Wan */
+.obi-btn { display: inline-flex; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid rgba(var(--ask-rgb, 255, 138, 42), 0.75); border-radius: 14px; background: rgba(var(--ask-rgb, 255, 138, 42), 0.16); color: var(--hub-text); font: inherit; text-align: left; cursor: pointer; }
+.obi-btn:hover { background: rgba(var(--ask-rgb, 255, 138, 42), 0.26); }
+.obi-btn span { display: grid; gap: 1px; }
+.obi-btn strong { font-size: 16px; }
+.obi-btn small { color: var(--hub-muted); font-size: 12.5px; }
+.obi-btn svg { color: rgb(var(--ask-rgb, 255, 138, 42)); flex: none; }
+.obi-btn.is-solid { justify-content: center; width: 100%; background: var(--ask, #ff8a2a); border-color: var(--ask, #ff8a2a); color: #fff; font-weight: 700; font-size: 16px; }
+.obi-btn.is-small { justify-content: center; padding: 9px 16px; }
+.pub-cta .obi-btn { flex: 1 1 100%; justify-content: center; }
+.obi-form { display: grid; gap: 12px; }
+.obi-form label, .obi-form legend { display: grid; gap: 4px; font-size: 14.5px; font-weight: 600; color: var(--hub-text); }
+.obi-form label small { font-weight: 400; color: var(--hub-muted); }
+.obi-form input[type="text"], .obi-form input:not([type]) { min-width: 0; padding: 11px 12px; border: 1px solid var(--glass-line, var(--hub-line)); border-radius: 10px; background: var(--glass, var(--hub-surface-2)); color: var(--hub-text); font: inherit; font-weight: 400; font-size: 16px; }
+.obi-form fieldset { display: grid; gap: 6px; margin: 0; padding: 0; border: 0; }
+.obi-radio { display: flex !important; grid-template-columns: none; align-items: center; gap: 8px; font-weight: 400 !important; }
+.obi-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.obi-error { margin: 0; color: var(--hub-bad, #ff6b6b); }
+.obi-done { display: grid; gap: 10px; }
+.obi-done p { margin: 0; font-size: 16px; line-height: 1.5; }
+.signin-guard .obi-btn { background: rgba(255, 138, 42, 0.2); color: #eef3fa; }
+.signin-guard .obi-btn small { color: #b6c3d6; }

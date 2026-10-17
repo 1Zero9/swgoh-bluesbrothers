@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HubPage, { HubHeader } from "@/app/hub-page";
+import ObiWanHelp from "@/app/obi-wan-help";
 import RefreshButton from "@/app/refresh-button";
 import { getDiscordUrl } from "@/lib/discord";
 
@@ -42,6 +43,7 @@ export default function SignInHelpPage() {
           </ul>
           <p><a className="btn-discord-gate" href="/api/auth/discord">Try signing in</a></p>
           <p><RefreshButton label="Page stuck? Refresh the site" /></p>
+          <p><ObiWanHelp /></p>
           <p>Still stuck? <a href={discordUrl} target="_blank" rel="noreferrer">Message an officer in the Discord</a>. We would rather help than have you give up.</p>
         </section>
       </div>

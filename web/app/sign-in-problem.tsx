@@ -1,3 +1,5 @@
+import ObiWanHelp from "./obi-wan-help";
+
 /** Shown on the front page when the Discord sign-in came back without finishing (cancelled, timed out, or Discord was unreachable). */
 export default function SignInProblem({ discordUrl }: { discordUrl: string }) {
   return (
@@ -8,6 +10,7 @@ export default function SignInProblem({ discordUrl }: { discordUrl: string }) {
         <a className="hub-button" href="/api/auth/discord">Sign in with Discord again</a>
       </p>
       <p><a href="/help/sign-in">Step-by-step help with signing in</a></p>
+      <p><ObiWanHelp /></p>
       <p>Still stuck? <a href={discordUrl} target="_blank" rel="noreferrer">Say hello in the Discord</a> and an officer will sort it out.</p>
     </div>
   );
