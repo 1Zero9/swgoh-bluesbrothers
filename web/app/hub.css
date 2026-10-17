@@ -2578,3 +2578,14 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .obi-done p { margin: 0; font-size: 16px; line-height: 1.5; }
 .signin-guard .obi-btn { background: rgba(255, 138, 42, 0.2); color: #eef3fa; }
 .signin-guard .obi-btn small { color: #b6c3d6; }
+
+/* Launch checklist */
+.launch-groups { display: grid; gap: 16px; max-width: 860px; }
+.launch-rows { display: grid; gap: 10px; margin: 0; padding: 0 !important; list-style: none; }
+.launch-rows li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; }
+.launch-rows p { margin: 2px 0 0; color: var(--hub-muted); font-size: 14.5px; line-height: 1.5; }
+.launch-rows a { color: var(--hub-accent); }
+.launch-mark { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-weight: 800; font-size: 14px; }
+.launch-rows .is-good .launch-mark { background: rgba(61, 220, 132, 0.2); color: #3ddc84; }
+.launch-rows .is-warn .launch-mark { background: rgba(245, 185, 66, 0.2); color: #f5b942; }
+.launch-rows .is-bad .launch-mark { background: rgba(239, 91, 91, 0.2); color: #ef5b5b; }
