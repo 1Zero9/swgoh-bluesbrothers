@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.4.0 — 2026-10-17
+
+- **Tips and Ideas get the new look.** Cards sit two across on a laptop in the same see-through glass as Counters, with a blue glow on hover. Each has its type and topic as small tags, then the title, the words, and a footer with who wrote it, when, and how they know. **This helped** is an orange pill that turns green once you have tapped it; tips still waiting for an officer have an orange dashed edge.
+- **Find things faster.** A search box plus a **topic** filter (Raids, Territory War, Farming and the rest) sit above the cards.
+- The "Add what you know" form uses the same orange button as the rest of the site.
+
 ## 1.3.2 — 2026-10-17
 
 - **A tighter Home on phones.** The control panel now starts as the small pulsing "Setup 1 of 3" button (tap it to open; once you open or close it yourself, it remembers). The new-player welcome is one slim row with scrolling name chips instead of a tall card. The result: Ask B-Lue3 and the first war-room panel are on the first screen. Laptops are unchanged.
