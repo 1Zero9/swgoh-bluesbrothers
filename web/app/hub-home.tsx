@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserRound } from "lucide-react";
 import AnswerLadder from "./answer-ladder";
 import GetStarted from "./get-started";
 import AnnouncementPopup from "./announcement-popup";
@@ -132,6 +133,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
     <HubPage backdrop="themed">
       <AnnouncementPopup announcement={announcement} isOfficer={isOfficer} />
       <div className="hub-dash">
+        <Link href="/me" className={`hub-mypage-icon${checkIn ? " has-alert" : ""}`} aria-label="My page" title="My page"><UserRound size={22} aria-hidden="true" /></Link>
         <header className="hub-dash-head">
           <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>
           {glance.length ? (

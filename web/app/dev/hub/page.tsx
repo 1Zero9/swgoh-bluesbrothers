@@ -83,6 +83,18 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <HubLinks message="Raid operations now surface real results, not just ticket pace."><span>Back to Operations →</span></HubLinks>
     </HubPage>
   );
+  if (screen === "me") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Leader · Level 85" title="Steve" intro="Where you stand, what you've earned lately, and where the guild could use you." />
+      <div className="hub-stats"><div className="intel-summary"><div><strong>1.2B</strong><small>galactic power</small></div><div><strong>9</strong><small>Galactic Legends · +1 in 30 days</small></div><div><strong>41</strong><small>relic units · no change in 30 days</small></div><div><strong>28</strong><small>datacrons</small></div></div></div>
+      <section className="blue-briefing public-block"><div className="blue-briefing-copy"><p className="eyebrow">B-Lue3 · Briefing</p><h2>Finish Jedi Master Kenobi next</h2><p>He is one relic level from the target the guild needs for Territory Battles.</p><span className="blue-briefing-action">Open the callout <span>→</span></span></div></section>
+      <section className="blue-questions public-block"><header><p className="eyebrow">Ask B-Lue3</p><h2>What do you need?</h2><p>Type a question, or tap one.</p></header><nav className="blue-question-actions"><span>What should I farm next?</span><span>What team should I finish?</span></nav></section>
+      <section className="public-block"><header><p className="eyebrow">B-Lue3&apos;s roster report</p><h2>Your next useful move</h2></header><div className="blue-report-grid"><article className="blue-report-card"><p className="eyebrow">Gig-ready leaders · 2</p><ul><li><strong>Jedi Master Kenobi</strong><span>meets the 7★ R7+ leader target</span></li></ul><a href="#">Open the counters library →</a></article><article className="blue-report-card"><p className="eyebrow">Closest guild builds · 1</p><div className="blue-counter-pick"><strong>Vader opener into Lord Vader</strong><span>Still needed: Padmé R5 to R7</span></div></article></div></section>
+      <section className="public-block"><header><p className="eyebrow">Your standing</p><h2>Tickets &amp; activity</h2></header><p className="my-line"><strong>600</strong> raid tickets today · last active 17 Oct</p><p className="my-empty">All clear. Keep it up.</p></section>
+      <section className="public-block"><header><p className="eyebrow">Last 60 days</p><h2>Your wins</h2></header><ul className="my-list"><li className="ready"><strong>★ unlocked Lord Vader</strong><span>16 Oct · Galactic Legend</span></li></ul></section>
+      <HubLinks message="This page is only visible to you."><span>Back to Home →</span></HubLinks>
+    </HubPage>
+  );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
