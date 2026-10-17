@@ -56,6 +56,7 @@ export default function SignInGuard() {
             <code>{here}</code>
           </div>
         ) : null}
+        <a className="signin-guard-more" href="/help/sign-in">Step-by-step help</a>
         <button type="button" className="signin-guard-cancel" onClick={() => setBusy(false)}>Cancel</button>
       </div>
     </div>

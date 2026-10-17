@@ -7,6 +7,7 @@ export default function SignInProblem({ discordUrl }: { discordUrl: string }) {
       <p>
         <a className="hub-button" href="/api/auth/discord">Sign in with Discord again</a>
       </p>
+      <p><a href="/help/sign-in">Step-by-step help with signing in</a></p>
       <p>Still stuck? <a href={discordUrl} target="_blank" rel="noreferrer">Say hello in the Discord</a> and an officer will sort it out.</p>
     </div>
   );

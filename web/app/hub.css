@@ -2524,3 +2524,17 @@ button.sb-chip:hover:not(:disabled) { border-color: var(--hub-bad); }
 .whos-btn.is-inline { width: auto; }
 /* Home already has the button in its header, so the floating one steps aside there. */
 html:has(.hub-dash) .whos-btn.is-float { display: none; }
+
+/* Sign-in help: big text, plain steps */
+.help-steps { display: grid; gap: 16px; max-width: 760px; }
+.help-steps ol { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.help-steps ol li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 16px 18px; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.help-num { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--hub-accent-soft, rgba(80, 170, 255, 0.18)); color: var(--hub-accent); font-size: 20px; font-weight: 800; }
+.help-steps h2 { margin: 0 0 4px; font-size: 20px; color: var(--hub-text); }
+.help-steps p, .help-steps li li { margin: 0; font-size: 17px; line-height: 1.55; color: var(--hub-muted); }
+.help-box { display: grid; gap: 12px; padding: 18px 20px; border: 1px solid rgba(245, 185, 66, 0.55); border-radius: 16px; background: var(--glass); }
+.help-box ul { display: grid; gap: 10px; margin: 0; padding-left: 20px; }
+.help-box strong { color: var(--hub-text); }
+.help-box a:not(.btn-discord-gate) { color: var(--hub-accent); }
+.signin-guard-more { color: #8fd0ff; font-size: 14px; }
+.pub-help { flex: 1 1 100%; text-align: center; color: var(--hub-accent); font-size: 15px; text-decoration: underline; }
