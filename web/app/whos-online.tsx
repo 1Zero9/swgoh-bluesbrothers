@@ -39,6 +39,7 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
   const [data, setData] = useState<(PresenceSummary & { ok: true }) | null>(sample ? { ok: true, ...sample } : null);
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
   const hiddenRef = useRef(false);
   const pathRef = useRef(path);
   useEffect(() => { pathRef.current = path; }, [path]);
@@ -47,7 +48,8 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
     if (document.visibilityState !== "visible") return;
     const response = await fetch("/api/presence", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: pathRef.current, hidden: hiddenRef.current }) }).catch(() => null);
     const json = (await response?.json().catch(() => null)) as (PresenceSummary & { ok?: boolean }) | null;
-    if (json?.ok) setData(json as PresenceSummary & { ok: true });
+    if (json?.ok) { setData(json as PresenceSummary & { ok: true }); setFailed(null); }
+    else setFailed(response ? `error ${response.status}` : "no connection");
   }, []);
 
   useEffect(() => {
@@ -58,7 +60,9 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
     const timer = setInterval(() => { void beat(); }, EVERY_MS);
     const onVisible = () => { if (document.visibilityState === "visible") void beat(); };
     document.addEventListener("visibilitychange", onVisible);
-    return () => { clearTimeout(start); clearInterval(timer); document.removeEventListener("visibilitychange", onVisible); };
+    window.addEventListener("focus", onVisible);
+    window.addEventListener("pageshow", onVisible);
+    return () => { clearTimeout(start); clearInterval(timer); document.removeEventListener("visibilitychange", onVisible); window.removeEventListener("focus", onVisible); window.removeEventListener("pageshow", onVisible); };
   }, [beat, sample]);
 
   function toggleHidden(next: boolean) {
@@ -94,7 +98,7 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
               <strong>Who&apos;s online</strong>
               <button type="button" onClick={() => setOpen(false)} aria-label="Close"><X size={18} aria-hidden="true" /></button>
             </header>
-            {!data ? <p className="whos-note">Looking…</p> : (
+            {!data ? <p className="whos-note">{failed ? `Couldn't load the list (${failed}). Tap the refresh button in the menu and try again.` : "Looking…"}</p> : (
               <>
                 <section>
                   <h3>On the site now <i>{data.site.length}</i></h3>
@@ -104,6 +108,12 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
                   <section>
                     <h3>On Discord now <i>{data.discord.length}</i></h3>
                     {data.discord.length ? <ul>{data.discord.map((p, index) => <li key={`${p.name}-${index}`}><span className={`whos-dot is-${p.status}`} aria-hidden="true" />{p.name}</li>)}</ul> : <p className="whos-note">Nobody is showing as online.</p>}
+                  </section>
+                ) : null}
+                {data.recent?.length ? (
+                  <section>
+                    <h3>On the site earlier today <i>{data.recent.length}</i></h3>
+                    <ul>{data.recent.map((p) => <li key={p.id}><span className="whos-dot" aria-hidden="true" />{p.name}<em>{p.ago}</em></li>)}</ul>
                   </section>
                 ) : null}
                 <section>

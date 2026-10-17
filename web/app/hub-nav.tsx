@@ -22,7 +22,7 @@ const ICONS: Record<HubSectionKey, LucideIcon> = {
   more: Ellipsis,
 };
 
-const PREVIEW_PRESENCE = { site: [{ id: "1", name: "Steve", you: true }, { id: "2", name: "Dougie", you: false }, { id: "3", name: "Dex", you: false }], discord: [{ name: "dougie_bb", status: "online" }, { name: "dex", status: "idle" }], game: [{ id: "4", name: "Mara", ago: "35 min ago" }, { id: "5", name: "Kit", ago: "2 h ago" }] };
+const PREVIEW_PRESENCE = { site: [{ id: "1", name: "Steve", you: true }, { id: "2", name: "Dougie", you: false }, { id: "3", name: "Dex", you: false }], discord: [{ name: "dougie_bb", status: "online" }, { name: "dex", status: "idle" }], game: [{ id: "4", name: "Mara", ago: "35 min ago" }, { id: "5", name: "Kit", ago: "2 h ago" }], recent: [{ id: "6", name: "Dougie", ago: "12 min ago" }] };
 const HUB_HINT_KEY = "bb-hub";
 const PINS_KEY = "bb-menu-pins";
 const PINS_EVENT = "bb-menu-pins-change";
