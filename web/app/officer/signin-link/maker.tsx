@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-export default function SignInLinkMaker({ members }: { members: { id: string; name: string }[] }) {
+type Request = { id: string; name: string; contact: string | null; problem: string; note: string | null };
+
+export default function SignInLinkMaker({ members, requests }: { members: { id: string; name: string }[]; requests: Request[] }) {
+  const [waiting, setWaiting] = useState(requests);
   const [query, setQuery] = useState("");
   const [made, setMade] = useState<{ name: string; url: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +22,11 @@ export default function SignInLinkMaker({ members }: { members: { id: string; na
     else setError(data?.error ?? "That did not work. Try again.");
   }
 
+  async function done(id: string) {
+    await fetch("/api/officer/signin-help", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
+    setWaiting((list) => list.filter((r) => r.id !== id));
+  }
+
   const message = made ? `Hi ${made.name}, here is your own sign-in link for the Blues Brothers site. Tap it once, then tap "Sign me in". It works one time and lasts two days:\n${made.url}` : "";
   async function copy() {
     try { await navigator.clipboard.writeText(message); setCopied(true); } catch { /* the text is shown to copy by hand */ }
@@ -26,6 +34,22 @@ export default function SignInLinkMaker({ members }: { members: { id: string; na
 
   return (
     <div className="help-steps">
+      {waiting.length ? (
+        <section className="help-box">
+          <h2>Help me, Obi-Wan ({waiting.length})</h2>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {waiting.map((r) => (
+              <li key={r.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "6px 0", flexWrap: "wrap" }}>
+                <span><strong>{r.name}</strong>{r.contact ? ` · ${r.contact}` : ""}{r.note ? ` · ${r.note}` : ""} <small>({r.problem})</small></span>
+                <span style={{ display: "flex", gap: 8 }}>
+                  <button type="button" className="kb-secondary" onClick={() => setQuery(r.name)}>Find them</button>
+                  <button type="button" className="kb-link" onClick={() => void done(r.id)}>Done</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <section className="help-box">
         <label>Find the member
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Start typing their name" autoComplete="off" style={{ width: "100%", padding: "12px", marginTop: 6, borderRadius: 10, border: "1px solid var(--glass-line)", background: "var(--glass)", color: "var(--hub-text)", font: "inherit" }} />

@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.87.0 · **Last updated:** 2026-10-18 · tracks site `v1.40.0`
+**Doc version:** 1.88.0 · **Last updated:** 2026-10-18 · tracks site `v1.41.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -384,6 +384,7 @@ Set in three places independently — **they do not sync automatically**:
 | `BLUE_AI` | Set to `on` to switch on B-Lue3's AI chat on `/me`. Off (unset) means only the three preset questions, rule-based, and nothing is billed |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini API key for B-Lue3 (used directly, default model `gemini-flash-latest`). Takes priority over the AI Gateway |
 | `BLUE_WEEKLY_LIMIT` | Questions per member per week to B-Lue3 (default 5; resets Monday UTC) |
+| `DISCORD_OFFICER_WEBHOOK_URL` | Optional webhook for an officers-only channel: "Help me, Obi-Wan" sign-in requests are posted here (without it they only show on `/officer/signin-link` and `/admin/signin`) |
 | `DISCORD_COUNTERS_WEBHOOK_URL` | Webhook of the Discord channel for "I need a counter" calls for help (optional: without it the call still shows on the site's Wanted list) |
 | `BLUE_RESEARCH_LIMIT` | Officer web-research runs per week (default 15; each is two AI calls with Google Search) |
 | `BLUE_WEB_SEARCH` | Set to `off` to stop B-Lue3 searching the web (Gemini Google Search grounding, on by default when `GOOGLE_GENERATIVE_AI_API_KEY` is set) |
@@ -533,6 +534,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.88.0 — 2026-10-18**: sign-in tracker and "Help me, Obi-Wan". `SignInEvent` (kind = start/success/pending/linked/error/stall/cancel/help; only device type, browser family and an in-app flag, no identity or IP) is written best-effort from `/api/auth/discord` (start), the OAuth callback (success/pending/error), `/api/members/link` (linked), `/api/signin-event` (stall/cancel from `SignInGuard`, capped 60/min) and `/api/signin-help`. Summary in `lib/signin-events.ts` (`summariseSignIns`, tested), shown at `/admin/signin` (site admin only). `SignInHelp` holds "Help me, Obi-Wan" requests from signed-out people (`POST /api/signin-help`: name required, honeypot field, max 8 per 10 min site-wide, repeat from the same name updates the open one). Officers see/close them on `/officer/signin-link`. New optional env var `DISCORD_OFFICER_WEBHOOK_URL`: when set, a new request is posted to that (officers-only) channel; without it requests only show on the site pages.
 - **1.87.0 — 2026-10-18**: officer-issued one-time sign-in links (no Discord). `MemberSignInLink` table (SHA-256 token hash only, 48 h expiry, `usedAt`). Officers create them at `/officer/signin-link` → `POST /api/officer/signin-link` (officer-only, same-origin). The link is `/signin/<token>`, a page that only *peeks* (so Discord/iMessage link previews can't burn it); the member's tap POSTs to `/api/auth/link`, which atomically consumes the token and sets the normal `bb_member` cookie (90 days). The token is shown once to the officer and is a bearer credential: send it privately. `RefreshButton` (`app/refresh-button.tsx`) clears this origin's Cache Storage, unregisters its service workers and sessionStorage, then reloads with a cache-busting `_r` param (keeps cookies and localStorage, so sign-in and preferences survive).
 - **1.86.0 — 2026-10-18**: public sign-in help page `/help/sign-in` (no auth), linked from the front page, `SignInGuard`, `SignInProblem`, the Gig door and `LinkWelcome`. A member can end up on a second Discord account (emailed-code login, or two accounts in one browser); `LinkWelcome` now names the Discord account and links to `/api/auth/discord?consent=1` ("sign in with a different one") — Discord's own screen also shows "Not you?".
 - **1.85.0 — 2026-10-18**: Sign-in hardening. `SignInGuard` (`app/sign-in-guard.tsx`, mounted in the root layout) intercepts every `a[href^="/api/auth/discord"]` click: shows an "Opening Discord…" overlay, swallows repeat taps (each tap used to mint a new OAuth state cookie and invalidate the one in flight), and after 7 s or inside an in-app browser (Discord/FB/Instagram UA) tells the member to open Safari/Chrome. `/api/auth/discord` now uses `prompt=consent` for anyone without the `bb_signed_in_before` cookie (set on successful sign-in, 1 year) and `prompt=none` only for returners, removing the fail-and-retry hop for first-timers. "Who's online" also appears in the Home header (`WhosOnlineInline`, synced with the menu button by window events).

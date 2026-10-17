@@ -1,4 +1,6 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { after } from "next/server";
+import { recordSignIn } from "@/lib/signin-events-data";
 import { fetchPlayerByAllyCode, sanitizeAllyCode } from "@/lib/comlink";
 import {
   LINK_COOKIE_NAME,
@@ -110,6 +112,8 @@ export async function POST(request: Request) {
     maxAge: session.maxAge,
   });
 
+  const agent = (await headers()).get("user-agent");
+  after(() => recordSignIn("linked", agent));
   return Response.json({ ok: true, name: player.currentName });
 }
 

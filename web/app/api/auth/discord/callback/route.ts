@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { recordSignIn } from "@/lib/signin-events-data";
 import { exchangeDiscordCode, fetchDiscordIdentity } from "@/lib/discord-oauth";
 import {
   LINK_COOKIE_NAME,
@@ -21,8 +22,11 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const home = new URL("/", url);
+  const agent = request.headers.get("user-agent");
+  const note = (kind: "success" | "pending" | "error") => after(() => recordSignIn(kind, agent));
 
   if (!isMemberAuthConfigured()) {
+    note("error");
     home.searchParams.set("link", "error");
     return NextResponse.redirect(home);
   }
@@ -39,6 +43,7 @@ export async function GET(request: Request) {
   }
 
   if (!code || !state || !expectedState || state !== expectedState) {
+    note("error");
     home.searchParams.set("link", "error");
     const response = NextResponse.redirect(home);
     response.cookies.delete(OAUTH_STATE_COOKIE_NAME);
@@ -54,6 +59,7 @@ export async function GET(request: Request) {
     // Already linked to an active member (primary or extra account): sign them straight in.
     const member = await findActiveMemberByDiscordId(identity.id).catch(() => null);
     if (member) {
+      note("success");
       const session = createMemberCookieValue(member.id);
       const response = NextResponse.redirect(new URL(next, url));
       response.cookies.delete(OAUTH_STATE_COOKIE_NAME);
@@ -73,6 +79,7 @@ export async function GET(request: Request) {
 
     const link = createLinkCookieValue(identity.id, identity.username);
 
+    note("pending");
     home.searchParams.set("link", "pending");
     const response = NextResponse.redirect(home);
     response.cookies.delete(OAUTH_STATE_COOKIE_NAME);
@@ -87,6 +94,7 @@ export async function GET(request: Request) {
     });
     return response;
   } catch {
+    note("error");
     home.searchParams.set("link", "error");
     const response = NextResponse.redirect(home);
     response.cookies.delete(OAUTH_STATE_COOKIE_NAME);

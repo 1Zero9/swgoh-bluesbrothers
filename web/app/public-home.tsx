@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ObiWanHelp from "@/app/obi-wan-help";
 import RefreshButton from "@/app/refresh-button";
 import HubFold from "@/app/hub-fold";
 import HubPage, { HubLinks } from "@/app/hub-page";
@@ -43,6 +44,7 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
       <div className="pub-cta">
         <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
         <a className="pub-cta-alt" href="#join">Thinking of joining?</a>
+        <ObiWanHelp />
         <a className="pub-help" href="/help/sign-in">Trouble signing in? Step-by-step help</a>
       </div>
       {notice}

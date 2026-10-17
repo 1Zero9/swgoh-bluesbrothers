@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { recordSignIn } from "@/lib/signin-events-data";
 import { buildDiscordAuthorizeUrl } from "@/lib/discord-oauth";
 import { SIGNED_IN_BEFORE_COOKIE, OAUTH_NEXT_COOKIE_NAME, OAUTH_PROMPT_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME, createOAuthState, isMemberAuthConfigured, safeNextPath } from "@/lib/member-auth";
 
@@ -11,6 +12,7 @@ export async function GET(request: Request) {
   }
 
   const requestUrl = new URL(request.url);
+  if (requestUrl.searchParams.get("consent") !== "1") { const agent = request.headers.get("user-agent"); after(() => recordSignIn("start", agent)); }
   // Someone who has signed in here before can skip Discord's approval screen (prompt=none). A first-timer goes straight to it in one step:
   // the old "try silently, fail, then retry" round trip is what left some phones on a blank page.
   const returning = request.headers.get("cookie")?.includes(`${SIGNED_IN_BEFORE_COOKIE}=1`) ?? false;

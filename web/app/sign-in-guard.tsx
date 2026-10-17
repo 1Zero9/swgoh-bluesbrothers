@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ObiWanHelp from "./obi-wan-help";
 import RefreshButton from "./refresh-button";
 
 /** Phones' in-app browsers (Discord, Facebook, Instagram...) often can't finish a Discord sign-in. */
 const IN_APP = /Discord|FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat|Twitter|LinkedInApp|GSA\//i;
+
+/** Tell the site (anonymously) that a sign-in stalled or was cancelled, so we can see how often it happens. */
+function report(kind: "stall" | "cancel") {
+  return fetch("/api/signin-event", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind }), keepalive: true }).catch(() => undefined);
+}
 
 /**
  * Watches every "Sign in with Discord" link on the site. The first tap shows a full-screen "Opening Discord" panel, so extra taps can't
@@ -34,7 +40,7 @@ export default function SignInGuard() {
 
   useEffect(() => {
     if (!busy) return;
-    const timer = setTimeout(() => setSlow(true), 7000);
+    const timer = setTimeout(() => { setSlow(true); void report("stall"); }, 7000);
     return () => clearTimeout(timer);
   }, [busy]);
 
@@ -58,8 +64,9 @@ export default function SignInGuard() {
           </div>
         ) : null}
         <RefreshButton label="Refresh the site and start again" />
+        <ObiWanHelp />
         <a className="signin-guard-more" href="/help/sign-in">Step-by-step help</a>
-        <button type="button" className="signin-guard-cancel" onClick={() => setBusy(false)}>Cancel</button>
+        <button type="button" className="signin-guard-cancel" onClick={() => { void report("cancel"); setBusy(false); }}>Cancel</button>
       </div>
     </div>
   );

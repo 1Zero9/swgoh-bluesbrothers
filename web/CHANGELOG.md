@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.41.0 — 2026-10-18
+
+- **"Help me, Obi-Wan, you're my only hope to get logged in."** A new button on the front page, the sign-in panel, the help page, the sign-in problem notice and the Gig and members-only doors. Someone who can't get in types their in-game name (and, if they like, their Discord name and what is happening) and taps send. Officers see it under **Officers → Sign-in links** with a **Find them** button, make a personal link and tap **Done**. If an officer channel is set up in Discord, it is posted there too.
+- **Sign-in tracker for the site admin** (Officers → Sign-in tracker in the control panel, or `/admin/signin`): over the last 30 days, how many started signing in, how many got in, how many needed their ally code, stalled for 7+ seconds, gave up, hit an error or asked for help, plus which kinds of device and browser struggle (for example "In-app browser"). Nobody is identified; it only counts.
+
 ## 1.40.1 — 2026-10-18
 
 - **The Home control panel is more compact on an iPad.** In landscape (with the menu open) and in portrait it now sits in two columns, your standing and review count on the left and the setup checklist on the right, instead of one tall stack, so Ask B-Lue3 is higher on the screen.

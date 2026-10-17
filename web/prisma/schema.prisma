@@ -861,3 +861,31 @@ model MemberSignInLink {
 
   @@index([playerId])
 }
+
+/// One step in a sign-in attempt (start, success, pending, linked, error, stall, cancel, help). No identity: only the kind of device and browser.
+model SignInEvent {
+  id      String   @id @default(cuid())
+  at      DateTime @default(now())
+  kind    String
+  device  String?
+  browser String?
+  inApp   Boolean  @default(false)
+
+  @@index([at])
+}
+
+/// "Help me, Obi-Wan": someone who can't get signed in asks the officers for a personal link.
+model SignInHelp {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  name      String
+  contact   String?
+  problem   String
+  note      String?
+  device    String?
+  status    String    @default("OPEN")
+  doneBy    String?
+  doneAt    DateTime?
+
+  @@index([status, createdAt])
+}
