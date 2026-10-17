@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, ChevronRight, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, ChevronRight, Star, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
 import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
+import { parsePins, pinnedLinks, togglePin } from "@/lib/nav-pins";
 import BlueFloat from "./blue-float";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
@@ -19,6 +20,18 @@ const ICONS: Record<HubSectionKey, LucideIcon> = {
 };
 
 const HUB_HINT_KEY = "bb-hub";
+const PINS_KEY = "bb-menu-pins";
+const PINS_EVENT = "bb-menu-pins-change";
+const readPins = () => { try { return window.localStorage.getItem(PINS_KEY) ?? ""; } catch { return ""; } };
+function subscribePins(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(PINS_EVENT, onChange);
+  return () => { window.removeEventListener("storage", onChange); window.removeEventListener(PINS_EVENT, onChange); };
+}
+function savePins(pins: string[]) {
+  try { window.localStorage.setItem(PINS_KEY, JSON.stringify(pins)); } catch { /* the favourites last for this visit */ }
+  window.dispatchEvent(new Event(PINS_EVENT));
+}
 /** Every group starts folded so people can explore; the group holding the current page is open. */
 const OPEN_BY_DEFAULT = new Set<string>();
 
@@ -37,6 +50,7 @@ export default function HubNav() {
   const activeHref = activeSidebarHref(pathname);
   const isOfficer = isPreview || viewer?.role === "OFFICER";
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
+  const pins = parsePins(useSyncExternalStore(subscribePins, readPins, () => ""));
   const [dockOpen, setDockOpen] = useState<HubSectionKey | null>(null);
   const [seenPath, setSeenPath] = useState(pathname);
   if (seenPath !== pathname) { setSeenPath(pathname); setDockOpen(null); }
@@ -71,29 +85,52 @@ export default function HubNav() {
           <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
         </Link>
         <nav className="hub-side-nav" aria-label="All pages">
-          {SIDEBAR_GROUPS.map((group) => {
-            const links = group.links.filter((link) => !link.officerOnly || isOfficer);
-            if (!links.length) return null;
-            const title = group.title;
-            const hasActive = links.some((link) => link.href === activeHref);
-            const open = title === null || (toggled[title] ?? (hasActive || OPEN_BY_DEFAULT.has(title)));
-            return (
-              <div key={title ?? "top"} className={`hub-side-group${title && !open ? " is-folded" : ""}`}>
-                {title ? (
-                  <button type="button" className="hub-side-title" aria-expanded={open} onClick={() => setToggled((value) => ({ ...value, [title]: !open }))}>
-                    <ChevronRight size={12} aria-hidden="true" />
-                    <span>{title}</span>
+          {(() => {
+            const fixedGroup = SIDEBAR_GROUPS.find((group) => group.title === null);
+            const groups = SIDEBAR_GROUPS.filter((group) => group.title !== null);
+            const pinnable = groups.flatMap((group) => group.links).filter((link) => !link.officerOnly || isOfficer);
+            const favourites = pinnedLinks(pins, pinnable);
+            const renderLink = (link: { label: string; href: string }, pinnableLink: boolean) => (
+              <div key={link.href} className="hub-side-row">
+                <Link href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}${link.href === "/chat" ? " is-chat" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
+                  {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
+                  <span>{link.label}</span>
+                </Link>
+                {pinnableLink ? (
+                  <button type="button" className={`hub-side-star${pins.includes(link.href) ? " is-on" : ""}`} aria-pressed={pins.includes(link.href)} aria-label={pins.includes(link.href) ? `Remove ${link.label} from favourites` : `Add ${link.label} to favourites`} title={pins.includes(link.href) ? "Unpin from favourites" : "Pin to favourites"} onClick={() => savePins(togglePin(pins, link.href))}>
+                    <Star size={14} aria-hidden="true" />
                   </button>
                 ) : null}
-                {open ? links.map((link) => (
-                  <Link key={link.href} href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}${link.href === "/chat" ? " is-chat" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
-                    {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
-                    <span>{link.label}</span>
-                  </Link>
-                )) : null}
               </div>
             );
-          })}
+            return (
+              <>
+                {fixedGroup ? <div className="hub-side-group">{fixedGroup.links.filter((link) => !link.officerOnly || isOfficer).map((link) => renderLink(link, false))}</div> : null}
+                {favourites.length ? (
+                  <div className="hub-side-group hub-side-favs" aria-label="Favourites">
+                    <p className="hub-side-favtitle"><Star size={11} aria-hidden="true" /> Favourites</p>
+                    {favourites.map((link) => renderLink(link, true))}
+                  </div>
+                ) : null}
+                {groups.map((group) => {
+                  const links = group.links.filter((link) => !link.officerOnly || isOfficer);
+                  if (!links.length) return null;
+                  const title = group.title as string;
+                  const hasActive = links.some((link) => link.href === activeHref);
+                  const open = toggled[title] ?? (hasActive || OPEN_BY_DEFAULT.has(title));
+                  return (
+                    <div key={title} className={`hub-side-group${!open ? " is-folded" : ""}`}>
+                      <button type="button" className="hub-side-title" aria-expanded={open} onClick={() => setToggled((value) => ({ ...value, [title]: !open }))}>
+                        <ChevronRight size={12} aria-hidden="true" />
+                        <span>{title}</span>
+                      </button>
+                      {open ? links.map((link) => renderLink(link, true)) : null}
+                    </div>
+                  );
+                })}
+              </>
+            );
+          })()}
         </nav>
         <div className="hub-side-foot">
           <p>{viewer?.name ?? (isPreview ? "Steve" : "Signed in")}</p>

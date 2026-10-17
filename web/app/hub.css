@@ -2309,3 +2309,16 @@ html[data-theme="rebel"] .hub-blue-panel form button[type="submit"] { background
 .bl-reason { margin: 4px 0 0; color: var(--ask-text); font-size: 13px; }
 .bl-a { margin: 6px 0 0; color: var(--hub-muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 @media (max-width: 759.98px) { .bl-members li { grid-template-columns: 1fr auto; } .bl-members li .bl-when { display: none; } }
+
+/* ---------- Menu favourites: pin any page under the fixed items with a star ---------- */
+.hub-side-row { position: relative; display: flex; align-items: center; }
+.hub-side-row > .hub-side-link { flex: 1; min-width: 0; padding-right: 34px; }
+.hub-side-star { position: absolute; right: 6px; top: 50%; display: grid; place-items: center; width: 26px; height: 26px; margin-top: -13px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--hub-muted); opacity: 0; cursor: pointer; transition: opacity 0.12s, color 0.12s, background-color 0.12s; }
+.hub-side-row:hover .hub-side-star, .hub-side-star:focus-visible { opacity: 1; }
+.hub-side-star:hover { background: var(--hub-surface-2); color: var(--ask, #ea580c); }
+.hub-side-star.is-on { opacity: 1; color: var(--ask, #ea580c); }
+.hub-side-star.is-on svg { fill: currentColor; }
+.hub-side-star:focus-visible { outline: 2px solid var(--hub-accent); outline-offset: 1px; }
+.hub-side-favs { margin: 8px 0 2px; padding: 6px 0 4px; border-top: 1px solid var(--hub-line); border-bottom: 1px solid var(--hub-line); }
+.hub-side-favtitle { display: flex; align-items: center; gap: 6px; margin: 0 0 2px; padding: 2px 10px; color: var(--hub-muted); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.hub-side-favtitle svg { color: var(--ask, #ea580c); fill: currentColor; }
