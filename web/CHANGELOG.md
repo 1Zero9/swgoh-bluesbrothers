@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.30.1 — 2026-10-17
+
+- **The old Saved squads link now redirects properly** (a real server redirect to Ask → Find a counter), so bookmarks and shared links land without a blank flash.
+
 ## 1.30.0 — 2026-10-17
 
 - **Ask page release 2: one place for counters.** **Saved squads is retired as a separate page.** Opening it (or an old link) takes you to Ask → **Find a counter**, and the menu now says "Find a counter" instead. You can **add a counter right there** (+ Add a counter, with the enemy leader already filled in), and remove your own saved squads from the results.

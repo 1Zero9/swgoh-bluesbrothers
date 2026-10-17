@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        // Saved squads moved into Ask, under "Find a counter".
+        source: "/counters",
+        destination: "/ask?tab=counters",
+        permanent: false,
+      },
+      {
         source: "/guild-wire",
         destination: "/#guild-wire",
         permanent: false,
