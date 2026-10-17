@@ -9,6 +9,9 @@ import ActivityFeed from "@/app/activity/activity-feed";
 import MemberCard from "@/app/officer/member/[id]/member-card";
 import { assessPlayer } from "@/lib/player-assessment";
 import MemberPicker from "@/app/officer/member/member-picker";
+import MemberDirectory from "@/app/member-directory";
+import MemberWelcomeTicker from "@/app/member-welcome-ticker";
+import WhoHas from "@/app/members/who-has";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -40,6 +43,8 @@ const CARD_SAMPLE = {
 
 const HIST_SAMPLE = [["Pillar of the band",4,0,11.1],["Pillar of the band",4,0,10.9],["Pulling their weight",3,1,10.6],["Needs a nudge",1,2,10.3]].map(([headline, strengths, watches, gp], i) => ({ at: new Date(Date.now() - i * 3 * 86400_000).toISOString(), headline: headline as string, strengths: strengths as number, watches: watches as number, galacticPower: String((gp as number) * 1e6) }));
 
+const ROSTER_SAMPLE = [["Steve","LEADER",1.24e9,9,41,600,null],["Dex","OFFICER",11.1e6,9,41,600,null],["ZappAttk","MEMBER",8.2e6,3,22,310,"Raid tickets running low"],["Igor","MEMBER",6.1e6,1,9,80,"Gone quiet on the holonet"],["Brian","MEMBER",9.4e6,5,30,590,null]].map(([name, role, gp, gl, relics, tickets, flag], i) => ({ playerId: String(i), name: name as string, galacticPower: String(gp), characterPower: String(Number(gp) * 0.85), shipPower: String(Number(gp) * 0.15), raidTickets: tickets as number, lastActivityAt: "2026-10-17T08:00:00Z", joinedAt: "2026-02-10T10:00:00Z", rank: i + 1, playerLevel: 85, memberRole: role as string, galacticLegends: gl as number, relicUnits: relics as number, datacrons: 20, profileSyncedAt: "2026-10-16T10:00:00Z", attentionReasons: flag ? [flag as string] : [] }));
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -53,6 +58,16 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "activity") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Guild" title="Guild activity" intro="Star promotions, gear, relics and unlocks across the guild, newest first."><span className="hub-pagehead-link">The Wins →</span></HubHeader><ActivityFeed items={ACT_SAMPLE} /></HubPage>;
   if (screen === "member") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Dex"><span className="hub-pagehead-link">← All members</span></HubHeader><MemberCard card={CARD_SAMPLE} capturedAt="2026-10-17T10:00:00Z" fromCache history={HIST_SAMPLE} /></HubPage>;
   if (screen === "members") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Member cards" intro="Pick a member." /><MemberPicker newest="2026-10-17T09:00:00Z" members={[{ playerId: "1", name: "Dex", role: "OFFICER", galacticPower: "11100000", flags: 0, headline: "Pillar of the band", watches: 0, topWatch: null }, { playerId: "2", name: "ZappAttk", role: "MEMBER", galacticPower: "8200000", flags: 1, headline: null, watches: null, topWatch: "Raid tickets running low" }, { playerId: "3", name: "Igor", role: "MEMBER", galacticPower: "6100000", flags: 3, headline: "Needs a nudge", watches: 3, topWatch: "Quiet for 5 days" }, { playerId: "4", name: "Brian", role: "MEMBER", galacticPower: "9400000", flags: 0, headline: "Pulling their weight", watches: 0, topWatch: null }]} /></HubPage>;
+  if (screen === "roster") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Roster" title="Meet the whole band" intro="Search the live roster, find who has a unit, and open any member for their guild standing.">
+        <span className="hub-pagehead-stat"><strong>49</strong> active</span><span className="hub-pagehead-stat"><strong>2</strong> joined this month</span><span className="hub-pagehead-link">TW room →</span>
+      </HubHeader>
+      <WhoHas />
+      <MemberWelcomeTicker members={[{ playerId: "a", name: "Juggernaut2000", joinedAt: "2026-10-15T10:00:00Z", galacticPower: "7900000", memberRole: "MEMBER" }]} />
+      <MemberDirectory members={ROSTER_SAMPLE} />
+    </HubPage>
+  );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

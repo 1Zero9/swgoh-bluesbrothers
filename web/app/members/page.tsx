@@ -5,9 +5,8 @@ import Link from "next/link";
 import MemberDeparture from "@/app/member-departures";
 import MemberDirectory from "@/app/member-directory";
 import MemberWelcomeTicker from "@/app/member-welcome-ticker";
-import PageHero from "@/app/page-hero";
+import HubPage, { HubHeader } from "@/app/hub-page";
 import WhoHas from "./who-has";
-import IntelFooter from "@/app/intel-footer";
 import { getRosterChanges, getRosterMembers } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
@@ -40,27 +39,16 @@ export default async function MembersPage() {
   }));
 
   return (
-    <main className="intel-shell destination-shell">
-      <PageHero
-        image="/members-banner.webp"
-        imageAlt="The Blues Brothers among guild members inside a crowded desert cantina"
-        eyebrow="Membership directory"
-        title={<>Meet the whole band.<br /><em>One card at a time.</em></>}
-        description="Search the live roster, compare the useful numbers and open any member for their detailed guild standing."
-        priority
-      >
-        <div className="intel-summary">
-          <div><strong>{members.length || "—"}</strong><small>active members</small></div>
-          <div><strong>{newMembers.length || "—"}</strong><small>joined this month</small></div>
-        </div>
-      </PageHero>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Roster" title="Meet the whole band" intro="Search the live roster, find who has a unit, and open any member for their guild standing.">
+        <span className="hub-pagehead-stat"><strong>{members.length || "—"}</strong> active</span>
+        <span className="hub-pagehead-stat"><strong>{newMembers.length || "0"}</strong> joined this month</span>
+        <Link className="hub-pagehead-link" href="/territory-war">TW room →</Link>
+      </HubHeader>
       <WhoHas />
       <MemberWelcomeTicker members={newMembers} />
       <MemberDirectory members={members} />
       <MemberDeparture members={departedMembers} />
-      <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
-        <Link href="/territory-war">Open TW room →</Link>
-      </IntelFooter>
-    </main>
+    </HubPage>
   );
 }
