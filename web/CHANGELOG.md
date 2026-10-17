@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.41.1 — 2026-10-18
+
+- **Who's online is easier to trust.** The panel now has an **"On the site earlier today"** list (who was seen in the last day, and how long ago), so you can tell "Dougie was here 12 minutes ago" from "Dougie never connected". If the list can't load, it says so with the error instead of "Looking…" forever. It also re-checks the moment you come back to the tab or the app (an iPad pauses a page's timers when it is in the background, which made people drop off the list).
+
 ## 1.41.0 — 2026-10-18
 
 - **"Help me, Obi-Wan, you're my only hope to get logged in."** A new button on the front page, the sign-in panel, the help page, the sign-in problem notice and the Gig and members-only doors. Someone who can't get in types their in-game name (and, if they like, their Discord name and what is happening) and taps send. Officers see it under **Officers → Sign-in links** with a **Find them** button, make a personal link and tap **Done**. If an officer channel is set up in Discord, it is posted there too.
