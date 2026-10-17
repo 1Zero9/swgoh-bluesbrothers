@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import AnswerLadder from "./answer-ladder";
 import BlueIntro from "./blue-intro";
 import HubLinkList from "./hub-link-list";
-import HubBanner from "./hub-banner";
 import HubPage, { HubHeader } from "./hub-page";
 import MoreActions from "./more-actions";
 import PushSettings from "./push-settings";
@@ -13,13 +12,16 @@ import { GUILD_GROUPS, OFF_DUTY_LINKS, OFFICER_LINKS } from "@/lib/hub-links";
 
 export function GuildView() {
   return (
-    <HubPage banner={<HubBanner image="/members-banner.webp" eyebrow="Guild" title="The people and the war" intro="Who is in the band, and everything for Territory War, Territory Battles and raids." />}>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild" title="The people and the war" intro="Who is in the band, and everything for Territory War, Territory Battles and raids." />
+      <div className="hub-more">
       {GUILD_GROUPS.map((group) => (
         <section key={group.title} className="hub-section">
           <h2 className="hub-section-title">{group.title}</h2>
           <HubLinkList links={group.links} />
         </section>
       ))}
+      </div>
     </HubPage>
   );
 }
