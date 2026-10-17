@@ -35,7 +35,7 @@ function save(pos: FloatPos | null) {
 
 /** Out of the way in the bottom corner until moved: above the tab bar on phones. */
 function defaultPixels(width: number, height: number) {
-  return { x: width - FLOAT_SIZE - 20, y: height - FLOAT_SIZE - (width < 1024 ? 86 : 20) };
+  return { x: width - FLOAT_SIZE - 20, y: height - FLOAT_SIZE - (width < 1024 ? 106 : 20) };
 }
 
 /**
