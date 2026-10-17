@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.14.0 — 2026-10-17
+
+- **The Datacron vault on the new look.** The four number tiles, the tabs (Guild Datacron Vault, Active Sets & Meta Codex, TW Command Synergies, Reroll & Farming Advisor), the search and filter bar, every datacron card, the table view, the leaderboard and the signature roster are all the same see-through frames with a blue glow on hover, and they now read properly on the light theme (before, gold and pale text vanished on white).
+- **Tabs are pills** with the chosen one in orange; the active filter is orange; Cards/Table is an orange toggle. Gold, purple and cyan cards keep their tier colour on the border, with darker names on the light theme.
+- **On a phone** the tabs scroll sideways and the cards and filters stack.
+
 ## 1.13.0 — 2026-10-17
 
 - **Territory Battles on the new look, top to bottom.**
