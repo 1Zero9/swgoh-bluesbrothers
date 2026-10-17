@@ -1,7 +1,7 @@
 import unitNameData from "@/lib/unit-names.json";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 
-export type WinKind = "GL_UNLOCK" | "ULTIMATE" | "RELIC" | "UNIT_UNLOCK" | "DATACRON" | "FIRST_R9";
+export type WinKind = "GL_UNLOCK" | "ULTIMATE" | "RELIC" | "UNIT_UNLOCK" | "DATACRON" | "FIRST_R9" | "STAR" | "GEAR";
 
 export type WinDraft = {
   kind: WinKind;
@@ -13,6 +13,8 @@ export type WinDraft = {
 
 type RosterUnit = {
   definitionId?: string;
+  currentRarity?: number | string;
+  currentTier?: number | string;
   relic?: { currentTier?: string | number };
   purchasedAbilityId?: string[];
 };
@@ -33,6 +35,17 @@ function baseId(definitionId: string | undefined) {
 function relicLevel(unit: RosterUnit) {
   const tier = Number(unit.relic?.currentTier ?? 0);
   return Number.isFinite(tier) && tier > 2 ? tier - 2 : 0;
+}
+
+function stars(unit: RosterUnit) {
+  const n = Number(unit.currentRarity ?? 0);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/** Gear level 1-13 (a unit with relics is at 13). */
+function gearLevel(unit: RosterUnit) {
+  const n = Number(unit.currentTier ?? 0);
+  return Number.isFinite(n) ? n : 0;
 }
 
 function ultimateCount(unit: RosterUnit) {
@@ -75,6 +88,8 @@ export function detectWins(previous: Profile | null | undefined, next: Profile):
     }
     const level = relicLevel(unit);
     if (level > relicLevel(prior)) wins.push({ kind: "RELIC", subject: id, value: level });
+    if (stars(unit) > stars(prior) && stars(prior) > 0) wins.push({ kind: "STAR", subject: id, value: stars(unit) });
+    if (gearLevel(unit) > gearLevel(prior) && gearLevel(prior) > 0 && relicLevel(unit) === 0) wins.push({ kind: "GEAR", subject: id, value: gearLevel(unit) });
   }
 
   // A member's first ever Relic 9 unit is a milestone in its own right.
@@ -121,6 +136,9 @@ function ordinal(n: number) {
   return `${n}${suffix[(v - 20) % 10] || suffix[v] || suffix[0]}`;
 }
 
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII"];
+export const roman = (n: number) => ROMAN[n] ?? String(n);
+
 export type WinTier = "headline" | "standard";
 
 export function describeWin(win: WinDraft): { text: string; tag: string; icon: string; tier: WinTier } {
@@ -145,6 +163,10 @@ export function describeWin(win: WinDraft): { text: string; tag: string; icon: s
       return { text: `unlocked ${unit ?? "a new unit"}`, tag: "New unit", icon: "＋", tier: "standard" };
     case "DATACRON":
       return { text: `reached ${win.value} datacrons`, tag: "Datacrons", icon: "✦", tier: "standard" };
+    case "STAR":
+      return { text: `promoted ${unit ?? "a unit"} to ${win.value}-Star`, tag: "Stars", icon: "★", tier: "standard" };
+    case "GEAR":
+      return { text: `increased ${unit ?? "a unit"}'s gear to level ${roman(win.value)}`, tag: "Gear", icon: "⚙", tier: "standard" };
     case "FIRST_R9":
       return {
         text: `took ${unit ?? "a unit"} to Relic 9 — their first ever`,

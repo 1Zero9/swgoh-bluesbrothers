@@ -5,6 +5,7 @@ import { buildStatusRow } from "@/lib/home-status";
 import HubPage, { HubHeader } from "@/app/hub-page";
 import FeedbackBoard from "@/app/feedback/feedback-board";
 import CountersClient from "@/app/counters/counters-client";
+import ActivityFeed from "@/app/activity/activity-feed";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -19,6 +20,8 @@ const FB_SAMPLE = [
   { id: "4", kind: "FEATURE", title: "Counters you can save", body: "Let me keep a list of counters I use.", status: "DONE", reply: "Done: see Squads in the control panel.", submittedByName: "ZappAttk", statusByName: "Steve", createdAt: "2026-10-01T10:00:00Z", doneAt: "2026-10-16T10:00:00Z", votes: 9, votedByMe: false, mine: false },
 ];
 
+const ACT_SAMPLE = [["Teepeeteet","promoted Gungan Phalanx to 7-Star","stars","17h"],["Teepeeteet","applied a Zeta upgrade to Boss of Otoh Gunga","gear","17h"],["Bro","promoted Snowtrooper Commander to 7-Star","stars","17h"],["TolkenSolo","promoted Brutus to 7-Star","stars","14h"],["Jim","increased Ben Solo's gear to level XIII","gear","12h"],["Dex","took Jedi Master Kenobi to Relic 9","relics","9h"],["Steve","unlocked Lord Vader: their 4th Galactic Legend","legends","2d"]].map(([who, text, group, ago], i) => ({ id: String(i), who, text, tag: "", tier: group === "legends" || group === "relics" ? "headline" as const : "standard" as const, group: group as "stars", ago, at: "2026-10-16T10:00:00Z" }));
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -29,6 +32,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;
   if (screen === "counters") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Saved squads" title="Know the counter. Know who can run it." intro="Pick an enemy squad's leader and see the counters the guild trusts, whether you can run them, and who can. Anyone can add one." /><CountersClient aside={<aside className="kb-side kb-ask-side"><h3>Not on the list?</h3><p>Ask B-Lue3. He checks what the guild has saved first, then searches the web for current counters.</p><span className="kb-ask-link">Ask B-Lue3 →</span></aside>} /></HubPage>;
+  if (screen === "activity") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Guild" title="Guild activity" intro="Star promotions, gear, relics and unlocks across the guild, newest first."><span className="hub-pagehead-link">The Wins →</span></HubHeader><ActivityFeed items={ACT_SAMPLE} /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

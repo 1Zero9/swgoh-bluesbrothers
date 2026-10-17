@@ -68,3 +68,15 @@ test("a member's first Relic 9 is flagged once, and not when they already had on
   );
   assert.deepEqual(again.map((w) => w.kind), ["RELIC"]);
 });
+
+test("star promotions and gear levels are detected, but not for a brand-new unit or a relic unit", () => {
+  const u = (id: string, rarity: number, tier: number, relic = 1) => ({ definitionId: `${id}:SEVEN_STAR`, currentRarity: rarity, currentTier: tier, relic: { currentTier: relic } });
+  const stars = detectWins({ rosterUnit: [u("GUNGANPHALANX", 6, 5)] }, { rosterUnit: [u("GUNGANPHALANX", 7, 5)] });
+  assert.deepEqual(stars, [{ kind: "STAR", subject: "GUNGANPHALANX", value: 7 }]);
+  assert.match(describeWin(stars[0]).text, /promoted .* to 7-Star/);
+  const gear = detectWins({ rosterUnit: [u("BENSOLO", 7, 12)] }, { rosterUnit: [u("BENSOLO", 7, 13)] });
+  assert.deepEqual(gear, [{ kind: "GEAR", subject: "BENSOLO", value: 13 }]);
+  assert.match(describeWin(gear[0]).text, /gear to level XIII/);
+  assert.deepEqual(detectWins({ rosterUnit: [] }, { rosterUnit: [u("NEWGUY", 3, 1)] }).map((w) => w.kind), ["UNIT_UNLOCK"]);
+  assert.deepEqual(detectWins({ rosterUnit: [u("RELICGUY", 7, 13, 5)] }, { rosterUnit: [u("RELICGUY", 7, 13, 6)] }).map((w) => w.kind), ["RELIC"]);
+});

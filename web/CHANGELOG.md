@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.6.0 — 2026-10-17
+
+- **Guild activity: a feed like the game's guild chat.** New page **Guild activity** (Guild menu and the control panel shortcuts). One line per thing, newest first, with the time on the right ("17h", "3d"): "Teepeeteet promoted Gungan Phalanx to 7-Star", "Jim increased Ben Solo's gear to level XIII", relics, new units, Galactic Legends and ultimates. Stars and new units show in green, the big ones (relic 7+, legends, ultimates) in orange. Filter by Stars, Gear, Relics, Legends & ultimates or New units, or by member.
+- **Two new kinds of win are now picked up** from roster checks: **star promotions** and **gear level-ups** (units still on gear; relic units count as relics). They feed the Wins page's "Progress" lines too.
+- It is built from roster checks, not the game's chat, so it runs a day or two behind. Zeta upgrades are not detected yet.
+
 ## 1.5.0 — 2026-10-17
 
 - **Saved squads gets the new look.** The tall banner is gone; a slim header and the page's themed background take its place. The enemy-leader search and an orange **+ Add a counter** share a row.

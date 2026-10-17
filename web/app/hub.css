@@ -1539,3 +1539,23 @@ html .hub-main.is-inner .kb-form .kb-primary[type="submit"] { background: var(--
 .hub-main.is-inner .counter-remove { padding: 6px 12px; border: 1px solid var(--glass-line); border-radius: 999px; background: transparent; color: var(--hub-muted); font: inherit; font-size: 12.5px; cursor: pointer; }
 .hub-main.is-inner .counter-remove:hover { border-color: var(--hub-bad); color: var(--hub-bad); }
 .hub-main.is-inner .who-has-note { margin: 0; color: var(--hub-muted); font-size: 13.5px; }
+
+/* ---------- Guild activity feed: game-style one-liners ---------- */
+.act { gap: 14px; }
+.act-filters { grid-auto-flow: column; grid-auto-columns: auto; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.act-filters button { padding: 0 14px; white-space: nowrap; }
+.act-who { min-width: 170px; padding: 10px 14px; border: 1px solid var(--glass-line); border-radius: 12px; background: var(--glass); color: var(--hub-text); font: inherit; font-size: 14.5px; }
+.act-list { display: grid; margin: 0; padding: 6px; list-style: none; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); }
+.act-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 10px 14px; border-radius: 10px; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.act-row + .act-row { border-top: 1px solid rgba(128, 150, 180, 0.14); }
+.act-row:hover { background: var(--hub-accent-soft); }
+.act-row strong { font-weight: 700; }
+.act-row time { flex: none; color: var(--hub-muted); font: 600 13px var(--font-geist-mono), monospace; }
+.act-row.is-stars, .act-row.is-units { color: #8fe3b4; }
+html[data-theme="rebel"] .act-row.is-stars, html[data-theme="rebel"] .act-row.is-units { color: #15803d; }
+.act-row.is-stars strong, .act-row.is-units strong { color: var(--hub-text); }
+.act-row.is-big { color: var(--ask-text); font-weight: 600; }
+.act-row.is-big strong { color: var(--hub-text); }
+.hub-segment.act-filters { display: flex; flex-wrap: wrap; gap: 2px; overflow: visible; width: auto; min-width: 0; max-width: 100%; flex: 0 1 auto; }
+.act-filters button { flex: 0 0 auto; min-height: 38px; }
+.act { min-width: 0; max-width: 100%; }

@@ -48,6 +48,7 @@ const SHORTCUTS = [
   { href: "/members#who-has", label: "Who has…?", icon: Users },
   { href: "/territory-war", label: "Territory War", icon: Swords },
   { href: "/raids", label: "Raids", icon: Ticket },
+  { href: "/activity", label: "Guild activity", icon: Bell },
   { href: "/wins", label: "The Wins", icon: Trophy },
   { href: "/feedback", label: "Feedback", icon: Megaphone },
   { href: "/more", label: "Notifications", icon: Bell },
