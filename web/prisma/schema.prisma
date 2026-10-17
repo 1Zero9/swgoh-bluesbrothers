@@ -787,3 +787,32 @@ model MemberCardSnapshot {
   @@index([playerId, capturedAt])
   @@index([capturedAt])
 }
+
+/// Every question asked of B-Lue3, kept for the site admin: who, what, how it was handled, and whether it was in scope.
+model BlueQuestion {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  playerId   String?
+  playerName String
+  question   String
+  /// database (answered free), ai, or blocked.
+  route      String
+  /// OK, or BLOCKED when it was off-topic or an attempt to get round the rules.
+  verdict    String   @default("OK")
+  /// Why it was blocked, in plain words.
+  reason     String?
+  /// The first part of the answer, for context.
+  answer     String?
+
+  @@index([createdAt])
+  @@index([playerId, createdAt])
+  @@index([verdict, createdAt])
+}
+
+/// A member the site admin has cut off from B-Lue3.
+model BlueCutoff {
+  playerId  String   @id
+  name      String
+  reason    String?
+  createdAt DateTime @default(now())
+}

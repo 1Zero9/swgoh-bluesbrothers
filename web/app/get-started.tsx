@@ -48,7 +48,7 @@ function write(value: Saved) {
 }
 
 /** A short first-visit checklist. The account step comes from the server; the others tick when you open them. */
-export type PanelInfo = { name: string | null; standing: string | null; checkIn: string | null; isOfficer: boolean; reviewCount: number; questions: { left: number; limit: number; resetsLabel: string } | null; squads: MySquads };
+export type PanelInfo = { name: string | null; standing: string | null; checkIn: string | null; isOfficer: boolean; isAdmin?: boolean; reviewCount: number; questions: { left: number; limit: number; resetsLabel: string } | null; squads: MySquads };
 
 export default function GetStarted({ linked, steps, compact = false, panel, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; panel?: PanelInfo; alert?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
@@ -112,6 +112,7 @@ export default function GetStarted({ linked, steps, compact = false, panel, aler
       standing={panel?.standing ?? null}
       checkIn={panel?.checkIn ?? null}
       isOfficer={panel?.isOfficer ?? false}
+      isAdmin={panel?.isAdmin ?? false}
       reviewCount={panel?.reviewCount ?? 0}
       questions={panel?.questions ?? null}
       squads={panel?.squads ?? null}

@@ -1,6 +1,8 @@
 import { getViewerAccess } from "@/lib/access-control";
 import { askBlue, blueEnabled } from "@/lib/blue/ask";
 import { answerFromDatabase } from "@/lib/blue/db-answer";
+import { checkQuestion, isModelRefusal, REFUSAL_MESSAGE } from "@/lib/blue/guard";
+import { isCutOff, logQuestion } from "@/lib/blue/log";
 import { cleanConversation, getUsage, refundQuestion, safeErrorDetail, takeQuestion } from "@/lib/blue/limits";
 
 export const dynamic = "force-dynamic";
@@ -24,12 +26,30 @@ export async function POST(request: Request) {
   const conversation = cleanConversation(body?.messages);
   if (!conversation) return fail("Ask B-Lue3 a question first.", 400);
 
+  const latest = conversation[conversation.length - 1].content;
+  const who = access.playerId ?? null;
+  const name = access.playerName ?? (access.isOfficer && !who ? "Officer (shared password)" : "Member");
+
+  // Cut off by the site admin: nothing is answered and nothing is spent.
+  if (await isCutOff(who)) {
+    void logQuestion({ playerId: who, playerName: name, question: latest, route: "blocked", verdict: "BLOCKED", reason: "member is cut off" });
+    return fail("B-Lue3 has been switched off for your account. Speak to the guild leader.", 403);
+  }
+
+  // The free guardrail: obvious misuse is refused before anything is spent, and recorded.
+  const guard = checkQuestion(latest);
+  if (!guard.ok) {
+    void logQuestion({ playerId: who, playerName: name, question: latest, route: "blocked", verdict: "BLOCKED", reason: guard.reason });
+    return Response.json({ ok: true, answer: REFUSAL_MESSAGE, sources: [], route: "blocked", left: (await getUsage(access.playerId ?? "officer")).left }, { headers: NO_STORE });
+  }
+
   // The free step comes first: counter questions and "who has X" are answered from the guild's own database with no AI and no question used.
   // The member can then choose to spend a question on a web search (webSearch: true skips this step).
   if (body?.webSearch !== true) {
     const free = await answerFromDatabase(access.playerId ?? null, conversation[conversation.length - 1].content).catch(() => null);
     if (free) {
       const usage = await getUsage(access.playerId ?? "officer");
+      void logQuestion({ playerId: who, playerName: name, question: latest, route: "database", answer: free.text });
       return Response.json({ ok: true, answer: free.text, sources: [], route: "database", needsWebSearch: free.needsWebSearch, offer: free.offer ?? null, left: usage.left }, { headers: NO_STORE });
     }
   }
@@ -39,6 +59,13 @@ export async function POST(request: Request) {
 
   try {
     const { text, sources, webSearch, searchError } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
+    if (isModelRefusal(text)) {
+      // The model judged it off-topic: give the question back and record it as a strike.
+      await refundQuestion(access.playerId ?? "officer").catch(() => undefined);
+      void logQuestion({ playerId: who, playerName: name, question: latest, route: "blocked", verdict: "BLOCKED", reason: "judged off-topic by B-Lue3" });
+      return Response.json({ ok: true, answer: REFUSAL_MESSAGE, sources: [], route: "blocked", left: left + 1 }, { headers: NO_STORE });
+    }
+    void logQuestion({ playerId: who, playerName: name, question: latest, route: "ai", answer: text });
     return Response.json({ ok: true, answer: text, sources, webSearch, route: "ai", left, ...(access.isOfficer && searchError ? { searchError } : {}) }, { headers: NO_STORE });
   } catch (error) {
     const detail = safeErrorDetail(error);

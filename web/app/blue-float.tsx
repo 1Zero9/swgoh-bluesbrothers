@@ -140,7 +140,7 @@ export default function BlueFloat() {
             <input name="q" aria-label="Ask B-Lue3" placeholder="How do I beat Lord Vader in TW?" maxLength={500} autoComplete="off" autoFocus />
             <button type="submit">Ask</button>
           </form>
-          <p className="hub-blue-note">Free from the guild&apos;s knowledge first. The AI and web search use a question and can be wrong.</p>
+          <p className="hub-blue-note">Free from the guild&apos;s knowledge first. The AI and web search use a question and can be wrong. Game questions only: all questions are recorded.</p>
           <div className="hub-blue-links">
             <Link href="/ask" onClick={() => setOpen(false)}>Open the full Ask page</Link>
             <BlueIntro variant="text" endHref="/ask" endLabel="Ask B-Lue3 a question" />

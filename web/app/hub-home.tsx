@@ -27,6 +27,7 @@ export type HubHomeProps = {
   requests: HomeRequest[];
   wire: HomeWireItem[];
   isOfficer: boolean;
+  isAdmin?: boolean;
   reviewCount: number;
   stats: { members: string; power: string; tickets: string | null; legends: string | null } | null;
   wins: HomeWin[];
@@ -52,7 +53,7 @@ const STEPS = [
   { key: "share", title: "Add one thing you know", hint: "A counter, a tip or an idea", href: "/knowledge" },
 ];
 
-export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, reviewCount, questions, stats, wins, status, newMembers, callouts, discordUrl, announcement, mySquads }: HubHomeProps) {
+export default function HubHome({ name, linked, standing, checkIn, requests, wire, isOfficer, isAdmin = false, reviewCount, questions, stats, wins, status, newMembers, callouts, discordUrl, announcement, mySquads }: HubHomeProps) {
   const hasWork = requests.length > 0 || callouts.length > 0 || (isOfficer && reviewCount > 0);
   const shownWins = wins.slice(0, 3);
   const shownRequests = requests.slice(0, 2);
@@ -154,7 +155,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             steps={STEPS}
             compact
             alert={Boolean(checkIn)}
-            panel={{ name, standing, checkIn, isOfficer, reviewCount, questions, squads: mySquads }}
+            panel={{ name, standing, checkIn, isOfficer, isAdmin, reviewCount, questions, squads: mySquads }}
         />
         </header>
         {shownNew.length ? <NewPlayersBanner members={shownNew} /> : null}
