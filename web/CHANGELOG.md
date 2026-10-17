@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.6.1 — 2026-10-17
+
+- **Feedback moved up the menu,** to sit right under Guild chat at the top, so it is always in view. It is no longer inside the Guild group.
+
 ## 1.6.0 — 2026-10-17
 
 - **Guild activity: a feed like the game's guild chat.** New page **Guild activity** (Guild menu and the control panel shortcuts). One line per thing, newest first, with the time on the right ("17h", "3d"): "Teepeeteet promoted Gungan Phalanx to 7-Star", "Jim increased Ben Solo's gear to level XIII", relics, new units, Galactic Legends and ultimates. Stars and new units show in green, the big ones (relic 7+, legends, ultimates) in orange. Filter by Stars, Gear, Relics, Legends & ultimates or New units, or by member.
