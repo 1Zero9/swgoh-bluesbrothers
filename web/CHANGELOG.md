@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.25.0 — 2026-10-17
+
+- **Guardrails on B-Lue3.**
+  - **Game questions only.** Before anything is spent, a free filter stops obvious misuse: code and programming requests, "write me a poem/email/essay", attempts to change his rules or read his instructions, off-topic subjects (money, weather, homework) and tricks to get round the question limit. The AI is also told to refuse anything outside Star Wars: Galaxy of Heroes, this guild and this site. Refused questions do not use up the weekly allowance.
+  - **Every question is recorded** (who, what, free or AI answer, and a short part of the reply), with the reason when one is blocked. The ask box now says so.
+  - **A private log for the site admin only** at `/admin/blue` (not officers): every question, filter for blocked ones, a count per member of asked and blocked, and a **Cut off** / **Restore** button for each member. A cut-off member gets a clear message and nothing is answered.
+- Needs two new database tables (`BlueQuestion`, `BlueCutoff`) and one setting: `SITE_ADMIN_DISCORD_ID` (your Discord user id) so the site knows who the admin is. Until it is set, nobody can open the log.
+
 ## 1.24.1 — 2026-10-17
 
 - **B-Lue3's pop-up is easy to read.** When you tap B-Lue3, the page behind now dims and blurs, and the pop-up is a solid card with an orange edge and an orange Ask button (dark on Deep and Classic, white on Rebel). Before, the page's words showed through it.

@@ -12,6 +12,7 @@ import { buildStatusRow } from "@/lib/home-status";
 import { getRaidRoom } from "@/lib/raids";
 import { getWinsFeed } from "@/lib/wins-feed";
 import { getPrisma } from "@/lib/prisma";
+import { isSiteAdmin } from "@/lib/site-admin";
 import { getAnnouncement } from "@/lib/announcement-data";
 import { EMPTY_SQUADS, getMySquads } from "@/lib/my-squads";
 import { getMemberContext } from "@/lib/member-context";
@@ -90,6 +91,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
     requests: requests.slice(0, 3).map((request) => ({ id: request.id, leaderName: request.leaderName, modeLabel: MODE_LABELS[request.mode as KbMode] ?? request.mode })),
     wire: wire.slice(0, 3).map((item) => ({ id: item.id, title: item.title, summary: item.summary, when: relativeTime(item.occurredAt) })),
     isOfficer: access.isOfficer,
+    isAdmin: isSiteAdmin(access),
     reviewCount: queue.length + noteCount,
     stats: summary?.live ? { members: `${summary.memberCount}/${summary.capacity}`, power: formatPower(summary.guildPower), tickets: summary.dailyTickets ? summary.dailyTickets.toLocaleString("en-GB") : null, legends: publicData?.live ? String(publicData.galacticLegends) : null } : null,
     wins: (winsFeed?.days.flatMap((day) => day.wins) ?? []).filter((win) => win.tier === "headline").slice(0, 4).map((win) => ({ id: win.id, who: win.who, text: win.text, when: relativeTime(win.occurredAt) })),

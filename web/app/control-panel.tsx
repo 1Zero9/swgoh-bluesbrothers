@@ -59,12 +59,13 @@ const SHORTCUTS = [
  * your standing, the setup steps, shortcuts and settings, and (for officers) the officer tools.
  */
 export default function ControlPanel({
-  name, standing, checkIn, isOfficer, reviewCount, questions, squads, checklist, finished, total, setupHidden, onFold,
+  name, standing, checkIn, isOfficer, isAdmin = false, reviewCount, questions, squads, checklist, finished, total, setupHidden, onFold,
 }: {
   name: string | null;
   standing: string | null;
   checkIn: string | null;
   isOfficer: boolean;
+  isAdmin?: boolean;
   reviewCount: number;
   questions: { left: number; limit: number; resetsLabel: string } | null;
   squads: MySquads | null;
@@ -219,6 +220,7 @@ export default function ControlPanel({
             <li><Link href="/officer/announcement"><Megaphone size={16} aria-hidden="true" />Announcement</Link></li>
             <li><Link href="/officer/member"><Users size={16} aria-hidden="true" />Member cards</Link></li>
             <li><Link href="/officer/roster"><Shield size={16} aria-hidden="true" />Roster report</Link></li>
+            {isAdmin ? <li><Link href="/admin/blue"><MessageCircleQuestion size={16} aria-hidden="true" />B-Lue3 log</Link></li> : null}
             <li><Link href="/officer/discord-sync"><Sparkles size={16} aria-hidden="true" />Discord sync</Link></li>
           </ul>
         </div>

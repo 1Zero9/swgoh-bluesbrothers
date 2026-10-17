@@ -128,7 +128,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
           value={text}
           onChange={(event) => setText(event.target.value)}
           maxLength={500}
-          placeholder="Ask B-Lue3 anything"
+          placeholder="Ask B-Lue3 about the game"
           aria-label="Ask B-Lue3"
           enterKeyHint="send"
           disabled={busy}
