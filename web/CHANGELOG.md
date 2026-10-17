@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.35.1 — 2026-10-17
+
+- **The doorman droid is back on The Gig is In Session door**, as a wide picture under the header with the neon sign, the droid and the queue all in view.
+
 ## 1.35.0 — 2026-10-17
 
 - **The front page, the "members only" door and The Gig is In Session now match the rest of the site**: the slim glass header, frosted boxes and the themed background, so there is one look from the first visit. Same content, same sign-in buttons; the front page keeps its stats, how to join, ally-code check, war record and news.
