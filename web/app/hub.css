@@ -2546,3 +2546,12 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .refresh-btn.is-icon span { display: none; }
 .pub-brandbar-tools { display: flex; align-items: center; gap: 8px; }
 .signin-guard .refresh-btn { background: #16233a; color: #eef3fa; border-color: rgba(255, 255, 255, 0.2); }
+
+/* Home control panel on a tablet (iPad landscape, with the menu open): two columns instead of one tall stack. */
+@media (min-width: 760px) and (max-width: 1099.98px) {
+  .hub-dash-head .hub-banner-side.hub-cpanel:not(.is-expanded) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; gap: 8px 16px; padding: 10px 14px 12px; }
+  .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-cpanel-bar { grid-column: 1 / -1; }
+  .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-standing { grid-column: 1; grid-row: 2; }
+  .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-start { grid-column: 2; grid-row: 2 / span 2; }
+  .hub-dash-head .hub-cpanel:not(.is-expanded) > .hub-cpanel-nudge { grid-column: 1; grid-row: 3; align-self: start; justify-self: start; }
+}
