@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, ChevronRight, Ellipsis, House, MessageCircleQuestion, Users, type LucideIcon } from "lucide-react";
-import { activeSidebarHref, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
+import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
 import BlueFloat from "./blue-float";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
@@ -37,6 +37,9 @@ export default function HubNav() {
   const activeHref = activeSidebarHref(pathname);
   const isOfficer = isPreview || viewer?.role === "OFFICER";
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
+  const [dockOpen, setDockOpen] = useState<HubSectionKey | null>(null);
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (seenPath !== pathname) { setSeenPath(pathname); setDockOpen(null); }
 
   useEffect(() => {
     if (!viewer && !isPreview) return;
@@ -48,6 +51,15 @@ export default function HubNav() {
       /* private mode: the menu may flash once per visit */
     }
   }, [viewer, isMember, isPreview]);
+
+  useEffect(() => {
+    if (!dockOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setDockOpen(null); };
+    const onDown = (event: PointerEvent) => { if (!(event.target as Element | null)?.closest?.(".hub-tabs, .hub-dock-menu")) setDockOpen(null); };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => { window.removeEventListener("keydown", onKey); window.removeEventListener("pointerdown", onDown); };
+  }, [dockOpen]);
 
   if (!isMember) return null;
 
@@ -89,14 +101,29 @@ export default function HubNav() {
         </div>
       </aside>
       <BlueFloat />
+      {dockOpen && DOCK_MENUS[dockOpen] ? (
+        <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>
+          {DOCK_MENUS[dockOpen]!.map((group) => {
+            const links = group.links.filter((link) => !link.officerOnly || isOfficer);
+            if (!links.length) return null;
+            return (
+              <div key={group.title ?? "main"} className="hub-dock-group">
+                {group.title ? <p>{group.title}</p> : null}
+                <ul>{links.map((link) => <li key={link.href}><Link role="menuitem" href={link.href} aria-current={activeHref === link.href ? "page" : undefined} onClick={() => setDockOpen(null)}>{link.label}</Link></li>)}</ul>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
       <nav className="hub-tabs" aria-label="Main">
         {HUB_SECTIONS.map((section) => {
           const Icon = ICONS[section.key];
-          return (
-            <Link key={section.key} href={section.href} className={section.key === "ask" ? "is-ask" : undefined} aria-current={active === section.key ? "page" : undefined}>
-              <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
-              <span>{section.key === "ask" ? "Ask" : section.label}</span>
-            </Link>
+          const hasMenu = Boolean(DOCK_MENUS[section.key]);
+          const inner = (<><Icon size={22} strokeWidth={1.8} aria-hidden="true" /><span>{section.key === "ask" ? "Ask" : section.label}</span></>);
+          return hasMenu ? (
+            <button key={section.key} type="button" aria-haspopup="menu" aria-expanded={dockOpen === section.key} className={`hub-tab-btn${dockOpen === section.key ? " is-open" : ""}`} aria-current={active === section.key ? "page" : undefined} onClick={() => setDockOpen(dockOpen === section.key ? null : section.key)}>{inner}</button>
+          ) : (
+            <Link key={section.key} href={section.href} className={section.key === "ask" ? "is-ask" : undefined} aria-current={active === section.key ? "page" : undefined}>{inner}</Link>
           );
         })}
       </nav>

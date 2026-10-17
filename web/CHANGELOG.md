@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.17.0 — 2026-10-17
+
+- **A calmer phone.**
+  - **The dock has sub-menus.** Tap Knowledge, Guild or More and a glass menu rises above the dock: Knowledge (Counters, Tips, Ideas, Saved squads, Field guides), Guild (Guild chat, Roster, Who has, Activity, Wins, Overview, plus the War room pages), and More (My page, Feedback, Notifications, Off duty, and the officer tools for officers). Tap a link, tap outside or press Escape to close. Home and Ask still go straight to their page.
+  - **Home folds up.** On a phone, War room, Act now and The Wins are each one tappable line with a short summary ("Won vs Rebel Scum · 2 callouts open · 2,430 of 29,400 tickets", "5 things need you"). Tap to open. Laptops are unchanged.
+  - **Less crowding on other pages:** page intros are cut to two lines, number tiles are smaller, and the footer links on Home are hidden.
+
 ## 1.16.0 — 2026-10-17
 
 - **Dougie's Discs on the new look.** The tall banner is gone, replaced by the slim header and the themed picture. The jukebox itself (turntable, screen, Spin and queue) stays a dark hi-fi, as it should. Under it, "Speakeasy Quotes & Analog Drops" and "Digging in Dougie's Vinyl Crate" are glass frames that follow the theme: orange selected crate, orange Sleeves/Compact switch, glass quote cards, and the dark record sleeves keep their coloured labels and light text. It reads on the light theme now (before, the shelf headings and filters were pale on white).
