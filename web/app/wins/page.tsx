@@ -35,9 +35,13 @@ function collapse(wins: FeedWin[]) {
 function summarise(items: FeedWin[]) {
   const relics = items.filter((item) => item.tag === "Relic").length;
   const units = items.filter((item) => item.tag === "New unit").length;
+  const starCount = items.filter((item) => item.tag === "Stars").length;
+  const gearCount = items.filter((item) => item.tag === "Gear").length;
   const parts = [
     relics ? `${relics} relic level-up${relics > 1 ? "s" : ""}` : "",
     units ? `${units} new unit${units > 1 ? "s" : ""}` : "",
+    starCount ? `${starCount} star promotion${starCount > 1 ? "s" : ""}` : "",
+    gearCount ? `${gearCount} gear upgrade${gearCount > 1 ? "s" : ""}` : "",
     items.some((item) => item.tag === "Datacrons") ? "a datacron" : "",
   ].filter(Boolean);
   return parts.join(", ");
