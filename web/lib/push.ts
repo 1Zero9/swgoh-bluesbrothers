@@ -78,3 +78,16 @@ export async function notifyOnePlayer(playerId: string) {
   if (!targets.length) return 0;
   return deliver(targets, buildPayload({ title: "Blues Brothers", body: "Notifications are on. You'll hear about wins, war results and chat here.", url: "/me", tag: "test" }));
 }
+
+/** A direct message to specific members' devices (for example, "your counter is ready"). They asked for it, so no topic is needed. */
+export async function notifyPlayers(playerIds: string[], input: { title: string; body: string; url?: string; tag?: string }) {
+  if (!pushConfigured() || !playerIds.length) return 0;
+  try {
+    const targets = await getPrisma().pushSubscription.findMany({ where: { playerId: { in: playerIds } }, select: { id: true, endpoint: true, p256dh: true, auth: true } });
+    if (!targets.length) return 0;
+    return await deliver(targets, buildPayload(input));
+  } catch (error) {
+    console.error("push notify failed", error);
+    return 0;
+  }
+}

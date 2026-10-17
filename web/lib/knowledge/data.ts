@@ -6,7 +6,7 @@ import { freshness, nextStatus, type KbAction } from "@/lib/knowledge/lifecycle"
 import { mayAutoPublish, type Via } from "@/lib/knowledge/permissions";
 import { searchMatchups, type MatchupRow, type SearchQuery } from "@/lib/knowledge/search";
 import { variantKey, type KbMember } from "@/lib/knowledge/squad";
-import type { SquadKind } from "@/lib/knowledge/modes";
+import { MODE_LABELS, type KbMode, type SquadKind } from "@/lib/knowledge/modes";
 import type { SubmissionInput } from "@/lib/knowledge/validate";
 import { allUnitNames } from "@/lib/wins";
 
@@ -154,7 +154,11 @@ export async function reviewMatchup(id: string, action: KbAction, actor: string,
     // A counter for this enemy leader in this mode now exists, so any open call for help for it is answered.
     const published = await db.kbMatchup.findUnique({ where: { id }, select: { mode: true, defender: { select: { team: { select: { leaderUnitId: true } } } } } });
     const leader = published?.defender.team.leaderUnitId;
-    if (leader) await db.kbRequest.updateMany({ where: { status: "OPEN", mode: published.mode, leaderUnitId: leader }, data: { status: "ANSWERED", answeredById: id } });
+    if (leader) {
+      const waiting = await db.kbRequest.findMany({ where: { status: "OPEN", mode: published.mode, leaderUnitId: leader }, select: { id: true, requestedById: true } });
+      await db.kbRequest.updateMany({ where: { status: "OPEN", mode: published.mode, leaderUnitId: leader }, data: { status: "ANSWERED", answeredById: id } });
+      await tellRequesters(waiting.map((w) => w.requestedById), unitLabel(leader), published.mode);
+    }
   }
   await db.kbEvent.create({ data: { matchupId: id, action, actorName: actor, note } });
   return { ok: true, status: to };
@@ -248,4 +252,25 @@ export async function closeRequest(id: string, viewer: { playerId: string | null
   if (!viewer.isOfficer && row.requestedById !== viewer.playerId) return { ok: false, error: "Only the person who asked, or an officer, can remove it.", status: 403 };
   await db.kbRequest.update({ where: { id }, data: { status: "CLOSED" } });
   return { ok: true };
+}
+
+/** Tell the members who asked that a counter now exists: a Discord mention in the counters channel, and a push if they have it on. Never fails the review. */
+async function tellRequesters(playerIds: string[], leaderName: string, mode: string) {
+  const ids = [...new Set(playerIds)];
+  if (!ids.length) return;
+  const link = `${siteUrl()}/ask?tab=counters`;
+  try {
+    const players = await getPrisma().player.findMany({ where: { id: { in: ids } }, select: { discordUserId: true } });
+    const mentions = players.map((p) => p.discordUserId).filter((d): d is string => Boolean(d));
+    const webhook = process.env.DISCORD_COUNTERS_WEBHOOK_URL;
+    if (webhook && mentions.length) {
+      await postDiscordAnnouncement({ title: `A counter for ${leaderName} is ready`, description: `You asked for a counter to **${leaderName}** in **${MODE_LABELS[mode as KbMode] ?? mode}**. An officer has checked one.\n${link}`, color: 0x22c55e, websiteUrl: link, footer: "Blues Brothers · Counter help", mentionUserIds: mentions }, webhook);
+    }
+  } catch (error) {
+    console.error("knowledge: requester not told on Discord", error instanceof Error ? error.message : "unknown error");
+  }
+  try {
+    const { notifyPlayers } = await import("@/lib/push");
+    await notifyPlayers(ids, { title: `A counter for ${leaderName} is ready`, body: "An officer checked one. Tap to see it.", url: "/ask?tab=counters", tag: "counter" });
+  } catch { /* push is optional */ }
 }

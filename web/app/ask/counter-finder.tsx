@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import UnitPicker, { type PickedUnit } from "@/app/unit-picker";
 import MatchCard, { type Listing } from "@/app/knowledge/match-card";
@@ -10,6 +9,8 @@ import type { CounterView } from "@/lib/counters-data";
 
 const MODES: KbMode[] = ["TW", "GAC_5V5", "GAC_3V3"];
 const SHORT: Record<string, string> = { TW: "Territory War", GAC_5V5: "GAC 5v5", GAC_3V3: "GAC 3v3" };
+
+type Wanted = { id: string; mode: string; leaderUnitId: string; leaderName: string; note: string | null; requestedByName: string; mine: boolean };
 
 /**
  * Find a counter from the guild's own knowledge, free: pick the enemy leader (and a mode), see the checked counters and the squads
@@ -23,11 +24,41 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
   const [isOfficer, setIsOfficer] = useState(false);
+  const [wanted, setWanted] = useState<Wanted[]>([]);
+  const [asking, setAsking] = useState(false);
+  const [note, setNote] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [helping, setHelping] = useState<Wanted | null>(null);
+
+  const loadWanted = useCallback(async () => {
+    const data = (await fetch("/api/knowledge/request", { cache: "no-store" }).then((r) => r.json()).catch(() => null)) as { requests?: Wanted[] } | null;
+    setWanted(data?.requests ?? []);
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => { if (canAct) void loadWanted(); }, 0);
+    return () => clearTimeout(timer);
+  }, [canAct, loadWanted]);
+
+  async function sendRequest() {
+    if (!enemy) return;
+    setAsking(true);
+    const response = await fetch("/api/knowledge/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode: mode || "TW", leaderUnitId: enemy.id, note }) }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string; created?: boolean } | null;
+    setAsking(false);
+    if (data?.ok) { setNote(""); setNotice(data.created === false ? "Someone has already asked for that one. We'll tell you both when a counter is added." : "Asked. You'll be told here and on Discord when an officer checks a counter for it."); void loadWanted(); }
+    else setNotice(data?.error ?? "That didn't send. Try again.");
+  }
+
+  async function cancelRequest(id: string) {
+    await fetch("/api/knowledge/request", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
+    setNotice("Your request was cancelled.");
+    void loadWanted();
+  }
 
   const load = useCallback(async () => {
     if (!enemy) { setHits(null); setSaved([]); return; }
     setLoading(true);
-    const params = new URLSearchParams({ unit: enemy.id });
+    const params = new URLSearchParams({ unit: enemy.id, log: "1" });
     if (mode) params.set("mode", mode);
     const [known, own] = await Promise.all([
       fetch(`/api/knowledge?${params}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ hits?: Listing[] } | null>,
@@ -93,14 +124,46 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
         </section>
       ) : null}
 
+      {notice ? <p className="kb-notice" role="status">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss">×</button></p> : null}
+
       {empty ? (
         <div className="cf-empty">
           <strong>The guild has nothing saved for {enemy.name}{mode ? ` in ${MODE_LABELS[mode]}` : ""} yet.</strong>
           <p>You have two ways forward. The web search uses one of your weekly questions and can be wrong; asking the guild is free.</p>
           <div className="cf-actions">
             <button type="button" className="kb-primary" onClick={() => onAskBlue(question)}>Ask B-Lue3 to search the web</button>
-            {canAct ? <Link className="kb-secondary" href="/knowledge">Ask the guild for a counter</Link> : null}
           </div>
+          {canAct ? (
+            <div className="cf-request">
+              <label>Ask the guild instead (free)
+                <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} placeholder="Anything that helps? e.g. I only have G12 Rey" />
+              </label>
+              <button type="button" className="kb-secondary" disabled={asking} onClick={() => void sendRequest()}>{asking ? "Sending…" : "Ask the guild for a counter"}</button>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {canAct && wanted.length ? (
+        <section aria-label="Members asking for a counter" className="cf-list">
+          <h3>Members asking for a counter</h3>
+          <ul className="cf-wanted">
+            {wanted.map((item) => (
+              <li key={item.id}>
+                <span><strong>{item.leaderName}</strong> <small>{SHORT[item.mode] ?? item.mode} · {item.mine ? "you asked" : `asked by ${item.requestedByName}`}{item.note ? ` · ${item.note}` : ""}</small></span>
+                {item.mine
+                  ? <button type="button" className="kb-link" onClick={() => void cancelRequest(item.id)} aria-label={`Cancel my request for ${item.leaderName}`}>Cancel</button>
+                  : <button type="button" className="kb-secondary" onClick={() => { setHelping(item); setAdding(false); }}>I know a counter</button>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {helping ? (
+        <div className="kb-panel">
+          <h3>Add a counter for {helping.leaderName}</h3>
+          <SubmitForm prefill={{ mode: helping.mode as KbMode, leader: { id: helping.leaderUnitId, name: helping.leaderName } as PickedUnit }} onDone={() => { setHelping(null); void loadWanted(); }} />
+          <button type="button" className="kb-link" onClick={() => setHelping(null)}>Close</button>
         </div>
       ) : null}
     </div>

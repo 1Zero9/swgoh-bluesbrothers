@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.32.0 — 2026-10-17
+
+- **Ask page release 4: asking the guild is now part of Find a counter.**
+  - When the guild has no counter for the squad you searched, you can **ask the guild right there** (add a note if it helps). It goes to the counters channel in Discord as before.
+  - A new **Members asking for a counter** list sits under the finder. Tap **I know a counter** to add one with the enemy already filled in; cancel your own request any time.
+  - **You get told:** when an officer checks a counter for something you asked about, you're mentioned in Discord, and get a notification on your phone if you have notifications on.
+
 ## 1.31.0 — 2026-10-17
 
 - **Ask page release 3: a clearer counter card and an easier way to add one.**

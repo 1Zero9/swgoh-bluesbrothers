@@ -1,9 +1,11 @@
+import { after } from "next/server";
 import { getViewerAccess } from "@/lib/access-control";
-import { countRecentSubmissions, findMatchups, getMatchupDetail, knownUnitIds, submitMatchup } from "@/lib/knowledge/data";
+import { countRecentSubmissions, findMatchups, getMatchupDetail, knownUnitIds, submitMatchup, unitLabel } from "@/lib/knowledge/data";
 import { readinessFor } from "@/lib/knowledge/readiness";
-import { isMode } from "@/lib/knowledge/modes";
+import { isMode, MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import { canSubmit } from "@/lib/knowledge/permissions";
 import { validateSubmission } from "@/lib/knowledge/validate";
+import { logSearch } from "@/lib/blue/log";
 import { getPrisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +35,15 @@ export async function GET(request: Request) {
     defenderUnitId: params.get("unit") || undefined,
   }, access.playerId ?? null);
   const shown = hits.slice(0, 60);
+  const unit = params.get("unit");
+  if (unit && params.get("log") === "1" && access.playerId) {
+    const who = access.playerId;
+    const label = `${unitLabel(unit)}${mode ? ` · ${MODE_LABELS[mode as KbMode]}` : ""}`;
+    after(async () => {
+      const name = (await getPrisma().player.findUnique({ where: { id: who }, select: { currentName: true } }))?.currentName ?? "A member";
+      await logSearch({ playerId: who, playerName: name, term: label, found: shown.length > 0 });
+    });
+  }
   const readiness = await readinessFor(shown, access.playerId ?? null).catch(() => ({}));
   return Response.json({ ok: true, hits: shown.map((hit) => ({ ...hit, readiness: (readiness as Record<string, unknown>)[hit.id] ?? null })) }, { headers: NO_STORE });
 }
