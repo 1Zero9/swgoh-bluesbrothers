@@ -239,3 +239,13 @@ export async function createRequest(input: RequestInput, requester: { id: string
   }
   return { id: created.id, created: true, posted };
 }
+
+/** Take a call for help off the Wanted list. Only the member who asked, or an officer, and only while it is still open. */
+export async function closeRequest(id: string, viewer: { playerId: string | null; isOfficer: boolean }): Promise<{ ok: true } | { ok: false; error: string; status: number }> {
+  const db = getPrisma();
+  const row = await db.kbRequest.findUnique({ where: { id }, select: { status: true, requestedById: true } });
+  if (!row || row.status !== "OPEN") return { ok: false, error: "That request is already gone.", status: 404 };
+  if (!viewer.isOfficer && row.requestedById !== viewer.playerId) return { ok: false, error: "Only the person who asked, or an officer, can remove it.", status: 403 };
+  await db.kbRequest.update({ where: { id }, data: { status: "CLOSED" } });
+  return { ok: true };
+}

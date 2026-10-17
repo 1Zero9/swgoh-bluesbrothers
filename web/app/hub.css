@@ -1417,3 +1417,5 @@ html:is([data-theme="light"], [data-theme="rebel"]) .who-has-suggestions { backg
 .kb-notice button { border: 0; background: none; color: inherit; font-size: 20px; line-height: 1; cursor: pointer; opacity: 0.7; }
 .kb-notice button:hover { opacity: 1; }
 html .hub-main.is-inner .kb-form .kb-primary[type="submit"] { background: var(--ask) !important; border-color: var(--ask) !important; color: #fff !important; box-shadow: none; }
+.hub-main.is-inner .kb-wanted .kb-remove { border-color: var(--glass-line); background: transparent; color: var(--hub-muted); }
+.hub-main.is-inner .kb-wanted .kb-remove:hover { border-color: var(--hub-bad); color: var(--hub-bad); background: transparent; }

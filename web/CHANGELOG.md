@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.2.0 — 2026-10-17
+
+- **Take your own request off the Wanted list.** Requests you made ("asked by you") now have a **Remove** button instead of "I have one". It goes straight away and a green message confirms it. Only the person who asked, or an officer, can remove a request.
+
 ## 1.1.2 — 2026-10-17
 
 - **Asking the guild for a counter now finishes properly.** After you press Ask for help, the form closes and clears itself, and a green message says it was added to the Wanted list (it fades after a few seconds, or tap ×). Before, the form stayed open with the leader still typed in, which looked unfinished and invited a double send. The submit button is orange like the other calls to action.
