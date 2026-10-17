@@ -217,6 +217,7 @@ export default function ControlPanel({
           <ul className="hub-cpanel-grid is-officer">
             <li><Link href="/knowledge/review"><ClipboardCheck size={16} aria-hidden="true" />Review queue{reviewCount ? <i>{reviewCount}</i> : null}</Link></li>
             <li><Link href="/officer/announcement"><Megaphone size={16} aria-hidden="true" />Announcement</Link></li>
+            <li><Link href="/officer/member"><Users size={16} aria-hidden="true" />Member cards</Link></li>
             <li><Link href="/officer/roster"><Shield size={16} aria-hidden="true" />Roster report</Link></li>
             <li><Link href="/officer/discord-sync"><Sparkles size={16} aria-hidden="true" />Discord sync</Link></li>
           </ul>
