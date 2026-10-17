@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.33.0 — 2026-10-17
+
+- **The Guild and Operations pages now match the rest of the site**: the slim glass header, the same frosted link cards and your themed background, instead of the old tall banner. Operations still shows the live facts (war status, tickets today, guild power) on each card, and its Counters card now goes to Ask → Find a counter.
+
 ## 1.32.0 — 2026-10-17
 
 - **Ask page release 4: asking the guild is now part of Find a counter.**
