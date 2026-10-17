@@ -8,6 +8,8 @@ export type PresenceSummary = {
   game: { id: string; name: string; ago: string }[];
   /** Seen on the site in the last day but not right now. */
   recent: { id: string; name: string; ago: string }[];
+  /** Officers get a hint about how to switch on the Discord list. */
+  discordHint: boolean;
 };
 
 export async function touchPresence(playerId: string, name: string, path: string | null, hidden: boolean) {
@@ -29,7 +31,7 @@ async function discordOnline(): Promise<PresenceSummary["discord"]> {
   }
 }
 
-export async function presenceSummary(viewerId: string | null): Promise<PresenceSummary> {
+export async function presenceSummary(viewerId: string | null, isOfficer = false): Promise<PresenceSummary> {
   const db = getPrisma();
   const now = Date.now();
   const [rows, discord, gameRows, earlier] = await Promise.all([
@@ -52,5 +54,5 @@ export async function presenceSummary(viewerId: string | null): Promise<Presence
     .slice(0, 30)
     .map((row) => ({ id: row.id, name: row.name, ago: agoLabel(row.at, now) }));
   const recent = earlier.map((row) => ({ id: row.playerId, name: row.playerName, ago: agoLabel(row.lastSeenAt, now) }));
-  return { site, discord, game, recent };
+  return { site, discord, game, recent, discordHint: isOfficer && discord === null };
 }

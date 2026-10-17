@@ -116,9 +116,10 @@ export default function WhosOnline({ path, sample }: { path: string; sample?: Pr
                     <ul>{data.recent.map((p) => <li key={p.id}><span className="whos-dot" aria-hidden="true" />{p.name}<em>{p.ago}</em></li>)}</ul>
                   </section>
                 ) : null}
+                {data.discordHint ? <p className="whos-note"><strong>Officers:</strong> to see who is on Discord here, switch on Discord&apos;s server widget (Server Settings → Widget → Enable Server Widget). Nothing else to do.</p> : null}
                 <section>
-                  <h3>In the game recently <i>{data.game.length}</i></h3>
-                  {data.game.length ? <ul>{data.game.map((p) => <li key={p.id}><span className="whos-dot" aria-hidden="true" />{p.name}<em>{p.ago}</em></li>)}</ul> : <p className="whos-note">No one reported in the last few hours. This comes from the game&apos;s own data, so it can lag a little.</p>}
+                  <h3>Last seen in the game <i>{data.game.length}</i></h3>
+                  {data.game.length ? <ul>{data.game.map((p) => <li key={p.id}><span className="whos-dot" aria-hidden="true" />{p.name}<em>{p.ago}</em></li>)}</ul> : <p className="whos-note">Nobody has been active in the game in the last day. This comes from the game&apos;s own data, which is refreshed hourly, so it can lag a little.</p>}
                 </section>
               </>
             )}

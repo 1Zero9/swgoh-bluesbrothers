@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const path = typeof body?.path === "string" && body.path.startsWith("/") ? body.path.split("?")[0].slice(0, 120) : null;
   try {
     await touchPresence(access.playerId, access.playerName ?? "Member", path, body?.hidden === true);
-    return Response.json({ ok: true, ...(await presenceSummary(access.playerId)) }, { headers: NO_STORE });
+    return Response.json({ ok: true, ...(await presenceSummary(access.playerId, access.isOfficer)) }, { headers: NO_STORE });
   } catch (error) {
     console.error("presence: failed", error instanceof Error ? error.message : "unknown");
     return Response.json({ ok: false }, { status: 500, headers: NO_STORE });
