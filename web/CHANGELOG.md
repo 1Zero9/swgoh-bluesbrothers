@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.7.0 — 2026-10-17
+
+- **Member cards for officers.** New page **Officers → Member cards**: search the roster, open anyone, and get one card that pulls everything together.
+  - **The verdict first:** "Pillar of the band", "Pulling their weight" or "Needs a nudge", then **What they bring** (top third for power, Galactic Legends, relic units, all raids joined, tickets on target, growing, long-standing, shares counters and tips) and **Keep an eye on** (quiet for days, low tickets, missed raids, skipped the war, power down or well below average, old roster data).
+  - **Then the detail:** power with rank, the guild average and a trend line; the roster (legends, relic units, Relic 9, 7★, ultimates, datacrons); raid tickets and the last few raids with rank and damage, and the current war; their contribution (counters added and used, tips, ideas, feedback, upgrades in 30 days); and recent activity.
+- Officers only. Linked from the control panel's Officers tab and the Officers menu.
+
 ## 1.6.1 — 2026-10-17
 
 - **Feedback moved up the menu,** to sit right under Guild chat at the top, so it is always in view. It is no longer inside the Guild group.

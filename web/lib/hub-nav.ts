@@ -82,6 +82,7 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     links: [
       { label: "Review queue", href: "/knowledge/review", officerOnly: true },
       { label: "Announcement", href: "/officer/announcement", officerOnly: true },
+      { label: "Member cards", href: "/officer/member", officerOnly: true },
       { label: "Roster report", href: "/officer/roster", officerOnly: true },
       { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true },
     ],

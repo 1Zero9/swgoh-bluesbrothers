@@ -6,6 +6,8 @@ import HubPage, { HubHeader } from "@/app/hub-page";
 import FeedbackBoard from "@/app/feedback/feedback-board";
 import CountersClient from "@/app/counters/counters-client";
 import ActivityFeed from "@/app/activity/activity-feed";
+import MemberCard from "@/app/officer/member/[id]/member-card";
+import { assessPlayer } from "@/lib/player-assessment";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -22,6 +24,19 @@ const FB_SAMPLE = [
 
 const ACT_SAMPLE = [["Teepeeteet","promoted Gungan Phalanx to 7-Star","stars","17h"],["Teepeeteet","applied a Zeta upgrade to Boss of Otoh Gunga","gear","17h"],["Bro","promoted Snowtrooper Commander to 7-Star","stars","17h"],["TolkenSolo","promoted Brutus to 7-Star","stars","14h"],["Jim","increased Ben Solo's gear to level XIII","gear","12h"],["Dex","took Jedi Master Kenobi to Relic 9","relics","9h"],["Steve","unlocked Lord Vader: their 4th Galactic Legend","legends","2d"]].map(([who, text, group, ago], i) => ({ id: String(i), who, text, tag: "", tier: group === "legends" || group === "relics" ? "headline" as const : "standard" as const, group: group as "stars", ago, at: "2026-10-16T10:00:00Z" }));
 
+const CARD_SAMPLE = {
+  playerId: "x", name: "Dex", role: "OFFICER", level: 85, joinedAt: "2026-02-10T10:00:00Z", tenureDays: 249, discordLinked: true, lastActivityAt: new Date(Date.now() - 5 * 3600_000).toISOString(),
+  power: { galacticPower: "11100000", characterPower: "9800000", shipPower: "1300000", rank: 6, members: 50, averageGp: "9800000", changePct: 4.2, history: [10.2, 10.3, 10.3, 10.6, 10.7, 10.9, 11.1].map((v) => v * 1e6) },
+  roster: { galacticLegends: 9, relicUnits: 41, datacrons: 28, sevenStars: 190, ultimates: 3, relic9: 12 },
+  tickets: { now: 600, target: 600, average: 540 },
+  raids: [{ label: "Krayt Dragon", joined: true, damage: 4200000, rank: 4, of: 46 }, { label: "Krayt Dragon", joined: true, damage: 3900000, rank: 7, of: 45 }, { label: "Rancor", joined: false, damage: null, rank: null, of: 44 }],
+  war: { joined: true, label: "vs Immortal Hungarians" },
+  contribution: { countersAdded: 3, countersUsed: 5, tipsPublished: 2, ideasPublished: 1, feedbackPosts: 2, wins30d: 14 },
+  recent: [{ text: "took Jedi Master Kenobi to Relic 9", at: new Date(Date.now() - 9 * 3600_000).toISOString() }, { text: "promoted Gungan Phalanx to 7-Star", at: new Date(Date.now() - 30 * 3600_000).toISOString() }],
+  flags: [], profileSyncedAt: new Date(Date.now() - 20 * 3600_000).toISOString(),
+  assessment: assessPlayer({ gpRank: 6, members: 50, galacticPower: 11.1e6, averageGp: 9.8e6, gpChange: 0.042, galacticLegends: 9, relicUnits: 41, raidTickets: 600, ticketTarget: 600, hoursSinceActive: 5, tenureDays: 249, raidsJoined: 2, raidsTotal: 3, joinedWar: true, wins30d: 14, countersAdded: 3, tipsPublished: 3, profileStale: false }),
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -33,6 +48,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;
   if (screen === "counters") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Saved squads" title="Know the counter. Know who can run it." intro="Pick an enemy squad's leader and see the counters the guild trusts, whether you can run them, and who can. Anyone can add one." /><CountersClient aside={<aside className="kb-side kb-ask-side"><h3>Not on the list?</h3><p>Ask B-Lue3. He checks what the guild has saved first, then searches the web for current counters.</p><span className="kb-ask-link">Ask B-Lue3 →</span></aside>} /></HubPage>;
   if (screen === "activity") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Guild" title="Guild activity" intro="Star promotions, gear, relics and unlocks across the guild, newest first."><span className="hub-pagehead-link">The Wins →</span></HubHeader><ActivityFeed items={ACT_SAMPLE} /></HubPage>;
+  if (screen === "member") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Dex"><span className="hub-pagehead-link">← All members</span></HubHeader><MemberCard card={CARD_SAMPLE} /></HubPage>;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
