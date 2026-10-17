@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.31.0 — 2026-10-17
+
+- **Ask page release 3: a clearer counter card and an easier way to add one.**
+  - **The counter card** now leads with the answer: **Use** (your squad to bring, highlighted) first, then **Against** (who you face), then the how-to, which folds to three lines with **Read more**. A green **You can run this** or an orange **Not yet** (and exactly what you still need, like "Admiral Piett: R3 → R5") shows at the top, worked out from your own roster. "I use this" and the sources sit in a quiet footer.
+  - **Adding a counter is four short steps:** 1) who are you facing (mode pills and the enemy squad), 2) what beats it, 3) how you run it, 4) how you know it works (four plain choices: I beat it with this, I saw it done, I read it, untested idea). Squads are rows of chips filled from one search box, and **your own strongest units** are one tap away under "From your roster". Opening moves, Datacron dates and links are tucked under "More detail". The Send button waits until both squads are full and you have said how to run it, and says what is missing.
+  - Officers still check every counter before others see it.
+
 ## 1.30.1 — 2026-10-17
 
 - **The old Saved squads link now redirects properly** (a real server redirect to Ask → Find a counter), so bookmarks and shared links land without a blank flash.
