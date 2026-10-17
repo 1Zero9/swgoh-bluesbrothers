@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
+import HubFold from "@/app/hub-fold";
+import HubPage, { HubLinks } from "@/app/hub-page";
 import CheckStats from "@/app/check-stats";
 import { getDiscordUrl } from "@/lib/discord";
 import type { NewsItem } from "@/lib/news";
@@ -19,21 +21,40 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
 
   return (
     <HubPage backdrop="themed" inner>
-      <HubHeader eyebrow="Star Wars: Galaxy of Heroes guild" title={<>The Blues Brothers. On a mission from the Force.</>} intro="A friendly, active guild that turns up for Territory War, Territory Battles and raids, and has fun doing it.">
+      <div className="pub-brandbar">
+        <Link href="/" className="hub-brandbar-id" aria-label="Blues Brothers home">
+          <Image src="/bb-emblem.webp" alt="" width={40} height={40} priority />
+          <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
+        </Link>
+        <a className="pub-signin" href="/api/auth/discord">Sign in</a>
+      </div>
+
+      <section className="pub-hero" aria-label="The Blues Brothers">
+        <Image src="/bb-cosmic.webp" alt="Blues Brothers: the brothers beside a hovering police car, with a glowing planet behind them" width={1800} height={583} priority sizes="(min-width: 1024px) 1300px, 100vw" />
+      </section>
+
+      <header className="pub-intro">
+        <p className="hub-eyebrow">Star Wars: Galaxy of Heroes guild</p>
+        <h1>On a mission from the Force.</h1>
+        <p>A friendly, active guild that turns up for Territory War, Territory Battles and raids, and has fun doing it.</p>
+      </header>
+
+      <div className="pub-cta">
         <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
-        <a className="hub-pagehead-link" href="#join">Thinking of joining? →</a>
-      </HubHeader>
+        <a className="pub-cta-alt" href="#join">Thinking of joining?</a>
+      </div>
       {notice}
-      <div className="intel-summary">
+      <div className="intel-summary pub-stats">
         <div><strong>{data.live ? data.members : "—"}<span>/{data.capacity}</span></strong><small>members</small></div>
         <div><strong>{data.live ? millions(data.guildPower) : "—"}</strong><small>guild power</small></div>
-        <div><strong>{data.live ? data.galacticLegends : "—"}</strong><small>Galactic Legends</small></div>
+        <div><strong>{data.live ? data.galacticLegends : "—"}</strong><small>Legends</small></div>
         <div><strong>{full ? "Full" : data.spaces}</strong><small>{full ? "ask about a space" : data.spaces === 1 ? "space open" : "spaces open"}</small></div>
       </div>
 
       {linking ? <section className="public-block">{linking}</section> : null}
 
-      <section className="public-block" id="join">
+      <HubFold title="Join us" summary={`What we ask: ${JOIN_REQUIREMENTS.minGalacticPower / 1_000_000}M+ GP, ${JOIN_REQUIREMENTS.minGalacticLegends}+ Galactic Legends. ${full ? "We are full, ask about a space." : "Spaces open."}`} defaultOpen>
+        <section className="public-block" id="join">
         <header>
           <p className="eyebrow">Join us</p>
           <h2>What we ask. How to get in.</h2>
@@ -51,8 +72,10 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
         </ol>
         <p><a className="btn-discord-gate" href={discordUrl} target="_blank" rel="noreferrer">Join our Discord</a></p>
       </section>
+      </HubFold>
 
-      <section className="public-block" id="check-stats">
+      <HubFold title="Check your stats" summary={"Would you fit? Enter your ally code. Nothing is saved."}>
+        <section className="public-block" id="check-stats">
         <header>
           <p className="eyebrow">Check your stats</p>
           <h2>Would you fit?</h2>
@@ -60,8 +83,10 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
         </header>
         <CheckStats />
       </section>
+      </HubFold>
 
-      <section className="public-block" id="record">
+      <HubFold title="How we get on" summary={data.tw.recent.length ? `${data.tw.wins} TW wins · ${data.tw.losses} losses` : "War results appear here"}>
+        <section className="public-block" id="record">
         <header>
           <p className="eyebrow">The record</p>
           <h2>How we get on</h2>
@@ -94,8 +119,10 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
           </>
         ) : null}
       </section>
+      </HubFold>
 
       {news.length ? (
+        <HubFold title="Star Wars news" summary={"What is happening in the galaxy"}>
         <section className="public-block" id="news">
           <header>
             <p className="eyebrow">Star Wars news</p>
@@ -111,9 +138,11 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
           </ul>
           <p className="news-credit">Headlines via Google News, linking to the original outlets.</p>
         </section>
+      </HubFold>
       ) : null}
 
-      <section className="public-block" id="guides">
+      <HubFold title="Field guides" summary={"New here? Plain-English guides, open to everyone"}>
+        <section className="public-block" id="guides">
         <header>
           <p className="eyebrow">Field guides</p>
           <h2>New here? Start with these.</h2>
@@ -121,6 +150,7 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
         </header>
         <p><Link className="btn-discord-gate" href="/guides">Read the field guides</Link></p>
       </section>
+      </HubFold>
 
       <HubLinks message="Already in the guild? Sign in with Discord to see the members' area.">
         <Link href="/guides">Field guides →</Link>
