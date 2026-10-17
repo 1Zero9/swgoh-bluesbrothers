@@ -3,7 +3,6 @@ import MembersOnly from "@/app/members-only";
 import { getViewerAccess } from "@/lib/access-control";
 import { enabledChatChannels } from "@/lib/chat-config";
 import HomeChat from "@/app/home-chat";
-import Image from "next/image";
 import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getDiscordUrl } from "@/lib/discord";
@@ -20,8 +19,7 @@ import PhoneFold from "@/app/phone-fold";
 import WelcomeBanner from "@/app/welcome-banner";
 import { buildWelcome } from "@/lib/welcome";
 import QuickLaunch from "@/app/quick-launch";
-import WorldClocks from "@/app/world-clocks";
-import SiteHeader, { APP_VERSION } from "@/app/site-header";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import WallOfFameBoard from "@/app/wall-of-fame-board";
 
 const WIRE_SHOWN = 3;
@@ -90,34 +88,9 @@ export default async function Overview() {
     ? `Comlink connected · Last capture ${formatRelativeTime(summary.capturedAt)}`
     : "Awaiting first Comlink sync";
   return (
-    <main className="app-shell">
-      <SiteHeader syncLabel={syncLabel} />
-      <section className="workspace" id="top">
-        <section className="hero hero-compact" id="command-centre" aria-labelledby="mission-heading">
-          <Image
-            className="hero-image"
-            src="/bb-title.webp"
-            alt="The Blues Brothers outside their cantina in a desert spaceport"
-            fill
-            priority
-            sizes="(max-width: 760px) 100vw, calc(100vw - 246px)"
-          />
-          <div className="hero-shade" />
-          <div className="hero-copy">
-            <div className="hero-status"><span><i /> {heroStatusLabel}</span><time>{heroStatusDate}</time></div>
-            <WorldClocks />
-            <p className="eyebrow">The roster. The plan. The next mission.</p>
-            <h1 id="mission-heading">On a mission<br /><em>from the Force.</em></h1>
-            <p>Live guild data comes in. Clear officer actions and mission calls go straight out to the band in Discord.</p>
-            <div className="hero-actions">
-              {isOfficer
-                ? <a className="primary-action" href="#administration">Review officer actions</a>
-                : <Link className="primary-action" href="/me">Open my page</Link>}
-              <Link className="secondary-action" href="/members">View guild roster <span>→</span></Link>
-            </div>
-          </div>
-        </section>
-
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild" title="Overview" intro="Guild health, the Guild Wire, legends and the watchlist, and who has just joined." meta={syncLabel} />
+      <div className="hub-overview">
         <div className="dashboard-content home-launch">
           {memberContext.status === "linked" ? (
             <Link className={`personal-strip${memberContext.player.onWallOfShame ? " needs-checkin" : ""}`} href="/me">
@@ -346,15 +319,11 @@ export default async function Overview() {
           </section>
         </div>
 
-        <footer>
-          <div className="footer-left">
-            <span>Blues Brothers Droid · Guild command {APP_VERSION}</span>
-            <BuiltByBadge />
-          </div>
-          <span className="footer-links"><Link href="/operations">Operations</Link><Link href="/members">Members</Link><Link href="/cantina">Cantina</Link><Link href="/dougies-discs">Dougie&apos;s Discs</Link><Link href="/credits">Sources &amp; credits</Link></span>
-        </footer>
+        <HubLinks message="Live guild data from Comlink and the Discord announcements.">
+          <Link href="/operations">Operations</Link><Link href="/members">Roster</Link><Link href="/credits">Sources &amp; credits</Link>
+        </HubLinks>
         </div>
-      </section>
-    </main>
+      </div>
+    </HubPage>
   );
 }

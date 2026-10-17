@@ -2157,3 +2157,37 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
   .hub-brandbar .hub-mypage-icon { position: static; flex: none; }
   .hub-dash-head { padding-right: 0; }
 }
+
+/* ---------- Overview on the inner-page template ---------- */
+.hub-overview .dashboard-content { max-width: none; width: 100%; margin: 0; padding: 0; display: grid; gap: 16px; }
+.hub-overview .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 0; }
+.hub-overview .metric-card, .hub-overview .wire-feed, .hub-overview .discord-handoff, .hub-overview .standing-panel, .hub-overview .panel, .hub-overview .section-block, .hub-overview .personal-strip, .hub-overview .home-chat-wrap > *, .hub-overview .welcome-banner { background: var(--glass); border: 1px solid var(--glass-line); border-radius: 16px; box-shadow: none; color: var(--hub-text); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); }
+.hub-overview .section-block { padding: 0; border: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.hub-overview .metric-card { padding: 14px 18px; transition: border-color 0.18s, box-shadow 0.18s; }
+.hub-overview .metric-card:hover, .hub-overview .standing-panel:hover, .hub-overview .wire-feed:hover { border-color: var(--hub-accent); box-shadow: 0 0 0 1px var(--hub-accent), 0 0 22px rgba(103, 199, 245, 0.18); }
+.hub-overview .metric-head span, .hub-overview .metric-card p, .hub-overview .metric-card small, .hub-overview .wire-intro, .hub-overview .wire-meta, .hub-overview .standing-copy, .hub-overview .panel-intro, .hub-overview .standing-panel-head p, .hub-overview .empty-copy, .hub-overview .standing-member small, .hub-overview .standing-value small { color: var(--hub-muted); }
+.hub-overview .metric-card strong, .hub-overview h2, .hub-overview h3, .hub-overview .standing-member strong, .hub-overview .standing-value strong, .hub-overview .wire-item p, .hub-overview .wire-meta span, .hub-overview .discord-handoff strong { color: var(--hub-text); }
+.hub-overview .nav-mark { border: 1px solid var(--glass-line); background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-overview .progress-track { background: rgba(128, 150, 180, 0.22); }
+.hub-overview .progress-track i { background: var(--ask); }
+.hub-overview .guild-wire { display: grid; gap: 14px; grid-template-columns: minmax(0, 1.6fr) minmax(220px, 1fr); align-items: start; }
+@media (max-width: 899.98px) { .hub-overview .guild-wire { grid-template-columns: minmax(0, 1fr); } }
+.hub-overview .wire-feed, .hub-overview .discord-handoff, .hub-overview .standing-panel, .hub-overview .panel { padding: 16px 18px; }
+.hub-overview .wire-item, .hub-overview .welcome-member-profile { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); border-radius: 12px; color: var(--hub-text); }
+.hub-overview .wire-icon, .hub-overview .standing-symbol { background: rgba(var(--ask-rgb), 0.18); color: var(--ask-text); }
+.hub-overview .standings-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.hub-overview .discord-open { background: var(--ask); color: #fff; border: 0; border-radius: 999px; padding: 9px 16px; text-decoration: none; font-weight: 700; display: inline-block; }
+.hub-overview .eyebrow { color: var(--hub-accent); }
+.hub-overview .wire-sync { color: var(--hub-muted); }
+.hub-overview .live-pill { font-weight: 700; }
+.hub-overview .officer-roster-link, .hub-overview a:not(.standing-list a):not(.discord-open):not(.personal-strip) { color: var(--hub-accent); }
+.hub-overview .officer-desk { border-top: 1px solid var(--glass-line) !important; }
+.hub-overview .personal-strip { padding: 12px 16px; }
+.hub-overview .metric-card { padding: 12px 16px; min-height: 0; }
+.hub-overview .metric-card p { margin: 4px 0 0; }
+.hub-overview .discord-open { display: block; text-align: center; }
+.hub-overview .standing-panel { min-height: 0; }
+.hub-overview .standing-panel-head { margin-bottom: 8px; }
+.hub-overview .guild-wire, .hub-overview .section-block { margin: 0 !important; }
+.hub-overview .wire-item { margin: 0; }
+@media (max-width: 759.98px) { .hub-overview .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hub-overview .metric-card { padding: 10px 12px; } }

@@ -174,6 +174,27 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <div className="hub-mission"><MissionGame /></div>
     </HubPage>
   );
+  if (screen === "overview") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild" title="Overview" intro="Guild health, the Guild Wire, legends and the watchlist, and who has just joined." meta="Comlink connected · Last capture 2h ago" />
+      <div className="hub-overview"><div className="dashboard-content">
+        <section className="metric-grid">
+          <article className="metric-card"><div className="metric-head"><span>Active members</span><span className="nav-mark">MB</span></div><strong>49<small>/50</small></strong><p>1 place available</p></article>
+          <article className="metric-card"><div className="metric-head"><span>Guild power</span><span className="nav-mark">GP</span></div><strong>1.31<small>B</small></strong><p>Across the roster</p></article>
+          <article className="metric-card"><div className="metric-head"><span>Daily tickets</span><span className="nav-mark">TK</span></div><strong>2,430</strong><div className="progress-track"><i style={{ width: "8%" }} /></div></article>
+          <article className="metric-card"><div className="metric-head"><span>Needs attention</span><span className="nav-mark">!</span></div><strong>3</strong><p>Members to check in</p></article>
+        </section>
+        <section className="guild-wire"><div className="wire-feed"><div className="wire-head"><div><p className="eyebrow">Guild communications</p><h2>The Guild Wire</h2></div><span className="wire-sync"><i /> Website + Discord</span></div><p className="wire-intro">Guild news lives here. The same membership announcements are sent into Discord.</p>
+          <div className="wire-list"><article className="wire-item"><span className="wire-icon">+</span><div><div className="wire-meta"><span>Welcome, Brian</span><time>2h ago</time></div><p>Joined the band at 7.9M GP.</p></div></article></div></div>
+          <aside className="discord-handoff"><div className="discord-handoff-head"><span className="discord-glyph">◈</span><div><p>Discord</p><strong>Prefer the app?</strong></div></div><a className="discord-open" href="#">Open Discord <span>→</span></a></aside></section>
+        <section className="section-block standings-section"><div className="standings-grid">
+          <section className="standing-panel fame-panel"><header className="standing-panel-head"><div><span className="standing-symbol">★</span><p>Cantina legends</p><h3>Wall of Fame</h3></div></header><p className="standing-copy">Guild leaderboards across power, tickets and roster depth.</p><ol className="standing-list"><li><a href="#"><span className="standing-rank">1</span><span className="standing-avatar">D</span><span className="standing-member"><strong>Dex</strong><small>Top power</small></span><span className="standing-value"><strong>11.1M</strong><small>GP</small></span></a></li></ol></section>
+          <section className="standing-panel watch-panel"><header className="standing-panel-head"><div><span className="standing-symbol">!</span><p>Officer watchlist</p><h3>Needs a check-in</h3></div></header><p className="standing-copy">A practical shortlist, not a permanent label.</p></section>
+        </div></section>
+      </div></div>
+      <HubLinks message="Live guild data from Comlink and the Discord announcements."><span>Operations</span></HubLinks>
+    </HubPage>
+  );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
