@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HubPage, { HubHeader } from "@/app/hub-page";
+import RefreshButton from "@/app/refresh-button";
 import { getDiscordUrl } from "@/lib/discord";
 
 export const metadata: Metadata = {
@@ -33,13 +34,14 @@ export default function SignInHelpPage() {
         <section className="help-box">
           <h2>If something goes wrong</h2>
           <ul>
-            <li><strong>Discord just won't work for you:</strong> ask an officer for a personal sign-in link. They send it to you privately, you tap it once, and you are in with no Discord needed.</li>
+            <li><strong>Discord just won&apos;t work for you:</strong> ask an officer for a personal sign-in link. They send it to you privately, you tap it once, and you are in with no Discord needed.</li>
             <li><strong>A blank or white screen:</strong> close it, open the site again in Safari or Chrome, and tap Sign in once.</li>
             <li><strong>Discord asks for a password or an emailed code:</strong> that is Discord&apos;s own sign-in. If you use the emailed code, check the account name it shows afterwards is the right one.</li>
             <li><strong>You ended up on the wrong Discord account:</strong> sign out of Discord in the browser, or tap &quot;Not you?&quot; on the Discord screen, and try again.</li>
             <li><strong>Your Discord name is different from your game name:</strong> that is fine. The ally code step matches you.</li>
           </ul>
           <p><a className="btn-discord-gate" href="/api/auth/discord">Try signing in</a></p>
+          <p><RefreshButton label="Page stuck? Refresh the site" /></p>
           <p>Still stuck? <a href={discordUrl} target="_blank" rel="noreferrer">Message an officer in the Discord</a>. We would rather help than have you give up.</p>
         </section>
       </div>

@@ -9,6 +9,7 @@ import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor
 import { parsePins, pinnedLinks, togglePin } from "@/lib/nav-pins";
 import BlueFloat from "./blue-float";
 import VisitBeacon from "./visit-beacon";
+import RefreshButton from "./refresh-button";
 import WhosOnline, { WhosOnlineInline } from "./whos-online";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
@@ -137,6 +138,7 @@ export default function HubNav() {
         </nav>
         <div className="hub-side-foot">
           <WhosOnline path={pathname} sample={isPreview ? PREVIEW_PRESENCE : undefined} />
+          <RefreshButton label="Refresh the site" />
           <p>{viewer?.name ?? (isPreview ? "Steve" : "Signed in")}</p>
           <ThemeToggle />
         </div>

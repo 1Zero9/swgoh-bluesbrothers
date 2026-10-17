@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import RefreshButton from "@/app/refresh-button";
 import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getViewerAccess } from "@/lib/access-control";
 import { getDiscordUrl } from "@/lib/discord";
@@ -32,7 +33,7 @@ export default async function GigInSessionPage() {
 
   return (
     <HubPage backdrop="themed" inner>
-      <HubHeader eyebrow="Blues Brothers Cantina · Restricted access" title="The Gig is In Session. Crew access only." intro="Behind these doors the guild coordinates live Territory Wars, tracks seasonal Datacron super-weapons and tunes up combat rosters. Present your credentials to enter." />
+      <HubHeader eyebrow="Blues Brothers Cantina · Restricted access" title="The Gig is In Session. Crew access only." intro="Behind these doors the guild coordinates live Territory Wars, tracks seasonal Datacron super-weapons and tunes up combat rosters. Present your credentials to enter."><RefreshButton label="Refresh" /></HubHeader>
 
       <figure className="gig-door-pic">
         <Image src="/gig-in-session.png" alt="Droid bouncer in fedora and sunglasses guarding the entrance under The Gig is in Session neon sign" width={1983} height={793} priority sizes="(min-width: 1024px) 1100px, 100vw" />
