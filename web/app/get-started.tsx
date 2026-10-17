@@ -7,10 +7,18 @@ import ControlPanel from "./control-panel";
 import type { MySquads } from "@/lib/my-squads";
 
 type Step = { key: string; title: string; hint: string; href: string };
-type Saved = { done: string[]; hidden: boolean; folded: boolean };
+type Saved = { done: string[]; hidden: boolean; folded: boolean | null };
 
 const STORAGE_KEY = "bb-get-started";
 const CHANGE_EVENT = "bb-get-started-change";
+
+const PHONE_QUERY = "(max-width: 759.98px)";
+function readPhone() { return window.matchMedia(PHONE_QUERY).matches; }
+function subscribePhone(onChange: () => void) {
+  const list = window.matchMedia(PHONE_QUERY);
+  list.addEventListener("change", onChange);
+  return () => list.removeEventListener("change", onChange);
+}
 
 function readRaw() {
   try { return window.localStorage.getItem(STORAGE_KEY) ?? ""; } catch { return ""; }
@@ -28,9 +36,9 @@ function subscribe(onChange: () => void) {
 function parse(raw: string): Saved {
   try {
     const value = JSON.parse(raw || "{}") as Partial<Saved>;
-    return { done: Array.isArray(value.done) ? value.done : [], hidden: value.hidden === true, folded: value.folded === true };
+    return { done: Array.isArray(value.done) ? value.done : [], hidden: value.hidden === true, folded: typeof value.folded === "boolean" ? value.folded : null };
   } catch {
-    return { done: [], hidden: false, folded: false };
+    return { done: [], hidden: false, folded: null };
   }
 }
 
@@ -44,9 +52,13 @@ export type PanelInfo = { name: string | null; standing: string | null; checkIn:
 
 export default function GetStarted({ linked, steps, compact = false, panel, alert = false }: { linked: boolean; steps: Step[]; compact?: boolean; panel?: PanelInfo; alert?: boolean }) {
   const raw = useSyncExternalStore(subscribe, readRaw, () => "");
-  const { done, hidden, folded } = parse(raw);
+  const saved = parse(raw);
+  const { done, hidden } = saved;
+  const isPhone = useSyncExternalStore(subscribePhone, readPhone, () => false);
+  /** Until you choose, the panel starts open on a laptop and as the small button on a phone. */
+  const folded = saved.folded ?? isPhone;
 
-  function save(nextDone: string[], nextHidden: boolean, nextFolded = folded) {
+  function save(nextDone: string[], nextHidden: boolean, nextFolded: boolean = folded) {
     write({ done: nextDone, hidden: nextHidden, folded: nextFolded });
   }
 

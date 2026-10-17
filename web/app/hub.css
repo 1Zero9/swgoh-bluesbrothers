@@ -1465,3 +1465,22 @@ html .hub-main.is-inner .kb-form .kb-primary[type="submit"] { background: var(--
 .fb-delete { display: inline-flex; align-items: center; gap: 6px; color: var(--hub-muted); }
 .fb-delete:hover { border-color: var(--hub-bad); color: var(--hub-bad); }
 @media (max-width: 559.98px) { .fb-item { grid-template-columns: auto minmax(0, 1fr); } .fb-vote { grid-column: 2; grid-auto-flow: column; justify-self: start; align-items: center; gap: 8px; } }
+
+/* Phones: a slim new-player line instead of a tall card, so Ask B-Lue3 is near the top. */
+@media (max-width: 759.98px) {
+  .hub-dash .hub-newbar { gap: 6px; padding: 10px 12px; }
+  .hub-newbar-head { gap: 10px; }
+  .hub-newbar-head > svg { display: none; }
+  .hub-newbar-head small { display: none; }
+  .hub-newbar-head h2 { margin: 0; font-size: 15px; }
+  .hub-newbar-hello { padding: 6px 12px; font-size: 12.5px; }
+  .hub-newbar-people { flex-wrap: nowrap; overflow-x: auto; gap: 6px; scrollbar-width: none; }
+  .hub-newbar-people li { flex: none; min-width: 0; padding: 4px 12px 4px 4px; gap: 7px; }
+  .hub-newbar-people li small { display: none; }
+  .hub-newbar-people strong { font-size: 13px; }
+  .hub-newbar-avatar { width: 26px; height: 26px; font-size: 10px; border-width: 1.5px; }
+  .hub-dash-head { gap: 6px 14px; }
+  .hub-dash .hub-home-greeting { font-size: 22px; }
+  .hub-dash .hub-glance { gap: 2px 16px; font-size: 12.5px; }
+  .hub-dash .hub-glance strong { font-size: 15px; }
+}
