@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.26.0 — 2026-10-17
+
+- **Favourites in the laptop menu.** The items under Home (My page, Ask B-Lue3, Guild chat, Feedback) stay fixed. Every other page now has a **star** that shows when you point at it: click it and the page is pinned to a **Favourites** list right under the fixed items; click the filled star (in Favourites or in its own group) to unpin. Your favourites are kept on that device, in the order you pinned them. Officer pages can only be pinned by officers.
+
 ## 1.25.0 — 2026-10-17
 
 - **Guardrails on B-Lue3.**
