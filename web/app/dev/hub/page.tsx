@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
+import { launchRows } from "@/lib/launch-check";
 import { DEFAULT_ANNOUNCEMENT } from "@/lib/announcement";
 import { buildStatusRow } from "@/lib/home-status";
 import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
@@ -82,6 +83,16 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (process.env.NODE_ENV === "production") notFound();
   const { screen } = await searchParams;
   if (screen === "welcome") return <LinkWelcome discordUsername="steve_c" discordUrl="https://discord.gg/example" preview />;
+  if (screen === "launch") {
+    const groups = launchRows({ blueAi: true, webSearch: false, published: 4, candidates: 9, savedWaiting: 22, tips: 0, ideas: 1, openRequests: 2, activeMembers: 50, discordLinked: 38, seenThisWeek: 11, helpWaiting: 1, botConfigured: true, countersWebhook: true, officerWebhook: false, discordWidget: false });
+    const mark = { good: "✓", warn: "!", bad: "✕" } as const;
+    return (
+      <HubPage backdrop="themed" inner>
+        <HubHeader eyebrow="Officers" title="Launch checklist" intro="What members will find on day one, and what is still missing." />
+        <div className="launch-groups">{groups.map((g) => (<section key={g.group} className="help-box"><h2>{g.group}</h2><ul className="launch-rows">{g.rows.map((r) => (<li key={r.label} className={`is-${r.tone}`}><span className="launch-mark">{mark[r.tone]}</span><div><strong>{r.label}: {r.value}</strong><p>{r.detail}</p></div></li>))}</ul></section>))}</div>
+      </HubPage>
+    );
+  }
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;

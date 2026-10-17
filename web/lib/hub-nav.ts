@@ -82,6 +82,7 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     links: [
       { label: "Review queue", href: "/knowledge/review", officerOnly: true },
       { label: "Announcement", href: "/officer/announcement", officerOnly: true },
+      { label: "Launch checklist", href: "/officer/launch", officerOnly: true },
       { label: "Sign-in links", href: "/officer/signin-link", officerOnly: true },
       { label: "Member cards", href: "/officer/member", officerOnly: true },
       { label: "Roster report", href: "/officer/roster", officerOnly: true },
@@ -116,6 +117,6 @@ export const DOCK_MENUS: Partial<Record<HubSectionKey, DockMenu[]>> = {
   more: [
     { title: "You", links: [{ label: "My page", href: "/me" }, { label: "Feedback", href: "/feedback" }, { label: "Notifications", href: "/more" }] },
     { title: "Off duty", links: [{ label: "Dougie's Discs", href: "/dougies-discs" }, { label: "Soul Food Cantina", href: "/cantina" }, { label: "Mission From God", href: "/mission-from-god" }] },
-    { title: "Officers", links: [{ label: "Review queue", href: "/knowledge/review", officerOnly: true }, { label: "Announcement", href: "/officer/announcement", officerOnly: true }, { label: "Sign-in links", href: "/officer/signin-link", officerOnly: true }, { label: "Member cards", href: "/officer/member", officerOnly: true }, { label: "Roster report", href: "/officer/roster", officerOnly: true }, { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true }] },
+    { title: "Officers", links: [{ label: "Review queue", href: "/knowledge/review", officerOnly: true }, { label: "Announcement", href: "/officer/announcement", officerOnly: true }, { label: "Launch checklist", href: "/officer/launch", officerOnly: true }, { label: "Sign-in links", href: "/officer/signin-link", officerOnly: true }, { label: "Member cards", href: "/officer/member", officerOnly: true }, { label: "Roster report", href: "/officer/roster", officerOnly: true }, { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true }] },
   ],
 };

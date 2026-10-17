@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.42.0 — 2026-10-18
+
+- **A Launch checklist for officers** (Officers → Launch checklist, or `/officer/launch`) showing the live numbers behind day one: whether B-Lue3's AI and web search are on, how many counters members can actually find, how many are waiting for review or still to import from Saved squads, tips and ideas published, how many members have signed in this week and linked Discord, anyone waiting on "Help me, Obi-Wan", and which Discord channels and widget are set up. Each line is green, amber or red, says what it means in plain words and links to where to fix it.
+
 ## 1.41.2 — 2026-10-18
 
 - **Who's online: the other two lists are more useful.**
