@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.24.1 — 2026-10-17
+
+- **B-Lue3's pop-up is easy to read.** When you tap B-Lue3, the page behind now dims and blurs, and the pop-up is a solid card with an orange edge and an orange Ask button (dark on Deep and Classic, white on Rebel). Before, the page's words showed through it.
+
 ## 1.24.0 — 2026-10-17
 
 - **The officer pages on the new look.** The roster report, Discord sync and the review queue use the slim header and themed picture instead of tall banners, and the same glass frames.
