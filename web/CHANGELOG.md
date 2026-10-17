@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.27.1 — 2026-10-17
+
+- **Quieter server logs.** The database connection now states its security mode outright (the same one it was already using), so the driver's repeated "SECURITY WARNING: SSL modes…" notice stops appearing. Nothing changes for members.
+
 ## 1.27.0 — 2026-10-17
 
 - **A usage log for the site admin.** A private page (`/admin/usage`, linked from the control panel's Officers tab, admin only) shows who uses the site and from where: members using it in the last 14 days, who has gone quiet, who has not been seen yet, the countries, US states and cities the band is in (useful for meet-ups), and the latest visits. Needs one new table; recording begins from this release.
