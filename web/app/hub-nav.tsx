@@ -9,7 +9,7 @@ import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor
 import { parsePins, pinnedLinks, togglePin } from "@/lib/nav-pins";
 import BlueFloat from "./blue-float";
 import VisitBeacon from "./visit-beacon";
-import WhosOnline from "./whos-online";
+import WhosOnline, { WhosOnlineInline } from "./whos-online";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -136,13 +136,13 @@ export default function HubNav() {
           })()}
         </nav>
         <div className="hub-side-foot">
-          <WhosOnline path={pathname} variant="side" sample={isPreview ? PREVIEW_PRESENCE : undefined} />
+          <WhosOnline path={pathname} sample={isPreview ? PREVIEW_PRESENCE : undefined} />
           <p>{viewer?.name ?? (isPreview ? "Steve" : "Signed in")}</p>
           <ThemeToggle />
         </div>
       </aside>
       {!isPreview ? <VisitBeacon path={pathname} /> : null}
-      <WhosOnline path={pathname} variant="float" sample={isPreview ? PREVIEW_PRESENCE : undefined} />
+      <WhosOnlineInline floating />
       <BlueFloat />
       {dockOpen && DOCK_MENUS[dockOpen] ? (
         <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>

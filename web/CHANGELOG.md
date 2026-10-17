@@ -2,6 +2,15 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.38.0 — 2026-10-18
+
+- **"Who's online" is now on the Home page too**, in the header next to the welcome line, with the live count. (On phones the floating pill steps aside on Home so it isn't shown twice.)
+- **Sign-in fixes, after a member reported a white screen on his phone:**
+  - Tapping Sign in now opens a clear **"Opening Discord…"** panel and ignores extra taps. Tapping it many times used to start the sign-in over and over and could break it.
+  - If nothing happens after a few seconds, or the page is open inside an app's built-in browser (Discord, Facebook, Instagram…), the panel says to **open the site in Safari or Chrome** and has a button to copy the link.
+  - First-time sign-ins now go to Discord's approval screen in one step instead of trying silently, failing and retrying, which is a likely cause of the blank page. Returning members still skip it.
+  - The panel also explains that Discord asking for an email and password is Discord's own sign-in.
+
 ## 1.37.0 — 2026-10-18
 
 - **New "Who's online" button.** On a laptop it is at the bottom of the left menu; on a phone it is a small pill just above the tab bar. It shows a green dot and how many members have the site open right now. Tap it to see:

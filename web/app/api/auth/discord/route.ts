@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildDiscordAuthorizeUrl } from "@/lib/discord-oauth";
-import { OAUTH_NEXT_COOKIE_NAME, OAUTH_PROMPT_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME, createOAuthState, isMemberAuthConfigured, safeNextPath } from "@/lib/member-auth";
+import { SIGNED_IN_BEFORE_COOKIE, OAUTH_NEXT_COOKIE_NAME, OAUTH_PROMPT_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME, createOAuthState, isMemberAuthConfigured, safeNextPath } from "@/lib/member-auth";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -11,7 +11,10 @@ export async function GET(request: Request) {
   }
 
   const requestUrl = new URL(request.url);
-  const prompt = requestUrl.searchParams.get("consent") === "1" ? "consent" : "none";
+  // Someone who has signed in here before can skip Discord's approval screen (prompt=none). A first-timer goes straight to it in one step:
+  // the old "try silently, fail, then retry" round trip is what left some phones on a blank page.
+  const returning = request.headers.get("cookie")?.includes(`${SIGNED_IN_BEFORE_COOKIE}=1`) ?? false;
+  const prompt = requestUrl.searchParams.get("consent") === "1" || !returning ? "consent" : "none";
   const state = createOAuthState();
   const response = NextResponse.redirect(buildDiscordAuthorizeUrl(state, prompt));
   response.cookies.set(OAUTH_PROMPT_COOKIE_NAME, prompt, {
