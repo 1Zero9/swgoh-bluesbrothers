@@ -2262,3 +2262,24 @@ html .hub-chatframe .chat-compose button { background: var(--ask) !important; co
 /* Review queue */
 .hub-main.is-inner .kb-review, .hub-main.is-inner .kb-review-card, .hub-main.is-inner .kb-queue > * { background: var(--glass); border: 1px solid var(--glass-line); color: var(--hub-text); }
 @media (max-width: 759.98px) { .hub-main.is-inner .rr-gate, .hub-main.is-inner .officer-gate-card { max-width: none; } }
+
+/* B-Lue3's pop-up: a dimmed, blurred page behind it and a solid orange-edged card, so it reads on any background. */
+.hub-blue-scrim { position: fixed; inset: 0; z-index: 940; background: rgba(5, 10, 20, 0.55); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: hub-dock-in 0.18s ease-out both; }
+html[data-theme="rebel"] .hub-blue-scrim { background: rgba(30, 45, 70, 0.4); }
+.hub-blue-panel { border: 1px solid rgba(var(--ask-rgb, 255, 138, 42), 0.75); background: #0e1626; color: #f1f5f9; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+html[data-theme="rebel"] .hub-blue-panel { background: #ffffff; color: #0f172a; border-color: #ea580c; box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35); }
+.hub-blue-panel .hub-eyebrow { color: #ffa24d; }
+html[data-theme="rebel"] .hub-blue-panel .hub-eyebrow { color: #c2410c; }
+.hub-blue-panel input { background: #060b14; border-color: rgba(255, 255, 255, 0.28); color: #fff; font-size: 16px; }
+html[data-theme="rebel"] .hub-blue-panel input { background: #f1f5f9; border-color: #94a3b8; color: #0f172a; }
+.hub-blue-panel form button { background: #ff8a2a; color: #fff; }
+html[data-theme="rebel"] .hub-blue-panel form button { background: #ea580c; }
+.hub-blue-note { color: #cbd5e1; }
+html[data-theme="rebel"] .hub-blue-note { color: #475569; }
+.hub-blue-links a { color: #ffa24d; }
+html[data-theme="rebel"] .hub-blue-links a { color: #c2410c; }
+.hub-blue-panel .hub-text-button { color: #cbd5e1; }
+html[data-theme="rebel"] .hub-blue-panel .hub-text-button { color: #475569; }
+.hub-blue-float { z-index: 970; }
+html .hub-blue-panel form button[type="submit"] { background: #ff8a2a !important; color: #fff !important; border-color: transparent !important; }
+html[data-theme="rebel"] .hub-blue-panel form button[type="submit"] { background: #ea580c !important; }

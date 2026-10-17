@@ -132,6 +132,7 @@ export default function BlueFloat() {
       >
         <Image src="/blue.png" alt="" width={FLOAT_SIZE * 2} height={FLOAT_SIZE * 2} draggable={false} />
       </button>
+      {open ? <div className="hub-blue-scrim" aria-hidden="true" /> : null}
       {open ? (
         <div className="hub-blue-panel" style={{ left: panelLeft, top: panelTop, width: PANEL_W }} role="dialog" aria-label="Ask B-Lue3">
           <p className="hub-eyebrow is-amber">B-Lue3 · your guild droid</p>
