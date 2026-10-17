@@ -23,6 +23,7 @@ import { CURATED_DISCS } from "@/lib/discs";
 import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
 import MissionGame from "@/app/mission-from-god/mission-game";
+import ChatClient from "@/app/chat/chat-client";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -205,6 +206,12 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
           <article className="win-item"><span className="win-icon">◆</span><div><p><strong>Dex</strong> took Jedi Master Kenobi to Relic 8</p><small>Relic</small></div></article>
           <details className="wins-more"><summary>2 more upgrades</summary></details></section></div></section>
       <HubLinks message="Spot a win we missed?"><span>See the roster →</span></HubLinks>
+    </HubPage>
+  );
+  if (screen === "chat") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild" title="Guild chat" intro="The Blues Brothers Discord channels, on the site." />
+      <div className="hub-chatframe"><ChatClient channels={[{ key: "general", label: "general" }, { key: "tw", label: "territory-war" }]} signedInAsMember /></div>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;

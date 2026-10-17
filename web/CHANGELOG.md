@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.23.0 — 2026-10-17
+
+- **Guild chat on the new look.** Slim header and themed picture, and the chat sits in one glass frame: channel tabs as pills (the open one orange), the messages in the middle, an orange Send button, and the read-only note when posting is off. It fits the screen height on a laptop and sits clear above the dock on a phone. Colours follow the theme, so messages read on the light theme too.
+
 ## 1.22.0 — 2026-10-17
 
 - **The Wins on the new look.** Slim header and themed picture instead of the tall banner; the four weekly counts (Galactic Legends, Ultimates, Relic level-ups, Members levelled up) are glass tiles, two across on a phone; each day is a glass panel where the big wins (legends, ultimates, Relic 7+) glow orange and the routine ones are quiet rows, with "more upgrades" folding underneath. A link to Guild activity sits at the foot.
