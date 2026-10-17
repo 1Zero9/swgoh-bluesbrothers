@@ -106,6 +106,22 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <TwWorkspace isOfficer plan={TW_PLAN} pool={TW_POOL} war={{ active: true, opponentName: "Immortal Hungarians", guildScore: 1200000, opponentScore: 900000, round: 2 }} templates={[]} commands={[]} />
     </HubPage>
   );
+  if (screen === "tb") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Territory Battles" title="See the whole field. Deploy with purpose." intro="What the guild needs from you in Rise of the Empire, and the plan for each phase." />
+      <section className="tb-section" id="callouts"><div className="section-heading"><div><p className="eyebrow">Callouts</p><h2>What the guild needs from you</h2></div><span>Matched against live member rosters</span></div>
+        <div className="callouts">
+          <article className="callout-card"><header><div><h3>Lord Vader</h3><small>relic 7+ · Zeffo</small></div><div className="callout-count"><strong>3<span>/5</span></strong><small>ready</small></div></header><div className="callout-bar"><span style={{ width: "60%" }} /></div><p className="callout-note">Need him on the Zeffo mission, please.</p><p className="callout-line"><span>Ready:</span> Dex, Steve, ZappAttk</p><div className="callout-close"><span>Closest</span><ul><li>Igor <em>(R5 → R7)</em></li></ul></div></article>
+          <article className="callout-card is-complete"><header><div><h3>Padmé Amidala</h3><small>7 stars · phase 3</small></div><div className="callout-count"><strong>3<span>/3</span></strong><small>ready</small></div></header><div className="callout-bar"><span style={{ width: "100%" }} /></div><p className="callout-done">All filled. Thank you!</p></article>
+        </div></section>
+      <section className="tb-section" id="plan"><div className="section-heading"><div><p className="eyebrow">The plan</p><h2>What we are doing, phase by phase</h2></div></div>
+        <div className="tb-plan-view"><div className="tb-plan-phase"><h3>Phase 1</h3><ul><li><strong>Zeffo</strong><span className="tb-plan-badge is-three-star">Three star</span><small>Dark side</small><p>Full deploy, no preload.</p></li><li><strong>Mandalore</strong><span className="tb-plan-badge is-hold">Hold</span></li></ul></div></div></section>
+      <section className="tb-section"><div className="section-heading"><div><p className="eyebrow">Rise of the Empire</p><h2>Interactive ROTE Planner &amp; Star Optimizer</h2></div><span>Syncing from 49 player profiles</span></div>
+        <div className="tb-strategy-tool"><div className="tb-phase-selector"><div className="phase-buttons"><button className="selected-phase">Phase 1</button><button>Phase 2</button><button>Phase 3</button></div><button className="btn-optimize">Optimise</button></div>
+          <div className="tb-zone-card dark"><div className="zone-header"><h3>Zeffo (dark side)</h3></div><div className="star-toggles"><button className="active">1★</button><button>2★</button><button>3★</button></div></div></div></section>
+      <HubLinks message="Territory Battle allocations are calculated using synced guild snapshots."><span>Back to Operations →</span></HubLinks>
+    </HubPage>
+  );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (
