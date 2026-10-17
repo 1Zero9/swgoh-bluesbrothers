@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.3.1 — 2026-10-17
+
+- **The menu starts folded.** Every group (Knowledge, Guild, War room and the rest) is closed when you arrive, so people can explore by opening what they want. The group holding the page you are on opens by itself, and Home, Ask B-Lue3 and Guild chat stay in view at the top.
+
 ## 1.3.0 — 2026-10-17
 
 - **A guild feedback and to-do board.** New page **Feedback** (in the Guild menu and the control panel shortcuts). Any member can add a **feature request, feedback or "something's broken"** with a short title and some detail (5 a day each). The whole guild can read the list and tap **+1** on what they want too, which floats the popular ones up.

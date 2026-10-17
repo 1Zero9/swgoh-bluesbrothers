@@ -19,8 +19,8 @@ const ICONS: Record<HubSectionKey, LucideIcon> = {
 };
 
 const HUB_HINT_KEY = "bb-hub";
-/** Groups a member uses every day start open; the rest fold away until their page is the current one. */
-const OPEN_BY_DEFAULT = new Set(["Knowledge", "Guild", "War room"]);
+/** Every group starts folded so people can explore; the group holding the current page is open. */
+const OPEN_BY_DEFAULT = new Set<string>();
 
 /**
  * The member hub navigation: five sections, a sidebar on laptops and a tab bar on phones.
