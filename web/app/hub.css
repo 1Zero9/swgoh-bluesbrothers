@@ -1889,3 +1889,77 @@ i.mc-bar b { display: block; height: 100%; border-radius: 999px; background: var
 .hub-main.is-inner .twc-health-strong, .hub-main.is-inner .twc-health-pill.twc-health-strong { color: var(--hub-good); border-color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 14%, transparent); }
 html[data-theme="rebel"] .hub-main.is-inner .twc-health-strong, html[data-theme="rebel"] .hub-main.is-inner .twc-status-active { color: #15803d; }
 html[data-theme="rebel"] .hub-main.is-inner .twc-reserve-list li strong, html[data-theme="rebel"] .hub-main.is-inner .twc-zone-list-count { color: #0f172a; }
+
+/* ---------- Territory Battles: callouts, plan, planner and command tool on the inner-page template ---------- */
+.hub-main.is-inner .tb-section > .section-heading { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 20px; margin-bottom: 14px; }
+.hub-main.is-inner .section-heading > span { color: var(--hub-muted); font-size: 12.5px; }
+.hub-main.is-inner .tb-section.margin-top-20, .hub-main.is-inner .margin-top-20 { margin-top: 0; }
+.hub-main.is-inner .tb-officer-tools { padding: 14px 18px; }
+.hub-main.is-inner .tb-officer-tools > summary { padding: 4px 0; border: 0; background: none; color: var(--hub-text); font-weight: 700; font-size: 15px; }
+.hub-main.is-inner .tb-officer-tools[open] > summary { margin-bottom: 12px; }
+.hub-main.is-inner .tb-officer-note { color: var(--hub-muted); }
+.hub-main.is-inner .tb-officer-tools .tb-section { padding: 0; border: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; margin-top: 18px; }
+
+/* callouts */
+.hub-main.is-inner .callouts { gap: 12px; }
+.hub-main.is-inner .callout-card, .hub-main.is-inner .callout-form { padding: 16px 18px; border: 1px solid var(--glass-line); border-radius: 14px; background: rgba(128, 150, 180, 0.08); color: var(--hub-text); transition: border-color 0.18s, box-shadow 0.18s; }
+.hub-main.is-inner .callout-card:hover { border-color: var(--hub-accent); box-shadow: 0 0 0 1px var(--hub-accent), 0 0 20px rgba(103, 199, 245, 0.18); }
+.hub-main.is-inner .callout-card.is-complete { border-color: var(--hub-good); }
+.hub-main.is-inner .callout-card h3, .hub-main.is-inner .callout-form h3 { color: var(--hub-text); }
+.hub-main.is-inner .callout-card header small, .hub-main.is-inner .callout-line, .hub-main.is-inner .callout-foot, .hub-main.is-inner .callout-close em, .hub-main.is-inner .callout-message, .hub-main.is-inner .callout-form label, .hub-main.is-inner .callout-count span, .hub-main.is-inner .callout-closed summary { color: var(--hub-muted); }
+.hub-main.is-inner .callout-note { color: var(--hub-text); }
+.hub-main.is-inner .callout-count { color: var(--ask-text); }
+.hub-main.is-inner .callout-done { color: var(--hub-good); }
+.hub-main.is-inner .callout-bar { background: rgba(128, 150, 180, 0.22); }
+.hub-main.is-inner .callout-bar span { background: var(--ask); }
+.hub-main.is-inner .callout-form input, .hub-main.is-inner .callout-form textarea, .hub-main.is-inner .callout-form select { padding: 10px 12px; border: 1px solid var(--glass-line); border-radius: 10px; background: var(--hub-bg); color: var(--hub-text); font: inherit; }
+.hub-main.is-inner .callout-actions button, .hub-main.is-inner .callout-form button { border: 1px solid var(--glass-line); border-radius: 999px; background: transparent; color: var(--hub-text); font: inherit; cursor: pointer; }
+.hub-main.is-inner .callout-actions button:hover, .hub-main.is-inner .callout-form button:hover { border-color: var(--hub-accent); }
+.hub-main.is-inner .callout-form button[type="submit"] { border: 0; background: var(--ask) !important; color: #fff !important; font-weight: 700; }
+
+/* phase-by-phase plan */
+.hub-main.is-inner .tb-plan-phase { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); color: var(--hub-text); }
+.hub-main.is-inner .tb-plan-phase h3, .hub-main.is-inner .tb-plan-phase li strong { color: var(--hub-text); }
+.hub-main.is-inner .tb-plan-phase li small { color: var(--hub-muted); }
+.hub-main.is-inner .tb-plan-phase li p { color: var(--hub-text); }
+.hub-main.is-inner .tb-plan-badge.is-three-star { background: color-mix(in srgb, var(--hub-good) 18%, transparent); color: var(--hub-good); }
+.hub-main.is-inner .tb-plan-badge.is-hold { background: rgba(var(--ask-rgb), 0.18); color: var(--ask-text); }
+
+/* star optimiser */
+.hub-main.is-inner .tb-strategy-tool { margin-top: 0; gap: 16px; }
+.hub-main.is-inner .tb-phase-selector, .hub-main.is-inner .tb-zone-card, .hub-main.is-inner .tb-summary-card, .hub-main.is-inner .tb-discord-exporter { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); color: var(--hub-text); box-shadow: none; }
+.hub-main.is-inner .tb-zone-card:hover { border-color: var(--hub-accent); }
+.hub-main.is-inner .tb-zone-card.dark { border-left-color: var(--ask); }
+.hub-main.is-inner .tb-zone-card.light { border-left-color: var(--hub-accent); }
+.hub-main.is-inner .tb-zone-card.mixed { border-left-color: var(--hub-good); }
+.hub-main.is-inner .zone-header h3, .hub-main.is-inner .tb-summary-card h3, .hub-main.is-inner .tb-discord-exporter h3, .hub-main.is-inner .progress-stats strong, .hub-main.is-inner .balance-row strong { color: var(--hub-text); }
+.hub-main.is-inner .exporter-desc, .hub-main.is-inner .zone-thresholds, .hub-main.is-inner .progress-stats, .hub-main.is-inner .gp-input-adjuster label, .hub-main.is-inner .balance-error, .hub-main.is-inner .zone-stars-indicator span { color: var(--hub-muted); }
+.hub-main.is-inner .zone-thresholds b { color: var(--hub-text); }
+.hub-main.is-inner .phase-buttons button, .hub-main.is-inner .star-toggles button { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-main.is-inner .phase-buttons button:hover, .hub-main.is-inner .star-toggles button:hover { border-color: var(--hub-accent); color: var(--hub-text); background: var(--hub-accent-soft); }
+.hub-main.is-inner .phase-buttons button.selected-phase, .hub-main.is-inner .star-toggles button.active { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.2); color: var(--ask-text); box-shadow: none; font-weight: 700; }
+.hub-main.is-inner .btn-optimize, .hub-main.is-inner .tb-discord-exporter button { border: 0; background: var(--ask); color: #fff; box-shadow: none; font-weight: 700; }
+.hub-main.is-inner .btn-optimize:hover, .hub-main.is-inner .tb-discord-exporter button:hover { filter: brightness(1.08); background: var(--ask); box-shadow: none; }
+.hub-main.is-inner .gp-input-adjuster input, .hub-main.is-inner .tb-discord-exporter textarea { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .progress-bar-track, .hub-main.is-inner .balance-bar { background: rgba(128, 150, 180, 0.22); }
+.hub-main.is-inner .progress-bar-fill { background: var(--hub-accent); }
+.hub-main.is-inner .balance-fill { background: var(--hub-accent); }
+
+/* command tool (planets and strategies) */
+.hub-main.is-inner .tbc-shell { padding: 0; }
+.hub-main.is-inner .tbc-planet-row, .hub-main.is-inner .tbc-add-planet { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); color: var(--hub-text); }
+.hub-main.is-inner .tbc-planet-row > header strong { color: var(--hub-text); }
+.hub-main.is-inner .tbc-planet-row-controls label span, .hub-main.is-inner .tbc-add-planet label span, .hub-main.is-inner .tbc-strategy-legend, .hub-main.is-inner .tbc-planet-row .twc-attribution { color: var(--hub-muted); }
+.hub-main.is-inner .tbc-strategy-legend strong { color: var(--hub-text); }
+.hub-main.is-inner .tbc-planet-row-controls select, .hub-main.is-inner .tbc-planet-row-controls input, .hub-main.is-inner .tbc-add-planet input, .hub-main.is-inner .tbc-add-planet select { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .tbc-add-planet button { border: 0; background: var(--ask); color: #fff; font-weight: 700; }
+.hub-main.is-inner .tbc-strategy-pill { font-weight: 700; }
+.hub-main.is-inner .tbc-strategy-pill.is-preload { color: var(--hub-accent); border-color: var(--hub-accent); background: var(--hub-accent-soft); }
+.hub-main.is-inner .tbc-strategy-pill.is-three-star { color: var(--hub-good); border-color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 14%, transparent); }
+.hub-main.is-inner .tbc-strategy-pill.is-hold { color: var(--ask-text); border-color: rgba(var(--ask-rgb), 0.7); background: rgba(var(--ask-rgb), 0.12); }
+.hub-main.is-inner .tbc-strategy-pill.is-skip { color: var(--hub-muted); border-color: var(--glass-line); background: rgba(128, 150, 180, 0.1); }
+@media (max-width: 759.98px) {
+  .hub-main.is-inner .tbc-planet-row-controls, .hub-main.is-inner .tbc-add-planet { grid-template-columns: minmax(0, 1fr); }
+  .hub-main.is-inner .tb-planner-grid { grid-template-columns: minmax(0, 1fr); }
+  .hub-main.is-inner .tb-phase-selector { padding: 12px 14px; }
+}

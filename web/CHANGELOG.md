@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.13.0 — 2026-10-17
+
+- **Territory Battles on the new look, top to bottom.**
+  - **Callouts:** each is a glass card with the unit and what it needs, a big orange "3/5 ready" count and a progress bar, who is ready and who is closest, and a green outline and "All filled" once it is done. Blue glow on hover.
+  - **The plan, phase by phase:** glass cards with clear "Three star" (green) and "Hold" (orange) tags.
+  - **Officer tools:** the folded "Officer planning tools" box, the star optimiser (phase buttons, zone cards, star toggles, GP boxes, the orange Optimise button, the Discord export) and the per-planet command tool (strategy tags for preload, three star, hold and skip) all use the same frames and follow the theme, light and dark.
+  - On a phone the planner and planet rows stack in one column.
+
 ## 1.12.0 — 2026-10-17
 
 - **The Territory War planner on the new look.** The officer command tool sits in one glass frame: the plan name and a clear ACTIVE / DRAFT pill, the status and "Clone" controls, then the modes (Prepare, Match-up, Defence, Attack, Workload, Discord, Templates) as pills with the current one in orange and a red count of problems on Defence. Zones, commands, defenders and the offence reserve are all glass rows that follow the theme (light and dark), with orange for the main buttons and blue on hover.
