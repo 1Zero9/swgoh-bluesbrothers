@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.9.0 — 2026-10-17
+
+- **Roster and "Who has…?" get the new look.** The tall banner is replaced by the slim header (with the active and new-member counts). "Who has…?" is a glass box with an orange **Search** button, and its answer lists holders in neat columns. Fresh arrivals, search and sort, and the leaving list are all the same see-through frames with the blue hover glow.
+- **Member cards on the roster are tidier:** a round badge (green for the leader, orange for officers, blue for members), name, level and time in the band, then four number tiles (power, legends, tickets, relics) and "Open card". Anyone on the check-in list gets an orange edge. On a phone each card is full width with all four numbers.
+- **The member pop-up follows the theme** (it was always dark). Power over a billion now reads "1.24B" instead of "1240M".
+
 ## 1.8.0 — 2026-10-17
 
 - **A legend on the member cards.** The list has a key at the top: a coloured dot and edge for each member (green = Pillar, blue = Steady, yellow = 1 thing to look at, orange = Needs a nudge) and "the orange number is how many things to look at". Each tile now shows the top thing to watch in words, and a card has its own key too.
