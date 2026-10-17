@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.34.0 — 2026-10-17
+
+- **Field guides and the officer Announcement editor now match the rest of the site** (slim glass header, themed background). The guides themselves are unchanged. The logged-out front page and "The Gig is In Session" door keep their own artwork on purpose.
+
 ## 1.33.0 — 2026-10-17
 
 - **The Guild and Operations pages now match the rest of the site**: the slim glass header, the same frosted link cards and your themed background, instead of the old tall banner. Operations still shows the live facts (war status, tickets today, guild power) on each card, and its Counters card now goes to Ask → Find a counter.
