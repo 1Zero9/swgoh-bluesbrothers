@@ -26,6 +26,7 @@ import MissionGame from "@/app/mission-from-god/mission-game";
 import ChatClient from "@/app/chat/chat-client";
 import OfficerRosterTable from "@/app/officer-roster-table";
 import CreditsPage from "@/app/credits/page";
+import AskTabs from "@/app/ask/ask-tabs";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -225,7 +226,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   );
   if (screen === "credits") return <CreditsPage />;
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
-  if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
+  if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><AskTabs initialTab="counters" names={KNOW_NAMES} canAct chat={<section className="hub-section hub-chat" id="ask-blue"><div className="blue-chat"><div className="blue-status">4 of 5 questions left this week</div><form className="blue-form"><input placeholder="Ask B-Lue3 about the game" /><button type="submit">Ask</button></form></div></section>} /></AskView>;
   return (
     <HubHome
       name="Steve"

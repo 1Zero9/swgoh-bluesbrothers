@@ -58,12 +58,15 @@ export function MoreView({ isOfficer, discordUrl }: { isOfficer: boolean; discor
 
 export function AskView({ children, left }: { children: ReactNode; left?: { left: number; limit: number; resetsLabel: string } | null }) {
   return (
-    <HubPage banner={<HubBanner image="/tw-banner.webp" position="center 40%" eyebrow="B-Lue3 · your guild droid" title="Ask B-Lue3" intro="Ask about the game, the guild or a counter. He looks at what the guild already knows before anything else, and that never costs you a question." />}>
-      <div className="hub-ask-intro">
-        <BlueIntro variant="hub" size={120} endHref="#ask-blue" />
-        <AnswerLadder left={left ?? null} />
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="B-Lue3 · your guild droid" title="Ask B-Lue3, or find a counter" intro="Ask about the game, the guild or a squad. He checks what the guild already knows first, and that never costs you a question." />
+      <div className="ask-layout">
+        <div className="ask-main" id="ask-blue-wrap">{children}</div>
+        <aside className="ask-side" aria-label="How B-Lue3 answers">
+          <BlueIntro variant="hub" size={96} endHref="#ask-blue" />
+          <AnswerLadder left={left ?? null} />
+        </aside>
       </div>
-      <section className="hub-section hub-chat" id="ask-blue" aria-label="Chat with B-Lue3">{children}</section>
     </HubPage>
   );
 }

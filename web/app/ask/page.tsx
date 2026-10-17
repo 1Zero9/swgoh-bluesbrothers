@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import BlueChat from "@/app/blue-chat";
+import AskTabs from "./ask-tabs";
+import { allUnitNames } from "@/lib/wins";
 import { AskView } from "@/app/hub-views";
 import MembersOnly from "@/app/members-only";
 import NavIcon from "@/app/nav-icon";
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
   description: "Ask the guild droid. He checks what the guild already knows first, and that is free.",
 };
 
-type SearchParams = Promise<{ q?: string | string[]; blue?: string | string[] }>;
+type SearchParams = Promise<{ q?: string | string[]; blue?: string | string[]; tab?: string | string[] }>;
 
 export default async function AskPage({ searchParams }: { searchParams: SearchParams }) {
   const access = await getViewerAccess();
@@ -56,6 +58,8 @@ export default async function AskPage({ searchParams }: { searchParams: SearchPa
         )}
     </>
   );
+  const names = Object.fromEntries(allUnitNames().map((unit) => [unit.id, unit.name]));
+  const tabbed = <AskTabs chat={<section className="hub-section hub-chat" id="ask-blue" aria-label="Chat with B-Lue3">{chat}</section>} names={names} canAct={Boolean(access.playerId || access.isOfficer)} initialTab={query.tab === "counters" ? "counters" : "ask"} />;
   const left = usage ? { left: usage.left, limit: usage.limit, resetsLabel: resetLabel(usage.resetsOn) } : null;
-  return <AskView left={left}>{chat}</AskView>;
+  return <AskView left={left}>{tabbed}</AskView>;
 }
