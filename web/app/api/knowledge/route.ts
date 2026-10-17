@@ -1,5 +1,6 @@
 import { getViewerAccess } from "@/lib/access-control";
 import { countRecentSubmissions, findMatchups, getMatchupDetail, knownUnitIds, submitMatchup } from "@/lib/knowledge/data";
+import { readinessFor } from "@/lib/knowledge/readiness";
 import { isMode } from "@/lib/knowledge/modes";
 import { canSubmit } from "@/lib/knowledge/permissions";
 import { validateSubmission } from "@/lib/knowledge/validate";
@@ -31,7 +32,9 @@ export async function GET(request: Request) {
     mode: mode && isMode(mode) ? mode : undefined,
     defenderUnitId: params.get("unit") || undefined,
   }, access.playerId ?? null);
-  return Response.json({ ok: true, hits: hits.slice(0, 60) }, { headers: NO_STORE });
+  const shown = hits.slice(0, 60);
+  const readiness = await readinessFor(shown, access.playerId ?? null).catch(() => ({}));
+  return Response.json({ ok: true, hits: shown.map((hit) => ({ ...hit, readiness: (readiness as Record<string, unknown>)[hit.id] ?? null })) }, { headers: NO_STORE });
 }
 
 /** Submit a counter. It always lands as a candidate for officer review. Members and officers only. */

@@ -8,7 +8,7 @@ export type Squad = { teamName: string; memberIds: string[]; members: { unitId: 
 export type Listing = {
   id: string; status: string; mode: string; strategy: string | null; defender: Squad; attacker: Squad;
   datacronDependent: boolean; datacronExpiresAt: string | null; reviewedAt: string | null; createdAt: string;
-  evidenceCount: number; useCount: number; usedByMe?: boolean; usable?: boolean; match?: string;
+  evidenceCount: number; useCount: number; usedByMe?: boolean; usable?: boolean; match?: string; readiness?: { ready: boolean; gaps: string[] } | null;
   requirements: { zetas?: string[]; omicrons?: string[]; ultimates?: string[]; minRelic?: Record<string, number> } | null;
   oneShot: boolean | null; freshEnemyOnly: boolean | null;
 };
@@ -48,20 +48,33 @@ export default function MatchCard({ item, names, canMark, children }: { item: Li
     }
   }
 
+  const [more, setMore] = useState(false);
+  const long = (item.strategy?.length ?? 0) > 180;
+
   return (
-    <article className={`kb-card${expired ? " is-expired" : ""}${item.status !== "PUBLISHED" ? ` is-${item.status.toLowerCase()}` : ""}`}>
+    <article className={`kb-card kb-card2${expired ? " is-expired" : ""}${item.status !== "PUBLISHED" ? ` is-${item.status.toLowerCase()}` : ""}`}>
       <header>
         <ModeBadge mode={item.mode} />
         {item.status !== "PUBLISHED" ? <span className={`kb-badge kb-badge-${item.status.toLowerCase()}`}>{item.status === "CANDIDATE" ? "Awaiting review" : item.status.toLowerCase()}</span> : null}
         {item.datacronDependent ? <span className={`kb-badge ${expired ? "kb-badge-bad" : "kb-badge-warn"}`}>{expired ? "Datacron ended: don't rely on this" : item.datacronExpiresAt ? `Needs the Datacron, until ${day(item.datacronExpiresAt)}` : "Needs a Datacron (end date unknown)"}</span> : null}
         {stale && item.status === "PUBLISHED" ? <span className="kb-badge kb-badge-warn">Not checked lately</span> : null}
+        {item.readiness ? <span className={`kb-ready${item.readiness.ready ? " is-yes" : " is-no"}`}>{item.readiness.ready ? "You can run this" : "Not yet"}</span> : null}
       </header>
-      <div className="kb-versus">
-        <div><small>Against</small><SquadChips members={item.defender.members} names={names} /></div>
-        <NavIcon name="war" size={18} />
-        <div><small>Use</small><SquadChips members={item.attacker.members} names={names} /></div>
+      <div className="kb-use2">
+        <small>Use</small>
+        <SquadChips members={item.attacker.members} names={names} />
       </div>
-      {item.strategy ? <p className="kb-strategy">{item.strategy}</p> : null}
+      <div className="kb-against2">
+        <small>Against</small>
+        <SquadChips members={item.defender.members} names={names} />
+      </div>
+      {item.readiness && !item.readiness.ready && item.readiness.gaps.length ? <p className="kb-gaps">You still need: {item.readiness.gaps.join("; ")}</p> : null}
+      {item.strategy ? (
+        <div className="kb-strategy2">
+          <p className={more || !long ? undefined : "is-clamped"}>{item.strategy}</p>
+          {long ? <button type="button" className="kb-link" onClick={() => setMore((value) => !value)}>{more ? "Show less" : "Read more"}</button> : null}
+        </div>
+      ) : null}
       {needs ? (
         <p className="kb-needs">
           {needs.zetas?.length ? <span>Zetas: {needs.zetas.join(", ")}</span> : null}
@@ -73,11 +86,11 @@ export default function MatchCard({ item, names, canMark, children }: { item: Li
       <footer>
         {canMark && item.status === "PUBLISHED" ? (
           <button type="button" className={`kb-use${using ? " is-on" : ""}`} aria-pressed={using} onClick={toggleUse}>
-            <NavIcon name="check" size={16} />{using ? "You use this" : "This is what I use"}
+            <NavIcon name="check" size={16} />{using ? "You use this" : "I use this"}
           </button>
         ) : null}
-        <span className="kb-meta">{count} guildmate{count === 1 ? "" : "s"} use{count === 1 ? "s" : ""} it · {item.evidenceCount} source{item.evidenceCount === 1 ? "" : "s"}{item.reviewedAt ? ` · checked ${day(item.reviewedAt)}` : ""}</span>
-        <button type="button" className="kb-link" onClick={toggleDetails}>{open ? "Hide sources" : "Sources"}</button>
+        <span className="kb-meta">{count} guildmate{count === 1 ? "" : "s"} use{count === 1 ? "s" : ""} it{item.reviewedAt ? ` · checked ${day(item.reviewedAt)}` : ""}</span>
+        <button type="button" className="kb-link" onClick={toggleDetails}>{open ? "Hide sources" : `${item.evidenceCount} source${item.evidenceCount === 1 ? "" : "s"}`}</button>
         {children}
       </footer>
       {open ? (
