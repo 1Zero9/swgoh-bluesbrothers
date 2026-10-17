@@ -15,6 +15,8 @@ import WhoHas from "@/app/members/who-has";
 import RaidBoard from "@/app/raids/raid-board";
 import TwWorkspace from "@/app/territory-war/tw-workspace";
 import { SQUAD_KEYS } from "@/lib/tw-squads";
+import DatacronsInteractive from "@/app/datacrons/datacrons-interactive";
+import { ACTIVE_DATACRON_SETS } from "@/lib/datacrons";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -52,6 +54,17 @@ const RAID_SAMPLE = [{ raidId: "sith_raid", label: "Krayt Dragon", outcome: 1, o
 
 const TW_POOL = ["Dex", "Steve", "ZappAttk", "Brian", "Igor", "Juggernaut2000"].map((name, i) => ({ playerId: "p" + i, name, joined: i !== 4, galacticPower: 11e6 - i * 1.2e6, squads: Object.fromEntries(SQUAD_KEYS.map((key, j) => [key, (i + j) % 3 !== 0])) as never }));
 const TW_PLAN = { id: "plan1", name: "Round 2 defence", status: "ACTIVE" as const, version: 3, templateId: null, zonePlans: [], assignments: [], attackAssignments: [] };
+
+const DC_SAMPLE = {
+  activeSets: ACTIVE_DATACRON_SETS,
+  syncedMemberCount: 48,
+  summary: { totalDatacrons: 130, level9Count: 12, level6Count: 40, level3Count: 78, topOwners: [{ playerName: "Dex", l9Count: 3, totalCount: 9 }, { playerName: "Steve", l9Count: 2, totalCount: 7 }], factionsCovered: [{ faction: "Galactic Empire", count: 12 }], characterDatacrons: [{ character: "Lord Vader", count: 2, owners: ["Dex", "Steve"] }] },
+  datacrons: [
+    { id: "d1", ownerName: "Dex", setId: ACTIVE_DATACRON_SETS[0].id, setName: ACTIVE_DATACRON_SETS[0].name, level: 9, tierCategory: "L9_CHARACTER" as const, characterTarget: "Lord Vader", abilitySummary: "Lord Vader gains Offense and a chance to counter.", stats: [{ stat: "Potency", value: "+8%" }, { stat: "Health", value: "+5%" }], rerollCount: 2, twSuitability: "OPTIMAL_DEFENCE" as const, recommendedCommand: "Dark side top front" },
+    { id: "d2", ownerName: "Steve", setId: ACTIVE_DATACRON_SETS[0].id, setName: ACTIVE_DATACRON_SETS[0].name, level: 6, tierCategory: "L6_FACTION" as const, factionTarget: "Galactic Empire", abilitySummary: "Empire allies gain turn meter on attack.", stats: [{ stat: "Speed", value: "+4" }], rerollCount: 0, twSuitability: "KEY_OFFENCE" as const },
+    { id: "d3", ownerName: "ZappAttk", setId: ACTIVE_DATACRON_SETS[0].id, setName: ACTIVE_DATACRON_SETS[0].name, level: 3, tierCategory: "L3_ALIGNMENT" as const, alignmentTarget: "DARK" as const, abilitySummary: "Dark side allies gain offence.", stats: [{ stat: "Tenacity", value: "+6%" }], rerollCount: 1, twSuitability: "SOLID_BACKUP" as const },
+  ],
+};
 
 export const dynamic = "force-dynamic";
 
@@ -120,6 +133,13 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
         <div className="tb-strategy-tool"><div className="tb-phase-selector"><div className="phase-buttons"><button className="selected-phase">Phase 1</button><button>Phase 2</button><button>Phase 3</button></div><button className="btn-optimize">Optimise</button></div>
           <div className="tb-zone-card dark"><div className="zone-header"><h3>Zeffo (dark side)</h3></div><div className="star-toggles"><button className="active">1★</button><button>2★</button><button>3★</button></div></div></div></section>
       <HubLinks message="Territory Battle allocations are calculated using synced guild snapshots."><span>Back to Operations →</span></HubLinks>
+    </HubPage>
+  );
+  if (screen === "datacrons") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Datacrons" title="Holocron power. Tactical advantage." intro="Track active SWGOH Datacron sets, review the guild's Level 9 character super-weapons and Level 6 faction boosts, and optimize squad pairings for Territory War victory." />
+      <DatacronsInteractive initialData={DC_SAMPLE} />
+      <HubLinks message="Active Datacron intelligence and guild inventory aggregated from player Comlink syncs."><span>Open Territory War Command →</span></HubLinks>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
