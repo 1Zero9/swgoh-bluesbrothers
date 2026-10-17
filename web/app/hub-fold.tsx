@@ -14,9 +14,9 @@ const subscribe = (onChange: () => void) => {
  * On a phone the box folds to one tappable line (a title and a short summary) so the page is calm;
  * tap it to open the whole thing. On a laptop it is simply the box, always open.
  */
-export default function HubFold({ title, summary, tone, children }: { title: string; summary: string; tone?: "alert"; children: ReactNode }) {
+export default function HubFold({ title, summary, tone, defaultOpen = false, children }: { title: string; summary: string; tone?: "alert"; defaultOpen?: boolean; children: ReactNode }) {
   const phone = useSyncExternalStore(subscribe, () => window.matchMedia(QUERY).matches, () => false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   if (!phone) return <>{children}</>;
   return (
     <div className={`hub-fold${open ? " is-open" : ""}${tone === "alert" ? " is-alert" : ""}`}>

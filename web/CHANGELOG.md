@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.36.0 — 2026-10-17
+
+- **The logged-out front page has its identity back.** The Blues Brothers logo and name sit at the top with a Sign in button; the full Blues Brothers banner is back under it (shown whole on a phone); and the two real buttons, **Sign in with Discord** and **Thinking of joining?**, are large and full width.
+- **Collapsible sections on a phone:** Join us (open by default), Check your stats, How we get on, news and Field guides each fold to a one-line summary so the page is short; on a laptop they are open boxes as before.
+- The four guild numbers sit in one compact row.
+
 ## 1.35.2 — 2026-10-17
 
 - **The doorman droid picture is also on the "members only" door**, so a visitor who hits a members page sees the same door as the Gig page.
