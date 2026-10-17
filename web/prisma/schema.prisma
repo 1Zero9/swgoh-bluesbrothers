@@ -735,3 +735,38 @@ model Announcement {
   updatedByName String?
   updatedAt     DateTime @updatedAt
 }
+
+/// The guild's feedback and to-do board: members post feedback, feature requests and bugs; officers mark them off.
+model FeedbackItem {
+  id              String         @id @default(cuid())
+  /// FEEDBACK, FEATURE or BUG.
+  kind            String
+  title           String
+  body            String
+  /// OPEN, PLANNED, IN_PROGRESS, DONE or DECLINED.
+  status          String         @default("OPEN")
+  /// An officer's note to the guild, shown on the item.
+  reply           String?
+  submittedById   String?
+  submittedByName String
+  statusByName    String?
+  doneAt          DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  votes           FeedbackVote[]
+
+  @@index([status, createdAt])
+  @@index([submittedById])
+}
+
+/// "Me too": one vote per member per item.
+model FeedbackVote {
+  id        String       @id @default(cuid())
+  itemId    String
+  playerId  String
+  createdAt DateTime     @default(now())
+  item      FeedbackItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, playerId])
+  @@index([playerId])
+}

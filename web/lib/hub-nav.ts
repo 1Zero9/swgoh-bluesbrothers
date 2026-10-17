@@ -12,7 +12,7 @@ export const HUB_SECTIONS: HubSection[] = [
     key: "guild",
     label: "Guild",
     href: "/guild",
-    prefixes: ["/guild", "/overview", "/members", "/chat", "/wins", "/territory-war", "/territory-battles", "/raids", "/datacrons", "/arsenal", "/operations"],
+    prefixes: ["/guild", "/overview", "/members", "/chat", "/wins", "/territory-war", "/territory-battles", "/raids", "/datacrons", "/arsenal", "/operations", "/feedback"],
   },
   {
     key: "more",
@@ -54,6 +54,7 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
       { label: "Roster", href: "/members" },
       { label: "Who has…?", href: "/members#who-has" },
       { label: "The Wins", href: "/wins" },
+      { label: "Feedback", href: "/feedback" },
       { label: "Overview", href: "/overview" },
     ],
   },
