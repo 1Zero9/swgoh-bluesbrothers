@@ -195,6 +195,18 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <HubLinks message="Live guild data from Comlink and the Discord announcements."><span>Operations</span></HubLinks>
     </HubPage>
   );
+  if (screen === "wins") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="The Wins" title="What the band got done" intro="Every Galactic Legend, ultimate and relic level-up, spotted from real member rosters as the guild sync runs." meta="This week" />
+      <div className="hub-stats"><div className="intel-summary"><div><strong>2</strong><small>Galactic Legends this week</small></div><div><strong>1</strong><small>Ultimates</small></div><div><strong>14</strong><small>Relic level-ups</small></div><div><strong>9</strong><small>Members levelled up</small></div></div></div>
+      <section className="tw-roster-section"><header><div><p className="eyebrow">Last three weeks</p><h2>Win after win</h2></div><p>A day here is the day we noticed it.</p></header>
+        <div className="wins-feed"><section className="wins-day"><h3>Friday 16 October</h3>
+          <article className="win-item win-headline"><span className="win-icon">★</span><div><p><strong>Steve</strong> unlocked Lord Vader: their 4th Galactic Legend</p><small>Galactic Legend</small></div></article>
+          <article className="win-item"><span className="win-icon">◆</span><div><p><strong>Dex</strong> took Jedi Master Kenobi to Relic 8</p><small>Relic</small></div></article>
+          <details className="wins-more"><summary>2 more upgrades</summary></details></section></div></section>
+      <HubLinks message="Spot a win we missed?"><span>See the roster →</span></HubLinks>
+    </HubPage>
+  );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
   if (screen === "ask") return <AskView left={{ left: 4, limit: 5, resetsLabel: "Monday 20 Oct" }}><p style={{ color: "var(--hub-muted)" }}>(The chat appears here.)</p></AskView>;
   return (

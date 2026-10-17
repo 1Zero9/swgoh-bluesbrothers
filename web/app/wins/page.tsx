@@ -2,8 +2,7 @@ import MembersOnly from "@/app/members-only";
 import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import LinkNudge from "@/app/link-nudge";
 import { getWinsFeed, type FeedWin } from "@/lib/wins-feed";
 
@@ -87,23 +86,16 @@ export default async function WinsPage() {
   const feed = await getWinsFeed();
 
   return (
-    <main className="intel-shell destination-shell">
-      <PageHero
-        image="/members-banner.webp"
-        imageAlt="The Blues Brothers celebrating"
-        eyebrow="The Wins"
-        title={<>What the band<br /><em>got done.</em></>}
-        description="Every Galactic Legend, ultimate and relic level-up, spotted from real member rosters as the guild sync runs. No fakes, no hand-typed brag lists."
-        priority
-        syncLabel="The Wins · This week"
-      >
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="The Wins" title="What the band got done" intro="Every Galactic Legend, ultimate and relic level-up, spotted from real member rosters as the guild sync runs." meta="This week" />
+      <div className="hub-stats">
         <div className="intel-summary">
           <div><strong>{feed.weekly.galacticLegends}</strong><small>Galactic Legends this week</small></div>
           <div><strong>{feed.weekly.ultimates}</strong><small>Ultimates</small></div>
           <div><strong>{feed.weekly.relics}</strong><small>Relic level-ups</small></div>
           <div><strong>{feed.weekly.members}</strong><small>Members levelled up</small></div>
         </div>
-      </PageHero>
+      </div>
 
       <LinkNudge reason="Link your account and the weekly Discord post can tag you by name when you land a win." />
 
@@ -127,9 +119,9 @@ export default async function WinsPage() {
         )}
       </section>
 
-      <IntelFooter message="Spot a win we missed? It shows up the next time that roster refreshes.">
-        <Link href="/members">See the roster →</Link>
-      </IntelFooter>
-    </main>
+      <HubLinks message="Spot a win we missed? It shows up the next time that roster refreshes.">
+        <Link href="/activity">Guild activity →</Link><Link href="/members">See the roster →</Link>
+      </HubLinks>
+    </HubPage>
   );
 }
