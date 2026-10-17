@@ -1,5 +1,5 @@
 import { getViewerAccess } from "@/lib/access-control";
-import { countRecentRequests, createRequest, knownUnitIds, openRequests } from "@/lib/knowledge/data";
+import { closeRequest, countRecentRequests, createRequest, knownUnitIds, openRequests } from "@/lib/knowledge/data";
 import { REQUESTS_PER_DAY, validateRequest } from "@/lib/knowledge/requests";
 import { getPrisma } from "@/lib/prisma";
 
@@ -30,4 +30,16 @@ export async function POST(request: Request) {
   const player = await getPrisma().player.findUnique({ where: { id: access.playerId }, select: { currentName: true } });
   const result = await createRequest(checked.value, { id: access.playerId, name: player?.currentName ?? "A member" });
   return Response.json({ ok: true, ...result }, { headers: NO_STORE });
+}
+
+/** Remove a call for help from the Wanted list. The member who asked, or an officer. */
+export async function DELETE(request: Request) {
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).host !== request.headers.get("host")) return fail("Not allowed.", 403);
+  const access = await getViewerAccess();
+  if (!(access.isMember || access.isOfficer)) return fail("Sign in with Discord first.", 401);
+  const body = (await request.json().catch(() => null)) as { id?: unknown } | null;
+  if (typeof body?.id !== "string" || !body.id) return fail("Missing request.", 400);
+  const result = await closeRequest(body.id, { playerId: access.playerId ?? null, isOfficer: access.isOfficer });
+  return result.ok ? Response.json({ ok: true }, { headers: NO_STORE }) : fail(result.error, result.status);
 }

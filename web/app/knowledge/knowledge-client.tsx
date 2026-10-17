@@ -55,6 +55,14 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
     return () => clearTimeout(timer);
   }, [loadWanted]);
 
+  async function removeRequest(id: string) {
+    setWanted((list) => list.filter((item) => item.id !== id));
+    const response = await fetch("/api/knowledge/request", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+    if (data?.ok) setNotice("Removed from the Wanted list.");
+    else { setNotice(data?.error ?? "That didn't go through. Try again."); void loadWanted(); }
+  }
+
   async function askForHelp(event: React.FormEvent) {
     event.preventDefault();
     if (!helpLeader) { setHelpMessage({ ok: false, text: "Pick the enemy squad's leader." }); return; }
@@ -103,7 +111,8 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
             {wanted.map((item) => (
               <li key={item.id}>
                 <span><strong>{item.leaderName}</strong> · {MODE_LABELS[item.mode as KbMode] ?? item.mode}{item.note ? ` · ${item.note}` : ""}<small> asked by {item.mine ? "you" : item.requestedByName}</small></span>
-                {canAct ? <button type="button" className="kb-link" onClick={() => { setPrefill({ mode: item.mode as KbMode, leader: { id: item.leaderUnitId, name: item.leaderName } }); setPanel("add"); }}>I have one</button> : null}
+                {item.mine ? <button type="button" className="kb-link kb-remove" onClick={() => void removeRequest(item.id)} aria-label={`Remove my request for ${item.leaderName}`}>Remove</button> : null}
+                {canAct && !item.mine ? <button type="button" className="kb-link" onClick={() => { setPrefill({ mode: item.mode as KbMode, leader: { id: item.leaderUnitId, name: item.leaderName } }); setPanel("add"); }}>I have one</button> : null}
               </li>
             ))}
           </ul>
