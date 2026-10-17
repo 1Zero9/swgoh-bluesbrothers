@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { NOTE_KIND_LABELS, type NoteKind } from "@/lib/knowledge/notes";
+import { NOTE_KIND_LABELS, NOTE_TOPICS, type NoteKind } from "@/lib/knowledge/notes";
 
 export type NoteItem = {
   id: string; kind: string; title: string; body: string; topic: string | null; howKnown: string | null; status: string;
@@ -12,6 +12,7 @@ export type NoteItem = {
 export default function NoteList({ kind, reloadKey, canAct, onAdd }: { kind: NoteKind; reloadKey: number; canAct: boolean; onAdd: () => void }) {
   const [text, setText] = useState("");
   const [notes, setNotes] = useState<NoteItem[] | null>(null);
+  const [topic, setTopic] = useState("");
 
   const load = useCallback(async () => {
     const params = new URLSearchParams({ kind });
@@ -35,19 +36,27 @@ export default function NoteList({ kind, reloadKey, canAct, onAdd }: { kind: Not
   const label = NOTE_KIND_LABELS[kind].toLowerCase();
   return (
     <div className="hub-notes">
-      <input className="hub-search" value={text} onChange={(event) => setText(event.target.value)} placeholder={`Search ${label}s`} aria-label={`Search ${label}s`} />
+      <div className="kb-toolbar hub-notes-bar">
+        <input className="hub-search" value={text} onChange={(event) => setText(event.target.value)} placeholder={`Search ${label}s`} aria-label={`Search ${label}s`} />
+        <select value={topic} onChange={(event) => setTopic(event.target.value)} aria-label="Topic">
+          <option value="">Every topic</option>
+          {NOTE_TOPICS.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+      </div>
       {notes === null ? <p className="hub-empty">Loading…</p> : notes.length === 0 ? (
         <div className="hub-empty">
           <strong>{text ? "Nothing here matches yet." : `No ${label}s yet.`}</strong>
           <p>{canAct ? `Be the first. What do you know that would help someone else?` : "Check back soon."}</p>
           {canAct ? <button type="button" className="hub-button" onClick={onAdd}>Add a {label}</button> : null}
         </div>
-      ) : notes.map((note) => (
+      ) : (
+        <div className="hub-notes-grid">
+      {notes.filter((note) => !topic || note.topic === topic).map((note) => (
         <article key={note.id} className={`hub-note${note.status === "CANDIDATE" ? " is-waiting" : ""}`}>
           <header>
-            <span className={`hub-badge${note.kind === "IDEA" ? " is-paid" : ""}`}>{NOTE_KIND_LABELS[note.kind as NoteKind] ?? note.kind}</span>
-            {note.topic ? <span className="hub-badge">{note.topic}</span> : null}
-            {note.status === "CANDIDATE" ? <span className="hub-badge">Waiting for an officer</span> : null}
+            <span className={`kb-badge kb-badge-mode${note.kind === "IDEA" ? " is-idea" : ""}`}>{NOTE_KIND_LABELS[note.kind as NoteKind] ?? note.kind}</span>
+            {note.topic ? <span className="kb-badge">{note.topic}</span> : null}
+            {note.status === "CANDIDATE" ? <span className="kb-badge kb-badge-warn">Waiting for an officer</span> : null}
           </header>
           <h3>{note.title}</h3>
           <p>{note.body}</p>
@@ -61,6 +70,8 @@ export default function NoteList({ kind, reloadKey, canAct, onAdd }: { kind: Not
           </footer>
         </article>
       ))}
+        </div>
+      )}
     </div>
   );
 }
