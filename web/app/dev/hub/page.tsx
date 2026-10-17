@@ -13,6 +13,8 @@ import MemberDirectory from "@/app/member-directory";
 import MemberWelcomeTicker from "@/app/member-welcome-ticker";
 import WhoHas from "@/app/members/who-has";
 import RaidBoard from "@/app/raids/raid-board";
+import TwWorkspace from "@/app/territory-war/tw-workspace";
+import { SQUAD_KEYS } from "@/lib/tw-squads";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -47,6 +49,9 @@ const HIST_SAMPLE = [["Pillar of the band",4,0,11.1],["Pillar of the band",4,0,1
 const ROSTER_SAMPLE = [["Steve","LEADER",1.24e9,9,41,600,null],["Dex","OFFICER",11.1e6,9,41,600,null],["ZappAttk","MEMBER",8.2e6,3,22,310,"Raid tickets running low"],["Igor","MEMBER",6.1e6,1,9,80,"Gone quiet on the holonet"],["Brian","MEMBER",9.4e6,5,30,590,null]].map(([name, role, gp, gl, relics, tickets, flag], i) => ({ playerId: String(i), name: name as string, galacticPower: String(gp), characterPower: String(Number(gp) * 0.85), shipPower: String(Number(gp) * 0.15), raidTickets: tickets as number, lastActivityAt: "2026-10-17T08:00:00Z", joinedAt: "2026-02-10T10:00:00Z", rank: i + 1, playerLevel: 85, memberRole: role as string, galacticLegends: gl as number, relicUnits: relics as number, datacrons: 20, profileSyncedAt: "2026-10-16T10:00:00Z", attentionReasons: flag ? [flag as string] : [] }));
 
 const RAID_SAMPLE = [{ raidId: "sith_raid", label: "Krayt Dragon", outcome: 1, outcomeLabel: "Completed", durationSeconds: 7200, endedAt: "2026-10-16T10:00:00Z", participants: [["Dex", 4200000], ["Steve", 3900000], ["ZappAttk", 3100000], ["Brian", 2500000]].map(([name, damage], i) => ({ playerId: String(i), name: name as string, damage: damage as number, rank: i + 1 })) }, { raidId: "rancor_challenge", label: "Rancor", outcome: 1, outcomeLabel: "Completed", durationSeconds: 5400, endedAt: "2026-10-12T10:00:00Z", participants: [{ playerId: "1", name: "Dex", damage: 100, rank: 1 }] }];
+
+const TW_POOL = ["Dex", "Steve", "ZappAttk", "Brian", "Igor", "Juggernaut2000"].map((name, i) => ({ playerId: "p" + i, name, joined: i !== 4, galacticPower: 11e6 - i * 1.2e6, squads: Object.fromEntries(SQUAD_KEYS.map((key, j) => [key, (i + j) % 3 !== 0])) as never }));
+const TW_PLAN = { id: "plan1", name: "Round 2 defence", status: "ACTIVE" as const, version: 3, templateId: null, zonePlans: [], assignments: [], attackAssignments: [] };
 
 export const dynamic = "force-dynamic";
 
@@ -93,6 +98,12 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <section className="public-block"><header><p className="eyebrow">Your standing</p><h2>Tickets &amp; activity</h2></header><p className="my-line"><strong>600</strong> raid tickets today · last active 17 Oct</p><p className="my-empty">All clear. Keep it up.</p></section>
       <section className="public-block"><header><p className="eyebrow">Last 60 days</p><h2>Your wins</h2></header><ul className="my-list"><li className="ready"><strong>★ unlocked Lord Vader</strong><span>16 Oct · Galactic Legend</span></li></ul></section>
       <HubLinks message="This page is only visible to you."><span>Back to Home →</span></HubLinks>
+    </HubPage>
+  );
+  if (screen === "twplan") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Territory War room" title="The band is live. Know the field." meta="Captured 17 Oct, 09:00" />
+      <TwWorkspace isOfficer plan={TW_PLAN} pool={TW_POOL} war={{ active: true, opponentName: "Immortal Hungarians", guildScore: 1200000, opponentScore: 900000, round: 2 }} templates={[]} commands={[]} />
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;

@@ -1834,3 +1834,58 @@ i.mc-bar b { display: block; height: 100%; border-radius: 999px; background: var
   .hub-dash-head { padding-right: 54px; }
   .hub-dash { position: relative; }
 }
+
+/* ---------- Territory War planner on the inner-page template ---------- */
+.hub-main.is-inner .twc-shell { margin-bottom: 0; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); box-shadow: none; color: var(--hub-text); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); overflow: hidden; }
+.hub-main.is-inner .twc-gate { text-align: left; padding: 24px; }
+.hub-main.is-inner .twc-header { padding: 18px 22px; border-bottom: 1px solid var(--glass-line); }
+.hub-main.is-inner .twc-header h2, .hub-main.is-inner .twc-gate-header h2, .hub-main.is-inner .twc-panel h3, .hub-main.is-inner .twc-readiness-card h4, .hub-main.is-inner .twc-zone-setup-row strong, .hub-main.is-inner .twc-zone-detail > header h3, .hub-main.is-inner .twc-zone-detail-header h3, .hub-main.is-inner .twc-command-picker h4, .hub-main.is-inner .twc-defenders-section h4, .hub-main.is-inner .twc-command-card strong, .hub-main.is-inner .twc-assignment-row strong, .hub-main.is-inner .twc-zone-list-name { color: var(--hub-text); }
+.hub-main.is-inner .twc-plan-meta, .hub-main.is-inner .twc-gate-header p, .hub-main.is-inner .twc-panel > p, .hub-main.is-inner .twc-muted, .hub-main.is-inner .twc-zone-setup-row small, .hub-main.is-inner .twc-zone-list-purpose, .hub-main.is-inner .twc-zone-detail > header p, .hub-main.is-inner .twc-zone-detail-header p, .hub-main.is-inner .twc-readiness-card p, .hub-main.is-inner .twc-assignment-row small, .hub-main.is-inner .twc-command-card span, .hub-main.is-inner .twc-command-card small { color: var(--hub-muted); }
+.hub-main.is-inner .twc-status-pill { font-weight: 700; }
+.hub-main.is-inner .twc-status-active { color: var(--hub-good); border-color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 14%, transparent); }
+.hub-main.is-inner .twc-status-draft { color: var(--ask-text); border-color: rgba(var(--ask-rgb), 0.7); background: rgba(var(--ask-rgb), 0.12); }
+.hub-main.is-inner .twc-header-actions select, .hub-main.is-inner .twc-header-actions button, .hub-main.is-inner .twc-zone-setup-row select, .hub-main.is-inner .twc-zone-setup-row input, .hub-main.is-inner .twc-assignment-row select, .hub-main.is-inner .twc-add-assignment select, .hub-main.is-inner .twc-new-command-form input, .hub-main.is-inner .twc-new-command-form select { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .twc-header-actions button:hover { border-color: var(--hub-accent); }
+/* tabs as pills */
+.hub-main.is-inner .twc-tabs { gap: 6px; padding: 12px 22px; border-bottom: 1px solid var(--glass-line); }
+.hub-main.is-inner .twc-tabs button { padding: 8px 15px; border: 1px solid var(--glass-line); border-radius: 999px; background: transparent; color: var(--hub-text); font-size: 13px; font-weight: 600; }
+.hub-main.is-inner .twc-tabs button:hover { border-color: var(--hub-accent); color: var(--hub-text); }
+.hub-main.is-inner .twc-tabs button.is-active { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.18); color: var(--ask-text); font-weight: 700; }
+/* panels, rows and chips */
+.hub-main.is-inner .twc-panel { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); }
+.hub-main.is-inner .twc-panel button:not(.twc-primary-btn):not(.twc-icon-btn) { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-main.is-inner .twc-panel button:not(.twc-primary-btn):not(.twc-icon-btn):hover { border-color: var(--hub-accent); color: var(--hub-text); }
+.hub-main.is-inner .twc-primary-btn { border: 0; background: var(--ask); color: #fff; font-weight: 700; }
+.hub-main.is-inner .twc-primary-btn:hover:not(:disabled) { background: var(--ask); filter: brightness(1.08); }
+.hub-main.is-inner .twc-readiness-card, .hub-main.is-inner .twc-zone-setup-row, .hub-main.is-inner .twc-zone-list-item, .hub-main.is-inner .twc-assignment-row, .hub-main.is-inner .twc-command-card { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.06); color: var(--hub-text); }
+.hub-main.is-inner .twc-zone-list-item:hover, .hub-main.is-inner .twc-command-card:hover:not(:disabled) { border-color: var(--hub-accent); }
+.hub-main.is-inner .twc-zone-list-item.is-active, .hub-main.is-inner .twc-command-card.is-selected { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.12); }
+.hub-main.is-inner .twc-zone-list-count { background: rgba(128, 150, 180, 0.16); color: var(--hub-muted); }
+.hub-main.is-inner .twc-reserve-list li, .hub-main.is-inner .twc-idle-list li, .hub-main.is-inner .twc-fill-row { background: rgba(128, 150, 180, 0.08); color: var(--hub-text); }
+.hub-main.is-inner .twc-idle-list li { border: 1px solid var(--glass-line); }
+.hub-main.is-inner .twc-reserve-list li strong, .hub-main.is-inner .twc-fill-row strong, .hub-main.is-inner .twc-readiness-card strong { color: var(--hub-text); }
+.hub-main.is-inner .twc-defender-chip { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.1); color: var(--hub-text); }
+.hub-main.is-inner .twc-icon-btn { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-main.is-inner .twc-source-recommended { color: var(--hub-accent); }
+.hub-main.is-inner .twc-source-manual { color: var(--hub-muted); }
+.hub-main.is-inner .twc-confidence-badge span, .hub-main.is-inner .twc-confidence-factors { color: var(--hub-muted); }
+.hub-main.is-inner .twc-banner-error { color: var(--hub-bad); background: color-mix(in srgb, var(--hub-bad) 12%, transparent); }
+.hub-main.is-inner .twc-banner-info { color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 12%, transparent); }
+.hub-main.is-inner .twc-tab-badge { background: var(--ask); color: #fff; }
+/* layout: three columns on a big screen, stacked below */
+.hub-main.is-inner .twc-prepare, .hub-main.is-inner .twc-matchup, .hub-main.is-inner .twc-attack, .hub-main.is-inner .twc-workload, .hub-main.is-inner .twc-discord { padding: 18px 22px 22px; }
+.hub-main.is-inner .twc-defence { padding: 18px 22px 22px; gap: 16px; }
+@media (max-width: 1199.98px) { .hub-main.is-inner .twc-defence { grid-template-columns: 200px minmax(0, 1fr); } .hub-main.is-inner .twc-defence > .twc-side-panel, .hub-main.is-inner .twc-defence > aside { grid-column: 1 / -1; } }
+@media (max-width: 759.98px) {
+  .hub-main.is-inner .twc-defence { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+  .hub-main.is-inner .twc-header, .hub-main.is-inner .twc-tabs { padding-left: 14px; padding-right: 14px; }
+  .hub-main.is-inner .twc-prepare, .hub-main.is-inner .twc-matchup, .hub-main.is-inner .twc-attack, .hub-main.is-inner .twc-workload, .hub-main.is-inner .twc-discord { padding: 14px; }
+  .hub-main.is-inner .twc-zone-setup-row { grid-template-columns: minmax(0, 1fr); }
+  .hub-main.is-inner .twc-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .hub-main.is-inner .twc-tabs button { flex: none; }
+  .hub-main.is-inner .twc-fill-row { grid-template-columns: 100px 1fr 54px; }
+}
+.hub-main.is-inner .twc-health-pill { font-weight: 700; }
+.hub-main.is-inner .twc-health-strong, .hub-main.is-inner .twc-health-pill.twc-health-strong { color: var(--hub-good); border-color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 14%, transparent); }
+html[data-theme="rebel"] .hub-main.is-inner .twc-health-strong, html[data-theme="rebel"] .hub-main.is-inner .twc-status-active { color: #15803d; }
+html[data-theme="rebel"] .hub-main.is-inner .twc-reserve-list li strong, html[data-theme="rebel"] .hub-main.is-inner .twc-zone-list-count { color: #0f172a; }
