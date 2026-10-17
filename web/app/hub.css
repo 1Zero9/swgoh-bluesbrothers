@@ -2322,3 +2322,12 @@ html[data-theme="rebel"] .hub-blue-panel form button[type="submit"] { background
 .hub-side-favs { margin: 8px 0 2px; padding: 6px 0 4px; border-top: 1px solid var(--hub-line); border-bottom: 1px solid var(--hub-line); }
 .hub-side-favtitle { display: flex; align-items: center; gap: 6px; margin: 0 0 2px; padding: 2px 10px; color: var(--hub-muted); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
 .hub-side-favtitle svg { color: var(--ask, #ea580c); fill: currentColor; }
+.us-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.us-chips li { padding: 4px 12px; border: 1px solid var(--glass-line); border-radius: 999px; background: rgba(128, 150, 180, 0.1); font-size: 13.5px; }
+.us-chips strong { margin-right: 4px; }
+.us-chips.is-state li { border-color: rgba(var(--ask-rgb), 0.6); background: rgba(var(--ask-rgb), 0.1); }
+.us-sub { margin: 12px 0 6px; color: var(--hub-muted); font: 11px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.us-members { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.us-members li { display: grid; grid-template-columns: minmax(110px, 1.2fr) 90px minmax(140px, 1.6fr) 100px 110px; gap: 10px; align-items: baseline; padding: 8px 12px; border: 1px solid var(--glass-line); border-radius: 12px; background: rgba(128, 150, 180, 0.08); font-size: 14px; }
+.us-members span, .us-members time { color: var(--hub-muted); font-size: 13px; overflow-wrap: anywhere; }
+@media (max-width: 759.98px) { .us-members li { grid-template-columns: 1fr 1fr; } }

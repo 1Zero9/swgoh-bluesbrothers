@@ -8,6 +8,7 @@ import { BookOpen, ChevronRight, Star, Ellipsis, House, MessageCircleQuestion, U
 import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor, type HubSectionKey } from "@/lib/hub-nav";
 import { parsePins, pinnedLinks, togglePin } from "@/lib/nav-pins";
 import BlueFloat from "./blue-float";
+import VisitBeacon from "./visit-beacon";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -137,6 +138,7 @@ export default function HubNav() {
           <ThemeToggle />
         </div>
       </aside>
+      {!isPreview ? <VisitBeacon path={pathname} /> : null}
       <BlueFloat />
       {dockOpen && DOCK_MENUS[dockOpen] ? (
         <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>

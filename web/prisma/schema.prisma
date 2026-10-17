@@ -816,3 +816,23 @@ model BlueCutoff {
   reason    String?
   createdAt DateTime @default(now())
 }
+
+/// One visit to the site by a signed-in member (at most one every half hour per device). City-level place only: no IP address is kept.
+model MemberVisit {
+  id         String   @id @default(cuid())
+  at         DateTime @default(now())
+  playerId   String?
+  playerName String
+  /// ISO country code from the host's geolocation, e.g. US, GB.
+  country    String?
+  /// Region or state code, e.g. TX.
+  region     String?
+  city       String?
+  /// mobile, tablet or desktop.
+  device     String?
+  /// The page they opened with.
+  path       String?
+
+  @@index([at])
+  @@index([playerId, at])
+}
