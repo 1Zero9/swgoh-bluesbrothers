@@ -71,6 +71,8 @@ export function verifyMemberCookieValue(value: string | undefined) {
 }
 
 export const OAUTH_NEXT_COOKIE_NAME = "bb_oauth_next";
+/** Set after a successful sign-in so the next one can skip Discord's approval screen. */
+export const SIGNED_IN_BEFORE_COOKIE = "bb_signed_in_before";
 export const OAUTH_PROMPT_COOKIE_NAME = "bb_oauth_prompt";
 
 /** Only same-site relative paths are allowed as a post-sign-in destination (no open redirects). */

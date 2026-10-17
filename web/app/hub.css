@@ -2508,3 +2508,19 @@ button.sb-chip:hover:not(:disabled) { border-color: var(--hub-bad); }
 .whos-sheet li em { margin-left: auto; color: var(--hub-muted); font-size: 12.5px; font-style: normal; }
 .whos-note { margin: 0; color: var(--hub-muted); font-size: 13.5px; }
 .whos-hide { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid var(--hub-line); color: var(--hub-muted); font-size: 13px; }
+
+/* Sign-in guard */
+.signin-guard { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; background: rgba(3, 8, 18, 0.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.signin-guard-card { width: min(100%, 400px); display: grid; justify-items: center; gap: 12px; padding: 26px 22px; border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 20px; background: #0b1424; color: #eef3fa; text-align: center; }
+.signin-guard-card strong { font-size: 20px; }
+.signin-guard-card p { margin: 0; color: #b6c3d6; font-size: 14.5px; line-height: 1.5; }
+.signin-guard-spin { width: 34px; height: 34px; border: 3px solid rgba(255, 255, 255, 0.18); border-top-color: #7289ff; border-radius: 50%; animation: signin-spin 0.9s linear infinite; }
+@keyframes signin-spin { to { transform: rotate(360deg); } }
+.signin-guard-help { display: grid; gap: 8px; justify-items: center; padding: 12px; border: 1px solid rgba(245, 185, 66, 0.5); border-radius: 12px; background: rgba(245, 185, 66, 0.1); }
+.signin-guard-help button { padding: 9px 16px; border: 0; border-radius: 10px; background: #7289ff; color: #fff; font: inherit; font-weight: 700; }
+.signin-guard-help code { max-width: 100%; overflow-wrap: anywhere; color: #eef3fa; font-size: 13px; }
+.signin-guard-cancel { border: 0; background: none; color: #8fa2bd; font: inherit; text-decoration: underline; }
+.hub-dash-online { display: flex; }
+.whos-btn.is-inline { width: auto; }
+/* Home already has the button in its header, so the floating one steps aside there. */
+html:has(.hub-dash) .whos-btn.is-float { display: none; }

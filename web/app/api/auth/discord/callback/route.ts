@@ -7,6 +7,7 @@ import {
   OAUTH_NEXT_COOKIE_NAME,
   OAUTH_PROMPT_COOKIE_NAME,
   OAUTH_STATE_COOKIE_NAME,
+  SIGNED_IN_BEFORE_COOKIE,
   createLinkCookieValue,
   createMemberCookieValue,
   isMemberAuthConfigured,
@@ -66,6 +67,7 @@ export async function GET(request: Request) {
         path: "/",
         maxAge: session.maxAge,
       });
+      response.cookies.set(SIGNED_IN_BEFORE_COOKIE, "1", { httpOnly: true, secure: url.protocol === "https:", sameSite: "lax", path: "/", maxAge: 365 * 86_400 });
       return response;
     }
 

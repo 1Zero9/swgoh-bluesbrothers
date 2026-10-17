@@ -8,6 +8,7 @@ import HubPage from "./hub-page";
 import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
 import HubFold from "./hub-fold";
+import { WhosOnlineInline } from "./whos-online";
 import type { StatusCard } from "@/lib/home-status";
 import type { Announcement } from "@/lib/announcement";
 import type { MySquads } from "@/lib/my-squads";
@@ -150,6 +151,7 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
               {glance.map((item) => <li key={item.label}><strong>{item.value}</strong> {item.label}</li>)}
             </ul>
           ) : null}
+          <div className="hub-dash-online"><WhosOnlineInline /></div>
           <GetStarted
             linked={linked}
             steps={STEPS}
