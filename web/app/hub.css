@@ -1403,3 +1403,11 @@ html[data-theme="rebel"] .hub-main.is-inner { --glass: rgba(255, 255, 255, 0.74)
 .hub-main.is-inner .kb-wanted .kb-link { flex: none; padding: 5px 12px; border: 1px solid rgba(var(--ask-rgb), 0.7); border-radius: 999px; background: rgba(var(--ask-rgb), 0.14); color: var(--hub-text); font-size: 12.5px; font-weight: 600; text-decoration: none; white-space: nowrap; cursor: pointer; }
 .hub-main.is-inner .kb-wanted .kb-link:hover { background: rgba(var(--ask-rgb), 0.28); }
 .hub-main.is-inner .kb-link { font-family: inherit; }
+
+/* The unit picker's suggestion list follows the theme (it was dark in Rebel, so the names were unreadable). */
+.hub-main .who-has-suggestions, .hub-sheet .who-has-suggestions { background: var(--hub-surface); border: 1px solid var(--hub-line); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.hub-main .who-has-suggestions button, .hub-sheet .who-has-suggestions button { color: var(--hub-text); }
+.hub-main .who-has-suggestions button:hover, .hub-sheet .who-has-suggestions button:hover, .hub-main .who-has-suggestions button:focus-visible { background: var(--hub-accent-soft); }
+.hub-main .kb-form .who-has-field, .hub-sheet .kb-form .who-has-field { flex: 1 1 100%; width: 100%; }
+html:is([data-theme="light"], [data-theme="rebel"]) .who-has-suggestions { background: #fff; box-shadow: 0 14px 34px rgba(15, 23, 42, 0.2); }
+.hub-main .who-has-field input, .hub-sheet .who-has-field input { width: 100%; box-sizing: border-box; }

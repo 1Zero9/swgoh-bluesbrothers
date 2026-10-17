@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.1.1 — 2026-10-17
+
+- **Fixed the black box on phones.** When you type a unit name (Ask the guild for a counter, saving a squad and similar), the suggestions list was dark on every theme, so on Rebel the names were dark on dark and unreadable. It now follows the theme (white on Rebel, navy on Deep and Classic), and the box is full width.
+
 ## 1.1.0 — 2026-10-16
 
 - **Counters / Knowledge gets the new look, and becomes the template for every page.**
