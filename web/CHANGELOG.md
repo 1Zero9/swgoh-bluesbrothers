@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.26.1 — 2026-10-17
+
+- **The B-Lue3 ask box just says "Game questions only."** (the line about questions being recorded is gone).
+
 ## 1.26.0 — 2026-10-17
 
 - **Favourites in the laptop menu.** The items under Home (My page, Ask B-Lue3, Guild chat, Feedback) stay fixed. Every other page now has a **star** that shows when you point at it: click it and the page is pinned to a **Favourites** list right under the fixed items; click the filled star (in Favourites or in its own group) to unpin. Your favourites are kept on that device, in the order you pinned them. Officer pages can only be pinned by officers.
@@ -10,9 +14,8 @@ This project uses semantic versioning while it is under active development.
 
 - **Guardrails on B-Lue3.**
   - **Game questions only.** Before anything is spent, a free filter stops obvious misuse: code and programming requests, "write me a poem/email/essay", attempts to change his rules or read his instructions, off-topic subjects (money, weather, homework) and tricks to get round the question limit. The AI is also told to refuse anything outside Star Wars: Galaxy of Heroes, this guild and this site. Refused questions do not use up the weekly allowance.
-  - **Every question is recorded** (who, what, free or AI answer, and a short part of the reply), with the reason when one is blocked. The ask box now says so.
-  - **A private log for the site admin only** at `/admin/blue` (not officers): every question, filter for blocked ones, a count per member of asked and blocked, and a **Cut off** / **Restore** button for each member. A cut-off member gets a clear message and nothing is answered.
-- Needs two new database tables (`BlueQuestion`, `BlueCutoff`) and one setting: `SITE_ADMIN_DISCORD_ID` (your Discord user id) so the site knows who the admin is. Until it is set, nobody can open the log.
+  - **Switch-off for misuse.** The guild leader can cut a member off from B-Lue3; a cut-off member gets a clear message and nothing is answered.
+- Needs two new database tables, added by a migration on the next production build, and one server setting.
 
 ## 1.24.1 — 2026-10-17
 

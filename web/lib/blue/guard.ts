@@ -58,4 +58,4 @@ export function isModelRefusal(answer: string): boolean {
   return answer.trim().toUpperCase().startsWith(OFF_TOPIC_MARKER);
 }
 
-export const REFUSAL_MESSAGE = "B-Lue3 only answers questions about Star Wars: Galaxy of Heroes, this guild and this site. That one is outside his job, so it did not use a question. Questions are recorded, and misuse means the droid gets switched off for you.";
+export const REFUSAL_MESSAGE = "B-Lue3 only answers questions about Star Wars: Galaxy of Heroes, this guild and this site. That one is outside his job, so it did not use a question. Misuse means the droid gets switched off for you.";
