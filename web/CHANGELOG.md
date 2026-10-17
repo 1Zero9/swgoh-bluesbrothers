@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.29.0 — 2026-10-17
+
+- **The Ask page, release 1: ask, or find a counter.** The Ask page is on the new look and has two tabs. **Ask B-Lue3** is the chat as before (in a glass frame, orange Ask button). **Find a counter** is new: pick the enemy squad's leader, optionally a mode (Territory War, GAC 5v5, GAC 3v3), and see the counters officers have checked and the squads members have saved, each with whether you can run it. It is free and never uses a question. If the guild has nothing, two buttons appear: **Ask B-Lue3 to search the web** (uses a question, and fills the chat for you) or **Ask the guild for a counter**.
+- **How B-Lue3 answers** (free guild knowledge, then web search, then AI, with what each costs and your questions left) stays in view in a side column on a laptop, and under the page on a phone. The order and the warning are unchanged.
+- Counters, Saved squads and the Knowledge pages are untouched. Later releases bring them together.
+
 ## 1.28.0 — 2026-10-17
 
 - **More and Credits on the new look.** More drops the big picture banner for the slim header and the themed background: Account (My page, theme, add to home screen, Discord, sign out), Notifications, Off duty and the officer links are all glass cards with the blue glow, two across on a laptop. Credits has the same header, glass cards for 1Zero9 Studio and the open-source projects, and glass notes for Mission From God and the property notice. Both read on the light theme.
