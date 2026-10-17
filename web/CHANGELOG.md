@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.28.0 — 2026-10-17
+
+- **More and Credits on the new look.** More drops the big picture banner for the slim header and the themed background: Account (My page, theme, add to home screen, Discord, sign out), Notifications, Off duty and the officer links are all glass cards with the blue glow, two across on a laptop. Credits has the same header, glass cards for 1Zero9 Studio and the open-source projects, and glass notes for Mission From God and the property notice. Both read on the light theme.
+
 ## 1.27.1 — 2026-10-17
 
 - **Quieter server logs.** The database connection now states its security mode outright (the same one it was already using), so the driver's repeated "SECURITY WARNING: SSL modes…" notice stops appearing. Nothing changes for members.

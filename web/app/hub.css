@@ -2331,3 +2331,21 @@ html[data-theme="rebel"] .hub-blue-panel form button[type="submit"] { background
 .us-members li { display: grid; grid-template-columns: minmax(110px, 1.2fr) 90px minmax(140px, 1.6fr) 100px 110px; gap: 10px; align-items: baseline; padding: 8px 12px; border: 1px solid var(--glass-line); border-radius: 12px; background: rgba(128, 150, 180, 0.08); font-size: 14px; }
 .us-members span, .us-members time { color: var(--hub-muted); font-size: 13px; overflow-wrap: anywhere; }
 @media (max-width: 759.98px) { .us-members li { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- More and Credits on the inner-page template ---------- */
+.hub-more { display: grid; gap: 18px; }
+.hub-more .hub-card, .hub-more .hub-link, .hub-more .hub-action, .hub-more .hub-action-row { background: var(--glass); border: 1px solid var(--glass-line); box-shadow: none; color: var(--hub-text); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); transition: border-color 0.18s, box-shadow 0.18s; }
+.hub-more .hub-link:hover, .hub-more .hub-action:hover, .hub-more .hub-card:hover { border-color: var(--hub-accent); box-shadow: 0 0 0 1px var(--hub-accent), 0 0 20px rgba(103, 199, 245, 0.18); }
+.hub-more .hub-section-title { color: var(--hub-muted); margin-bottom: 8px; }
+.hub-more .hub-action.is-quiet strong { color: var(--hub-bad); }
+.hub-more .push-card { background: transparent; border: 1px solid var(--glass-line); max-width: none; }
+.hub-more .push-card p, .hub-more .push-card label { color: var(--hub-text); }
+.hub-more .push-card button { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-credits { display: grid; gap: 14px; }
+.hub-credits .credit-list { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin: 0; padding: 0; max-width: none; }
+.hub-credits .credit-card, .hub-credits .credit-note { margin: 0; padding: 18px 20px; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); box-shadow: none; color: var(--hub-text); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); max-width: none; }
+.hub-credits .credit-card h2, .hub-credits .credit-note h2, .hub-credits .studio-title-row h2 { color: var(--hub-text); font-size: 19px; }
+.hub-credits .credit-card p, .hub-credits .credit-note p, .hub-credits .credit-card span { color: var(--hub-muted); }
+.hub-credits .studio-pill { border: 1px solid var(--glass-line); background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-credits .credit-card a, .hub-credits .studio-visit-link { color: var(--hub-accent); }
+.hub-credits .studio-pill { display: inline-block; width: auto; padding: 3px 10px; border-radius: 999px; }

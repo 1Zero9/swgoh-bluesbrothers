@@ -4,7 +4,7 @@ import AnswerLadder from "./answer-ladder";
 import BlueIntro from "./blue-intro";
 import HubLinkList from "./hub-link-list";
 import HubBanner from "./hub-banner";
-import HubPage from "./hub-page";
+import HubPage, { HubHeader } from "./hub-page";
 import MoreActions from "./more-actions";
 import PushSettings from "./push-settings";
 import { GUILD_GROUPS, OFF_DUTY_LINKS, OFFICER_LINKS } from "@/lib/hub-links";
@@ -26,34 +26,32 @@ export function GuildView() {
 
 export function MoreView({ isOfficer, discordUrl }: { isOfficer: boolean; discordUrl: string }) {
   return (
-    <HubPage banner={<HubBanner image="/cantin-bannera.webp" eyebrow="More" title="Account, alerts and downtime" intro="Your page, notifications, the theme, and the off-duty corner." />}>
-
-      <section className="hub-section">
-        <h2 className="hub-section-title">Account</h2>
-        <HubLinkList links={[{ label: "My page", hint: "Your standing, wins and callouts", href: "/me", icon: "me" }]} />
-        <MoreActions discordUrl={discordUrl} />
-      </section>
-
-      <section className="hub-section">
-        <h2 className="hub-section-title">Notifications</h2>
-        <div className="hub-card"><PushSettings /></div>
-      </section>
-
-      <section className="hub-section">
-        <h2 className="hub-section-title">Off duty</h2>
-        <div className="hub-photo">
-          <Image src="/cantin-bannera.webp" alt="The cantina street" fill sizes="(max-width: 1023px) 100vw, 720px" />
-          <span>The Cantina</span>
-        </div>
-        <HubLinkList links={OFF_DUTY_LINKS} quiet />
-      </section>
-
-      {isOfficer ? (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="More" title="Account, alerts and downtime" intro="Your page, notifications, the theme, and the off-duty corner." />
+      <div className="hub-more">
         <section className="hub-section">
-          <h2 className="hub-section-title">Officers only</h2>
-          <HubLinkList links={OFFICER_LINKS} quiet />
+          <h2 className="hub-section-title">Account</h2>
+          <HubLinkList links={[{ label: "My page", hint: "Your standing, wins and callouts", href: "/me", icon: "me" }]} />
+          <MoreActions discordUrl={discordUrl} />
         </section>
-      ) : null}
+
+        <section className="hub-section">
+          <h2 className="hub-section-title">Notifications</h2>
+          <div className="hub-card"><PushSettings /></div>
+        </section>
+
+        <section className="hub-section">
+          <h2 className="hub-section-title">Off duty</h2>
+          <HubLinkList links={OFF_DUTY_LINKS} quiet />
+        </section>
+
+        {isOfficer ? (
+          <section className="hub-section">
+            <h2 className="hub-section-title">Officers only</h2>
+            <HubLinkList links={OFFICER_LINKS} quiet />
+          </section>
+        ) : null}
+      </div>
     </HubPage>
   );
 }
