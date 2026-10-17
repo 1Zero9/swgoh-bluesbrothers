@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.21.0 — 2026-10-17
+
+- **Overview on the new look.** The big hero picture, the site bar and the long footer are gone; it opens with the slim header and the same glass frames as the rest of the site. Guild health tiles (members, power, tickets, needs attention) sit in a row (two across on a phone), then the Guild Wire beside the Discord box, then Wall of Fame and the watchlist, then who has just joined. The Wire's items and the leaderboards follow the theme, with orange for the action buttons.
+
 ## 1.20.0 — 2026-10-17
 
 - **An identity bar on phone Home.** The emblem and "Blues Brothers · Guild hub" now sit across the very top (tap it for Home), with the My page icon at the right. "Welcome, name" and the guild numbers sit right under it. Laptops already have the logo in the sidebar.
