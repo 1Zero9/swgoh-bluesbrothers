@@ -2440,3 +2440,13 @@ button.sb-chip:hover:not(:disabled) { border-color: var(--hub-bad); }
 .kb-steps .hub-segment { display: flex; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
 .kb-steps .hub-segment button { flex: 1 0 auto; }
 @media (max-width: 759.98px) { .ask-main { overflow-x: clip; } .kb-step { padding: 12px; } }
+
+/* Ask release 4: asking the guild from the finder, and the wanted list */
+.cf-request { display: grid; gap: 8px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--glass-line); }
+.cf-request label { display: grid; gap: 4px; font-size: 13.5px; font-weight: 700; color: var(--hub-text); }
+.cf-request input { min-width: 0; padding: 10px 12px; border: 1px solid var(--glass-line); border-radius: 10px; background: var(--glass); color: var(--hub-text); font: inherit; font-weight: 400; }
+.cf-request .kb-secondary { justify-self: start; }
+.cf-wanted { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.cf-wanted li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 12px 14px; border: 1px solid var(--glass-line); border-radius: 14px; background: var(--glass); }
+.cf-wanted li > span { min-width: 0; display: grid; gap: 2px; }
+.cf-wanted small { color: var(--hub-muted); }

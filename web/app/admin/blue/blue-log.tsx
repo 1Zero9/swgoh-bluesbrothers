@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { AdminMember, AdminQuestion } from "@/lib/blue/log";
+import type { AdminMember, AdminQuestion, AdminSearch } from "@/lib/blue/log";
 
-type Data = { questions: AdminQuestion[]; members: AdminMember[]; cutoffs: { playerId: string; name: string; reason: string | null; at: string }[] };
+type Data = { questions: AdminQuestion[]; members: AdminMember[]; searches: AdminSearch[]; cutoffs: { playerId: string; name: string; reason: string | null; at: string }[] };
 const when = (value: string) => new Date(value).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export default function BlueLog({ initial }: { initial: Data }) {
@@ -16,7 +16,7 @@ export default function BlueLog({ initial }: { initial: Data }) {
     setFilter(next);
     const response = await fetch(`/api/admin/blue?filter=${next}`, { cache: "no-store" }).catch(() => null);
     const json = (await response?.json().catch(() => null)) as (Data & { ok?: boolean }) | null;
-    if (json?.ok) setData({ questions: json.questions, members: json.members, cutoffs: json.cutoffs });
+    if (json?.ok) setData({ questions: json.questions, members: json.members, searches: json.searches, cutoffs: json.cutoffs });
   }
 
   async function act(action: "cutoff" | "restore", playerId: string, name: string) {
@@ -34,6 +34,18 @@ export default function BlueLog({ initial }: { initial: Data }) {
   return (
     <div className="hub-knowledge bl">
       {message ? <p className="kb-notice" role="status">{message}<button type="button" onClick={() => setMessage(null)} aria-label="Dismiss">×</button></p> : null}
+
+      <section className="bl-box">
+        <h3>What members search for in Find a counter, last 30 days</h3>
+        {data.searches.length ? (
+          <ul className="bl-members">
+            {data.searches.map((item) => (
+              <li key={item.term}><span><strong>{item.term}</strong> <small>{item.count} search{item.count === 1 ? "" : "es"} · {item.people} member{item.people === 1 ? "" : "s"}{item.hadAnswer ? "" : " · nothing found"}</small></span></li>
+            ))}
+          </ul>
+        ) : <p className="kb-meta">No searches yet.</p>}
+        <p className="kb-meta">Searches where nothing was found are the best ideas for what to add next.</p>
+      </section>
 
       <section className="bl-box">
         <h3>Members, last 30 days</h3>

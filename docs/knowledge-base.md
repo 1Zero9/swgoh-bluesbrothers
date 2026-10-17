@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.82.0 · **Last updated:** 2026-10-17 · tracks site `v1.30.0`
+**Doc version:** 1.83.0 · **Last updated:** 2026-10-17 · tracks site `v1.32.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -533,6 +533,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.83.0 — 2026-10-17**: Ask releases 3–4. Counter card v2 and four-step add form. Release 4: counter requests are made inline in Find a counter; when an officer publishes a counter the requester is mentioned in the counters Discord channel (`DISCORD_COUNTERS_WEBHOOK_URL`, needs `Player.discordUserId`) and pushed via `notifyPlayers` (`lib/push.ts`) if they have notifications on. Finder searches (`GET /api/knowledge?unit=…&log=1`) are written to `BlueQuestion` with route `search` (deduped per member per term per hour, `reason` = found/none, no new table) and summarised at `/admin/blue` ("What members search for"); `search` rows are excluded from the question list and member counts.
 - **1.74.0 — 2026-10-14**: the Home banner shape on every page (hub pages via `HubBanner`, older pages via CSS); old floating header hidden for members.
 - **1.73.0 — 2026-10-14**: B-Lue3 quick panel layout fix; `BlueIntro` gains a plain `text` variant (a pill button).
 - **1.72.0 — 2026-10-14**: B-Lue3 is a draggable floating chat icon; Home banner taller (250–330px) with words and numbers at the top.

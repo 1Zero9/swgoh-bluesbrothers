@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "B-Lue3 log · Blues Brothers", robot
 export default async function BlueAdminPage() {
   const access = await getViewerAccess();
   if (!isSiteAdmin(access)) return <MembersOnly path="/admin/blue" area="The B-Lue3 question log" />;
-  let initial = { questions: [], members: [], cutoffs: [] } as Awaited<ReturnType<typeof adminOverview>>;
+  let initial = { questions: [], members: [], searches: [], cutoffs: [] } as Awaited<ReturnType<typeof adminOverview>>;
   try { initial = await adminOverview("all"); } catch { /* table not ready: show it empty */ }
   return (
     <HubPage backdrop="themed" inner>
