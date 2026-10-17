@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.11.0 — 2026-10-17
+
+- **My page is now right under Home** in the menu (it left the "You" group).
+- **A My page icon at the top right of Home on a phone** (and tablet), with an orange dot when you have a check-in to do.
+- **My page fixed for the light theme.** The B-Lue3 briefing was a dark box with dark text on Rebel, and several links and the notification tick were pale colours on a white page. Every box on My page now follows the theme: the briefing is orange-tinted glass with an orange button, the question buttons, roster report, counters, callouts, wins and notifications are glass frames with readable text, and it has the slim header and the picture behind it like the other pages.
+
 ## 1.10.0 — 2026-10-17
 
 - **War room pages on the new look.** Raids, Territory War, Territory Battles, Datacrons and Arsenal now use the slim header and the themed picture instead of the tall banner, with the same see-through frames and blue hover glow as the rest of the site. The number tiles (tickets, members, scores) are a row of glass tiles; the live-war strip, the matchup (Blues Brothers vs the opponent), the last result, the notes and the empty states are glass too; and the page footers are one quiet row of links.

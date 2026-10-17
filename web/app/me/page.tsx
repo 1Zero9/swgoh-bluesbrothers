@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import IntelFooter from "@/app/intel-footer";
 import MembersOnly from "@/app/members-only";
 import BlueChat from "@/app/blue-chat";
 import BlueIntro from "@/app/blue-intro";
 import NavIcon from "@/app/nav-icon";
-import PageHero from "@/app/page-hero";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import PushSettings from "@/app/push-settings";
 import { getViewerAccess } from "@/lib/access-control";
 import { blueAnswer, blueBriefing, counterOptions, type BlueQuestion } from "@/lib/blue/advice";
@@ -41,18 +40,12 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
 
   if (!data) {
     return (
-      <main className="intel-shell destination-shell">
-        <PageHero
-          image="/members-banner.webp"
-          imageAlt="The Blues Brothers"
-          eyebrow="My page"
-          title={<>Sign in with Discord<br /><em>to see your page.</em></>}
-          description="This page is built from your own in-game account, so it needs a Discord sign-in linked to your player. The shared officer password doesn't carry one."
-        />
+      <HubPage backdrop="themed" inner>
+        <HubHeader eyebrow="My page" title="Sign in with Discord to see your page." intro="This page is built from your own in-game account, so it needs a Discord sign-in linked to your player. The shared officer password doesn't carry one." />
         <section className="members-only-card">
           <a className="btn-discord-gate" href="/api/auth/discord?next=/me">Sign in with Discord</a>
         </section>
-      </main>
+      </HubPage>
     );
   }
 
@@ -68,23 +61,16 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
   const personalCounters = counterOptions(counters);
 
   return (
-    <main className="intel-shell destination-shell">
-      <PageHero
-        image="/members-banner.webp"
-        imageAlt="The Blues Brothers"
-        eyebrow={`${data.rank} · Level ${data.level ?? "—"}`}
-        title={<>{data.name}<br /><em>your page.</em></>}
-        description="Where you stand, what you've earned lately, and where the guild could use you."
-        priority
-        syncLabel="My page"
-      >
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow={`${data.rank} · Level ${data.level ?? "—"}`} title={data.name} intro="Where you stand, what you've earned lately, and where the guild could use you." />
+      <div className="hub-stats">
         <div className="intel-summary">
           <div><strong>{power(data.galacticPower)}</strong><small>galactic power</small></div>
           <div><strong>{data.galacticLegends}</strong><small>Galactic Legends · {change(data.glChange30d)}</small></div>
           <div><strong>{data.relicUnits}</strong><small>relic units · {change(data.relicChange30d)}</small></div>
           <div><strong>{data.datacrons}</strong><small>datacrons</small></div>
         </div>
-      </PageHero>
+      </div>
 
       <section className="blue-briefing public-block" aria-labelledby="blue-briefing-title">
         <BlueIntro />
@@ -204,9 +190,9 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
         <PushSettings />
       </section>
 
-      <IntelFooter message="This page is only visible to you.">
-        <Link href="/">Back to the command centre →</Link>
-      </IntelFooter>
-    </main>
+      <HubLinks message="This page is only visible to you.">
+        <Link href="/">Back to Home →</Link>
+      </HubLinks>
+    </HubPage>
   );
 }
