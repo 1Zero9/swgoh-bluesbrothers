@@ -2144,3 +2144,16 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
 .hub-mission [class*="gameShell"] { min-height: 0 !important; padding-top: clamp(14px, 2vw, 24px) !important; }
 @media (max-width: 760px) { .hub-mission { border-radius: 14px; } .hub-mission [class*="intro"] { padding-top: 24px !important; padding-bottom: 24px !important; } }
 .hub-mission > * { border-radius: inherit; }
+
+/* Phone identity bar: emblem and guild name across the top, My page at the right. Laptops have the sidebar logo. */
+.hub-brandbar { display: none; }
+@media (max-width: 1023.98px) {
+  .hub-brandbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .hub-brandbar-id { display: flex; align-items: center; gap: 10px; color: var(--hub-text); text-decoration: none; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35); }
+  html[data-theme="rebel"] .hub-brandbar-id { text-shadow: none; }
+  .hub-brandbar-id img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4)); }
+  .hub-brandbar-id strong { display: block; font-size: 16px; letter-spacing: 0.01em; line-height: 1.15; }
+  .hub-brandbar-id small { display: block; margin-top: 1px; color: var(--hub-muted); font: 10px var(--font-geist-mono), monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+  .hub-brandbar .hub-mypage-icon { position: static; flex: none; }
+  .hub-dash-head { padding-right: 0; }
+}

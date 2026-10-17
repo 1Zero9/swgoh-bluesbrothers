@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.20.0 — 2026-10-17
+
+- **An identity bar on phone Home.** The emblem and "Blues Brothers · Guild hub" now sit across the very top (tap it for Home), with the My page icon at the right. "Welcome, name" and the guild numbers sit right under it. Laptops already have the logo in the sidebar.
+
 ## 1.19.0 — 2026-10-17
 
 - **Mission From God inside the new frame.** The old site bar is replaced by the slim header and the themed picture, and the game sits in one framed panel instead of filling the whole screen with big gaps above it. The game itself (intro, datapad, trading) is unchanged and keeps its dark console look.
