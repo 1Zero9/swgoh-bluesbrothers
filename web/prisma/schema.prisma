@@ -848,3 +848,16 @@ model MemberPresence {
 
   @@index([lastSeenAt])
 }
+
+/// A one-time sign-in link an officer makes for a member who can't get Discord sign-in to work. Only a hash of the token is kept.
+model MemberSignInLink {
+  id            String    @id @default(cuid())
+  tokenHash     String    @unique
+  playerId      String
+  createdByName String
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime
+  usedAt        DateTime?
+
+  @@index([playerId])
+}

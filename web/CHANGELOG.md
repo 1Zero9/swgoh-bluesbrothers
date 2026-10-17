@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.40.0 — 2026-10-18
+
+- **Officers can now sign a member in without Discord.** For someone like a member whose Discord login page won't load, an officer opens **Officers → Sign-in links**, picks the member, and gets a one-time link plus a ready-to-send message. The member taps the link, taps **Sign me in**, and is in (for about three months on that device). The link works once and lasts two days; link previews in chat can't use it up.
+- **Help page:** a new step says to log in to discord.com first (in another tab) and then tap Sign in, which skips Discord's login pages, and points to the officer link as the fallback.
+
 ## 1.39.0 — 2026-10-18
 
 - **A plain-English "Signing in, step by step" help page** (`/help/sign-in`), written for people who aren't comfortable with computers: five short steps in big text (use Safari or Chrome, tap once, check the Discord name, Authorise, type your ally code once) and what to do about a white screen, a password or emailed-code prompt, or being signed in to the wrong Discord account.
