@@ -62,7 +62,7 @@ export default function LinkWelcome({ discordUsername, discordUrl, preview = fal
           <section className="hub-card hub-link-card">
             <p className="hub-eyebrow">Step 2 of 3</p>
             <h1>Now, your ally code</h1>
-            <p className="hub-intro">You&apos;re signed in to Discord as <strong>{discordUsername}</strong>. One more thing, once only: tell us which game account is yours so the site can show you your own page.</p>
+            <p className="hub-intro">You&apos;re signed in to Discord as <strong>{discordUsername}</strong>. If that is not the Discord account you use for the guild, <a href="/api/auth/discord?consent=1">sign in with a different one</a>. One more thing, once only: tell us which game account is yours so the site can show you your own page.</p>
             <form onSubmit={submit} className="hub-form">
               <label>Your 9-digit ally code
                 <input
@@ -76,7 +76,7 @@ export default function LinkWelcome({ discordUsername, discordUrl, preview = fal
                   aria-invalid={problem ? true : undefined}
                 />
               </label>
-              <details id="ally-help" className="hub-help">
+              <details id="ally-help" className="hub-help" open>
                 <summary>Where do I find it?</summary>
                 <p>In the game, tap your player portrait at the top left of the home screen. Your ally code is under your name.</p>
               </details>
@@ -93,7 +93,7 @@ export default function LinkWelcome({ discordUsername, discordUrl, preview = fal
             ) : null}
           </section>
         )}
-        <p className="hub-note-line">We only use your ally code to find your public profile. Not in the guild yet? <Link href="/#join">See how to join</Link>.</p>
+        <p className="hub-note-line"><a href="/help/sign-in">Need help? Step-by-step guide</a>. We only use your ally code to find your public profile. Not in the guild yet? <Link href="/#join">See how to join</Link>.</p>
       </div>
     </main>
   );

@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.39.0 — 2026-10-18
+
+- **A plain-English "Signing in, step by step" help page** (`/help/sign-in`), written for people who aren't comfortable with computers: five short steps in big text (use Safari or Chrome, tap once, check the Discord name, Authorise, type your ally code once) and what to do about a white screen, a password or emailed-code prompt, or being signed in to the wrong Discord account.
+- It is linked from the front page, the "Opening Discord…" panel, the sign-in problem notice, the Gig door and the ally-code step.
+- On the ally-code step, the site now says which Discord account you're on and offers **"sign in with a different one"**, and the "Where do I find my ally code?" tip is open by default.
+
 ## 1.38.0 — 2026-10-18
 
 - **"Who's online" is now on the Home page too**, in the header next to the welcome line, with the live count. (On phones the floating pill steps aside on Home so it isn't shown twice.)

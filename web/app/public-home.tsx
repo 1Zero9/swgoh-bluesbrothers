@@ -42,6 +42,7 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
       <div className="pub-cta">
         <a className="btn-discord-gate" href="/api/auth/discord">Sign in with Discord</a>
         <a className="pub-cta-alt" href="#join">Thinking of joining?</a>
+        <a className="pub-help" href="/help/sign-in">Trouble signing in? Step-by-step help</a>
       </div>
       {notice}
       <div className="intel-summary pub-stats">

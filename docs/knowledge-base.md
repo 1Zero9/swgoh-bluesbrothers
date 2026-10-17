@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.85.0 · **Last updated:** 2026-10-18 · tracks site `v1.38.0`
+**Doc version:** 1.86.0 · **Last updated:** 2026-10-18 · tracks site `v1.39.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -533,6 +533,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.86.0 — 2026-10-18**: public sign-in help page `/help/sign-in` (no auth), linked from the front page, `SignInGuard`, `SignInProblem`, the Gig door and `LinkWelcome`. A member can end up on a second Discord account (emailed-code login, or two accounts in one browser); `LinkWelcome` now names the Discord account and links to `/api/auth/discord?consent=1` ("sign in with a different one") — Discord's own screen also shows "Not you?".
 - **1.85.0 — 2026-10-18**: Sign-in hardening. `SignInGuard` (`app/sign-in-guard.tsx`, mounted in the root layout) intercepts every `a[href^="/api/auth/discord"]` click: shows an "Opening Discord…" overlay, swallows repeat taps (each tap used to mint a new OAuth state cookie and invalidate the one in flight), and after 7 s or inside an in-app browser (Discord/FB/Instagram UA) tells the member to open Safari/Chrome. `/api/auth/discord` now uses `prompt=consent` for anyone without the `bb_signed_in_before` cookie (set on successful sign-in, 1 year) and `prompt=none` only for returners, removing the fail-and-retry hop for first-timers. "Who's online" also appears in the Home header (`WhosOnlineInline`, synced with the menu button by window events).
 - **1.84.0 — 2026-10-18**: "Who's online" button (sidebar on laptops, floating pill above the tab bar on phones). `WhosOnline` (`app/whos-online.tsx`) sends a heartbeat to `POST /api/presence` about once a minute while a tab is visible and shows the reply: (1) **on the site** from the new `MemberPresence` table (one row per member, online = heartbeat under 150 s old, no place or history stored; a per-device "Appear offline" checkbox sets `hidden`); (2) **on Discord** from Discord's public server widget (`/guilds/$DISCORD_GUILD_ID/widget.json`, cached 60 s), shown only if the server has the widget switched on (Server Settings → Widget); (3) **in the game recently** from `Player.profilePayload->lastActivityTime` (last 3 h, only as fresh as the last profile sync). Helpers in `lib/presence.ts` (tested), queries in `lib/presence-data.ts`.
 - **1.83.0 — 2026-10-17**: Ask releases 3–4. Counter card v2 and four-step add form. Release 4: counter requests are made inline in Find a counter; when an officer publishes a counter the requester is mentioned in the counters Discord channel (`DISCORD_COUNTERS_WEBHOOK_URL`, needs `Player.discordUserId`) and pushed via `notifyPlayers` (`lib/push.ts`) if they have notifications on. Finder searches (`GET /api/knowledge?unit=…&log=1`) are written to `BlueQuestion` with route `search` (deduped per member per term per hour, `reason` = found/none, no new table) and summarised at `/admin/blue` ("What members search for"); `search` rows are excluded from the question list and member counts.

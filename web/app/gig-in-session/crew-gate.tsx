@@ -189,7 +189,7 @@ export default function CrewGate({
                 <b>Enter with Discord OAuth</b>
               </a>
               <span className="auth-hint">
-                No Discord account yet? <a href={discordUrl} target="_blank" rel="noreferrer">Join our public server →</a>
+                No Discord account yet? <a href={discordUrl} target="_blank" rel="noreferrer">Join our public server →</a> · <a href="/help/sign-in">Help signing in</a>
               </span>
             </div>
           </div>
