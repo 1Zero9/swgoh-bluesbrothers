@@ -2,8 +2,7 @@ import MembersOnly from "@/app/members-only";
 import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRosterMembers } from "@/lib/members";
 import { isOfficerRequest } from "@/lib/officer-session";
@@ -138,20 +137,14 @@ export default async function TerritoryBattlesPage() {
     }));
 
   return (
-    <main className="intel-shell destination-shell mission-shell">
-      <PageHero
-        image="/tw-banner.webp"
-        imageAlt="The Blues Brothers and guild officers studying a holographic Territory Battle map"
-        eyebrow="Territory Battles"
-        title={<>See the whole field.<br /><em>Deploy with purpose.</em></>}
-        description="What the guild needs from you in Rise of the Empire, and the plan for each phase."
-        priority
-      >
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Territory Battles" title="See the whole field. Deploy with purpose." intro="What the guild needs from you in Rise of the Empire, and the plan for each phase." />
+      <div className="hub-stats">
         <div className="intel-summary">
           <div><strong>{summary.live ? summary.memberCount : "—"}<span>/{summary.capacity}</span></strong><small>active members</small></div>
           <div><strong>{summary.live ? power(summary.guildPower) : "—"}</strong><small>guild power</small></div>
         </div>
-      </PageHero>
+      </div>
 
       <section className="tb-section" id="callouts">
         <div className="section-heading">
@@ -228,9 +221,9 @@ export default async function TerritoryBattlesPage() {
         </details>
       ) : null}
 
-      <IntelFooter message="Territory Battle allocations are calculated using synced guild snapshots.">
+      <HubLinks message="Territory Battle allocations are calculated using synced guild snapshots.">
         <Link href="/operations">Back to Operations →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }

@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.10.0 — 2026-10-17
+
+- **War room pages on the new look.** Raids, Territory War, Territory Battles, Datacrons and Arsenal now use the slim header and the themed picture instead of the tall banner, with the same see-through frames and blue hover glow as the rest of the site. The number tiles (tickets, members, scores) are a row of glass tiles; the live-war strip, the matchup (Blues Brothers vs the opponent), the last result, the notes and the empty states are glass too; and the page footers are one quiet row of links.
+- **Raids in full:** the raid tabs are pills (the chosen one orange), the standings are tidy rows with rank, name and damage, and the search sits in the same frame.
+- The deeper tools inside Territory War, Territory Battles and the Datacron vault keep their own layouts for now. They sit inside the new frames; I will bring them across one at a time.
+
 ## 1.9.0 — 2026-10-17
 
 - **Roster and "Who has…?" get the new look.** The tall banner is replaced by the slim header (with the active and new-member counts). "Who has…?" is a glass box with an orange **Search** button, and its answer lists holders in neat columns. Fresh arrivals, search and sort, and the leaving list are all the same see-through frames with the blue hover glow.

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
 import { DEFAULT_ANNOUNCEMENT } from "@/lib/announcement";
 import { buildStatusRow } from "@/lib/home-status";
-import HubPage, { HubHeader } from "@/app/hub-page";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import FeedbackBoard from "@/app/feedback/feedback-board";
 import CountersClient from "@/app/counters/counters-client";
 import ActivityFeed from "@/app/activity/activity-feed";
@@ -12,6 +12,7 @@ import MemberPicker from "@/app/officer/member/member-picker";
 import MemberDirectory from "@/app/member-directory";
 import MemberWelcomeTicker from "@/app/member-welcome-ticker";
 import WhoHas from "@/app/members/who-has";
+import RaidBoard from "@/app/raids/raid-board";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -45,6 +46,8 @@ const HIST_SAMPLE = [["Pillar of the band",4,0,11.1],["Pillar of the band",4,0,1
 
 const ROSTER_SAMPLE = [["Steve","LEADER",1.24e9,9,41,600,null],["Dex","OFFICER",11.1e6,9,41,600,null],["ZappAttk","MEMBER",8.2e6,3,22,310,"Raid tickets running low"],["Igor","MEMBER",6.1e6,1,9,80,"Gone quiet on the holonet"],["Brian","MEMBER",9.4e6,5,30,590,null]].map(([name, role, gp, gl, relics, tickets, flag], i) => ({ playerId: String(i), name: name as string, galacticPower: String(gp), characterPower: String(Number(gp) * 0.85), shipPower: String(Number(gp) * 0.15), raidTickets: tickets as number, lastActivityAt: "2026-10-17T08:00:00Z", joinedAt: "2026-02-10T10:00:00Z", rank: i + 1, playerLevel: 85, memberRole: role as string, galacticLegends: gl as number, relicUnits: relics as number, datacrons: 20, profileSyncedAt: "2026-10-16T10:00:00Z", attentionReasons: flag ? [flag as string] : [] }));
 
+const RAID_SAMPLE = [{ raidId: "sith_raid", label: "Krayt Dragon", outcome: 1, outcomeLabel: "Completed", durationSeconds: 7200, endedAt: "2026-10-16T10:00:00Z", participants: [["Dex", 4200000], ["Steve", 3900000], ["ZappAttk", 3100000], ["Brian", 2500000]].map(([name, damage], i) => ({ playerId: String(i), name: name as string, damage: damage as number, rank: i + 1 })) }, { raidId: "rancor_challenge", label: "Rancor", outcome: 1, outcomeLabel: "Completed", durationSeconds: 5400, endedAt: "2026-10-12T10:00:00Z", participants: [{ playerId: "1", name: "Dex", damage: 100, rank: 1 }] }];
+
 export const dynamic = "force-dynamic";
 
 export default async function HubPreview({ searchParams }: { searchParams: Promise<{ screen?: string }> }) {
@@ -66,6 +69,18 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       <WhoHas />
       <MemberWelcomeTicker members={[{ playerId: "a", name: "Juggernaut2000", joinedAt: "2026-10-15T10:00:00Z", galacticPower: "7900000", memberRole: "MEMBER" }]} />
       <MemberDirectory members={ROSTER_SAMPLE} />
+    </HubPage>
+  );
+  if (screen === "raids") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Raid operations" title="Bring the right teams. Hit the right notes." intro="Where the guild is on tickets, and who carried the last completed raid." meta="Captured 17 Oct, 09:00" />
+      <div className="hub-stats"><div className="intel-summary"><div><strong>2,430</strong><small>daily tickets</small></div><div><strong>29,400</strong><small>ticket target</small></div><div><strong>8<span>%</span></strong><small>target reached</small></div></div></div>
+      <section className="tw-roster-section"><header><div><p className="eyebrow">Recent results</p><h2>Who carried the raid</h2></div></header>
+        <RaidBoard raids={RAID_SAMPLE} />
+      </section>
+      <section className="tw-matchup" aria-label="Guild matchup"><article><p>Home signal</p><h2>Blues Brothers</h2><strong>1.31B<small>locked GP</small></strong></article><span>VS</span><article><p>Opposition</p><h2>Immortal Hungarians</h2><strong>1.28B<small>locked GP</small></strong></article></section>
+      <div className="tw-empty"><strong>No completed raid captured yet.</strong><p>This board fills in as soon as a raid finishes and the next hourly sync runs.</p></div>
+      <HubLinks message="Raid operations now surface real results, not just ticket pace."><span>Back to Operations →</span></HubLinks>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;

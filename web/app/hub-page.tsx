@@ -23,16 +23,27 @@ export default function HubPage({ children, banner, backdrop, inner = false }: {
  * The header every inner page shares: a slim frosted bar with the page's small label, its title, one line about it, and
  * (on the right) the page's main actions. The page's picture is the themed background behind it, not a tall banner.
  */
-export function HubHeader({ eyebrow, title, intro, children }: { eyebrow: string; title: ReactNode; intro?: ReactNode; children?: ReactNode }) {
+export function HubHeader({ eyebrow, title, intro, meta, children }: { eyebrow: string; title: ReactNode; intro?: ReactNode; meta?: ReactNode; children?: ReactNode }) {
   return (
     <header className="hub-pagehead">
       <div>
         <p className="hub-eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
         {intro ? <p className="hub-pagehead-intro">{intro}</p> : null}
+        {meta ? <p className="hub-pagehead-meta">{meta}</p> : null}
       </div>
       {children ? <div className="hub-pagehead-actions">{children}</div> : null}
     </header>
+  );
+}
+
+/** The quiet row of links and a note at the foot of an inner page. */
+export function HubLinks({ message, children }: { message?: ReactNode; children?: ReactNode }) {
+  return (
+    <footer className="hub-linkrow">
+      {message ? <span>{message}</span> : null}
+      {children ? <nav>{children}</nav> : null}
+    </footer>
   );
 }
 

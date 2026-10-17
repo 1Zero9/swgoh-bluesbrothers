@@ -2,8 +2,7 @@ import MembersOnly from "@/app/members-only";
 import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getGuildArsenal } from "@/lib/guild-arsenal";
 import { UNIT_CHECKLIST } from "@/lib/unit-checklist";
 import ArsenalInteractive from "./arsenal-interactive";
@@ -25,21 +24,15 @@ export default async function ArsenalPage() {
   const priorityUnitCount = Object.values(UNIT_CHECKLIST).reduce((total, units) => total + units.length, 0);
 
   return (
-    <main className="intel-shell">
-      <PageHero
-        image="/arsnel-banner.webp"
-        imageAlt="The Blues Brothers reviewing ships and units inside a busy guild arsenal"
-        eyebrow="Guild arsenal"
-        title={<>Know what the band<br /><em>can put on the field.</em></>}
-        description="Click any card to plan squad coverage and check player eligibility. High-value roster coverage across Galactic Legends, core characters and capital ships."
-        priority
-      >
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild arsenal" title="Know what the band can put on the field." intro="Click any card to plan squad coverage and check player eligibility. High-value roster coverage across Galactic Legends, core characters and capital ships." />
+      <div className="hub-stats">
         <div className="intel-summary" aria-label="Arsenal data coverage">
           <div><strong>{arsenal.syncedMembers}<span>/{arsenal.memberCount || "—"}</span></strong><small>profiles synced</small></div>
           <div><strong>{profileCoverage}<span>%</span></strong><small>roster coverage</small></div>
           <div><strong>{priorityUnitCount}</strong><small>priority units</small></div>
         </div>
-      </PageHero>
+      </div>
 
       {arsenal.categories.length ? (
         <ArsenalInteractive
@@ -53,9 +46,9 @@ export default async function ArsenalPage() {
         </section>
       )}
 
-      <IntelFooter message="Checklist adapted from SWGoHBot under the MIT licence.">
+      <HubLinks message="Checklist adapted from SWGoHBot under the MIT licence.">
         <Link href="/credits">Sources &amp; credits →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }

@@ -2,8 +2,7 @@ import MembersOnly from "@/app/members-only";
 import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getDashboardSummary } from "@/lib/dashboard";
 import { getRaidRoom } from "@/lib/raids";
 import RaidBoard from "./raid-board";
@@ -25,22 +24,15 @@ export default async function RaidsPage() {
     : "Awaiting first sync";
 
   return (
-    <main className="intel-shell destination-shell mission-shell">
-      <PageHero
-        image="/raid-banner.webp"
-        imageAlt="The Blues Brothers coordinating a guild raid against a giant creature"
-        eyebrow="Raid operations"
-        title={<>Bring the right teams.<br /><em>Hit the right notes.</em></>}
-        description="Where the guild is on tickets, and who carried the last completed raid."
-        priority
-        syncLabel={`Raid operations · Captured ${capturedLabel}`}
-      >
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Raid operations" title="Bring the right teams. Hit the right notes." intro="Where the guild is on tickets, and who carried the last completed raid." meta={`Captured ${capturedLabel}`} />
+      <div className="hub-stats">
         <div className="intel-summary">
           <div><strong>{summary.live ? summary.dailyTickets.toLocaleString("en-GB") : "—"}</strong><small>daily tickets</small></div>
           <div><strong>{summary.ticketTarget.toLocaleString("en-GB")}</strong><small>ticket target</small></div>
           <div><strong>{summary.live ? progress : "—"}<span>{summary.live ? "%" : ""}</span></strong><small>target reached</small></div>
         </div>
-      </PageHero>
+      </div>
 
       <section className="tw-roster-section">
         <header>
@@ -58,9 +50,9 @@ export default async function RaidsPage() {
         <p>SWGOH&apos;s public Comlink guild data does not expose live raid progress to tools outside the guild&apos;s own account. Only the few most recent completed runs are available, and that is what this board shows, one tab per run.</p>
       </details>
 
-      <IntelFooter message="Raid operations now surface real results, not just ticket pace.">
+      <HubLinks message="Raid operations now surface real results, not just ticket pace.">
         <Link href="/operations">Back to Operations →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }

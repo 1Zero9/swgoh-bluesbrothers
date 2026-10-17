@@ -2,8 +2,7 @@ import MembersOnly from "@/app/members-only";
 import { canViewMembersArea } from "@/lib/member-gate";
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { getViewerAccess } from "@/lib/access-control";
 import { buildMyOrders } from "@/lib/tw-my-orders";
 import { getTerritoryWarRoom, type TerritoryWarZone } from "@/lib/territory-war";
@@ -171,19 +170,16 @@ export default async function TerritoryWarPage() {
   };
 
   return (
-    <main className="intel-shell tw-shell">
-      <PageHero
-        image="/tb-banner.webp"
-        imageAlt="The Blues Brothers overlooking a massive Territory War battlefield"
+    <HubPage backdrop="themed" inner>
+      <HubHeader
         eyebrow="Territory War room"
-        title={war.active ? <>The band is live.<br /><em>Know the field.</em></> : <>Get the band ready.<br /><em>Before the doors open.</em></>}
-        description={war.active
+        title={war.active ? "The band is live. Know the field." : "Get the band ready before the doors open."}
+        meta={`Captured ${capturedLabel}`}
+        intro={war.active
           ? `Live registration, locked power and zone state against ${war.opponentName || "the opposing guild"}. Every figure below comes from the latest stored Comlink guild capture.`
           : "The next opponent has not entered the room yet. Use the readiness board to check roster coverage, activity and the people available for the next lock-in."}
-        className="tw-hero"
-        priority
-        syncLabel={`Territory War · Captured ${capturedLabel}`}
-      >
+      />
+      <div className="hub-stats">
         <div className={`tw-live-strip${war.active ? " is-live" : ""}`}>
           <span><i /> {war.active ? `Live war${war.round === null ? "" : ` · Round ${war.round}`}` : "No active war in the latest capture"}</span>
           <strong>{war.active ? (roundEndLabel ? `Round ends ${roundEndLabel}` : "Round timing unavailable") : `Last checked ${capturedLabel}`}</strong>
@@ -196,7 +192,7 @@ export default async function TerritoryWarPage() {
           <div><strong>{war.active ? war.opponentScore.toLocaleString("en-GB") : "—"}</strong><small>{war.active ? `${war.opponentName || "opponent"} score` : "opponent score"}</small></div>
         </div>
         ) : null}
-      </PageHero>
+      </div>
 
       {war.active ? (
         <section className="tw-matchup" aria-label="Guild matchup">
@@ -244,9 +240,9 @@ export default async function TerritoryWarPage() {
         </details>
       ) : null}
 
-      <IntelFooter message="Live data from the guild’s self-hosted SWGOH Comlink service.">
+      <HubLinks message="Live data from the guild’s self-hosted SWGOH Comlink service.">
         <Link href="/arsenal">Open guild arsenal →</Link>
-      </IntelFooter>
-    </main>
+      </HubLinks>
+    </HubPage>
   );
 }
