@@ -1508,3 +1508,34 @@ html .hub-main.is-inner .kb-form .kb-primary[type="submit"] { background: var(--
 /* the "add what you know" sheet follows the glass look */
 .hub-sheet { border-radius: 18px; }
 .hub-sheet .hub-button[type="submit"], .hub-sheet button.hub-button { background: #ea580c; color: #fff; }
+
+/* Saved squads on the inner-page template */
+.hub-main.is-inner .counters { gap: 14px; }
+.hub-main.is-inner .counters-search { grid-template-columns: minmax(0, 1fr) auto; }
+@media (max-width: 759.98px) { .hub-main.is-inner .counters-search { grid-template-columns: minmax(0, 1fr); } }
+.hub-main.is-inner .counters-search .who-has-field input, .hub-main.is-inner .counters-form input, .hub-main.is-inner .counters-form select, .hub-main.is-inner .counters-form textarea { padding: 12px 14px; border: 1px solid var(--glass-line); border-radius: 12px; background: var(--hub-bg); color: var(--hub-text); font: inherit; font-size: 15px; width: 100%; box-sizing: border-box; }
+.hub-main.is-inner .counters-form { border-style: solid; }
+.hub-main.is-inner .counters-form label, .hub-main.is-inner .counters-slots > p { color: var(--hub-muted); font-size: 12.5px; }
+.hub-main.is-inner .counters-form h3 { color: var(--hub-text); }
+.hub-main.is-inner .counters-form button[type="submit"] { background: var(--ask) !important; border: 0 !important; color: #fff !important; }
+.hub-main.is-inner .counters-form button:not([type="submit"]) { border: 1px solid var(--glass-line); border-radius: 10px; background: transparent; color: var(--hub-text); padding: 8px 12px; cursor: pointer; }
+.kb-ask-side { display: grid; gap: 8px; padding: 16px 18px; border: 1px solid rgba(var(--ask-rgb), 0.6); border-radius: 16px; background: linear-gradient(135deg, rgba(var(--ask-rgb), 0.16), var(--glass) 70%); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.kb-ask-side h3 { margin: 0; color: var(--ask-text); font-size: 16px; }
+.kb-ask-side p { margin: 0; color: var(--hub-text); font-size: 13.5px; line-height: 1.5; }
+.kb-ask-link { justify-self: start; padding: 9px 16px; border-radius: 999px; background: var(--ask); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
+.kb-ask-link:hover { filter: brightness(1.08); }
+.kb-ask-more { color: var(--hub-accent); font-size: 13px; text-decoration: none; }
+.kb-ask-more:hover { text-decoration: underline; }
+.hub-main.is-inner .counter-card { padding: 16px 18px; gap: 10px; }
+.hub-main.is-inner .counter-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.hub-main.is-inner .counter-card h3 { margin: 0; font-size: 18px; }
+.hub-main.is-inner .counter-card header p { margin: 4px 0 0; color: var(--hub-muted); font-size: 13px; }
+.hub-main.is-inner .counter-squad { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 10px 12px; border: 1px solid var(--glass-line); border-radius: 12px; background: rgba(128, 150, 180, 0.08); }
+.hub-main.is-inner .counter-notes { margin: 0; font-size: 14.5px; line-height: 1.55; font-style: normal; color: var(--hub-text); }
+.hub-main.is-inner .counter-you { display: flex; align-items: center; gap: 8px; margin: 0; padding: 9px 12px; border: 1px solid rgba(var(--ask-rgb), 0.7); border-radius: 12px; background: rgba(var(--ask-rgb), 0.12); font-size: 14px; font-weight: 600; }
+.hub-main.is-inner .counter-you.is-ready { border-color: var(--hub-good); background: color-mix(in srgb, var(--hub-good) 16%, transparent); }
+.hub-main.is-inner .counter-ready, .hub-main.is-inner .counter-close { margin: 0; color: var(--hub-muted); font-size: 13px; line-height: 1.5; }
+.hub-main.is-inner .counter-ready strong, .hub-main.is-inner .counter-close strong { color: var(--hub-text); }
+.hub-main.is-inner .counter-remove { padding: 6px 12px; border: 1px solid var(--glass-line); border-radius: 999px; background: transparent; color: var(--hub-muted); font: inherit; font-size: 12.5px; cursor: pointer; }
+.hub-main.is-inner .counter-remove:hover { border-color: var(--hub-bad); color: var(--hub-bad); }
+.hub-main.is-inner .who-has-note { margin: 0; color: var(--hub-muted); font-size: 13.5px; }
