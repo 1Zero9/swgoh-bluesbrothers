@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.2.1 — 2026-10-17
+
+- **"Wanted" is gone; the box now says exactly what it is.** It is titled **Members asking for a counter**, with one line: "Know a squad that beats one of these? Add it and the member who asked is helped." Each request reads **"How do I beat Lord Vader?"**, then the mode and any detail, then who asked. The button is **I know a counter**; for your own it is **Cancel request**.
+- **Asking is plainer too.** The button is **Ask for a counter**, the form explains what happens ("Tell us which enemy squad is beating you…"), the field is "Enemy squad leader (who is beating you?)" and the submit button is **Send request**. Confirmations use the same words.
+
 ## 1.2.0 — 2026-10-17
 
 - **Take your own request off the Wanted list.** Requests you made ("asked by you") now have a **Remove** button instead of "I have one". It goes straight away and a green message confirms it. Only the person who asked, or an officer, can remove a request.

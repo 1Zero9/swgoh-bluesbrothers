@@ -59,7 +59,7 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
     setWanted((list) => list.filter((item) => item.id !== id));
     const response = await fetch("/api/knowledge/request", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
     const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
-    if (data?.ok) setNotice("Removed from the Wanted list.");
+    if (data?.ok) setNotice("Your request was cancelled.");
     else { setNotice(data?.error ?? "That didn't go through. Try again."); void loadWanted(); }
   }
 
@@ -70,7 +70,7 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
     const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string; created?: boolean; posted?: boolean } | null;
     if (data?.ok) {
       // Done: close and clear the form, and confirm above the list instead.
-      setNotice(data.created === false ? "Someone has already asked for that one. It's on the Wanted list." : data.posted ? "Sent. The guild has been asked in Discord, and it's on the Wanted list." : "Added to the Wanted list.");
+      setNotice(data.created === false ? "Someone has already asked for a counter to that squad. It's in the box below." : data.posted ? "Sent. The guild has been asked in Discord, and your request is in the box below." : "Request sent. It shows in the box below until someone adds a counter.");
       setHelpMessage(null); setHelpLeader(null); setHelpNote(""); setPickerKey((value) => value + 1); setPanel("none");
       void loadWanted();
     } else setHelpMessage({ ok: false, text: data?.error ?? "That didn't go through. Try again." });
@@ -84,7 +84,7 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
           <option value="">Every mode</option>
           {SEARCH_MODES.map((m) => <option key={m} value={m}>{MODE_LABELS[m]}</option>)}
         </select>
-        {canAct ? <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />I need a counter</button> : null}
+        {canAct ? <button type="button" className="kb-secondary" onClick={() => setPanel(panel === "help" ? "none" : "help")}><NavIcon name="help" size={18} />Ask for a counter</button> : null}
       </div>
 
       {notice ? <p className="kb-notice" role="status">{notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss">×</button></p> : null}
@@ -92,12 +92,13 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
       {panel === "help" ? (
         <form className="kb-form kb-panel" onSubmit={askForHelp}>
           <h3>Ask the guild for a counter</h3>
+          <p className="kb-wanted-help">Tell us which enemy squad is beating you. Members who know a counter will add it here, and the guild is pinged in Discord.</p>
           <label>Where do you need it?
             <select value={helpMode} onChange={(event) => setHelpMode(event.target.value as KbMode)}>{SEARCH_MODES.map((m) => <option key={m} value={m}>{MODE_LABELS[m]}</option>)}</select>
           </label>
-          <label>The enemy squad&apos;s leader<UnitPicker key={pickerKey} label="Enemy leader" placeholder="e.g. Lord Vader" onPick={setHelpLeader} onClear={() => setHelpLeader(null)} /></label>
-          <label>Anything else? (optional)<input value={helpNote} onChange={(event) => setHelpNote(event.target.value)} maxLength={300} placeholder="e.g. I only have these toons at R5" /></label>
-          <button type="submit" className="kb-primary">Ask for help</button>
+          <label>Enemy squad leader (who is beating you?)<UnitPicker key={pickerKey} label="Enemy leader" placeholder="e.g. Lord Vader" onPick={setHelpLeader} onClear={() => setHelpLeader(null)} /></label>
+          <label>Add detail (optional)<input value={helpNote} onChange={(event) => setHelpNote(event.target.value)} maxLength={300} placeholder="e.g. I only have these toons at R5" /></label>
+          <button type="submit" className="kb-primary">Send request</button>
           {helpMessage ? <p className={helpMessage.ok ? "kb-ok" : "kb-error"} role="status">{helpMessage.text}</p> : null}
         </form>
       ) : null}
@@ -106,13 +107,18 @@ export default function KnowledgeClient({ names, canAct }: { names: Record<strin
       <div className="kb-layout">
       {wanted.length ? (
         <aside className="kb-wanted kb-side" aria-label="Counters the guild is looking for">
-          <h3>Wanted: can you help?</h3>
+          <h3>Members asking for a counter</h3>
+          <p className="kb-wanted-help">Know a squad that beats one of these? Add it and the member who asked is helped.</p>
           <ul>
             {wanted.map((item) => (
               <li key={item.id}>
-                <span><strong>{item.leaderName}</strong> · {MODE_LABELS[item.mode as KbMode] ?? item.mode}{item.note ? ` · ${item.note}` : ""}<small> asked by {item.mine ? "you" : item.requestedByName}</small></span>
-                {item.mine ? <button type="button" className="kb-link kb-remove" onClick={() => void removeRequest(item.id)} aria-label={`Remove my request for ${item.leaderName}`}>Remove</button> : null}
-                {canAct && !item.mine ? <button type="button" className="kb-link" onClick={() => { setPrefill({ mode: item.mode as KbMode, leader: { id: item.leaderUnitId, name: item.leaderName } }); setPanel("add"); }}>I have one</button> : null}
+                <span>
+                  <strong>How do I beat {item.leaderName}?</strong>
+                  <small>{MODE_LABELS[item.mode as KbMode] ?? item.mode}{item.note ? ` · “${item.note}”` : ""}</small>
+                  <small>{item.mine ? "You asked. Waiting for someone to add a counter." : `Asked by ${item.requestedByName}`}</small>
+                </span>
+                {item.mine ? <button type="button" className="kb-link kb-remove" onClick={() => void removeRequest(item.id)} aria-label={`Cancel my request for a counter to ${item.leaderName}`}>Cancel request</button> : null}
+                {canAct && !item.mine ? <button type="button" className="kb-link" onClick={() => { setPrefill({ mode: item.mode as KbMode, leader: { id: item.leaderUnitId, name: item.leaderName } }); setPanel("add"); }}>I know a counter</button> : null}
               </li>
             ))}
           </ul>
