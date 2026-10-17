@@ -836,3 +836,15 @@ model MemberVisit {
   @@index([at])
   @@index([playerId, at])
 }
+
+/// Who has the site open right now: one row per member, refreshed about once a minute while a tab is visible. No place, no history.
+model MemberPresence {
+  playerId   String   @id
+  playerName String
+  lastSeenAt DateTime
+  path       String?
+  /// The member chose "appear offline" on their device.
+  hidden     Boolean  @default(false)
+
+  @@index([lastSeenAt])
+}

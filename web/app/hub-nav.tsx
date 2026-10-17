@@ -9,6 +9,7 @@ import { activeSidebarHref, DOCK_MENUS, HUB_SECTIONS, SIDEBAR_GROUPS, sectionFor
 import { parsePins, pinnedLinks, togglePin } from "@/lib/nav-pins";
 import BlueFloat from "./blue-float";
 import VisitBeacon from "./visit-beacon";
+import WhosOnline from "./whos-online";
 import ThemeToggle from "./theme-toggle";
 import { useViewer } from "./use-viewer";
 
@@ -20,6 +21,7 @@ const ICONS: Record<HubSectionKey, LucideIcon> = {
   more: Ellipsis,
 };
 
+const PREVIEW_PRESENCE = { site: [{ id: "1", name: "Steve", you: true }, { id: "2", name: "Dougie", you: false }, { id: "3", name: "Dex", you: false }], discord: [{ name: "dougie_bb", status: "online" }, { name: "dex", status: "idle" }], game: [{ id: "4", name: "Mara", ago: "35 min ago" }, { id: "5", name: "Kit", ago: "2 h ago" }] };
 const HUB_HINT_KEY = "bb-hub";
 const PINS_KEY = "bb-menu-pins";
 const PINS_EVENT = "bb-menu-pins-change";
@@ -134,11 +136,13 @@ export default function HubNav() {
           })()}
         </nav>
         <div className="hub-side-foot">
+          <WhosOnline path={pathname} variant="side" sample={isPreview ? PREVIEW_PRESENCE : undefined} />
           <p>{viewer?.name ?? (isPreview ? "Steve" : "Signed in")}</p>
           <ThemeToggle />
         </div>
       </aside>
       {!isPreview ? <VisitBeacon path={pathname} /> : null}
+      <WhosOnline path={pathname} variant="float" sample={isPreview ? PREVIEW_PRESENCE : undefined} />
       <BlueFloat />
       {dockOpen && DOCK_MENUS[dockOpen] ? (
         <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>

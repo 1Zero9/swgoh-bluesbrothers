@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.83.0 · **Last updated:** 2026-10-17 · tracks site `v1.32.0`
+**Doc version:** 1.84.0 · **Last updated:** 2026-10-18 · tracks site `v1.37.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -533,6 +533,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.84.0 — 2026-10-18**: "Who's online" button (sidebar on laptops, floating pill above the tab bar on phones). `WhosOnline` (`app/whos-online.tsx`) sends a heartbeat to `POST /api/presence` about once a minute while a tab is visible and shows the reply: (1) **on the site** from the new `MemberPresence` table (one row per member, online = heartbeat under 150 s old, no place or history stored; a per-device "Appear offline" checkbox sets `hidden`); (2) **on Discord** from Discord's public server widget (`/guilds/$DISCORD_GUILD_ID/widget.json`, cached 60 s), shown only if the server has the widget switched on (Server Settings → Widget); (3) **in the game recently** from `Player.profilePayload->lastActivityTime` (last 3 h, only as fresh as the last profile sync). Helpers in `lib/presence.ts` (tested), queries in `lib/presence-data.ts`.
 - **1.83.0 — 2026-10-17**: Ask releases 3–4. Counter card v2 and four-step add form. Release 4: counter requests are made inline in Find a counter; when an officer publishes a counter the requester is mentioned in the counters Discord channel (`DISCORD_COUNTERS_WEBHOOK_URL`, needs `Player.discordUserId`) and pushed via `notifyPlayers` (`lib/push.ts`) if they have notifications on. Finder searches (`GET /api/knowledge?unit=…&log=1`) are written to `BlueQuestion` with route `search` (deduped per member per term per hour, `reason` = found/none, no new table) and summarised at `/admin/blue` ("What members search for"); `search` rows are excluded from the question list and member counts.
 - **1.74.0 — 2026-10-14**: the Home banner shape on every page (hub pages via `HubBanner`, older pages via CSS); old floating header hidden for members.
 - **1.73.0 — 2026-10-14**: B-Lue3 quick panel layout fix; `BlueIntro` gains a plain `text` variant (a pill button).
