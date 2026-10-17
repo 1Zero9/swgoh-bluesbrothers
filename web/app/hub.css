@@ -1419,3 +1419,6 @@ html:is([data-theme="light"], [data-theme="rebel"]) .who-has-suggestions { backg
 html .hub-main.is-inner .kb-form .kb-primary[type="submit"] { background: var(--ask) !important; border-color: var(--ask) !important; color: #fff !important; box-shadow: none; }
 .hub-main.is-inner .kb-wanted .kb-remove { border-color: var(--glass-line); background: transparent; color: var(--hub-muted); }
 .hub-main.is-inner .kb-wanted .kb-remove:hover { border-color: var(--hub-bad); color: var(--hub-bad); background: transparent; }
+.kb-wanted-help { margin: 0 0 10px; color: var(--hub-muted); font-size: 13px; line-height: 1.45; }
+.hub-main.is-inner .kb-wanted li > span { display: grid; gap: 2px; }
+.hub-main.is-inner .kb-wanted li > span strong { font-size: 14.5px; }
