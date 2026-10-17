@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.40.1 — 2026-10-18
+
+- **The Home control panel is more compact on an iPad.** In landscape (with the menu open) and in portrait it now sits in two columns, your standing and review count on the left and the setup checklist on the right, instead of one tall stack, so Ask B-Lue3 is higher on the screen.
+
 ## 1.40.0 — 2026-10-18
 
 - **Officers can now sign a member in without Discord.** For someone like a member whose Discord login page won't load, an officer opens **Officers → Sign-in links**, picks the member, and gets a one-time link plus a ready-to-send message. The member taps the link, taps **Sign me in**, and is in (for about three months on that device). The link works once and lasts two days; link previews in chat can't use it up.
