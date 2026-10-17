@@ -2538,3 +2538,11 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .help-box a:not(.btn-discord-gate) { color: var(--hub-accent); }
 .signin-guard-more { color: #8fd0ff; font-size: 14px; }
 .pub-help { flex: 1 1 100%; text-align: center; color: var(--hub-accent); font-size: 15px; text-decoration: underline; }
+
+/* Refresh this site (and only this site) */
+.refresh-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 40px; min-height: 40px; padding: 8px 12px; border: 1px solid var(--glass-line, var(--hub-line)); border-radius: 999px; background: var(--glass, var(--hub-surface-2)); color: var(--hub-text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.refresh-btn:hover { border-color: var(--hub-accent); }
+.refresh-btn .is-spinning { animation: signin-spin 0.8s linear infinite; }
+.refresh-btn.is-icon span { display: none; }
+.pub-brandbar-tools { display: flex; align-items: center; gap: 8px; }
+.signin-guard .refresh-btn { background: #16233a; color: #eef3fa; border-color: rgba(255, 255, 255, 0.2); }

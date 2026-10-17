@@ -218,6 +218,7 @@ export default function ControlPanel({
           <ul className="hub-cpanel-grid is-officer">
             <li><Link href="/knowledge/review"><ClipboardCheck size={16} aria-hidden="true" />Review queue{reviewCount ? <i>{reviewCount}</i> : null}</Link></li>
             <li><Link href="/officer/announcement"><Megaphone size={16} aria-hidden="true" />Announcement</Link></li>
+            <li><Link href="/officer/signin-link"><Sparkles size={16} aria-hidden="true" />Sign-in links</Link></li>
             <li><Link href="/officer/member"><Users size={16} aria-hidden="true" />Member cards</Link></li>
             <li><Link href="/officer/roster"><Shield size={16} aria-hidden="true" />Roster report</Link></li>
             {isAdmin ? <><li><Link href="/admin/blue"><MessageCircleQuestion size={16} aria-hidden="true" />B-Lue3 log</Link></li><li><Link href="/admin/usage"><Users size={16} aria-hidden="true" />Who uses it</Link></li></> : null}

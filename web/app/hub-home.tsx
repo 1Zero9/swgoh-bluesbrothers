@@ -7,6 +7,7 @@ import AnnouncementPopup from "./announcement-popup";
 import HubPage from "./hub-page";
 import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
+import RefreshButton from "./refresh-button";
 import HubFold from "./hub-fold";
 import { WhosOnlineInline } from "./whos-online";
 import type { StatusCard } from "@/lib/home-status";
@@ -142,7 +143,10 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
             <Image src="/bb-emblem.webp" alt="" width={40} height={40} priority />
             <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
           </Link>
-          <Link href="/me" className={`hub-mypage-icon${checkIn ? " has-alert" : ""}`} aria-label="My page" title="My page"><UserRound size={22} aria-hidden="true" /></Link>
+          <span className="pub-brandbar-tools">
+            <RefreshButton label="" className="is-icon" />
+            <Link href="/me" className={`hub-mypage-icon${checkIn ? " has-alert" : ""}`} aria-label="My page" title="My page"><UserRound size={22} aria-hidden="true" /></Link>
+          </span>
         </div>
         <header className="hub-dash-head">
           <h1 className="hub-home-greeting">{name ? `Welcome, ${name}` : "Welcome to the band"}</h1>

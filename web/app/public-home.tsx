@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import RefreshButton from "@/app/refresh-button";
 import HubFold from "@/app/hub-fold";
 import HubPage, { HubLinks } from "@/app/hub-page";
 import CheckStats from "@/app/check-stats";
@@ -26,7 +27,7 @@ export default function PublicHome({ data, linking, notice, news = [] }: { data:
           <Image src="/bb-emblem.webp" alt="" width={40} height={40} priority />
           <span><strong>Blues Brothers</strong><small>Guild hub</small></span>
         </Link>
-        <a className="pub-signin" href="/api/auth/discord">Sign in</a>
+        <div className="pub-brandbar-tools"><RefreshButton label="" className="is-icon" /><a className="pub-signin" href="/api/auth/discord">Sign in</a></div>
       </div>
 
       <section className="pub-hero" aria-label="The Blues Brothers">
