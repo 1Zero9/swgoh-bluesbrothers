@@ -1,4 +1,5 @@
-import type { PlayerCard } from "@/lib/player-card";
+import type { CardHistoryPoint, PlayerCard } from "@/lib/player-card";
+import RefreshCard from "./refresh-card";
 
 const power = (value: string | number) => { const n = Number(value); return n >= 1e9 ? `${(n / 1e9).toFixed(2)}B` : n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n.toLocaleString("en-GB"); };
 const day = (value: string | null) => (value ? new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "unknown");
@@ -17,11 +18,17 @@ function Spark({ values }: { values: number[] }) {
 }
 
 /** One member, everything in one place: verdict first, then power, roster, raids and war, contribution. */
-export default function MemberCard({ card }: { card: PlayerCard }) {
+export default function MemberCard({ card, capturedAt, fromCache, history = [] }: { card: PlayerCard; capturedAt?: string; fromCache?: boolean; history?: CardHistoryPoint[] }) {
   const { assessment: a } = card;
   const ticketPct = Math.min(100, Math.round((card.tickets.now / card.tickets.target) * 100));
   return (
     <div className="mc">
+      <div className="mc-legend" role="note" aria-label="How to read this card">
+        <span><i className="mc-dot is-good" />Green: a strength</span>
+        <span><i className="mc-dot is-nudge" />Orange: keep an eye on it</span>
+        <span className="mc-legend-note">Verdict: <b>Pillar</b> = 4 or more strengths and nothing to watch; <b>Needs a nudge</b> = 2 or more things to watch.</span>
+        {capturedAt ? <RefreshCard id={card.playerId} capturedAt={capturedAt} fromCache={Boolean(fromCache)} /> : null}
+      </div>
       <section className={`mc-verdict is-${a.headline === "Needs a nudge" ? "nudge" : a.headline === "Pillar of the band" ? "pillar" : "steady"}`}>
         <div className="mc-who">
           <span className="mc-avatar" aria-hidden="true">{card.name.slice(0, 2).toUpperCase()}</span>
@@ -88,6 +95,20 @@ export default function MemberCard({ card }: { card: PlayerCard }) {
           {card.recent.length ? <ul className="mc-recent">{card.recent.map((item) => <li key={item.at + item.text}><span>{item.text}</span><time dateTime={item.at}>{ago(item.at)}</time></li>)}</ul> : <p className="mc-line">Nothing recorded in the last 30 days.</p>}
         </section>
       </div>
+      {history.length > 1 ? (
+        <section className="mc-box mc-wide">
+          <h3>Over time</h3>
+          <ul className="mc-history">
+            {history.slice(0, 12).map((point) => (
+              <li key={point.at} className={`is-${point.headline === "Needs a nudge" ? "nudge" : point.headline === "Pillar of the band" ? "good" : "steady"}`}>
+                <time dateTime={point.at}>{day(point.at)}</time>
+                <span>{point.headline}</span>
+                <small>{point.strengths} strengths · {point.watches} to watch{point.galacticPower ? ` · ${power(point.galacticPower)} GP` : ""}</small>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       {card.flags.length ? <p className="mc-flags">On the attention list: {card.flags.join(" · ")}</p> : null}
     </div>
   );

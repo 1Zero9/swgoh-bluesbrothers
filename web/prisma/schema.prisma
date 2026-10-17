@@ -770,3 +770,20 @@ model FeedbackVote {
   @@unique([itemId, playerId])
   @@index([playerId])
 }
+
+/// A stored member card: the verdict and every number we showed, kept so cards open fast and officers can look back.
+model MemberCardSnapshot {
+  id         String   @id @default(cuid())
+  playerId   String
+  capturedAt DateTime @default(now())
+  /// "Pillar of the band", "Pulling their weight" or "Needs a nudge".
+  headline   String
+  strengths  Int
+  watches    Int
+  galacticPower BigInt?
+  /// The whole card as shown.
+  payload    Json
+
+  @@index([playerId, capturedAt])
+  @@index([capturedAt])
+}

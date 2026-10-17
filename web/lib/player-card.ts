@@ -40,10 +40,18 @@ function rosterFacts(payload: unknown) {
   };
 }
 
-/** Everything we know about one member, on one card. Officers only: the caller checks. */
-export async function getPlayerCard(playerId: string): Promise<PlayerCard | null> {
-  const db = getPrisma();
+type Context = { roster: Awaited<ReturnType<typeof getRosterMembers>>; raidRoom: Awaited<ReturnType<typeof getRaidRoom>>; war: Awaited<ReturnType<typeof getTerritoryWarRoom>> };
+
+/** The guild-wide pieces every card needs, loaded once so a whole-guild refresh is not 50 times slower. */
+async function loadContext(): Promise<Context> {
   const [roster, raidRoom, war] = await Promise.all([getRosterMembers(), getRaidRoom(), getTerritoryWarRoom()]);
+  return { roster, raidRoom, war };
+}
+
+/** Work out one member's card from live data. */
+async function buildCard(context: Context, playerId: string): Promise<PlayerCard | null> {
+  const db = getPrisma();
+  const { roster, raidRoom, war } = context;
   const member = roster.find((entry) => entry.playerId === playerId);
   if (!member) return null;
 
@@ -102,9 +110,71 @@ export async function getPlayerCard(playerId: string): Promise<PlayerCard | null
   };
 }
 
-export type MemberListing = { playerId: string; name: string; role: string | null; galacticPower: string; flags: number };
+// ---------- stored cards: fast to open, and a history to look back on ----------
 
-export async function listMembersForCards(): Promise<MemberListing[]> {
+/** A card younger than this is served from the database as it is. */
+export const CARD_FRESH_HOURS = 6;
+/** Opening the member list refreshes every card in the background when the newest is older than this. */
+export const LIST_REFRESH_HOURS = 12;
+
+async function store(card: PlayerCard) {
+  await getPrisma().memberCardSnapshot.create({
+    data: { playerId: card.playerId, headline: card.assessment.headline, strengths: card.assessment.strengths.length, watches: card.assessment.watch.length, galacticPower: BigInt(card.power.galacticPower), payload: JSON.parse(JSON.stringify(card)) },
+  });
+}
+
+export type CardHistoryPoint = { at: string; headline: string; watches: number; strengths: number; galacticPower: string | null };
+export type StoredCard = { card: PlayerCard; capturedAt: string; fromCache: boolean; history: CardHistoryPoint[] };
+
+async function historyFor(playerId: string): Promise<CardHistoryPoint[]> {
+  const rows = await getPrisma().memberCardSnapshot.findMany({ where: { playerId }, orderBy: { capturedAt: "desc" }, take: 30, select: { capturedAt: true, headline: true, watches: true, strengths: true, galacticPower: true } });
+  return rows.map((row) => ({ at: row.capturedAt.toISOString(), headline: row.headline, watches: row.watches, strengths: row.strengths, galacticPower: row.galacticPower?.toString() ?? null }));
+}
+
+/** The card for one member: from the database when fresh, rebuilt (and stored) when old or when `force` is set. */
+export async function getStoredCard(playerId: string, force = false): Promise<StoredCard | null> {
+  const db = getPrisma();
+  if (!force) {
+    const latest = await db.memberCardSnapshot.findFirst({ where: { playerId }, orderBy: { capturedAt: "desc" } });
+    if (latest && Date.now() - latest.capturedAt.getTime() < CARD_FRESH_HOURS * 3_600_000) {
+      return { card: latest.payload as unknown as PlayerCard, capturedAt: latest.capturedAt.toISOString(), fromCache: true, history: await historyFor(playerId) };
+    }
+  }
+  const card = await buildCard(await loadContext(), playerId);
+  if (!card) return null;
+  await store(card);
+  return { card, capturedAt: new Date().toISOString(), fromCache: false, history: await historyFor(playerId) };
+}
+
+/** Rebuild and store every active member's card. Used by the Refresh button and the background refresh. */
+export async function refreshAllCards(): Promise<number> {
+  const context = await loadContext();
+  let done = 0;
+  const ids = context.roster.map((member) => member.playerId);
+  for (let index = 0; index < ids.length; index += 6) {
+    const cards = await Promise.all(ids.slice(index, index + 6).map((id) => buildCard(context, id).catch(() => null)));
+    for (const card of cards) if (card) { await store(card); done += 1; }
+  }
+  return done;
+}
+
+/** True when the newest stored card is old (or there is none), so the list should rebuild them. */
+export function cardsAreStale(newest: string | null): boolean {
+  return !newest || Date.now() - new Date(newest).getTime() > LIST_REFRESH_HOURS * 3_600_000;
+}
+
+export type MemberListing = { playerId: string; name: string; role: string | null; galacticPower: string; flags: number; headline: string | null; watches: number | null; topWatch: string | null };
+
+/** The member list with each person's latest stored verdict (the colour on the list), in one quick query. */
+export async function listMembersForCards(): Promise<{ members: MemberListing[]; newest: string | null }> {
   const roster = await getRosterMembers();
-  return roster.map((member) => ({ playerId: member.playerId, name: member.name, role: member.memberRole || null, galacticPower: member.galacticPower.toString(), flags: member.attentionReasons.length })).sort((a, b) => a.name.localeCompare(b.name));
+  const rows = await getPrisma().memberCardSnapshot.findMany({ where: { playerId: { in: roster.map((member) => member.playerId) } }, orderBy: { capturedAt: "desc" }, distinct: ["playerId"], select: { playerId: true, capturedAt: true, headline: true, watches: true, payload: true } });
+  const byId = new Map(rows.map((row) => [row.playerId, row]));
+  const newest = rows.reduce<Date | null>((max, row) => (!max || row.capturedAt > max ? row.capturedAt : max), null);
+  const members = roster.map((member) => {
+    const row = byId.get(member.playerId);
+    const payload = row?.payload as unknown as PlayerCard | undefined;
+    return { playerId: member.playerId, name: member.name, role: member.memberRole || null, galacticPower: member.galacticPower.toString(), flags: member.attentionReasons.length, headline: row?.headline ?? null, watches: row?.watches ?? null, topWatch: payload?.assessment?.watch?.[0] ?? member.attentionReasons[0] ?? null };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  return { members, newest: newest?.toISOString() ?? null };
 }
