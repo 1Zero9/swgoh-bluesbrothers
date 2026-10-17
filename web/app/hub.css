@@ -2191,3 +2191,15 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
 .hub-overview .guild-wire, .hub-overview .section-block { margin: 0 !important; }
 .hub-overview .wire-item { margin: 0; }
 @media (max-width: 759.98px) { .hub-overview .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hub-overview .metric-card { padding: 10px 12px; } }
+
+/* ---------- The Wins on the inner-page template ---------- */
+.hub-main.is-inner .wins-feed { gap: 14px; }
+.hub-main.is-inner .wins-day h3 { margin: 0 0 8px; color: var(--hub-muted); font: 11.5px var(--font-geist-mono), monospace; letter-spacing: 0.13em; text-transform: uppercase; }
+.hub-main.is-inner .win-item { margin-bottom: 8px; padding: 12px 14px; border: 1px solid var(--glass-line); border-radius: 12px; background: rgba(128, 150, 180, 0.08); color: var(--hub-text); transition: border-color 0.15s; }
+.hub-main.is-inner .win-item:hover { border-color: var(--hub-accent); }
+.hub-main.is-inner .win-item p { color: var(--hub-text); }
+.hub-main.is-inner .win-item small { color: var(--hub-muted); }
+.hub-main.is-inner .win-icon { color: var(--hub-accent); }
+.hub-main.is-inner .win-headline { border-color: rgba(var(--ask-rgb), 0.65); background: linear-gradient(90deg, rgba(var(--ask-rgb), 0.16), rgba(128, 150, 180, 0.06)); }
+.hub-main.is-inner .win-headline .win-icon { color: var(--ask-text); }
+.hub-main.is-inner .wins-earlier > summary, .hub-main.is-inner .wins-more > summary { color: var(--hub-accent); }

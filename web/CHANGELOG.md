@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.22.0 — 2026-10-17
+
+- **The Wins on the new look.** Slim header and themed picture instead of the tall banner; the four weekly counts (Galactic Legends, Ultimates, Relic level-ups, Members levelled up) are glass tiles, two across on a phone; each day is a glass panel where the big wins (legends, ultimates, Relic 7+) glow orange and the routine ones are quiet rows, with "more upgrades" folding underneath. A link to Guild activity sits at the foot.
+
 ## 1.21.0 — 2026-10-17
 
 - **Overview on the new look.** The big hero picture, the site bar and the long footer are gone; it opens with the slim header and the same glass frames as the rest of the site. Guild health tiles (members, power, tickets, needs attention) sit in a row (two across on a phone), then the Guild Wire beside the Discord box, then Wall of Fame and the watchlist, then who has just joined. The Wire's items and the leaderboards follow the theme, with orange for the action buttons.
