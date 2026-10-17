@@ -7,7 +7,6 @@ test("each page belongs to one hub section", () => {
   assert.equal(sectionFor("/ask"), "ask");
   assert.equal(sectionFor("/knowledge"), "know");
   assert.equal(sectionFor("/knowledge/review"), "know");
-  assert.equal(sectionFor("/counters"), "know");
   assert.equal(sectionFor("/territory-war"), "guild");
   assert.equal(sectionFor("/members"), "guild");
   assert.equal(sectionFor("/me"), "more");

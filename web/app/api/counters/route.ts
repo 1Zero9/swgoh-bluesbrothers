@@ -14,7 +14,10 @@ export async function GET(request: Request) {
   const access = await getViewerAccess();
   if (!(access.isMember || access.isOfficer)) return fail("Members only.", 401);
   const enemyId = new URL(request.url).searchParams.get("enemy");
-  const counters = await listCounters({ enemyId, youPlayerId: access.playerId ?? null });
+  const listed = await listCounters({ enemyId, youPlayerId: access.playerId ?? null });
+  // A saved squad whose copy in the knowledge base has been published is shown there, not twice.
+  const published = new Set((await getPrisma().kbEvidence.findMany({ where: { sourceRef: { startsWith: "saved:" }, matchup: { status: "PUBLISHED" } }, select: { sourceRef: true } }).catch(() => [])).map((row) => String(row.sourceRef).split(":")[1]));
+  const counters = listed.filter((counter) => !published.has(counter.id));
   return Response.json({ ok: true, counters, canAdd: access.isMember && Boolean(access.playerId), isOfficer: access.isOfficer }, { headers: NO_STORE });
 }
 

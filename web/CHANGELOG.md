@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.30.0 — 2026-10-17
+
+- **Ask page release 2: one place for counters.** **Saved squads is retired as a separate page.** Opening it (or an old link) takes you to Ask → **Find a counter**, and the menu now says "Find a counter" instead. You can **add a counter right there** (+ Add a counter, with the enemy leader already filled in), and remove your own saved squads from the results.
+- **Officers can bring the old saved squads into the review queue.** A new notice on the review page offers it (only while some are waiting). Each comes in as a candidate with its original author kept. The older list only said "GAC", not 5v5 or 3v3, so those come in as 5v5 with a note asking the reviewer to confirm, and a squad saved for both comes in once for Territory War and once for GAC. Run it twice and nothing is duplicated.
+- Once an imported counter is published, it shows once (in the checked list), not again under "Saved by members".
+
 ## 1.29.0 — 2026-10-17
 
 - **The Ask page, release 1: ask, or find a counter.** The Ask page is on the new look and has two tabs. **Ask B-Lue3** is the chat as before (in a glass frame, orange Ask button). **Find a counter** is new: pick the enemy squad's leader, optionally a mode (Territory War, GAC 5v5, GAC 3v3), and see the counters officers have checked and the squads members have saved, each with whether you can run it. It is free and never uses a question. If the guild has nothing, two buttons appear: **Ask B-Lue3 to search the web** (uses a question, and fills the chat for you) or **Ask the guild for a counter**.

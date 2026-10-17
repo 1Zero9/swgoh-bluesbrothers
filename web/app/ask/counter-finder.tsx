@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import UnitPicker, { type PickedUnit } from "@/app/unit-picker";
 import MatchCard, { type Listing } from "@/app/knowledge/match-card";
+import SubmitForm from "@/app/knowledge/submit-form";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import type { CounterView } from "@/lib/counters-data";
 
@@ -20,6 +21,8 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   const [hits, setHits] = useState<Listing[] | null>(null);
   const [saved, setSaved] = useState<CounterView[]>([]);
   const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [isOfficer, setIsOfficer] = useState(false);
 
   const load = useCallback(async () => {
     if (!enemy) { setHits(null); setSaved([]); return; }
@@ -28,9 +31,10 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
     if (mode) params.set("mode", mode);
     const [known, own] = await Promise.all([
       fetch(`/api/knowledge?${params}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ hits?: Listing[] } | null>,
-      fetch(`/api/counters?enemy=${encodeURIComponent(enemy.id)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ counters?: CounterView[] } | null>,
+      fetch(`/api/counters?enemy=${encodeURIComponent(enemy.id)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ counters?: CounterView[]; isOfficer?: boolean } | null>,
     ]);
     setHits(known?.hits ?? []);
+    setIsOfficer(Boolean(own?.isOfficer));
     // Saved squads are tagged TW, GAC or both; a mode filter keeps the ones that fit it (fleet modes fit none of them).
     const fits = (counterMode: string) => !mode || counterMode === "BOTH" || (mode === "TW" && counterMode === "TW") || ((mode === "GAC_5V5" || mode === "GAC_3V3") && counterMode === "GAC");
     setSaved((own?.counters ?? []).filter((counter) => fits(counter.mode)));
@@ -41,6 +45,12 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
     const timer = setTimeout(() => { void load(); }, 0);
     return () => clearTimeout(timer);
   }, [load]);
+
+  async function removeSaved(id: string) {
+    if (!window.confirm("Remove this saved squad?")) return;
+    await fetch("/api/counters", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
+    void load();
+  }
 
   const empty = enemy && hits !== null && !hits.length && !saved.length && !loading;
   const question = enemy ? `How do I beat ${enemy.name}${mode ? ` in ${MODE_LABELS[mode]}` : ""}?` : "";
@@ -54,6 +64,14 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
           {MODES.map((m) => <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)}>{SHORT[m]}</button>)}
         </div>
       </div>
+
+      {canAct ? (
+        <div className="cf-addrow">
+          <button type="button" className="kb-secondary" onClick={() => setAdding((value) => !value)}>{adding ? "Close" : "+ Add a counter"}</button>
+          <span className="cf-hint">Know one that works? Add it. An officer checks it before others see it.</span>
+        </div>
+      ) : null}
+      {adding ? <div className="kb-panel"><h3>Add a counter</h3><SubmitForm prefill={enemy ? { mode: mode || "TW", leader: enemy } : null} onDone={() => void load()} /></div> : null}
 
       {!enemy ? <p className="cf-hint">Pick the enemy squad&apos;s leader to see the counters the guild trusts. This is free and never uses a question.</p> : null}
       {loading && !hits ? <p className="cf-hint">Looking…</p> : null}
@@ -69,7 +87,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
               <p className="kb-squad">{counter.squad.map((slot, i) => <span key={slot.unitId} className={`kb-chip${i === 0 ? " kb-chip-leader" : ""}`}>{slot.name}{slot.minRelic > 0 ? <i> R{slot.minRelic}+</i> : null}</span>)}</p>
               {counter.notes ? <p className="kb-strategy">{counter.notes}</p> : null}
               {counter.readiness.you ? <p className={`counter-you${counter.readiness.you.ready ? " is-ready" : ""}`}>{counter.readiness.you.ready ? "You can run this now." : `You are not there yet: ${counter.readiness.you.gaps.slice(0, 3).join("; ")}`}</p> : null}
-              <footer><span className="kb-meta">{counter.readiness.ready.length} guildmate{counter.readiness.ready.length === 1 ? "" : "s"} ready · saved by {counter.createdByName}</span></footer>
+              <footer><span className="kb-meta">{counter.readiness.ready.length} guildmate{counter.readiness.ready.length === 1 ? "" : "s"} ready · saved by {counter.createdByName}</span>{counter.mine || isOfficer ? <button type="button" className="kb-link" onClick={() => void removeSaved(counter.id)}>Remove</button> : null}</footer>
             </article>
           ))}
         </section>
