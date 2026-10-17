@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import SiteHeader from "@/app/site-header";
+import HubPage, { HubHeader } from "@/app/hub-page";
 import MissionGame from "./mission-game";
 
 export const metadata: Metadata = {
@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 
 export default function MissionFromGodPage() {
   return (
-    <main className="mission-page">
-      <SiteHeader homeHref="/" syncLabel="Free Play · local save" />
-      <MissionGame />
-    </main>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Mission From God" title="A thirty-day galactic trading run" intro="Pay Jabba, save the orphanage, and keep the Bluesmobile moving. Free play, saved on this device." />
+      <div className="hub-mission">
+        <MissionGame />
+      </div>
+    </HubPage>
   );
 }

@@ -2136,3 +2136,11 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
   .hub-backdrop.is-themed:not(.is-quiet)::after { background: linear-gradient(180deg, #0b1220 0, #0b1220 36%, rgba(11, 18, 32, 0) 54%), linear-gradient(0deg, rgba(5, 10, 20, 0.25), transparent 30%); }
   html[data-theme="rebel"] .hub-backdrop.is-themed:not(.is-quiet)::after { background: linear-gradient(180deg, #d9e8f7 0, #d9e8f7 36%, rgba(217, 232, 247, 0) 54%); }
 }
+
+/* ---------- Mission From God inside the inner-page frame: the game keeps its dark console, minus the full-screen padding ---------- */
+.hub-mission { border: 1px solid var(--glass-line); border-radius: 18px; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.3); }
+.hub-mission [class*="intro"][class*="mission"], .hub-mission section:first-child { min-height: 0 !important; }
+.hub-mission [class*="intro"] { min-height: 0 !important; padding-top: clamp(28px, 4vw, 56px) !important; padding-bottom: clamp(28px, 4vw, 56px) !important; }
+.hub-mission [class*="gameShell"] { min-height: 0 !important; padding-top: clamp(14px, 2vw, 24px) !important; }
+@media (max-width: 760px) { .hub-mission { border-radius: 14px; } .hub-mission [class*="intro"] { padding-top: 24px !important; padding-bottom: 24px !important; } }
+.hub-mission > * { border-radius: inherit; }
