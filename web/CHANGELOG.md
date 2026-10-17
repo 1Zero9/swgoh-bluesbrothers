@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.16.0 — 2026-10-17
+
+- **Dougie's Discs on the new look.** The tall banner is gone, replaced by the slim header and the themed picture. The jukebox itself (turntable, screen, Spin and queue) stays a dark hi-fi, as it should. Under it, "Speakeasy Quotes & Analog Drops" and "Digging in Dougie's Vinyl Crate" are glass frames that follow the theme: orange selected crate, orange Sleeves/Compact switch, glass quote cards, and the dark record sleeves keep their coloured labels and light text. It reads on the light theme now (before, the shelf headings and filters were pale on white).
+
 ## 1.15.0 — 2026-10-17
 
 - **A floating glass dock on phones and tablets.** The bottom tab bar is now a rounded, frosted-glass pill that floats above the page (Home, Ask, Knowledge, Guild, More), with a soft capsule behind the page you are on. It is clear glass on Rebel and tinted glass on Deep and Classic. B-Lue3's icon and the announcement sit just above it.

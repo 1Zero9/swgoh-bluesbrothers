@@ -2053,3 +2053,29 @@ html[data-theme="rebel"] .hub-main.is-inner .sb-char-row .highlight-target, html
   html[data-hub="on"] .hub-tabs a:active { background: rgba(60, 80, 100, 0.16); }
   html[data-hub="on"] .announce-lift, html[data-hub="on"] .hub-announce:not(.is-preview) { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* ---------- Dougie's Discs on the inner-page template ---------- */
+.hub-main.is-inner .dougies-discs-container { max-width: none; padding: 0 0 8px; display: grid; gap: 16px; }
+.hub-main.is-inner .jukebox-stars { display: none; }
+/* the jukebox itself stays a dark hi-fi; the shelves under it become glass that follows the theme */
+.hub-main.is-inner .soundboard-section, .hub-main.is-inner .crate-catalog-section { padding: 18px 20px; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); color: var(--hub-text); margin: 0; }
+.hub-main.is-inner .signature-heading h3 { color: var(--hub-text); }
+.hub-main.is-inner .signature-heading p, .hub-main.is-inner .crate-count-chip { color: var(--hub-muted); }
+.hub-main.is-inner .signature-heading > div > span { border: 1px solid var(--glass-line); background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-main.is-inner .soundbite-card, .hub-main.is-inner .compact-crate-table-card { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.08); color: var(--hub-text); box-shadow: none; transition: border-color 0.18s, box-shadow 0.18s; }
+.hub-main.is-inner .soundbite-card:hover { border-color: var(--hub-accent); box-shadow: 0 0 0 1px var(--hub-accent), 0 0 20px rgba(103, 199, 245, 0.2); }
+.hub-main.is-inner .soundbite-card * { color: var(--hub-text); }
+.hub-main.is-inner .soundbite-card small, .hub-main.is-inner .soundbite-card span:not(:first-child) { color: var(--hub-muted); }
+/* the record sleeves are dark on purpose: keep their words light */
+.hub-main.is-inner .vinyl-sleeve-jacket .jacket-artwork h4 { color: #f8fafc; }
+.hub-main.is-inner .vinyl-sleeve-jacket .jacket-artwork p { color: #93c5fd; }
+.hub-main.is-inner .category-pill { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-main.is-inner .category-pill:hover { border-color: var(--hub-accent); background: var(--hub-accent-soft); color: var(--hub-text); }
+.hub-main.is-inner .category-pill.is-active { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.16); color: var(--ask-text); font-weight: 700; }
+.hub-main.is-inner .pill-count { background: rgba(128, 150, 180, 0.22); color: var(--hub-text); }
+.hub-main.is-inner .crate-search-input { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .crate-view-switcher { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.1); }
+.hub-main.is-inner .crate-view-switcher button { color: var(--hub-muted); }
+.hub-main.is-inner .crate-view-switcher button.active { background: var(--ask); color: #fff; }
+.hub-main.is-inner .compact-table-row, .hub-main.is-inner .compact-table-head { color: var(--hub-text); border-color: var(--glass-line); }
+@media (max-width: 759.98px) { .hub-main.is-inner .soundboard-section, .hub-main.is-inner .crate-catalog-section { padding: 14px; } }
