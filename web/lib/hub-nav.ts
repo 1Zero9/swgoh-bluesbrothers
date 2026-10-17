@@ -7,7 +7,7 @@ export type HubSection = { key: HubSectionKey; label: string; href: string; pref
 export const HUB_SECTIONS: HubSection[] = [
   { key: "home", label: "Home", href: "/", prefixes: [] },
   { key: "ask", label: "Ask B-Lue3", href: "/ask", prefixes: ["/ask"] },
-  { key: "know", label: "Knowledge", href: "/knowledge", prefixes: ["/knowledge", "/counters", "/guides"] },
+  { key: "know", label: "Knowledge", href: "/knowledge", prefixes: ["/knowledge", "/guides"] },
   {
     key: "guild",
     label: "Guild",
@@ -44,7 +44,7 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
       { label: "Counters", href: "/knowledge" },
       { label: "Tips", href: "/knowledge/tips" },
       { label: "Ideas", href: "/knowledge/ideas" },
-      { label: "Saved squads", href: "/counters" },
+      { label: "Find a counter", href: "/ask?tab=counters" },
       { label: "Field guides", href: "/guides" },
     ],
   },
@@ -107,7 +107,7 @@ export type DockLink = { label: string; href: string; officerOnly?: boolean };
 export type DockMenu = { title: string | null; links: DockLink[] };
 
 export const DOCK_MENUS: Partial<Record<HubSectionKey, DockMenu[]>> = {
-  know: [{ title: null, links: [{ label: "Counters", href: "/knowledge" }, { label: "Tips", href: "/knowledge/tips" }, { label: "Ideas", href: "/knowledge/ideas" }, { label: "Saved squads", href: "/counters" }, { label: "Field guides", href: "/guides" }] }],
+  know: [{ title: null, links: [{ label: "Counters", href: "/knowledge" }, { label: "Tips", href: "/knowledge/tips" }, { label: "Ideas", href: "/knowledge/ideas" }, { label: "Find a counter", href: "/ask?tab=counters" }, { label: "Field guides", href: "/guides" }] }],
   guild: [
     { title: "Guild", links: [{ label: "Guild chat", href: "/chat" }, { label: "Roster", href: "/members" }, { label: "Who has…?", href: "/members#who-has" }, { label: "Guild activity", href: "/activity" }, { label: "The Wins", href: "/wins" }, { label: "Overview", href: "/overview" }] },
     { title: "War room", links: [{ label: "Territory War", href: "/territory-war" }, { label: "Territory Battles", href: "/territory-battles" }, { label: "Raids", href: "/raids" }, { label: "Datacrons", href: "/datacrons" }, { label: "Arsenal", href: "/arsenal" }] },

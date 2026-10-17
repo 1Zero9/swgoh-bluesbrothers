@@ -160,7 +160,7 @@ export default function ControlPanel({
               <ul className="hub-cpanel-squads">
                 {squads.saved.map((squad) => (
                   <li key={squad.id}>
-                    <Link href="/counters">
+                    <Link href="/ask?tab=counters">
                       <span className="hub-cpanel-squad-top"><strong>{squad.title}</strong>{squad.ready === null ? null : <i className={squad.ready ? "is-ready" : "is-gap"}>{squad.ready ? "Ready" : "Not yet"}</i>}</span>
                       <small>vs {squad.enemy} · {squad.mode}</small>
                       <small>{squad.units.join(", ")}</small>
@@ -187,7 +187,7 @@ export default function ControlPanel({
             </>
           ) : null}
           <div className="hub-cpanel-actions">
-            <Link href="/counters"><LayoutGrid size={14} aria-hidden="true" /> Save a squad</Link>
+            <Link href="/ask?tab=counters"><LayoutGrid size={14} aria-hidden="true" /> Find a counter</Link>
             <Link href="/knowledge"><BookOpen size={14} aria-hidden="true" /> Find counters</Link>
           </div>
         </div>

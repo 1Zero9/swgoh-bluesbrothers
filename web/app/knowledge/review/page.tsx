@@ -5,6 +5,7 @@ import HubPage, { HubHeader } from "@/app/hub-page";
 import { getViewerAccess } from "@/lib/access-control";
 import { canReview } from "@/lib/knowledge/permissions";
 import { allUnitNames } from "@/lib/wins";
+import ImportSavedButton from "./import-saved-button";
 import ReviewClient from "./review-client";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function ReviewPage() {
       <HubHeader eyebrow="Officers" title="Check it. Then publish it." intro="Counters from members and B-Lue3 wait here. Read the sources, then publish, reject or flag. Nothing goes live without you.">
         <Link className="hub-pagehead-link" href="/knowledge">← Knowledge</Link>
       </HubHeader>
+      <ImportSavedButton />
       <ReviewClient names={names} />
     </HubPage>
   );
