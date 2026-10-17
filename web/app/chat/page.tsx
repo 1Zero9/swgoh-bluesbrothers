@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import MembersOnly from "@/app/members-only";
-import SiteHeader from "@/app/site-header";
+import HubPage, { HubHeader } from "@/app/hub-page";
 import { getViewerAccess } from "@/lib/access-control";
 import { enabledChatChannels } from "@/lib/chat-config";
 import ChatClient from "./chat-client";
@@ -18,9 +18,11 @@ export default async function ChatPage() {
   const channels = enabledChatChannels().map(({ key, label }) => ({ key, label }));
 
   return (
-    <main className="chat-page">
-      <SiteHeader homeHref="/" syncLabel="Guild chat" />
-      <ChatClient channels={channels} signedInAsMember={access.isMember && Boolean(access.playerId)} />
-    </main>
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Guild" title="Guild chat" intro="The Blues Brothers Discord channels, on the site." />
+      <div className="hub-chatframe">
+        <ChatClient channels={channels} signedInAsMember={access.isMember && Boolean(access.playerId)} />
+      </div>
+    </HubPage>
   );
 }

@@ -2203,3 +2203,28 @@ html[data-theme="deep"] .hub-dock-group a[aria-current="page"], html[data-theme=
 .hub-main.is-inner .win-headline { border-color: rgba(var(--ask-rgb), 0.65); background: linear-gradient(90deg, rgba(var(--ask-rgb), 0.16), rgba(128, 150, 180, 0.06)); }
 .hub-main.is-inner .win-headline .win-icon { color: var(--ask-text); }
 .hub-main.is-inner .wins-earlier > summary, .hub-main.is-inner .wins-more > summary { color: var(--hub-accent); }
+
+/* ---------- Guild chat on the inner-page template ---------- */
+.hub-chatframe { border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); overflow: hidden; color: var(--hub-text); }
+.hub-chatframe .chat-shell { height: calc(100dvh - 250px); min-height: 380px; max-width: none; }
+.hub-chatframe .chat-tabs { padding: 12px 14px 8px; border-bottom: 1px solid var(--glass-line); }
+.hub-chatframe .chat-tabs button { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); font-weight: 600; }
+.hub-chatframe .chat-tabs button:hover { border-color: var(--hub-accent); }
+.hub-chatframe .chat-tabs button.is-active { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.16); color: var(--ask-text); font-weight: 700; }
+.hub-chatframe .chat-bell { color: var(--hub-muted); }
+.hub-chatframe .chat-banner { border-color: rgba(var(--ask-rgb), 0.6); background: rgba(var(--ask-rgb), 0.1); color: var(--hub-text); }
+.hub-chatframe .chat-note, .hub-chatframe .chat-day, .hub-chatframe .chat-body header time, .hub-chatframe .chat-readonly { color: var(--hub-muted); }
+.hub-chatframe .chat-body header strong { color: var(--hub-text); }
+.hub-chatframe .chat-text { color: var(--hub-text); }
+.hub-chatframe .chat-text a, .hub-chatframe .chat-file { color: var(--hub-accent); }
+.hub-chatframe .chat-text code { background: rgba(128, 150, 180, 0.2); }
+.hub-chatframe .chat-mention { background: var(--hub-accent-soft); color: var(--hub-accent); }
+.hub-chatframe .chat-embed { background: rgba(128, 150, 180, 0.1); border-left-color: var(--hub-accent); }
+.hub-chatframe .chat-embed > strong, .hub-chatframe .chat-embed > strong a { color: var(--hub-text); }
+.hub-chatframe .chat-avatar-initial { background: var(--hub-accent); color: var(--hub-on-accent); }
+.hub-chatframe .chat-compose { background: transparent; border-top: 1px solid var(--glass-line); }
+.hub-chatframe .chat-compose textarea { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+html .hub-chatframe .chat-compose button { background: var(--ask) !important; color: #fff !important; }
+.hub-chatframe .chat-error { color: var(--hub-bad); }
+.hub-chatframe .chat-readonly { border-top: 1px solid var(--glass-line); }
+@media (max-width: 1023.98px) { .hub-chatframe .chat-shell { height: calc(100dvh - 300px); min-height: 320px; } }
