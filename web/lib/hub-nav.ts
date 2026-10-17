@@ -101,3 +101,20 @@ export function activeSidebarHref(pathname: string, groups: SidebarGroup[] = SID
   // "Who has" shares the roster page: only the roster link is lit.
   return best?.href ?? null;
 }
+
+/** What each dock tab opens on a phone: a short menu above the dock. Home and Ask go straight to their page. */
+export type DockLink = { label: string; href: string; officerOnly?: boolean };
+export type DockMenu = { title: string | null; links: DockLink[] };
+
+export const DOCK_MENUS: Partial<Record<HubSectionKey, DockMenu[]>> = {
+  know: [{ title: null, links: [{ label: "Counters", href: "/knowledge" }, { label: "Tips", href: "/knowledge/tips" }, { label: "Ideas", href: "/knowledge/ideas" }, { label: "Saved squads", href: "/counters" }, { label: "Field guides", href: "/guides" }] }],
+  guild: [
+    { title: "Guild", links: [{ label: "Guild chat", href: "/chat" }, { label: "Roster", href: "/members" }, { label: "Who has…?", href: "/members#who-has" }, { label: "Guild activity", href: "/activity" }, { label: "The Wins", href: "/wins" }, { label: "Overview", href: "/overview" }] },
+    { title: "War room", links: [{ label: "Territory War", href: "/territory-war" }, { label: "Territory Battles", href: "/territory-battles" }, { label: "Raids", href: "/raids" }, { label: "Datacrons", href: "/datacrons" }, { label: "Arsenal", href: "/arsenal" }] },
+  ],
+  more: [
+    { title: "You", links: [{ label: "My page", href: "/me" }, { label: "Feedback", href: "/feedback" }, { label: "Notifications", href: "/more" }] },
+    { title: "Off duty", links: [{ label: "Dougie's Discs", href: "/dougies-discs" }, { label: "Soul Food Cantina", href: "/cantina" }, { label: "Mission From God", href: "/mission-from-god" }] },
+    { title: "Officers", links: [{ label: "Review queue", href: "/knowledge/review", officerOnly: true }, { label: "Announcement", href: "/officer/announcement", officerOnly: true }, { label: "Member cards", href: "/officer/member", officerOnly: true }, { label: "Roster report", href: "/officer/roster", officerOnly: true }, { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true }] },
+  ],
+};

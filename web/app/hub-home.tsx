@@ -6,6 +6,7 @@ import AnnouncementPopup from "./announcement-popup";
 import HubPage from "./hub-page";
 import MovableBoxes from "./movable-boxes";
 import NewPlayersBanner from "./new-players-banner";
+import HubFold from "./hub-fold";
 import type { StatusCard } from "@/lib/home-status";
 import type { Announcement } from "@/lib/announcement";
 import type { MySquads } from "@/lib/my-squads";
@@ -153,9 +154,9 @@ export default function HubHome({ name, linked, standing, checkIn, requests, wir
         <MovableBoxes
           items={[
             { id: "ask", label: "Ask B-Lue3", node: askBox },
-            { id: "war", label: "War room", node: warRoom },
-            ...(actCard ? [{ id: "act", label: "Act now", node: actCard }] : []),
-            { id: "wins", label: "The Wins", node: winsCard },
+            { id: "war", label: "War room", node: <HubFold title="War room" summary={status.map((card) => card.headline).join(" · ")}>{warRoom}</HubFold> },
+            ...(actCard ? [{ id: "act", label: "Act now", node: <HubFold title="Act now" tone="alert" summary={`${requests.length + callouts.length + (isOfficer && reviewCount > 0 ? 1 : 0)} things need you`}>{actCard}</HubFold> }] : []),
+            { id: "wins", label: "The Wins", node: <HubFold title="The Wins" summary={shownWins.length ? `${shownWins.length} this week: ${shownWins.map((win) => win.who).join(", ")}` : "Nothing yet this week"}>{winsCard}</HubFold> },
           ]}
         />
         <p className="hub-home-foot">
