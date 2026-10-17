@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.3.2 — 2026-10-17
+
+- **A tighter Home on phones.** The control panel now starts as the small pulsing "Setup 1 of 3" button (tap it to open; once you open or close it yourself, it remembers). The new-player welcome is one slim row with scrolling name chips instead of a tall card. The result: Ask B-Lue3 and the first war-room panel are on the first screen. Laptops are unchanged.
+
 ## 1.3.1 — 2026-10-17
 
 - **The menu starts folded.** Every group (Knowledge, Guild, War room and the rest) is closed when you arrive, so people can explore by opening what they want. The group holding the page you are on opens by itself, and Home, Ask B-Lue3 and Guild chat stay in view at the top.
