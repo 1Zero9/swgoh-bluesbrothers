@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "@/app/page-hero";
-import IntelFooter from "@/app/intel-footer";
+import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import { isOfficerRequest } from "@/lib/officer-session";
 import { getOfficerRosterReport } from "@/lib/officer-roster";
 import OfficerRosterLogin from "@/app/officer-roster-login";
@@ -28,23 +27,17 @@ export default async function OfficerRosterPage() {
   const attentionCount = rows.filter((row) => row.needsAttention).length;
 
   return (
-    <main className="intel-shell destination-shell">
-      <PageHero
-        image="/ops-banner.webp"
-        imageAlt="The Blues Brothers officers reviewing guild activity reports"
-        eyebrow="Officer tools"
-        title={<>Every member.<br /><em>Every gig, tracked.</em></>}
-        description="Tickets, raid participation and Territory War joins in one filterable table, plus the full active/departed guild history. Officers only."
-        priority
-      >
-        {report ? (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Officers" title="Roster report" intro="Tickets, raid participation and Territory War joins in one filterable table, plus the full active and departed guild history." />
+      {report ? (
+        <div className="hub-stats">
           <div className="intel-summary">
             <div><strong>{activeCount || "—"}</strong><small>active members</small></div>
             <div><strong>{attentionCount || "—"}</strong><small>need attention</small></div>
             <div><strong>{rows.length - activeCount || "—"}</strong><small>in the archive</small></div>
           </div>
-        ) : null}
-      </PageHero>
+        </div>
+      ) : null}
 
       {isOfficer ? (
         rows.length ? (
@@ -60,10 +53,10 @@ export default async function OfficerRosterPage() {
         </section>
       )}
 
-      <IntelFooter message="Roster data refreshes through the scheduled guild sync.">
-        <Link href="/officer/discord-sync">Open Discord Sync Governance →</Link>
-        <Link href="/operations">Back to Operations →</Link>
-      </IntelFooter>
-    </main>
+      <HubLinks message="Roster data refreshes through the scheduled guild sync.">
+        <Link href="/officer/member">Member cards →</Link>
+        <Link href="/officer/discord-sync">Discord sync →</Link>
+      </HubLinks>
+    </HubPage>
   );
 }

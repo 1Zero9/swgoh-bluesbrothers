@@ -2228,3 +2228,37 @@ html .hub-chatframe .chat-compose button { background: var(--ask) !important; co
 .hub-chatframe .chat-error { color: var(--hub-bad); }
 .hub-chatframe .chat-readonly { border-top: 1px solid var(--glass-line); }
 @media (max-width: 1023.98px) { .hub-chatframe .chat-shell { height: calc(100dvh - 300px); min-height: 320px; } }
+
+/* ---------- Officer pages (roster report, Discord sync, review queue) on the inner-page template ---------- */
+.hub-main.is-inner .rr-section { margin: 0; }
+.hub-main.is-inner .rr-gate, .hub-main.is-inner .officer-gate-card { max-width: 520px; padding: 24px; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); color: var(--hub-text); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.hub-main.is-inner .rr-tools { padding: 14px 16px; border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); margin-bottom: 12px; }
+.hub-main.is-inner .rr-tools label > span, .hub-main.is-inner .rr-tools > p { color: var(--hub-muted); }
+.hub-main.is-inner .rr-tools input, .hub-main.is-inner .rr-tools select { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .rr-table-wrap { border: 1px solid var(--glass-line); border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.hub-main.is-inner .rr-table th { background: rgba(128, 150, 180, 0.14); color: var(--hub-muted); border-bottom-color: var(--glass-line); }
+.hub-main.is-inner .rr-table td { color: var(--hub-text); border-bottom-color: rgba(128, 150, 180, 0.16); }
+.hub-main.is-inner .rr-table tbody tr:hover td { background: var(--hub-accent-soft); }
+.hub-main.is-inner .rr-row-attention td { background: rgba(var(--ask-rgb), 0.08); }
+.hub-main.is-inner .rr-row-left td { color: var(--hub-muted); }
+.hub-main.is-inner .rr-member strong { color: var(--hub-text); }
+.hub-main.is-inner .rr-member small, .hub-main.is-inner .rr-member span span { color: var(--hub-muted); }
+.hub-main.is-inner .rr-member i { border-color: var(--hub-accent); background: var(--hub-accent-soft); color: var(--hub-text); }
+.hub-main.is-inner .rr-pill-good { color: var(--hub-good); border-color: var(--hub-good); }
+/* Discord sync */
+.hub-main.is-inner .discord-sync-container { max-width: none; padding: 0; }
+.hub-main.is-inner .ds-kpi-card, .hub-main.is-inner .ds-drift-card, .hub-main.is-inner .ds-empty-card, .hub-main.is-inner .ds-matrix-section, .hub-main.is-inner .ds-audit-section, .hub-main.is-inner .ds-drift-section, .hub-main.is-inner .ds-modal-card { background: var(--glass); border: 1px solid var(--glass-line); box-shadow: none; color: var(--hub-text); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1); }
+.hub-main.is-inner .ds-section-header h2, .hub-main.is-inner .ds-section-header h3, .hub-main.is-inner .ds-card-top strong, .hub-main.is-inner .ds-kpi-card strong, .hub-main.is-inner .ds-modal-head h3 { color: var(--hub-text); }
+.hub-main.is-inner .ds-section-header p, .hub-main.is-inner .ds-kpi-head, .hub-main.is-inner .ds-audit-copy, .hub-main.is-inner .ds-modal-desc, .hub-main.is-inner .ds-suggestions-label, .hub-main.is-inner .ds-game-profile, .hub-main.is-inner .ds-kpi-card small { color: var(--hub-muted); }
+.hub-main.is-inner .ds-search-input, .hub-main.is-inner .ds-modal-input { border: 1px solid var(--glass-line); background: var(--hub-bg); color: var(--hub-text); }
+.hub-main.is-inner .ds-filter-pills button { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); border-radius: 999px; }
+.hub-main.is-inner .ds-filter-pills button.is-active, .hub-main.is-inner .ds-filter-pills .is-active { border-color: var(--ask); background: rgba(var(--ask-rgb), 0.16); color: var(--ask-text); font-weight: 700; }
+.hub-main.is-inner .btn-ds-reconcile, .hub-main.is-inner .btn-modal-save, .hub-main.is-inner .btn-ds-confirm-link { border: 0; background: var(--ask); color: #fff; font-weight: 700; }
+.hub-main.is-inner .btn-ds-demote, .hub-main.is-inner .btn-ds-unlink { border: 1px solid var(--hub-bad); background: transparent; color: var(--hub-bad); }
+.hub-main.is-inner .btn-ds-manual-link, .hub-main.is-inner .btn-modal-cancel { border: 1px solid var(--glass-line); background: transparent; color: var(--hub-text); }
+.hub-main.is-inner .ds-suggestions-box, .hub-main.is-inner .ds-suggestion-item { background: var(--hub-surface); border-color: var(--glass-line); color: var(--hub-text); }
+.hub-main.is-inner .ds-extra-chip { border: 1px solid var(--glass-line); background: rgba(128, 150, 180, 0.12); color: var(--hub-text); }
+.hub-main.is-inner .ds-modal-overlay { background: rgba(5, 10, 20, 0.6); }
+/* Review queue */
+.hub-main.is-inner .kb-review, .hub-main.is-inner .kb-review-card, .hub-main.is-inner .kb-queue > * { background: var(--glass); border: 1px solid var(--glass-line); color: var(--hub-text); }
+@media (max-width: 759.98px) { .hub-main.is-inner .rr-gate, .hub-main.is-inner .officer-gate-card { max-width: none; } }
