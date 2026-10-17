@@ -2,8 +2,8 @@
 
 /** A member counts as on the site while their last heartbeat (sent about every minute) is under this old. */
 export const SITE_ONLINE_MS = 150_000;
-/** "In the game recently" means the game reported activity within this window. */
-export const GAME_RECENT_MS = 3 * 3_600_000;
+/** "Last seen in the game" lists members the game reported active within this window (the game data is refreshed hourly). */
+export const GAME_RECENT_MS = 24 * 3_600_000;
 
 export const isOnSite = (lastSeen: Date | number, now = Date.now()) => now - new Date(lastSeen).getTime() < SITE_ONLINE_MS;
 

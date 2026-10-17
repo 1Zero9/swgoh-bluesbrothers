@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.41.2 — 2026-10-18
+
+- **Who's online: the other two lists are more useful.**
+  - **"Last seen in the game"** now covers the last 24 hours instead of 3, so more members show with a "3 h ago" style time. The game's own activity data is refreshed hourly, so it can lag a little.
+  - **On Discord:** officers now see a one-line hint (Server Settings → Widget → Enable Server Widget) in the panel until that list is switched on. Discord only shares who is online through that widget.
+
 ## 1.41.1 — 2026-10-18
 
 - **Who's online is easier to trust.** The panel now has an **"On the site earlier today"** list (who was seen in the last day, and how long ago), so you can tell "Dougie was here 12 minutes ago" from "Dougie never connected". If the list can't load, it says so with the error instead of "Looking…" forever. It also re-checks the moment you come back to the tab or the app (an iPad pauses a page's timers when it is in the background, which made people drop off the list).
