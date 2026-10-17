@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.19.0 — 2026-10-17
+
+- **Mission From God inside the new frame.** The old site bar is replaced by the slim header and the themed picture, and the game sits in one framed panel instead of filling the whole screen with big gaps above it. The game itself (intro, datapad, trading) is unchanged and keeps its dark console look.
+- **Fixed the "How to play" pop-up.** It was squeezed into a narrow column inside the intro panel; it is now a centred full-screen pop-up with the same look as before.
+
 ## 1.18.1 — 2026-10-17
 
 - **Both brothers show on a phone.** The Home picture was cropped to a slice, cutting off the second man. On a phone it now sits at the foot of the page at a size that fits both brothers and the car, and fades up into the sky colour. The boxes sit over the sky, not their faces.

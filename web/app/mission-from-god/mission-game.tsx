@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   CHARACTERS,
   COMMODITIES,
@@ -197,6 +198,8 @@ export default function MissionGame() {
   );
 }
 
+/** Drawn on the page itself, not inside the intro panel (whose blur would trap a full-screen layer inside it). */
 function QuickGuide({ onClose }: { onClose: () => void }) {
-  return <div className={styles.guideLayer} role="dialog" aria-modal="true" aria-labelledby="quick-guide-title"><div className={styles.guideModal}><button className={styles.guideClose} type="button" onClick={onClose} aria-label="Close how to play guide">×</button><p className={styles.panelLabel}>Quick guide · about one minute</p><h2 id="quick-guide-title">Buy low. Jump. Sell high.</h2><p className={styles.guideLead}>That is the whole game. Make enough Credits to clear Jabba&apos;s debt before Day 30.</p><ol><li><span>1</span><div><strong>Buy cheap cargo</strong><p>Choose a quantity, then press Buy. Your cargo space is limited.</p></div></li><li><span>2</span><div><strong>Jump to another planet</strong><p>Every jump advances one day and changes the prices.</p></div></li><li><span>3</span><div><strong>Sell for more than you paid</strong><p>Compare “Receive” with the “Paid avg” shown under the item.</p></div></li><li><span>4</span><div><strong>Pay Jabba</strong><p>You need liquid Credits—not cargo value—to clear the debt.</p></div></li></ol><div className={styles.guideSimple}><strong>Keep it simple</strong><p>Start with Corellian Ale or Omega Materials. Ignore Net Worth, News and Bounty until the basic buy → jump → sell loop feels comfortable.</p></div><button className={styles.guideStart} type="button" onClick={onClose}>Got it — start trading</button></div></div>;
+  if (typeof document === "undefined") return null;
+  return createPortal(<div className={styles.guideLayer} role="dialog" aria-modal="true" aria-labelledby="quick-guide-title"><div className={styles.guideModal}><button className={styles.guideClose} type="button" onClick={onClose} aria-label="Close how to play guide">×</button><p className={styles.panelLabel}>Quick guide · about one minute</p><h2 id="quick-guide-title">Buy low. Jump. Sell high.</h2><p className={styles.guideLead}>That is the whole game. Make enough Credits to clear Jabba&apos;s debt before Day 30.</p><ol><li><span>1</span><div><strong>Buy cheap cargo</strong><p>Choose a quantity, then press Buy. Your cargo space is limited.</p></div></li><li><span>2</span><div><strong>Jump to another planet</strong><p>Every jump advances one day and changes the prices.</p></div></li><li><span>3</span><div><strong>Sell for more than you paid</strong><p>Compare “Receive” with the “Paid avg” shown under the item.</p></div></li><li><span>4</span><div><strong>Pay Jabba</strong><p>You need liquid Credits—not cargo value—to clear the debt.</p></div></li></ol><div className={styles.guideSimple}><strong>Keep it simple</strong><p>Start with Corellian Ale or Omega Materials. Ignore Net Worth, News and Bounty until the basic buy → jump → sell loop feels comfortable.</p></div><button className={styles.guideStart} type="button" onClick={onClose}>Got it — start trading</button></div></div>, document.body);
 }

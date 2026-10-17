@@ -22,6 +22,7 @@ import DougiesJukebox from "@/app/dougies-discs/dougies-jukebox";
 import { CURATED_DISCS } from "@/lib/discs";
 import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
+import MissionGame from "@/app/mission-from-god/mission-game";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -165,6 +166,12 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
     <HubPage backdrop="themed" inner>
       <HubHeader eyebrow="Soul Food Cantina" title="Good food. Across the galaxy." intro="Galactic sandwich recipes, tap-droid beer pairings and community specials from Chicago to the Outer Rim." />
       <SoulFoodCafe recipes={await getSoulFoodRecipes()} />
+    </HubPage>
+  );
+  if (screen === "mission") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Mission From God" title="A thirty-day galactic trading run" intro="Pay Jabba, save the orphanage, and keep the Bluesmobile moving. Free play, saved on this device." />
+      <div className="hub-mission"><MissionGame /></div>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;
