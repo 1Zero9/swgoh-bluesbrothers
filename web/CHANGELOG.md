@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.5.0 — 2026-10-17
+
+- **Saved squads gets the new look.** The tall banner is gone; a slim header and the page's themed background take its place. The enemy-leader search and an orange **+ Add a counter** share a row.
+- **Each counter is a clear card:** the name, who it beats, the mode and who saved it; the squad as unit chips (leader highlighted, relic needs shown small); how to run it; then a green **You can run this now** or an orange **You're not there yet** with what is missing; and who in the guild is ready or closest. Glow on hover, **Remove** is a small pill.
+- **"Not on the list?"** is now an orange box beside the cards (above them on a phone) with a button straight to Ask B-Lue3.
+
 ## 1.4.0 — 2026-10-17
 
 - **Tips and Ideas get the new look.** Cards sit two across on a laptop in the same see-through glass as Counters, with a blue glow on hover. Each has its type and topic as small tags, then the title, the words, and a footer with who wrote it, when, and how they know. **This helped** is an orange pill that turns green once you have tapped it; tips still waiting for an officer have an orange dashed edge.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import UnitPicker, { type PickedUnit } from "@/app/unit-picker";
 import type { CounterView } from "@/lib/counters-data";
 import NavIcon from "@/app/nav-icon";
@@ -8,7 +8,7 @@ import NavIcon from "@/app/nav-icon";
 type Slot = { unit: PickedUnit | null; minRelic: number; key: number };
 const MODE_LABEL: Record<string, string> = { TW: "TW", GAC: "GAC", BOTH: "TW + GAC" };
 
-export default function CountersClient() {
+export default function CountersClient({ aside }: { aside?: ReactNode }) {
   const [enemy, setEnemy] = useState<PickedUnit | null>(null);
   const [counters, setCounters] = useState<CounterView[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -73,14 +73,14 @@ export default function CountersClient() {
   }
 
   return (
-    <div className="counters">
-      <div className="counters-search">
+    <div className="counters kb">
+      <div className="counters-search kb-toolbar">
         <UnitPicker label="Enemy squad leader" placeholder="Enemy squad's leader, e.g. lord vader" onPick={setEnemy} onClear={() => setEnemy(null)} />
-        {canAdd ? <button type="button" onClick={() => setAdding(!adding)}>{adding ? "Cancel" : "Add a counter"}</button> : null}
+        {canAdd ? <button type="button" className="kb-secondary" onClick={() => setAdding(!adding)}>{adding ? "Cancel" : "+ Add a counter"}</button> : null}
       </div>
 
       {adding ? (
-        <form className="counters-form" onSubmit={save}>
+        <form className="counters-form kb-panel" onSubmit={save}>
           <h3>Add a counter</h3>
           <label>Enemy squad (its leader)<UnitPicker label="Enemy leader" placeholder="Start typing the enemy leader" onPick={setNewEnemy} onClear={() => setNewEnemy(null)} /></label>
           <label>Name<input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={60} placeholder="e.g. JMK squad" /></label>
@@ -113,9 +113,11 @@ export default function CountersClient() {
       ) : null}
       {!enemy && counters.length ? <p className="who-has-note">Newest counters. Search an enemy squad above to see its counters.</p> : null}
 
-      <div className="counters-list">
+      <div className="kb-layout">
+      {aside}
+      <div className="counters-list kb-results">
         {counters.map((counter) => (
-          <article key={counter.id} className="counter-card">
+          <article key={counter.id} className="counter-card kb-card">
             <header>
               <div>
                 <h3>{counter.title}</h3>
@@ -123,7 +125,7 @@ export default function CountersClient() {
               </div>
               {counter.mine || isOfficer ? <button type="button" className="counter-remove" onClick={() => void remove(counter.id)}>Remove</button> : null}
             </header>
-            <p className="counter-squad">{counter.squad.map((slot) => `${slot.name}${slot.minRelic > 0 ? ` R${slot.minRelic}+` : ""}`).join(" · ")}</p>
+            <p className="counter-squad kb-squad">{counter.squad.map((slot, index) => <span key={slot.unitId} className={`kb-chip${index === 0 ? " kb-chip-leader" : ""}`}>{slot.name}{slot.minRelic > 0 ? <i> R{slot.minRelic}+</i> : null}</span>)}</p>
             {counter.notes ? <p className="counter-notes">{counter.notes}</p> : null}
             {counter.readiness.you ? (
               <p className={`counter-you${counter.readiness.you.ready ? " is-ready" : ""}`}>
@@ -136,6 +138,7 @@ export default function CountersClient() {
             ) : null}
           </article>
         ))}
+      </div>
       </div>
     </div>
   );
