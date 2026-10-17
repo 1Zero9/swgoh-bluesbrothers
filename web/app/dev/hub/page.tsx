@@ -24,6 +24,7 @@ import SoulFoodCafe from "@/app/soul-food-cafe";
 import { getSoulFoodRecipes } from "@/lib/recipes";
 import MissionGame from "@/app/mission-from-god/mission-game";
 import ChatClient from "@/app/chat/chat-client";
+import OfficerRosterTable from "@/app/officer-roster-table";
 import KnowledgeHub from "@/app/knowledge/knowledge-hub";
 import LinkWelcome from "@/app/link-welcome";
 import { AskView, GuildView, MoreView } from "@/app/hub-views";
@@ -212,6 +213,13 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
     <HubPage backdrop="themed" inner>
       <HubHeader eyebrow="Guild" title="Guild chat" intro="The Blues Brothers Discord channels, on the site." />
       <div className="hub-chatframe"><ChatClient channels={[{ key: "general", label: "general" }, { key: "tw", label: "territory-war" }]} signedInAsMember /></div>
+    </HubPage>
+  );
+  if (screen === "roster-report") return (
+    <HubPage backdrop="themed" inner>
+      <HubHeader eyebrow="Officers" title="Roster report" intro="Tickets, raid participation and Territory War joins in one filterable table." />
+      <div className="hub-stats"><div className="intel-summary"><div><strong>49</strong><small>active members</small></div><div><strong>3</strong><small>need attention</small></div><div><strong>12</strong><small>in the archive</small></div></div></div>
+      <section className="rr-section"><OfficerRosterTable raidLabel="Krayt Dragon" twLabel="Current war" rows={[0, 1, 2].map((i) => ({ playerId: "p" + i, name: ["Dex", "ZappAttk", "Igor"][i], role: i ? null : "OFFICER", state: "ACTIVE" as const, joinedAt: "2026-02-10T10:00:00Z", leftAt: null, tenureDays: 249, galacticPower: String(11e6 - i * 3e6), raidTickets: [600, 310, 80][i], ticketTarget: 600, lastActivityAt: "2026-10-17T06:00:00Z", raidLabel: "Krayt Dragon", raidParticipated: i < 2, raidDamage: 4e6, twLabel: "Current war", twJoined: i < 2, flags: i === 2 ? ["Sat out the last raid"] : [], needsAttention: i === 2 }))} /></section>
     </HubPage>
   );
   if (screen === "more") return <MoreView isOfficer discordUrl="https://discord.gg/example" />;

@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.24.0 — 2026-10-17
+
+- **The officer pages on the new look.** The roster report, Discord sync and the review queue use the slim header and themed picture instead of tall banners, and the same glass frames.
+  - **Roster report:** glass tiles (active, need attention, archive), a glass search bar, and the table in a glass frame with rows that highlight on hover and an orange tint for anyone needing attention. On a phone the table scrolls sideways.
+  - **Discord sync:** tiles, drift cards, the audit trail and the link pop-up follow the theme, with orange for the main actions and red outlines for demote and unlink.
+  - **Review queue:** header with a link back to Knowledge.
+
 ## 1.23.0 — 2026-10-17
 
 - **Guild chat on the new look.** Slim header and themed picture, and the chat sits in one glass frame: channel tabs as pills (the open one orange), the messages in the middle, an orange Send button, and the read-only note when posting is off. It fits the screen height on a laptop and sits clear above the dock on a phone. Colours follow the theme, so messages read on the light theme too.
