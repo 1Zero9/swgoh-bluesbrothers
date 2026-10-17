@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.15.0 — 2026-10-17
+
+- **A floating glass dock on phones and tablets.** The bottom tab bar is now a rounded, frosted-glass pill that floats above the page (Home, Ask, Knowledge, Guild, More), with a soft capsule behind the page you are on. It is clear glass on Rebel and tinted glass on Deep and Classic. B-Lue3's icon and the announcement sit just above it.
+- **Arsenal on the new look.** The coverage tiles, each collection (Galactic Legends and the rest) and every unit card are the same see-through frames with the blue hover glow, orange progress bars, and clear text on the light theme.
+
 ## 1.14.0 — 2026-10-17
 
 - **The Datacron vault on the new look.** The four number tiles, the tabs (Guild Datacron Vault, Active Sets & Meta Codex, TW Command Synergies, Reroll & Farming Advisor), the search and filter bar, every datacron card, the table view, the leaderboard and the signature roster are all the same see-through frames with a blue glow on hover, and they now read properly on the light theme (before, gold and pale text vanished on white).
