@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.35.2 — 2026-10-17
+
+- **The doorman droid picture is also on the "members only" door**, so a visitor who hits a members page sees the same door as the Gig page.
+
 ## 1.35.1 — 2026-10-17
 
 - **The doorman droid is back on The Gig is In Session door**, as a wide picture under the header with the neon sign, the droid and the queue all in view.
