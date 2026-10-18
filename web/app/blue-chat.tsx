@@ -110,7 +110,8 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
                           {busy && searching ? <><span className="blue-spinner" aria-hidden="true" />Searching the web… up to 30 seconds</> : <><NavIcon name="search" size={18} />Search the web with B-Lue3 · uses 1 question</>}
                         </button>
                         <small className="blue-ai-note">AI web search can be wrong or out of date. Check in game.</small>
-                        <a href="/knowledge" className="kb-link">Ask the guild for help instead</a>
+                        {turn.offer ? <button type="button" className="kb-secondary" onClick={() => window.dispatchEvent(new CustomEvent("bb-add-counter", { detail: { unitId: turn.offer?.leaderUnitId, name: turn.offer?.leaderName, mode: turn.offer?.mode } }))}>Add one you know to the guild list</button> : null}
+                        <a href="/ask?tab=counters" className="kb-link">Ask the guild for help instead</a>
                         {left <= 0 ? <small>No AI questions left this week.</small> : null}
                       </div>
                     ) : null}

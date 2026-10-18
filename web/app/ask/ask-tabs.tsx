@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import CounterFinder from "./counter-finder";
 
 type Tab = "ask" | "counters";
@@ -23,6 +23,13 @@ export default function AskTabs({ chat, names, canAct, initialTab = "ask" }: { c
       }
     });
   }
+
+  // B-Lue3's chat asks for the add form with this event; show the Find a counter tab, where it opens.
+  useEffect(() => {
+    const onAdd = () => setTab("counters");
+    window.addEventListener("bb-add-counter", onAdd);
+    return () => window.removeEventListener("bb-add-counter", onAdd);
+  }, []);
 
   return (
     <div className="ask-tabs">
