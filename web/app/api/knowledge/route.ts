@@ -1,6 +1,6 @@
 import { after } from "next/server";
 import { getViewerAccess } from "@/lib/access-control";
-import { countRecentSubmissions, findMatchups, getMatchupDetail, knownUnitIds, submitMatchup, unitLabel } from "@/lib/knowledge/data";
+import { countRecentSubmissions, findMatchups, getMatchupDetail, knownUnitIds, submitMatchup, unitLabel, linkSuggestion } from "@/lib/knowledge/data";
 import { readinessFor } from "@/lib/knowledge/readiness";
 import { isMode, MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import { canSubmit } from "@/lib/knowledge/permissions";
@@ -56,11 +56,15 @@ export async function POST(request: Request) {
   if (!canSubmit(access)) return fail("Sign in with Discord to add a counter.", 401);
   const whoId = access.playerId ?? null;
 
-  const checked = validateSubmission(await request.json().catch(() => null), access.isOfficer ? "OFFICER" : "MEMBER", knownUnitIds);
+  const body = await request.json().catch(() => null);
+  const checked = validateSubmission(body, access.isOfficer ? "OFFICER" : "MEMBER", knownUnitIds);
   if (!checked.ok) return fail(checked.error, 400);
   if (whoId && (await countRecentSubmissions(whoId)) >= DAILY_SUBMISSIONS) return fail("That's plenty for one day. Try again tomorrow.", 429);
 
   const name = whoId ? (await getPrisma().player.findUnique({ where: { id: whoId }, select: { currentName: true } }))?.currentName ?? "A member" : "An officer";
   const result = await submitMatchup(checked.value, { via: access.isOfficer ? "OFFICER" : "MEMBER", who: name, whoId });
+  // "I have a better counter" / "swap X for Y": remember which counter it is about.
+  const raw = (body ?? {}) as { improves?: unknown; suggestion?: unknown };
+  if (result.created && typeof raw.improves === "string" && raw.improves.length < 60) await linkSuggestion(result.id, raw.improves, raw.suggestion === "SWAP" ? "SWAP" : "BETTER", name).catch(() => false);
   return Response.json({ ok: true, ...result }, { headers: NO_STORE });
 }

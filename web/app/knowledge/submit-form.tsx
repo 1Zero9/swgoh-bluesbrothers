@@ -17,7 +17,7 @@ const EVIDENCE: { value: string; label: string; from: string }[] = [
 const blank = (): Slot[] => Array.from({ length: 5 }, () => null);
 
 /** Add a counter in four short steps. It always goes to an officer for review before anyone else sees it. */
-export default function SubmitForm({ prefill, onDone }: { prefill?: { mode: KbMode; leader: PickedUnit } | null; onDone: () => void }) {
+export default function SubmitForm({ prefill, onDone, improves }: { prefill?: { mode: KbMode; leader: PickedUnit } | null; onDone: () => void; /** The counter this one is suggested to improve on. */ improves?: string }) {
   const [mode, setMode] = useState<KbMode>(prefill?.mode ?? "TW");
   const size = squadRules(mode).min;
   const [defender, setDefender] = useState<Slot[]>(() => { const s = blank(); if (prefill) s[0] = prefill.leader; return s; });
@@ -51,7 +51,7 @@ export default function SubmitForm({ prefill, onDone }: { prefill?: { mode: KbMo
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        mode, defender: { members: squadOf(defender) }, attacker: { members: squadOf(attacker) }, strategy, opening,
+        mode, defender: { members: squadOf(defender) }, attacker: { members: squadOf(attacker) }, strategy, opening, ...(improves ? { improves, suggestion: "BETTER" } : {}),
         datacron: { dependent: datacron, expiresAt: datacron ? datacronEnds : undefined },
         evidence: [{ type: evidenceType, sourceProvider: (url ? provider.trim() : "") || chosen.from, sourceUrl: url || undefined, observedAt: new Date().toISOString() }],
       }),
