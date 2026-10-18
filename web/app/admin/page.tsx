@@ -48,7 +48,32 @@ const OUTSIDE: { label: string; hint: string; href: string }[] = [
 
 export default async function AdminHome() {
   const access = await getViewerAccess();
-  if (!isSiteAdmin(access)) return <MembersOnly path="/admin" area="The site admin area" />;
+  if (!isSiteAdmin(access)) {
+    // An officer gets told exactly why, so it can be fixed; anyone else just sees the members-only door.
+    if (!access.isOfficer) return <MembersOnly path="/admin" area="The site admin area" />;
+    const ids = [access.discordUserId, ...(access.discordUserIds ?? [])].filter((id, index, all): id is string => Boolean(id) && all.indexOf(id) === index);
+    return (
+      <HubPage backdrop="themed" inner>
+        <HubHeader eyebrow="Site admin" title="This area is for the site admin only" intro="You are signed in as an officer, but the site doesn't recognise you as the site admin yet." />
+        <section className="help-box">
+          {!access.playerId ? (
+            <>
+              <p><strong>You are in with the shared officer password.</strong> That isn&apos;t tied to a Discord account, so the site can&apos;t tell it&apos;s you.</p>
+              <p><a className="btn-discord-gate" href="/api/auth/discord?next=/admin">Sign in with Discord</a></p>
+            </>
+          ) : ids.length ? (
+            <>
+              <p>You are signed in with Discord as <strong>{access.playerName ?? "a member"}</strong>. The Discord user id the site has for you is:</p>
+              <p><code>{ids.join(", ")}</code></p>
+              <p>For the site admin tools, that number needs to be in <code>SITE_ADMIN_DISCORD_ID</code> in Vercel (Settings → Environment Variables, Production). Add it, then redeploy.</p>
+            </>
+          ) : (
+            <p>You are signed in as <strong>{access.playerName ?? "a member"}</strong>, but there is no Discord account linked to your player on the site, so it can&apos;t match you. Sign out and sign in with Discord again, then come back.</p>
+          )}
+        </section>
+      </HubPage>
+    );
+  }
   const db = getPrisma();
   const safe = async <T,>(work: Promise<T>, fallback: T) => work.catch(() => fallback);
   const [counters, notes, helpWaiting, requests] = await Promise.all([

@@ -13,3 +13,8 @@ test("with nothing set, or no Discord id, nobody is admin", () => {
   assert.equal(isSiteAdmin({ discordUserId: "123" }, undefined), false);
   assert.equal(isSiteAdmin({}, "123"), false);
 });
+
+test("an extra Discord account linked to the member also counts", () => {
+  assert.equal(isSiteAdmin({ discordUserId: "999", discordUserIds: ["999", "123"] }, "123"), true);
+  assert.equal(isSiteAdmin({ discordUserIds: ["555"] }, "123"), false);
+});

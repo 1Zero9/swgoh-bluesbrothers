@@ -8,7 +8,9 @@ export function adminIds(env = process.env.SITE_ADMIN_DISCORD_ID): string[] {
   return (env ?? "").split(",").map((id) => id.replace(/[^0-9]/g, "")).filter(Boolean);
 }
 
-export function isSiteAdmin(access: Pick<ViewerAccess, "discordUserId">, env = process.env.SITE_ADMIN_DISCORD_ID): boolean {
+/** Admin if ANY Discord account linked to the signed-in member (the main one or an extra one) is on the list. */
+export function isSiteAdmin(access: Pick<ViewerAccess, "discordUserId"> & { discordUserIds?: string[] }, env = process.env.SITE_ADMIN_DISCORD_ID): boolean {
   const ids = adminIds(env);
-  return Boolean(access.discordUserId) && ids.includes(String(access.discordUserId));
+  const mine = [access.discordUserId, ...(access.discordUserIds ?? [])].filter((id): id is string => Boolean(id)).map(String);
+  return mine.some((id) => ids.includes(id));
 }
