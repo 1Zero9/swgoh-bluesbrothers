@@ -1,6 +1,7 @@
 import { getViewerAccess } from "@/lib/access-control";
 import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { getPrisma } from "@/lib/prisma";
+import { isSiteAdmin } from "@/lib/site-admin";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -24,6 +25,7 @@ export async function GET() {
       role: access.isOfficer ? "OFFICER" : access.isMember ? "MEMBER" : "PUBLIC",
       name: access.playerName ?? null,
       reviewCount,
+      isAdmin: isSiteAdmin(access),
     },
     { headers: { "Cache-Control": "private, no-store" } },
   );

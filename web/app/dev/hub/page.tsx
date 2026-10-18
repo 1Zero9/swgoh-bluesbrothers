@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
+import { AdminHomeView } from "@/app/admin/page";
 import { HandbookView } from "@/app/knowledge/handbook/page";
 import { GlossaryView } from "@/app/knowledge/glossary/page";
 import NextSteps from "@/app/ask/next-steps";
@@ -109,6 +110,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
   if (screen === "nextsteps") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Find a counter" title="Lord Vader" /><NextSteps options={[{ label: "Fennec, Greef, Bossk, Bo-Katan, Mando", needs: [{ unit: "Bossk", kind: "own", have: 0, want: 7 }, { unit: "Mando", kind: "relic", have: 3, want: 5 }] }, { label: "Jedi Master Kenobi, CAT", needs: [{ unit: "Jedi Master Kenobi", kind: "relic", have: 2, want: 7 }, { unit: "Commander Ahsoka Tano", kind: "own", have: 0, want: 7 }] }]} /></HubPage>;
   if (screen === "handbook") return <HandbookView />;
   if (screen === "glossary") return <GlossaryView />;
+  if (screen === "admin") return <AdminHomeView counts={{ review: 53, help: 1, requests: 0 }} switches={[{ label: "B-Lue3 AI", value: "On", env: "BLUE_AI" }, { label: "Officer research per week", value: "60", env: "BLUE_RESEARCH_LIMIT" }, { label: "Officers' help channel", value: "Not set", env: "DISCORD_OFFICER_WEBHOOK_URL" }]} />;
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;

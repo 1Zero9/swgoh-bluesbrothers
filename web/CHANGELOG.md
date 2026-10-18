@@ -2,7 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
-## 1.49.1 — 2026-10-18
+## 1.50.0 — 2026-10-18
+
+- **A Site admin section (site admin only).** A **Site admin** group in the menu (and on the More menu on a phone) opens **Admin home**, one page with everything in one place: live counts of what is waiting (to review, waiting for a sign-in link, counters members want), links to the Launch checklist, Sign-in tracker, Who uses the site, B-Lue3 log, Sign-in links, Discord sync, Member cards, Roster report, Review queue, Announcement, Combat handbook, Glossary and the sign-in help page, a read-out of the main switches (B-Lue3 AI, web search, question limits, Discord channels) with the setting each one lives under, and links to where the site runs (Vercel deployments, logs and settings, GitHub, Discord). Only you see it, not other officers.
+
+## 1.49.1', — 2026-10-18
 
 - **Publish the starter tips in one go (officers).** The tips section of the review page has **Publish all N starter tips** (with a confirmation). It only covers the batch of starter tips an officer brought in; tips members wrote still wait for you to check them one by one.
 

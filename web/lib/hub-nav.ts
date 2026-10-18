@@ -18,7 +18,7 @@ export const HUB_SECTIONS: HubSection[] = [
     key: "more",
     label: "More",
     href: "/more",
-    prefixes: ["/more", "/me", "/dougies-discs", "/cantina", "/mission-from-god", "/gig-in-session", "/officer", "/credits"],
+    prefixes: ["/more", "/me", "/dougies-discs", "/cantina", "/mission-from-god", "/gig-in-session", "/officer", "/admin", "/credits"],
   },
 ];
 
@@ -33,7 +33,7 @@ export function sectionFor(pathname: string): HubSectionKey | null {
 }
 
 /** The laptop sidebar: every page, in groups, nothing tucked behind a menu. */
-export type SidebarLink = { label: string; href: string; officerOnly?: boolean };
+export type SidebarLink = { label: string; href: string; officerOnly?: boolean; /** Only the site admin sees it. */ adminOnly?: boolean };
 export type SidebarGroup = { title: string | null; links: SidebarLink[] };
 
 export const SIDEBAR_GROUPS: SidebarGroup[] = [
@@ -91,6 +91,15 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
       { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true },
     ],
   },
+  {
+    title: "Site admin",
+    links: [
+      { label: "Admin home", href: "/admin", officerOnly: true, adminOnly: true },
+      { label: "Sign-in tracker", href: "/admin/signin", officerOnly: true, adminOnly: true },
+      { label: "Who uses the site", href: "/admin/usage", officerOnly: true, adminOnly: true },
+      { label: "B-Lue3 log", href: "/admin/blue", officerOnly: true, adminOnly: true },
+    ],
+  },
 ];
 
 /** The sidebar link that matches the page: the one with the longest matching path, so /knowledge/tips beats /knowledge. */
@@ -107,7 +116,7 @@ export function activeSidebarHref(pathname: string, groups: SidebarGroup[] = SID
 }
 
 /** What each dock tab opens on a phone: a short menu above the dock. Home and Ask go straight to their page. */
-export type DockLink = { label: string; href: string; officerOnly?: boolean };
+export type DockLink = { label: string; href: string; officerOnly?: boolean; adminOnly?: boolean };
 export type DockMenu = { title: string | null; links: DockLink[] };
 
 export const DOCK_MENUS: Partial<Record<HubSectionKey, DockMenu[]>> = {
@@ -120,5 +129,6 @@ export const DOCK_MENUS: Partial<Record<HubSectionKey, DockMenu[]>> = {
     { title: "You", links: [{ label: "My page", href: "/me" }, { label: "Feedback", href: "/feedback" }, { label: "Notifications", href: "/more" }] },
     { title: "Off duty", links: [{ label: "Dougie's Discs", href: "/dougies-discs" }, { label: "Soul Food Cantina", href: "/cantina" }, { label: "Mission From God", href: "/mission-from-god" }] },
     { title: "Officers", links: [{ label: "Review queue", href: "/knowledge/review", officerOnly: true }, { label: "Announcement", href: "/officer/announcement", officerOnly: true }, { label: "Launch checklist", href: "/officer/launch", officerOnly: true }, { label: "Sign-in links", href: "/officer/signin-link", officerOnly: true }, { label: "Member cards", href: "/officer/member", officerOnly: true }, { label: "Roster report", href: "/officer/roster", officerOnly: true }, { label: "Discord sync", href: "/officer/discord-sync", officerOnly: true }] },
+    { title: "Site admin", links: [{ label: "Admin home", href: "/admin", officerOnly: true, adminOnly: true }, { label: "Sign-in tracker", href: "/admin/signin", officerOnly: true, adminOnly: true }, { label: "Who uses the site", href: "/admin/usage", officerOnly: true, adminOnly: true }, { label: "B-Lue3 log", href: "/admin/blue", officerOnly: true, adminOnly: true }] },
   ],
 };
