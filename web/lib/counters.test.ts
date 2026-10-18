@@ -61,7 +61,7 @@ test("the Discord reply shows the squad, your status and who is ready", () => {
   const reply = formatCounters("Lord Vader", [{
     title: "JMK squad", mode: "BOTH", createdByName: "Carsen", notes: "Lead with Bo-Katan",
     squad: [{ name: "Jedi Master Kenobi", minStars: 7, minRelic: 7 }, { name: "Bo-Katan", minStars: 7, minRelic: 0 }],
-    readiness: { ready: ["Bro", "BDB"], close: [], you: { ready: false, gaps: ["Jedi Master Kenobi: R5 → R7"], effort: 2 } },
+    readiness: { ready: ["Bro", "BDB"], close: [], you: { ready: false, gaps: ["Jedi Master Kenobi: R5 → R7"], needs: [{ unit: "Jedi Master Kenobi", kind: "relic", have: 5, want: 7 }], effort: 2 } },
   }], "https://example.test/counters");
   assert.match(reply, /\*\*Counters to Lord Vader\*\*/);
   assert.match(reply, /\*\*1\. JMK squad\*\* \(TW \+ GAC\) · by Carsen/);
@@ -69,4 +69,10 @@ test("the Discord reply shows the squad, your status and who is ready", () => {
   assert.match(reply, /❌ Jedi Master Kenobi: R5 → R7/);
   assert.match(reply, /Ready now \(2\): Bro, BDB/);
   assert.match(formatCounters("Rey", [], "https://example.test/counters"), /Nobody has added a counter to \*\*Rey\*\* yet/);
+});
+
+test("what is still needed comes as data: farm it, raise its stars, or level its relic", () => {
+  const squad = [{ unitId: "JEDIMASTERKENOBI", minStars: 7, minRelic: 7 }, { unitId: "BOKATAN", minStars: 7, minRelic: 0 }, { unitId: "GRIEVOUS", minStars: 7, minRelic: 0 }];
+  const status = squadStatus(squad, member("d", "D", [["JEDIMASTERKENOBI", 7, 5], ["BOKATAN", 5, 0]]), nameOf);
+  assert.deepEqual(status.needs.map((n) => `${n.kind}:${n.have}>${n.want}`), ["relic:5>7", "stars:5>7", "own:0>7"]);
 });

@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.47.0 — 2026-10-18
+
+- **When you can't run any of the counters found, it now tells you what to work on.** In Find a counter, if you're signed in and none of the counters are ready for you, a box picks the one closest to ready and lists exactly what's missing: **Farm** a unit you don't own, **raise** a unit's stars, or **level** a unit to a relic level (with where it is now). For a unit to farm there's a button to ask B-Lue3 where to farm it (it uses one question, and he searches the web, because he can't see farm locations himself). It disappears as soon as you can run one of them.
+
 ## 1.46.0 — 2026-10-18
 
 - **A 50-squad starter list can be brought in (officers).** On the review page, **Bring them in** adds one tip per popular enemy squad (Galactic Legend Leia, Lord Vader, JMK, JML, SEE, SLKR, Rey, Padmé, Bad Batch, Troopers, and so on): the usual line-up and the counters people mention. The list was written without sources, so each one lands as a tip **waiting for an officer to check and publish**, marked "not yet checked in game". Safe to press twice: ones already brought in are skipped.

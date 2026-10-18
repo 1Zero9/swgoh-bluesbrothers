@@ -6,6 +6,7 @@ import MatchCard, { type Listing } from "@/app/knowledge/match-card";
 import SubmitForm from "@/app/knowledge/submit-form";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import type { CounterView } from "@/lib/counters-data";
+import NextSteps, { type Option } from "./next-steps";
 
 const MODES: KbMode[] = ["TW", "GAC_5V5", "GAC_3V3"];
 const SHORT: Record<string, string> = { TW: "Territory War", GAC_5V5: "GAC 5v5", GAC_3V3: "GAC 3v3" };
@@ -101,6 +102,11 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   }
 
   const empty = enemy && hits !== null && !hits.length && !saved.length && !tips.length && !loading;
+  // Counters the member can't run yet, with what each still needs, so the page can point at the quickest one to work towards.
+  const options: Option[] = [
+    ...(hits ?? []).filter((hit) => hit.readiness).map((hit) => ({ label: hit.attacker.members.map((m) => names[m.unitId] ?? m.unitId).join(", "), needs: hit.readiness?.ready ? [] : (hit.readiness?.needs ?? []) })),
+    ...saved.filter((counter) => counter.readiness.you).map((counter) => ({ label: counter.squad.map((slot) => slot.name).join(", "), needs: counter.readiness.you?.ready ? [] : (counter.readiness.you?.needs ?? []) })),
+  ];
   const question = enemy ? `How do I beat ${enemy.name}${mode ? ` in ${MODE_LABELS[mode]}` : ""}?` : "";
 
   return (
@@ -123,6 +129,8 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
 
       {!enemy ? <p className="cf-hint">Pick the enemy squad&apos;s leader to see the counters the guild trusts. This is free and never uses a question.</p> : null}
       {loading && !hits ? <p className="cf-hint">Looking…</p> : null}
+
+      {enemy && !loading ? <NextSteps options={options} onAskFarm={onAskBlue} /> : null}
 
       {hits?.length ? <section aria-label="Checked counters" className="cf-list"><h3>Checked by officers</h3>{hits.map((hit) => <MatchCard key={hit.id} item={hit} names={names} canMark={canAct} />)}</section> : null}
 

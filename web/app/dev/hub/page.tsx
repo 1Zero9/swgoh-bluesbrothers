@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
+import NextSteps from "@/app/ask/next-steps";
 import BlueText from "@/app/blue-text";
 import MatchCard from "@/app/knowledge/match-card";
 import ResearchPanel from "@/app/knowledge/review/research-panel";
@@ -103,6 +104,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
     return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="Counters" /><MatchCard item={item} names={names} canMark /></HubPage>;
   }
   if (screen === "bluetext") return <HubPage backdrop="themed" inner><HubHeader eyebrow="B-Lue3" title="Answer formatting" /><div className="hub-chat"><div className="blue-chat"><div className="blue-thread"><div className="blue-turn blue-turn-assistant"><div className="blue-turn-body"><BlueText text={"Beep-boop, commander! Here are the two top counters currently used to take down Lord Vader:\n\n### Squad 1 (Premier GAC Duo)\n* **Darth Bane** (Leader)\n* **Count Dooku** (or **Sith Eternal Emperor**)\n\n**How to run it:** With Bane's *Rule of Two* active, allow Vader to pile debuffs on Bane.\n\n---\n\n### Squad 2 (Galactic Legend Counter)\n* **Jedi Master Kenobi** (Leader)"} /><p className="blue-sources">From the web: ign.com · swgoh.gg</p><div className="blue-save"><button type="button" className="kb-secondary">Add these counters to the guild list</button><small>An officer checks them, with their sources, before anyone else sees them.</small></div></div></div></div></div></div></HubPage>;
+  if (screen === "nextsteps") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Find a counter" title="Lord Vader" /><NextSteps options={[{ label: "Fennec, Greef, Bossk, Bo-Katan, Mando", needs: [{ unit: "Bossk", kind: "own", have: 0, want: 7 }, { unit: "Mando", kind: "relic", have: 3, want: 5 }] }, { label: "Jedi Master Kenobi, CAT", needs: [{ unit: "Jedi Master Kenobi", kind: "relic", have: 2, want: 7 }, { unit: "Commander Ahsoka Tano", kind: "own", have: 0, want: 7 }] }]} /></HubPage>;
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;

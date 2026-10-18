@@ -9,7 +9,7 @@ export type Squad = { teamName: string; memberIds: string[]; members: { unitId: 
 export type Listing = {
   id: string; status: string; mode: string; strategy: string | null; defender: Squad; attacker: Squad;
   datacronDependent: boolean; datacronExpiresAt: string | null; reviewedAt: string | null; createdAt: string;
-  evidenceCount: number; useCount: number; usedByMe?: boolean; usable?: boolean; match?: string; readiness?: { ready: boolean; gaps: string[] } | null;
+  evidenceCount: number; useCount: number; usedByMe?: boolean; usable?: boolean; match?: string; readiness?: { ready: boolean; gaps: string[]; needs?: { unit: string; kind: "own" | "stars" | "relic"; have: number; want: number }[] } | null;
   requirements: { zetas?: string[]; omicrons?: string[]; ultimates?: string[]; minRelic?: Record<string, number> } | null;
   oneShot: boolean | null; freshEnemyOnly: boolean | null; improves?: string | null;
 };
