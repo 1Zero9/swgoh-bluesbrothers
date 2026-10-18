@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
+import ResearchPanel from "@/app/knowledge/review/research-panel";
 import { launchRows } from "@/lib/launch-check";
 import { DEFAULT_ANNOUNCEMENT } from "@/lib/announcement";
 import { buildStatusRow } from "@/lib/home-status";
@@ -93,6 +94,7 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
       </HubPage>
     );
   }
+  if (screen === "research") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Review queue" /><ResearchPanel /></HubPage>;
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;

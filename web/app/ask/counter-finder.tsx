@@ -29,6 +29,20 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   const [note, setNote] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [helping, setHelping] = useState<Wanted | null>(null);
+  const [addFor, setAddFor] = useState<{ mode: KbMode; leader: PickedUnit } | null>(null);
+
+  // B-Lue3's chat can send someone here to add a counter for the squad he found nothing on.
+  useEffect(() => {
+    const onAdd = (event: Event) => {
+      const detail = (event as CustomEvent<{ unitId: string; name: string; mode: KbMode | null }>).detail;
+      if (!detail?.unitId) return;
+      setAddFor({ mode: detail.mode ?? "TW", leader: { id: detail.unitId, name: detail.name } });
+      setAdding(true);
+      requestAnimationFrame(() => document.getElementById("cf-add-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    };
+    window.addEventListener("bb-add-counter", onAdd);
+    return () => window.removeEventListener("bb-add-counter", onAdd);
+  }, []);
 
   const loadWanted = useCallback(async () => {
     const data = (await fetch("/api/knowledge/request", { cache: "no-store" }).then((r) => r.json()).catch(() => null)) as { requests?: Wanted[] } | null;
@@ -102,7 +116,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
           <span className="cf-hint">Know one that works? Add it. An officer checks it before others see it.</span>
         </div>
       ) : null}
-      {adding ? <div className="kb-panel"><h3>Add a counter</h3><SubmitForm prefill={enemy ? { mode: mode || "TW", leader: enemy } : null} onDone={() => void load()} /></div> : null}
+      {adding ? <div className="kb-panel" id="cf-add-panel"><h3>Add a counter{(addFor ?? (enemy ? { leader: enemy } : null)) ? ` for ${(addFor?.leader ?? enemy)?.name}` : ""}</h3><SubmitForm key={addFor?.leader.id ?? enemy?.id ?? "blank"} prefill={addFor ?? (enemy ? { mode: mode || "TW", leader: enemy } : null)} onDone={() => { setAddFor(null); setAdding(false); void load(); }} /></div> : null}
 
       {!enemy ? <p className="cf-hint">Pick the enemy squad&apos;s leader to see the counters the guild trusts. This is free and never uses a question.</p> : null}
       {loading && !hits ? <p className="cf-hint">Looking…</p> : null}
@@ -129,9 +143,10 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
       {empty ? (
         <div className="cf-empty">
           <strong>The guild has nothing saved for {enemy.name}{mode ? ` in ${MODE_LABELS[mode]}` : ""} yet.</strong>
-          <p>You have two ways forward. The web search uses one of your weekly questions and can be wrong; asking the guild is free.</p>
+          <p>You have three ways forward. Add one you already know (best, and free), ask the guild, or let B-Lue3 search the web, which uses one of your weekly questions and can be wrong.</p>
           <div className="cf-actions">
             <button type="button" className="kb-primary" onClick={() => onAskBlue(question)}>Ask B-Lue3 to search the web</button>
+            {canAct ? <button type="button" className="kb-secondary" onClick={() => { setAddFor(null); setAdding(true); requestAnimationFrame(() => document.getElementById("cf-add-panel")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>Add a counter you know</button> : null}
           </div>
           {canAct ? (
             <div className="cf-request">

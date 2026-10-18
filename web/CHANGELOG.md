@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.43.0 — 2026-10-18
+
+- **Fill the counter list in one go (officers).** On the review page, **Research the popular squads** has B-Lue3 search the web, one after another, for the 30 enemy squads members meet most (Lord Vader, Darth Revan, Jedi Knight Revan, Grand Master Yoda and so on) in the mode you pick. Every counter he finds goes into the review queue with its source page, and nothing is published until an officer says so. It shows progress as it goes, can be stopped, and stops cleanly if the weekly research allowance runs out (raise `BLUE_RESEARCH_LIMIT` in Vercel to do more in one go).
+- **"Add to the list" when a search finds nothing.** In Find a counter, the empty result now has an **Add a counter you know** button that opens the form for that squad. When B-Lue3 finds nothing in the guild's knowledge, his reply has an **Add one you know to the guild list** button that takes you to the same form with the enemy filled in. Adding is free and goes to an officer for a check.
+
 ## 1.42.1 — 2026-10-18
 
 - **Web search in B-Lue3 now answers.** "Search the web with B-Lue3" was running the web search and B-Lue3's own lookups together, which Google's model can't do reliably, so it ran out of steps and came back empty. The web search now runs on its own, like the officer counter research does, and only when a member taps the button. Everyday questions no longer attempt a web search first, which is faster and cheaper.
