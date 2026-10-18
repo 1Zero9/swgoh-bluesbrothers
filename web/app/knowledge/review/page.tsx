@@ -6,6 +6,7 @@ import { getViewerAccess } from "@/lib/access-control";
 import { canReview } from "@/lib/knowledge/permissions";
 import { allUnitNames } from "@/lib/wins";
 import ImportSavedButton from "./import-saved-button";
+import ImportStarterButton from "./import-starter-button";
 import ReviewClient from "./review-client";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ export default async function ReviewPage() {
         <Link className="hub-pagehead-link" href="/knowledge">← Knowledge</Link>
       </HubHeader>
       <ImportSavedButton />
+      <ImportStarterButton />
       <ReviewClient names={names} />
     </HubPage>
   );

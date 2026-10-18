@@ -20,6 +20,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   const [enemy, setEnemy] = useState<PickedUnit | null>(null);
   const [mode, setMode] = useState<"" | KbMode>("");
   const [hits, setHits] = useState<Listing[] | null>(null);
+  const [tips, setTips] = useState<{ id: string; title: string; body: string; authorName: string }[]>([]);
   const [saved, setSaved] = useState<CounterView[]>([]);
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -70,14 +71,16 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
   }
 
   const load = useCallback(async () => {
-    if (!enemy) { setHits(null); setSaved([]); return; }
+    if (!enemy) { setHits(null); setSaved([]); setTips([]); return; }
     setLoading(true);
     const params = new URLSearchParams({ unit: enemy.id, log: "1" });
     if (mode) params.set("mode", mode);
-    const [known, own] = await Promise.all([
+    const [known, own, notes] = await Promise.all([
       fetch(`/api/knowledge?${params}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ hits?: Listing[] } | null>,
       fetch(`/api/counters?enemy=${encodeURIComponent(enemy.id)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ counters?: CounterView[]; isOfficer?: boolean } | null>,
+      fetch(`/api/knowledge/notes?kind=TIP&q=${encodeURIComponent(enemy.name)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null) as Promise<{ notes?: { id: string; title: string; body: string; authorName: string; status: string }[] } | null>,
     ]);
+    setTips((notes?.notes ?? []).filter((note) => note.status === "PUBLISHED").slice(0, 4));
     setHits(known?.hits ?? []);
     setIsOfficer(Boolean(own?.isOfficer));
     // Saved squads are tagged TW, GAC or both; a mode filter keeps the ones that fit it (fleet modes fit none of them).
@@ -97,7 +100,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
     void load();
   }
 
-  const empty = enemy && hits !== null && !hits.length && !saved.length && !loading;
+  const empty = enemy && hits !== null && !hits.length && !saved.length && !tips.length && !loading;
   const question = enemy ? `How do I beat ${enemy.name}${mode ? ` in ${MODE_LABELS[mode]}` : ""}?` : "";
 
   return (
@@ -122,6 +125,20 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
       {loading && !hits ? <p className="cf-hint">Looking…</p> : null}
 
       {hits?.length ? <section aria-label="Checked counters" className="cf-list"><h3>Checked by officers</h3>{hits.map((hit) => <MatchCard key={hit.id} item={hit} names={names} canMark={canAct} />)}</section> : null}
+
+      {tips.length ? (
+        <section aria-label="Guild tips" className="cf-list">
+          <h3>Guild tips for {enemy?.name}</h3>
+          {tips.map((tip) => (
+            <article key={tip.id} className="kb-card cf-tip">
+              <header><strong>{tip.title}</strong><span className="kb-badge">Tip</span></header>
+              <p className="kb-strategy cf-tip-body">{tip.body}</p>
+              <footer><span className="kb-meta">from {tip.authorName}. Check in game before you rely on it.</span></footer>
+            </article>
+          ))}
+          {!hits?.length && !saved.length && onAskBlue ? <div className="cf-actions"><button type="button" className="kb-secondary" onClick={() => onAskBlue(question)}>Search the web for a checked counter · uses 1 question</button></div> : null}
+        </section>
+      ) : null}
 
       {saved.length ? (
         <section aria-label="Saved squads" className="cf-list">
