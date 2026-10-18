@@ -4,6 +4,7 @@ This project uses semantic versioning while it is under active development.
 
 ## 1.50.4 — 2026-10-18
 
+- **A username in the admin setting is now spotted.** `SITE_ADMIN_DISCORD_ID` needs your numeric Discord user id; a username such as "dex7707" used to be reduced to its digits and matched nobody. The site now ignores anything that isn't a real id and the admin page names the problem.
 - **Site admin: clearer, and more forgiving.** The site now counts any Discord account linked to a member (the main one or an extra one) when deciding who the site admin is. If you open the admin area as an officer and the site doesn't recognise you, the page now says why instead of showing the members-only door: if you came in with the shared officer password, a button signs you in with Discord; if you are signed in with Discord, it shows the Discord user id the site has for you and what to set `SITE_ADMIN_DISCORD_ID` to in Vercel.
 
 ## 1.50.3 — 2026-10-18

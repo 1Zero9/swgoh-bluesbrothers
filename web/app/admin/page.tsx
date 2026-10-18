@@ -8,7 +8,7 @@ import { blueEnabled, webSearchOn } from "@/lib/blue/ask";
 import { researchLimit } from "@/lib/blue/limits";
 import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { getPrisma } from "@/lib/prisma";
-import { isSiteAdmin } from "@/lib/site-admin";
+import { adminEnvProblems, isSiteAdmin } from "@/lib/site-admin";
 import { BUILD_ID, SITE_VERSION } from "@/lib/version";
 import type { HubLink } from "@/lib/hub-links";
 
@@ -51,6 +51,7 @@ export default async function AdminHome() {
   if (!isSiteAdmin(access)) {
     // An officer gets told exactly why, so it can be fixed; anyone else just sees the members-only door.
     if (!access.isOfficer) return <MembersOnly path="/admin" area="The site admin area" />;
+    const wrong = adminEnvProblems();
     const ids = [access.discordUserId, ...(access.discordUserIds ?? [])].filter((id, index, all): id is string => Boolean(id) && all.indexOf(id) === index);
     return (
       <HubPage backdrop="themed" inner>
@@ -65,6 +66,7 @@ export default async function AdminHome() {
             <>
               <p>You are signed in with Discord as <strong>{access.playerName ?? "a member"}</strong>. The Discord user id the site has for you is:</p>
               <p><code>{ids.join(", ")}</code></p>
+              {wrong.length ? <p><strong>The setting currently holds {wrong.map((item) => `"${item}"`).join(", ")}, which is a username. It needs the number above, not a name.</strong></p> : null}
               <p>For the site admin tools, that number needs to be in <code>SITE_ADMIN_DISCORD_ID</code> in Vercel (Settings → Environment Variables, Production). Add it, then redeploy.</p>
             </>
           ) : (
