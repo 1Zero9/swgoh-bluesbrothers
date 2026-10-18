@@ -20,6 +20,8 @@ export type ViewerAccess = {
   playerId?: string;
   playerName?: string;
   discordUserId?: string;
+  /** Every Discord account linked to this member (the main one and any extra ones). */
+  discordUserIds?: string[];
   discordUsername?: string;
   membershipState?: "ACTIVE" | "LEFT";
 };
@@ -32,7 +34,7 @@ const DOWN = Symbol("database down");
 async function lookupPlayer(playerId: string) {
   const find = () => getPrisma().player.findUnique({
     where: { id: playerId },
-    select: { id: true, currentName: true, discordUserId: true, membershipTerms: { orderBy: { joinedAt: "desc" }, take: 1, select: { state: true, guildId: true } } },
+    select: { id: true, currentName: true, discordUserId: true, extraDiscordAccounts: { select: { discordUserId: true } }, membershipTerms: { orderBy: { joinedAt: "desc" }, take: 1, select: { state: true, guildId: true } } },
   });
   try {
     return await find();
@@ -86,6 +88,7 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
             playerId: found.id,
             playerName: found.currentName,
             discordUserId: found.discordUserId ?? undefined,
+            discordUserIds: [found.discordUserId, ...found.extraDiscordAccounts.map((account) => account.discordUserId)].filter((id): id is string => Boolean(id)),
             membershipState: "ACTIVE",
           };
           remembered.set(found.id, { access: result, at: Date.now() });
