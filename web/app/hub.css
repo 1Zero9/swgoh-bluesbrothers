@@ -2624,3 +2624,11 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .kb-batch-rows .is-failed span { color: #ef5b5b; }
 .kb-batch-rows small { color: var(--hub-muted); }
 .kb-batch .kb-batch-note { display: block; color: var(--hub-muted); font-size: 14px; line-height: 1.5; text-transform: none; letter-spacing: 0; font-family: inherit; }
+
+/* Suggest a swap / a better counter, under a counter card */
+.kb-suggest { display: grid; gap: 8px; padding-top: 8px; border-top: 1px solid var(--glass-line, var(--hub-line)); }
+.kb-suggest-buttons { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.kb-suggest-panel { display: grid; gap: 10px; }
+.kb-improves { color: var(--hub-accent); }
+.kb-suggest-note { margin: 0; color: var(--hub-muted); font-size: 14px; }
+.kb-suggest-buttons .kb-secondary { padding: 8px 14px; }

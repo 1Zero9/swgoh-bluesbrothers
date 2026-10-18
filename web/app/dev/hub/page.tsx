@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import HubHome from "@/app/hub-home";
+import MatchCard from "@/app/knowledge/match-card";
 import ResearchPanel from "@/app/knowledge/review/research-panel";
 import { launchRows } from "@/lib/launch-check";
 import { DEFAULT_ANNOUNCEMENT } from "@/lib/announcement";
@@ -95,6 +96,11 @@ export default async function HubPreview({ searchParams }: { searchParams: Promi
     );
   }
   if (screen === "research") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Officers" title="Review queue" /><ResearchPanel /></HubPage>;
+  if (screen === "suggest") {
+    const names = { VADER: "Lord Vader", HERMIT: "Hermit Yoda", GMY: "Grand Master Yoda", MACE: "Mace Windu", BARRISS: "Barriss Offee", GK: "General Kenobi" };
+    const item = { id: "c1", status: "PUBLISHED", mode: "TW", strategy: "Open with Kenobi's taunt, then wait for turn meter.", defender: { teamName: "Lord Vader", memberIds: ["VADER"], members: [{ unitId: "VADER", role: "LEADER" }] }, attacker: { teamName: "GMY", memberIds: ["GMY", "MACE", "BARRISS", "GK"], members: [{ unitId: "GMY", role: "LEADER" }, { unitId: "MACE", role: "CORE" }, { unitId: "BARRISS", role: "CORE" }, { unitId: "GK", role: "CORE" }] }, datacronDependent: false, datacronExpiresAt: null, reviewedAt: "2026-10-10T10:00:00Z", createdAt: "2026-10-01T10:00:00Z", evidenceCount: 2, useCount: 4, requirements: null, oneShot: null, freshEnemyOnly: null };
+    return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="Counters" /><MatchCard item={item} names={names} canMark /></HubPage>;
+  }
   if (screen === "guild") return <GuildView />;
   if (screen === "knowledge") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Knowledge" title="What the guild has learned" intro="Counters, tips and ideas from the band, with where each one came from. Add what you know and everyone, B-Lue3 included, can use it."><span className="hub-pagehead-link">Review queue →</span></HubHeader><KnowledgeHub names={KNOW_NAMES} canAct /></HubPage>;
   if (screen === "feedback") return <HubPage backdrop="themed" inner><HubHeader eyebrow="Feedback" title="What we want next" intro="Ask for a feature, say what you think, or report something broken. Everyone in the guild can see this list, tap +1 on what you want too, and an officer ticks things off as they are done." /><FeedbackBoard isOfficer canPost initial={FB_SAMPLE} /></HubPage>;

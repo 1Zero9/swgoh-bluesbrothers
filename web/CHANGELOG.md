@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.44.0 — 2026-10-18
+
+- **Two new buttons under every counter: "Swap a unit" and "I have a better counter".**
+  - **Swap a unit:** pick who to take out, search for who to put in, say why (optional) and whether you tried it or it is just an idea. It becomes a new version of the counter with that one change.
+  - **I have a better counter:** opens the add form with the enemy already filled in.
+  - Both go to an officer for a check and **point back at the counter they would improve**, so the review queue shows "A suggestion to improve: …". The existing counter stays live until an officer decides. Nothing changes for other members until then.
+
 ## 1.43.0 — 2026-10-18
 
 - **Fill the counter list in one go (officers).** On the review page, **Research the popular squads** has B-Lue3 search the web, one after another, for the 30 enemy squads members meet most (Lord Vader, Darth Revan, Jedi Knight Revan, Grand Master Yoda and so on) in the mode you pick. Every counter he finds goes into the review queue with its source page, and nothing is published until an officer says so. It shows progress as it goes, can be stopped, and stops cleanly if the weekly research allowance runs out (raise `BLUE_RESEARCH_LIMIT` in Vercel to do more in one go).

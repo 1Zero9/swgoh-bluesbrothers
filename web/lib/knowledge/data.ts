@@ -104,6 +104,10 @@ export type MatchupListing = MatchupRow & {
   requirements: unknown;
   oneShot: boolean | null;
   freshEnemyOnly: boolean | null;
+  /** The counter this one was suggested to improve or swap into (set when a member suggests it). */
+  supersedesId?: string | null;
+  /** Plain words for reviewers: which counter it would replace. */
+  improves?: string | null;
 };
 
 async function loadMatchups(where: object, take = 1500) {
@@ -116,7 +120,7 @@ function toListing(row: Loaded): MatchupListing {
     defender: squadView(row.defender), attacker: squadView(row.attacker),
     datacronDependent: row.datacronDependent, datacronExpiresAt: row.datacronExpiresAt, reviewedAt: row.reviewedAt, createdAt: row.createdAt,
     via: row.via, submittedByName: row.submittedByName, evidenceCount: row._count.evidence, useCount: row._count.uses,
-    requirements: row.requirements, oneShot: row.oneShot, freshEnemyOnly: row.freshEnemyOnly,
+    requirements: row.requirements, oneShot: row.oneShot, freshEnemyOnly: row.freshEnemyOnly, supersedesId: row.supersedesId,
   };
 }
 
@@ -137,7 +141,12 @@ export async function getMatchupDetail(id: string) {
 
 export async function reviewQueue() {
   const rows = await loadMatchups({ status: { in: ["CANDIDATE", "DISPUTED"] } }, 200);
-  return rows.map(toListing).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  const listings = rows.map(toListing).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  // For suggestions ("a better counter", "swap X for Y"), say which published counter they are about.
+  const originalIds = [...new Set(listings.map((row) => row.supersedesId).filter((id): id is string => Boolean(id)))];
+  if (!originalIds.length) return listings;
+  const originals = new Map((await loadMatchups({ id: { in: originalIds } }, 200)).map((row) => { const l = toListing(row); return [l.id, `${l.attacker.members.map((m) => unitLabel(m.unitId)).join(", ")} vs ${unitLabel(l.defender.members[0]?.unitId ?? "")}`] as const; }));
+  return listings.map((row) => (row.supersedesId ? { ...row, improves: originals.get(row.supersedesId) ?? null } : row));
 }
 
 export type ReviewResult = { ok: true; status: string } | { ok: false; error: string };
@@ -273,4 +282,14 @@ async function tellRequesters(playerIds: string[], leaderName: string, mode: str
     const { notifyPlayers } = await import("@/lib/push");
     await notifyPlayers(ids, { title: `A counter for ${leaderName} is ready`, body: "An officer checked one. Tap to see it.", url: "/ask?tab=counters", tag: "counter" });
   } catch { /* push is optional */ }
+}
+
+/** A member's suggestion points back at the counter it would improve, so reviewers can compare. The old counter stays live until an officer decides. */
+export async function linkSuggestion(newId: string, oldId: string, kind: "BETTER" | "SWAP", who: string) {
+  const db = getPrisma();
+  const old = await db.kbMatchup.findUnique({ where: { id: oldId }, select: { id: true } });
+  if (!old || old.id === newId) return false;
+  await db.kbMatchup.update({ where: { id: newId }, data: { supersedesId: oldId } });
+  await db.kbEvent.create({ data: { matchupId: newId, action: "SUGGESTED", actorName: who, note: kind === "SWAP" ? "Suggested as a swap on an existing counter" : "Suggested as a better counter than an existing one" } });
+  return true;
 }

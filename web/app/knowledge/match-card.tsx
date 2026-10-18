@@ -3,6 +3,7 @@
 import { useState } from "react";
 import NavIcon from "@/app/nav-icon";
 import { ModeBadge, SquadChips } from "./squad-chips";
+import SuggestImprovement from "./suggest";
 
 export type Squad = { teamName: string; memberIds: string[]; members: { unitId: string; role: string; alternatives?: string[] }[] };
 export type Listing = {
@@ -10,7 +11,7 @@ export type Listing = {
   datacronDependent: boolean; datacronExpiresAt: string | null; reviewedAt: string | null; createdAt: string;
   evidenceCount: number; useCount: number; usedByMe?: boolean; usable?: boolean; match?: string; readiness?: { ready: boolean; gaps: string[] } | null;
   requirements: { zetas?: string[]; omicrons?: string[]; ultimates?: string[]; minRelic?: Record<string, number> } | null;
-  oneShot: boolean | null; freshEnemyOnly: boolean | null;
+  oneShot: boolean | null; freshEnemyOnly: boolean | null; improves?: string | null;
 };
 type Evidence = { id: string; type: string; sourceProvider: string; sourceUrl: string | null; observedAt: string | null; publishedAt: string | null; season: string | null; gameVersion: string | null; conditions: string | null; battles: number | null; wins: number | null; losses: number | null; summary: string | null };
 
@@ -93,6 +94,8 @@ export default function MatchCard({ item, names, canMark, children }: { item: Li
         <button type="button" className="kb-link" onClick={toggleDetails}>{open ? "Hide sources" : `${item.evidenceCount} source${item.evidenceCount === 1 ? "" : "s"}`}</button>
         {children}
       </footer>
+      {canMark && item.status === "PUBLISHED" ? <SuggestImprovement item={item} names={names} /> : null}
+      {item.improves ? <p className="kb-meta kb-improves">A suggestion to improve: {item.improves}</p> : null}
       {open ? (
         <ul className="kb-evidence">
           {evidence === null ? <li>Loading…</li> : evidence.length === 0 ? <li>No sources recorded.</li> : evidence.map((e) => (
