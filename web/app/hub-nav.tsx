@@ -144,7 +144,7 @@ export default function HubNav() {
         </div>
       </aside>
       {!isPreview ? <VisitBeacon path={pathname} /> : null}
-      <WhosOnlineInline floating />
+      <WhosOnlineInline floating away={dockOpen !== null} />
       <BlueFloat />
       {dockOpen && DOCK_MENUS[dockOpen] ? (
         <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>

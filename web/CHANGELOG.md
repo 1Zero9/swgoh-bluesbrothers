@@ -2,6 +2,13 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.42.1 — 2026-10-18
+
+- **Web search in B-Lue3 now answers.** "Search the web with B-Lue3" was running the web search and B-Lue3's own lookups together, which Google's model can't do reliably, so it ran out of steps and came back empty. The web search now runs on its own, like the officer counter research does, and only when a member taps the button. Everyday questions no longer attempt a web search first, which is faster and cheaper.
+- **You can see it working.** The search button turns into a spinner reading "Searching the web… up to 30 seconds" and B-Lue3's reply line says what he is doing, instead of looking like nothing happened.
+- **Dougie's Discs:** the Dougie's Discs picture is back under the header, the header text is no longer cut off on a phone, and the jukebox controls have more room.
+- **Who's online on a phone** is now a small round button with the count, and it steps aside while a menu is open, so it no longer covers the menus.
+
 ## 1.42.0 — 2026-10-18
 
 - **A Launch checklist for officers** (Officers → Launch checklist, or `/officer/launch`) showing the live numbers behind day one: whether B-Lue3's AI and web search are on, how many counters members can actually find, how many are waiting for review or still to import from Saved squads, tips and ideas published, how many members have signed in this week and linked Discord, anyone waiting on "Help me, Obi-Wan", and which Discord channels and widget are set up. Each line is green, amber or red, says what it means in plain words and links to where to fix it.

@@ -11,7 +11,7 @@ const COUNT_EVENT = "bb-whos-count";
 let lastCount: number | null = null;
 
 /** The same button, placed inside a page (Home). It shares the count and the panel with the menu's own button. */
-export function WhosOnlineInline({ floating = false }: { floating?: boolean }) {
+export function WhosOnlineInline({ floating = false, away = false }: { floating?: boolean; away?: boolean }) {
   const [count, setCount] = useState<number | null>(lastCount);
   useEffect(() => {
     const onCount = (event: Event) => setCount((event as CustomEvent<number>).detail);
@@ -20,7 +20,7 @@ export function WhosOnlineInline({ floating = false }: { floating?: boolean }) {
     return () => { clearTimeout(catchUp); window.removeEventListener(COUNT_EVENT, onCount); };
   }, []);
   return (
-    <button type="button" className={`whos-btn ${floating ? "is-float" : "is-inline"}`} onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))} aria-haspopup="dialog">
+    <button type="button" className={`whos-btn ${floating ? "is-float" : "is-inline"}${away ? " is-away" : ""}`} onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))} aria-haspopup="dialog">
       <span className={`whos-dot${count ? " is-live" : ""}`} aria-hidden="true" />
       <Users size={15} aria-hidden="true" />
       <span className="whos-label">Who&apos;s online</span>
