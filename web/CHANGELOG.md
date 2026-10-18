@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.9 — 2026-10-18
+
+- **Site admin is now tied to the Discord account that signed in.** Before, anyone who got into the admin's *member* account (for example through a personal sign-in link, or an extra Discord account added to that member) was treated as the site admin. Now only a session that actually signed in with the admin's own Discord account is admin; links, the shared officer password and old sessions never are. Sign-in links can't be made for the site admin's account at all. The admin signs in with Discord once after this change.
+
 ## 1.50.8 — 2026-10-18
 
 - **The site can now use Prisma's pooled database address.** If `DATABASE_URL` is set to the pooled (Accelerate) address, which starts `prisma+postgres://`, the site goes through Prisma's connection pool instead of opening its own connections, which avoids the database's "too many connections" limit. Nothing changes until that setting is switched; the old direct address keeps working exactly as before. Migrations keep using the direct address from `DIRECT_URL`.

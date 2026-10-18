@@ -1,10 +1,13 @@
 import { getPrisma } from "@/lib/prisma";
+import { includesAdminAccount } from "@/lib/site-admin";
 import { hashSignInToken, newSignInToken, SIGNIN_LINK_TTL_MS } from "@/lib/signin-link";
 
 export async function createSignInLink(playerId: string, createdByName: string) {
   const db = getPrisma();
-  const player = await db.player.findFirst({ where: { id: playerId, membershipTerms: { some: { state: "ACTIVE" } } }, select: { currentName: true } });
+  const player = await db.player.findFirst({ where: { id: playerId, membershipTerms: { some: { state: "ACTIVE" } } }, select: { currentName: true, discordUserId: true, extraDiscordAccounts: { select: { discordUserId: true } } } });
   if (!player) return null;
+  // A personal link signs someone in as that member. It is never made for the site admin.
+  if (includesAdminAccount([player.discordUserId, ...player.extraDiscordAccounts.map((account) => account.discordUserId)])) return "ADMIN" as const;
   const token = newSignInToken();
   await db.memberSignInLink.create({ data: { tokenHash: hashSignInToken(token), playerId, createdByName: createdByName.slice(0, 80), expiresAt: new Date(Date.now() + SIGNIN_LINK_TTL_MS) } });
   return { token, name: player.currentName };

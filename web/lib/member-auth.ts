@@ -51,9 +51,14 @@ export function verifyLinkCookieValue(value: string | undefined) {
   return { discordUserId, username: username || "Discord member" };
 }
 
-export function createMemberCookieValue(playerId: string) {
+/**
+ * The member session. When it came from a Discord sign-in it also carries the Discord account that was actually used, so "who is the
+ * site admin" is decided by the account that signed in now, not by whichever accounts happen to be linked to the player. Sessions made
+ * another way (a personal sign-in link) carry none and can never be the admin.
+ */
+export function createMemberCookieValue(playerId: string, discordUserId?: string) {
   const expires = Date.now() + MEMBER_TTL_MS;
-  const payload = `${playerId}:${expires}`;
+  const payload = discordUserId && /^\d{15,25}$/.test(discordUserId) ? `${playerId}:${expires}:${discordUserId}` : `${playerId}:${expires}`;
   const encoded = Buffer.from(payload, "utf8").toString("base64url");
   return { value: `${encoded}.${sign(encoded)}`, maxAge: Math.floor(MEMBER_TTL_MS / 1000) };
 }
@@ -68,6 +73,16 @@ export function verifyMemberCookieValue(value: string | undefined) {
   if (!playerId || !expires || expires < Date.now()) return null;
 
   return playerId;
+}
+
+/** The Discord account this session signed in with, or undefined (an older session, or one made with a personal sign-in link). */
+export function memberSessionDiscordId(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const [encoded, signature] = value.split(".");
+  if (!encoded || !signature || !timingSafeStringEqual(signature, sign(encoded))) return undefined;
+  const [playerId, expiresRaw, discordId] = Buffer.from(encoded, "base64url").toString("utf8").split(":");
+  if (!playerId || !Number(expiresRaw) || Number(expiresRaw) < Date.now()) return undefined;
+  return discordId && /^\d{15,25}$/.test(discordId) ? discordId : undefined;
 }
 
 export const OAUTH_NEXT_COOKIE_NAME = "bb_oauth_next";

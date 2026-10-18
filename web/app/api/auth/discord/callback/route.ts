@@ -60,7 +60,7 @@ export async function GET(request: Request) {
     const member = await findActiveMemberByDiscordId(identity.id).catch(() => null);
     if (member) {
       note("success");
-      const session = createMemberCookieValue(member.id);
+      const session = createMemberCookieValue(member.id, identity.id);
       const response = NextResponse.redirect(new URL(next, url));
       response.cookies.delete(OAUTH_STATE_COOKIE_NAME);
       response.cookies.delete(OAUTH_PROMPT_COOKIE_NAME);
