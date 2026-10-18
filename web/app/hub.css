@@ -2589,3 +2589,26 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .launch-rows .is-good .launch-mark { background: rgba(61, 220, 132, 0.2); color: #3ddc84; }
 .launch-rows .is-warn .launch-mark { background: rgba(245, 185, 66, 0.2); color: #f5b942; }
 .launch-rows .is-bad .launch-mark { background: rgba(239, 91, 91, 0.2); color: #ef5b5b; }
+
+/* Search feedback: a spinner on the button and a thinking line that says what is happening */
+.blue-spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, 0.35); border-top-color: #fff; border-radius: 50%; animation: signin-spin 0.8s linear infinite; vertical-align: -3px; margin-right: 8px; }
+.blue-offer .kb-primary:disabled { opacity: 1; cursor: progress; }
+.blue-thinking { animation: blue-pulse 1.4s ease-in-out infinite; }
+@keyframes blue-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* Dougie's Discs on a phone: the header's intro is not cut off, and the jukebox controls have room */
+@media (max-width: 759.98px) {
+  .hub-main.is-inner:has(.dougies-discs-container) .hub-pagehead-intro { display: block; -webkit-line-clamp: unset; overflow: visible; }
+  .hub-main.is-inner .dougies-discs-container { gap: 22px; }
+  .dougies-discs-container .cockpit-top-bar, .dougies-discs-container .cockpit-main-deck { gap: 14px; }
+  .dougies-discs-container .cockpit-mode-pills, .dougies-discs-container .cockpit-drop-record-btn { margin-top: 4px; }
+  .gig-door-pic img { max-height: 200px; }
+}
+
+/* Who's online on a phone: a small round button, and out of the way while a menu is open */
+@media (max-width: 1023.98px) {
+  .whos-btn.is-float { width: 46px; height: 46px; padding: 0; justify-content: center; gap: 0; border-radius: 50%; left: 10px; bottom: calc(66px + env(safe-area-inset-bottom, 0px) + 14px); }
+  .whos-btn.is-float .whos-label, .whos-btn.is-float .whos-dot { display: none; }
+  .whos-btn.is-float b { position: absolute; top: -4px; right: -4px; min-width: 20px; padding: 0 5px; margin: 0; background: #3ddc84; color: #04210f; font-size: 11.5px; line-height: 18px; }
+  .whos-btn.is-float.is-away { display: none; }
+}

@@ -24,6 +24,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
   const [left, setLeft] = useState<number>(usage.left);
   const [used, setUsed] = useState<number>(usage.used);
@@ -36,6 +37,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
     const next: Turn[] = web ? turns : [...turns, { role: "user", content }];
     if (!web) { setTurns(next); setText(""); }
     setError("");
+    setSearching(web);
     setBusy(true);
     try {
       // Only plain questions and answers go to the server: it re-reads the last question itself.
@@ -59,6 +61,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
       setError("B-Lue3 lost the signal. Try again.");
     } finally {
       setBusy(false);
+      setSearching(false);
       setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
     }
   }
@@ -104,7 +107,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
                     {turn.needsWebSearch && turns[index - 1]?.role === "user" ? (
                       <div className="blue-offer">
                         <button type="button" className="kb-primary" disabled={busy || left <= 0} onClick={() => void send(turns[index - 1].content, true)}>
-                          <NavIcon name="search" size={18} />Search the web with B-Lue3 · uses 1 question
+                          {busy && searching ? <><span className="blue-spinner" aria-hidden="true" />Searching the web… up to 30 seconds</> : <><NavIcon name="search" size={18} />Search the web with B-Lue3 · uses 1 question</>}
                         </button>
                         <small className="blue-ai-note">AI web search can be wrong or out of date. Check in game.</small>
                         <a href="/knowledge" className="kb-link">Ask the guild for help instead</a>
@@ -118,7 +121,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
               </div>
             </div>
           ))}
-          {busy ? <div className="blue-turn blue-turn-assistant"><Image src="/blue.png" alt="" width={36} height={36} /><p className="blue-thinking">Checking the roster…</p></div> : null}
+          {busy ? <div className="blue-turn blue-turn-assistant"><Image src="/blue.png" alt="" width={36} height={36} /><p className="blue-thinking" role="status">{searching ? "Searching the web for counters… this can take up to 30 seconds." : "Checking the roster…"}</p></div> : null}
           <div ref={endRef} />
         </div>
       )}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import HubPage, { HubHeader, HubLinks } from "@/app/hub-page";
 import DougiesJukebox from "./dougies-jukebox";
@@ -24,6 +25,10 @@ export default async function DougiesDiscsPage() {
   return (
     <HubPage backdrop="themed" inner>
       <HubHeader eyebrow="Dougie's Discs · Galactic Jukebox" title="Chicago soul. Outer Rim rhythm." intro="The mission has music. Drop a credit into Dougie's Jukebox, spin timeless Blues Brothers classics and Chicago blues legends, or queue your own favourite YouTube record." />
+
+      <figure className="gig-door-pic">
+        <Image src="/dougies-discs.png" alt="Dougie's Discs: the galactic jukebox" width={1968} height={799} priority sizes="(min-width: 1024px) 1100px, 100vw" />
+      </figure>
 
       <DougiesJukebox initialDiscs={discs} />
 

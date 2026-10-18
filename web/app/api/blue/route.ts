@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   if (left === null) return fail("You've used this week's questions for B-Lue3. Your roster report below is still here, and it resets on Monday.", 429);
 
   try {
-    const { text, sources, webSearch, searchError } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation);
+    const { text, sources, webSearch, searchError } = await askBlue({ playerId: access.playerId ?? null, isOfficer: access.isOfficer }, conversation, { webSearch: body?.webSearch === true });
     if (isModelRefusal(text)) {
       // The model judged it off-topic: give the question back and record it as a strike.
       await refundQuestion(access.playerId ?? "officer").catch(() => undefined);
