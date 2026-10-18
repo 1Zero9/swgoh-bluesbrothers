@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Jargon from "./jargon";
 import { NOTE_KIND_LABELS, NOTE_TOPICS, type NoteKind } from "@/lib/knowledge/notes";
 
 export type NoteItem = {
@@ -59,7 +60,7 @@ export default function NoteList({ kind, reloadKey, canAct, onAdd }: { kind: Not
             {note.status === "CANDIDATE" ? <span className="kb-badge kb-badge-warn">Waiting for an officer</span> : null}
           </header>
           <h3>{note.title}</h3>
-          <p>{note.body}</p>
+          <p><Jargon text={note.body} /></p>
           <footer>
             <small>{note.mine ? "You" : note.authorName} · {new Date(note.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}{note.howKnown ? ` · ${note.howKnown}` : ""}</small>
             {canAct && note.status === "PUBLISHED" ? (

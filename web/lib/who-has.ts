@@ -1,6 +1,7 @@
 import type { CalloutRoster } from "@/lib/tb-callout-match";
 import { allUnitNames } from "@/lib/wins";
 import unitNameData from "@/lib/unit-names.json";
+import { unitNameForNickname } from "@/lib/glossary";
 
 export type UnitMatch = { id: string; name: string };
 export type Holder = { name: string; stars: number; relic: number; gear: number };
@@ -8,9 +9,24 @@ export type Holder = { name: string; stars: number; relic: number; gear: number 
 const norm = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 /** Unit suggestions for a typed query: names starting with it first, then names containing every word. */
+/** The unit a game name belongs to, by the game's own names (the site sometimes shows a shorter one). */
+function unitByGameName(name: string, units: UnitMatch[]): UnitMatch | undefined {
+  const official = Object.entries(unitNameData as Record<string, string>).find(([, gameName]) => norm(gameName) === norm(name));
+  return (official ? units.find((unit) => unit.id === official[0]) : undefined) ?? units.find((unit) => norm(unit.name) === norm(name));
+}
+
 export function searchUnits(query: string, limit = 25, units: UnitMatch[] = allUnitNames()): UnitMatch[] {
   const q = norm(query);
   if (!q) return [];
+  // A nickname such as "JMK" or "CLS" finds its unit first.
+  const nickname = unitNameForNickname(query);
+  const nicknamed = nickname ? unitByGameName(nickname, units) : undefined;
+  if (nicknamed) return [nicknamed, ...searchUnitsPlain(query, limit, units).filter((unit) => unit.id !== nicknamed.id)].slice(0, limit);
+  return searchUnitsPlain(query, limit, units);
+}
+
+function searchUnitsPlain(query: string, limit: number, units: UnitMatch[]): UnitMatch[] {
+  const q = norm(query);
   const words = q.split(" ");
   const ranked = units
     .map((unit) => {
@@ -32,6 +48,9 @@ export function resolveUnit(input: string, units: UnitMatch[] = allUnitNames()):
   if (byId) return byId;
   const byName = units.find((unit) => norm(unit.name) === norm(text));
   if (byName) return byName;
+  const nick = unitNameForNickname(text);
+  const byNickname = nick ? unitByGameName(nick, units) : undefined;
+  if (byNickname) return byNickname;
   // The site shortens a few names ("Jedi Master Luke"); web pages and the AI use the game's full ones ("Jedi Master Luke Skywalker").
   const official = Object.entries(unitNameData as Record<string, string>).find(([, name]) => norm(name) === norm(text));
   const byOfficial = official ? units.find((unit) => unit.id === official[0]) : undefined;

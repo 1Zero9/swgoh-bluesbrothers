@@ -13,6 +13,7 @@ export default function ReviewClient({ names }: { names: Record<string, string> 
   const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const [doneMessage, setDoneMessage] = useState("");
 
   const load = useCallback(async () => {
     const response = await fetch("/api/knowledge/review", { cache: "no-store" }).catch(() => null);
@@ -23,6 +24,15 @@ export default function ReviewClient({ names }: { names: Record<string, string> 
     const timer = setTimeout(() => { void load(); }, 0);
     return () => clearTimeout(timer);
   }, [load]);
+
+  async function publishAll() {
+    const count = (queue ?? []).filter((item) => item.status === "CANDIDATE" && !(item as { supersedesId?: string | null }).supersedesId).length;
+    if (!count || !window.confirm(`Publish all ${count} waiting counters? Members will see them straight away. (Suggested replacements and disputed ones are left for you to look at.)`)) return;
+    setError("");
+    const response = await fetch("/api/knowledge/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "PUBLISH_ALL" }) }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; published?: number; error?: string } | null;
+    if (data?.ok) { setError(""); setDoneMessage(`Published ${data.published}.`); void load(); } else setError(data?.error ?? "That didn't go through.");
+  }
 
   async function act(id: string, action: "PUBLISH" | "REJECT" | "DISPUTE" | "OUTDATE") {
     setError("");
@@ -48,6 +58,10 @@ export default function ReviewClient({ names }: { names: Record<string, string> 
         </section>
       ) : null}
       {error ? <p className="kb-error" role="alert">{error}</p> : null}
+      {doneMessage ? <p className="kb-ok" role="status">{doneMessage}</p> : null}
+      {queue && queue.filter((item) => item.status === "CANDIDATE" && !(item as { supersedesId?: string | null }).supersedesId).length > 1 ? (
+        <p><button type="button" className="kb-secondary" onClick={() => void publishAll()}>Publish all {queue.filter((item) => item.status === "CANDIDATE" && !(item as { supersedesId?: string | null }).supersedesId).length} waiting counters</button></p>
+      ) : null}
       {queue === null ? <p className="kb-empty">Loading…</p> : queue.length === 0 ? <div className="kb-empty"><strong>Nothing waiting.</strong><p>New submissions from members and B-Lue3 appear here.</p></div> : queue.map((item) => (
         <MatchCard key={item.id} item={item} names={names} canMark={false}>
           <span className="kb-meta">from {item.submittedByName} ({String(item.via).toLowerCase()})</span>

@@ -31,8 +31,18 @@ export async function POST(request: Request) {
   const access = await getViewerAccess();
   if (!canReview(access)) return fail("Officers only.", 403);
   const body = (await request.json().catch(() => null)) as { id?: unknown; action?: unknown; note?: unknown } | null;
+  const officerName = (await getOfficerIdentity()) ?? access.playerName ?? "An officer";
+  // "Publish all waiting": every new counter in the queue. Suggestions that would replace an existing counter, and disputed ones, are left for a person to compare.
+  if (body?.action === "PUBLISH_ALL") {
+    const waiting = (await reviewQueue()).filter((row) => row.status === "CANDIDATE" && !row.supersedesId);
+    let published = 0;
+    for (const row of waiting) {
+      const done = await reviewMatchup(row.id, "PUBLISH", officerName, "Published in bulk").catch(() => null);
+      if (done?.ok) published += 1;
+    }
+    return Response.json({ ok: true, published, left: waiting.length - published }, { headers: NO_STORE });
+  }
   if (typeof body?.id !== "string" || !isAction(body.action)) return fail("Missing id or action.", 400);
-  const officer = await getOfficerIdentity();
-  const result = await reviewMatchup(body.id, body.action, officer ?? access.playerName ?? "An officer", cleanText(body.note, 300));
+  const result = await reviewMatchup(body.id, body.action, officerName, cleanText(body.note, 300));
   return result.ok ? Response.json({ ok: true, status: result.status }, { headers: NO_STORE }) : fail(result.error, 409);
 }

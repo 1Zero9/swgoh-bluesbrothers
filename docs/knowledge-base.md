@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.95.0 · **Last updated:** 2026-10-18 · tracks site `v1.48.0`
+**Doc version:** 1.96.0 · **Last updated:** 2026-10-18 · tracks site `v1.49.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -534,6 +534,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.96.0 — 2026-10-18**: glossary, handbook, bulk publish. `lib/glossary.ts` holds unit nicknames (each tied to a game unit name, tests fail if a name isn't in `lib/unit-names.json`) and general terms. `searchUnits`/`resolveUnit` try nicknames first; `/api/blue` runs `expandUnitNicknames` on the question before the free database step; `glossaryForPrompt()` is added to B-Lue3's instructions and the web-search instructions; `Jargon` (`app/knowledge/jargon.tsx`) wraps short forms in `<abbr>` hover hints on notes, counter strategy text and the finder's tips. `lib/handbook.ts` + `/knowledge/handbook` and `/knowledge/glossary` pages (members only). `POST /api/knowledge/review` accepts `action: "PUBLISH_ALL"` (all CANDIDATE counters without `supersedesId`, officers only).
 - **1.95.0 — 2026-10-18**: review badge. `GET /api/members/me` returns `reviewCount` for officers (candidate/disputed counters + candidate tips); `HubNav` shows it as `.hub-badge` on Review queue (sidebar and phone More menu), the folded Officers heading and the More tab.
 - **1.94.0 — 2026-10-18**: "what to work on". `squadStatus` (`lib/counters.ts`) now also returns `needs` (kind `own`/`stars`/`relic`, have, want); `readinessFor` passes it through on each knowledge-base hit and `CounterView.readiness.you` already carried the status. `NextSteps` (`app/ask/next-steps.tsx`) in Find a counter picks the option with the least effort (own = 12, stars = 4, relic levels = 1 each) when none are ready and lists the farm / raise / level steps.
 - **1.93.0 — 2026-10-18**: starter tips. `lib/knowledge/starter-list.ts` holds 50 popular enemy squads (usual line-up + counters mentioned; unsourced). `POST /api/knowledge/import-starter` (officer-only, idempotent by title + author "Starter list") creates them as CANDIDATE `KbNote` TIPs; `GET` returns how many are not in yet; button on `/knowledge/review`. They are not matchups because the source lists only partial counter squads and matchups need full 5-unit squads. Find a counter shows published tips matching the searched enemy (`/api/knowledge/notes?kind=TIP&q=`), and `answerFromDatabase` includes up to 3 matching tips when there is no checked counter.
