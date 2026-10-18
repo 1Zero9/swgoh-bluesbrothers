@@ -53,6 +53,7 @@ export default function HubNav() {
   const active = sectionFor(pathname);
   const activeHref = activeSidebarHref(pathname);
   const isOfficer = isPreview || viewer?.role === "OFFICER";
+  const reviewCount = isPreview ? 4 : isOfficer ? viewer?.reviewCount ?? 0 : 0;
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
   const pins = parsePins(useSyncExternalStore(subscribePins, readPins, () => ""));
   const [dockOpen, setDockOpen] = useState<HubSectionKey | null>(null);
@@ -99,6 +100,7 @@ export default function HubNav() {
                 <Link href={link.href} className={`hub-side-link${link.href === "/ask" ? " is-ask" : ""}${link.href === "/chat" ? " is-chat" : ""}`} aria-current={activeHref === link.href ? "page" : undefined}>
                   {link.href === "/ask" ? <MessageCircleQuestion className="hub-side-icon" size={14} aria-hidden="true" /> : <span className="hub-side-dot" aria-hidden="true" />}
                   <span>{link.label}</span>
+                  {link.href === "/knowledge/review" && reviewCount > 0 ? <i className="hub-badge" aria-label={`${reviewCount} waiting for review`}>{reviewCount}</i> : null}
                 </Link>
                 {pinnableLink ? (
                   <button type="button" className={`hub-side-star${pins.includes(link.href) ? " is-on" : ""}`} aria-pressed={pins.includes(link.href)} aria-label={pins.includes(link.href) ? `Remove ${link.label} from favourites` : `Add ${link.label} to favourites`} title={pins.includes(link.href) ? "Unpin from favourites" : "Pin to favourites"} onClick={() => savePins(togglePin(pins, link.href))}>
@@ -127,6 +129,7 @@ export default function HubNav() {
                       <button type="button" className="hub-side-title" aria-expanded={open} onClick={() => setToggled((value) => ({ ...value, [title]: !open }))}>
                         <ChevronRight size={12} aria-hidden="true" />
                         <span>{title}</span>
+                        {title === "Officers" && reviewCount > 0 && !open ? <i className="hub-badge" aria-label={`${reviewCount} waiting for review`}>{reviewCount}</i> : null}
                       </button>
                       {open ? links.map((link) => renderLink(link, true)) : null}
                     </div>
@@ -154,7 +157,7 @@ export default function HubNav() {
             return (
               <div key={group.title ?? "main"} className="hub-dock-group">
                 {group.title ? <p>{group.title}</p> : null}
-                <ul>{links.map((link) => <li key={link.href}><Link role="menuitem" href={link.href} aria-current={activeHref === link.href ? "page" : undefined} onClick={() => setDockOpen(null)}>{link.label}</Link></li>)}</ul>
+                <ul>{links.map((link) => <li key={link.href}><Link role="menuitem" href={link.href} aria-current={activeHref === link.href ? "page" : undefined} onClick={() => setDockOpen(null)}>{link.label}{link.href === "/knowledge/review" && reviewCount > 0 ? <i className="hub-badge" aria-label={`${reviewCount} waiting for review`}>{reviewCount}</i> : null}</Link></li>)}</ul>
               </div>
             );
           })}
@@ -164,7 +167,7 @@ export default function HubNav() {
         {HUB_SECTIONS.map((section) => {
           const Icon = ICONS[section.key];
           const hasMenu = Boolean(DOCK_MENUS[section.key]);
-          const inner = (<><Icon size={22} strokeWidth={1.8} aria-hidden="true" /><span>{section.key === "ask" ? "Ask" : section.label}</span></>);
+          const inner = (<><Icon size={22} strokeWidth={1.8} aria-hidden="true" /><span>{section.key === "ask" ? "Ask" : section.label}</span>{section.key === "more" && reviewCount > 0 ? <i className="hub-badge is-dot" aria-label={`${reviewCount} waiting for review`}>{reviewCount}</i> : null}</>);
           return hasMenu ? (
             <button key={section.key} type="button" aria-haspopup="menu" aria-expanded={dockOpen === section.key} className={`hub-tab-btn${dockOpen === section.key ? " is-open" : ""}`} aria-current={active === section.key ? "page" : undefined} onClick={() => setDockOpen(dockOpen === section.key ? null : section.key)}>{inner}</button>
           ) : (
