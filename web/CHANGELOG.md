@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.49.1 — 2026-10-18
+
+- **Publish the starter tips in one go (officers).** The tips section of the review page has **Publish all N starter tips** (with a confirmation). It only covers the batch of starter tips an officer brought in; tips members wrote still wait for you to check them one by one.
+
 ## 1.49.0 — 2026-10-18
 
 - **Short forms now work.** Type **JMK, CLS, GAS, SEE, SLKR, JKA, QGJ, BAM** and 17 other unit nicknames into any unit search, Find a counter, or a question to B-Lue3, and it finds the right unit ("How do I beat JMK?" works). B-Lue3 also knows them, and spells one out the first time he uses it.
