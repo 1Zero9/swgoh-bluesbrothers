@@ -29,6 +29,8 @@ export type ViewerAccess = {
 /** The last good lookup per member, so a database hiccup can't sign a member out. Lives only in this server instance's memory. */
 const remembered = new Map<string, Remembered>();
 const DOWN = Symbol("database down");
+/** A member looked up in the last 30 seconds is not looked up again: every page and heartbeat asks "who is this?", and the database has a low connection limit. */
+const FRESH_MS = 30_000;
 
 /** Looks a member up, trying twice, and says DOWN (not "nobody") when the database can't be reached. */
 async function lookupPlayer(playerId: string) {
@@ -67,6 +69,11 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
     const memberCookie = store.get(MEMBER_COOKIE_NAME)?.value;
     const playerId = verifyMemberCookieValue(memberCookie);
 
+    const recent = playerId ? remembered.get(playerId) : undefined;
+    if (playerId && recent && Date.now() - recent.at < FRESH_MS) {
+      const officer = await officerCheck;
+      return { ...recent.access, role: officer ? "OFFICER" : "MEMBER", isAuthorized: true, isOfficer: officer, isMember: true };
+    }
     const playerLookup = playerId ? lookupPlayer(playerId) : Promise.resolve(null);
     const [isOfficer, player] = await Promise.all([officerCheck, playerLookup]);
 

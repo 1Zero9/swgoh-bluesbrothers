@@ -4,6 +4,8 @@ import { getPrisma } from "@/lib/prisma";
 import { isSiteAdmin } from "@/lib/site-admin";
 import { BUILD_ID, SITE_VERSION } from "@/lib/version";
 
+const countCache: { at: number; value: number } = { at: 0, value: 0 };
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -14,10 +16,16 @@ export async function GET() {
   // Officers see how many counters and tips are waiting for a check, as a badge in the menu.
   let reviewCount = 0;
   if (access.isOfficer) {
-    try {
-      const [counters, notes] = await Promise.all([getPrisma().kbMatchup.count({ where: { status: { in: ["CANDIDATE", "DISPUTED"] } } }), countNotesAwaitingReview()]);
-      reviewCount = counters + notes;
-    } catch { /* no badge if the count can't be read */ }
+    // Counted at most once a minute per server instance, because every page an officer opens asks for it.
+    if (Date.now() - countCache.at < 60_000) reviewCount = countCache.value;
+    else {
+      try {
+        const [counters, notes] = await Promise.all([getPrisma().kbMatchup.count({ where: { status: { in: ["CANDIDATE", "DISPUTED"] } } }), countNotesAwaitingReview()]);
+        reviewCount = counters + notes;
+        countCache.at = Date.now();
+        countCache.value = reviewCount;
+      } catch { /* no badge if the count can't be read */ }
+    }
   }
   return Response.json(
     {
