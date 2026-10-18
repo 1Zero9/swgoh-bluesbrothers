@@ -8,6 +8,7 @@ import type { NoteItem } from "../note-list";
 export default function NoteReview({ onChanged }: { onChanged?: () => void }) {
   const [queue, setQueue] = useState<NoteItem[] | null>(null);
   const [error, setError] = useState("");
+  const [done, setDone] = useState("");
   const [reasons, setReasons] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
@@ -19,6 +20,15 @@ export default function NoteReview({ onChanged }: { onChanged?: () => void }) {
     const timer = setTimeout(() => { void load(); }, 0);
     return () => clearTimeout(timer);
   }, [load]);
+
+  const starterCount = (queue ?? []).filter((note) => note.authorName === "Starter list").length;
+  async function publishStarter() {
+    if (!window.confirm(`Publish all ${starterCount} starter tips? Members will see them straight away. They are marked "not yet checked in game". (Tips members wrote stay here for you to check one by one.)`)) return;
+    setError("");
+    const response = await fetch("/api/knowledge/notes/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "PUBLISH_STARTER" }) }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; published?: number; error?: string } | null;
+    if (data?.ok) { setDone(`Published ${data.published} starter tips.`); void load(); onChanged?.(); } else setError(data?.error ?? "That didn't go through.");
+  }
 
   async function act(id: string, action: "PUBLISH" | "REJECT") {
     setError("");
@@ -32,6 +42,8 @@ export default function NoteReview({ onChanged }: { onChanged?: () => void }) {
     <section className="kb-panel" aria-label="Tips and ideas to check">
       <h3>Tips and ideas to check{queue ? ` (${queue.length})` : ""}</h3>
       {error ? <p className="kb-error" role="alert">{error}</p> : null}
+      {done ? <p className="kb-ok" role="status">{done}</p> : null}
+      {starterCount > 1 ? <p><button type="button" className="kb-secondary" onClick={() => void publishStarter()}>Publish all {starterCount} starter tips</button></p> : null}
       {queue && queue.length === 0 ? <p className="kb-meta">Nothing waiting.</p> : null}
       {queue?.map((note) => (
         <article key={note.id} className="kb-card">
