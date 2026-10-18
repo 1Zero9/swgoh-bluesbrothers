@@ -2644,3 +2644,4 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .blue-save { display: grid; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--glass-line, var(--hub-line)); }
 .blue-save small { color: var(--hub-muted); font-size: 12.5px; }
 .blue-save .kb-secondary { justify-self: start; }
+.cf-tip-body { white-space: pre-line; }

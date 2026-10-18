@@ -1,3 +1,4 @@
+import { findNotesForBlue } from "@/lib/knowledge/notes-data";
 import { listCounters, type CounterView } from "@/lib/counters-data";
 import { detectIntent } from "@/lib/blue/intent";
 import { lookupKnownCounters, type KnownCounter } from "@/lib/knowledge/lookup";
@@ -62,6 +63,15 @@ export async function answerFromDatabase(playerId: string | null, question: stri
   const savedForMode = saved.filter((counter) => !intent.mode || counter.mode === "BOTH" || (intent.mode === "TW" ? counter.mode === "TW" : counter.mode === "GAC"));
   if (known.counters.length || savedForMode.length) {
     return { text: formatCounterAnswer(intent.unit.name, intent.mode, known.counters, savedForMode), needsWebSearch: false };
+  }
+  const tips = await findNotesForBlue(intent.unit.name, 3).catch(() => []);
+  if (tips.length) {
+    const lines = tips.map((tip) => `**${tip.title}**\n${tip.body}`).join("\n\n");
+    return {
+      text: `The guild has no checked counter squad for **${intent.unit.name}**${intent.mode ? ` in ${MODE_LABELS[intent.mode]}` : ""} yet, but it does have tips (no AI used):\n\n${lines}\n\nCheck these in game before you rely on them. I can also search the web, which uses one of your questions.`,
+      needsWebSearch: true,
+      offer: { leaderUnitId: intent.unit.id, leaderName: intent.unit.name, mode: intent.mode },
+    };
   }
   return {
     text: `Nobody has saved a counter for **${intent.unit.name}**${intent.mode ? ` in ${MODE_LABELS[intent.mode]}` : ""} yet. I checked the guild's counter knowledge base and the saved counters, with no AI used.\n\nYou can ask me to search the web, which uses one of your questions, or ask the guild for help.`,

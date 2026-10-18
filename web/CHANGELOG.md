@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.46.0 — 2026-10-18
+
+- **A 50-squad starter list can be brought in (officers).** On the review page, **Bring them in** adds one tip per popular enemy squad (Galactic Legend Leia, Lord Vader, JMK, JML, SEE, SLKR, Rey, Padmé, Bad Batch, Troopers, and so on): the usual line-up and the counters people mention. The list was written without sources, so each one lands as a tip **waiting for an officer to check and publish**, marked "not yet checked in game". Safe to press twice: ones already brought in are skipped.
+- **Published tips now show up when you search.** In Find a counter, a squad with no checked counter but a tip now shows "Guild tips for …" instead of a blank result (with the web search still offered). B-Lue3's free answer does the same: it says there's no checked counter and lists the tips, with no AI used and no question spent.
+
 ## 1.45.1 — 2026-10-18
 
 - **One tap to search the web from Find a counter.** When nothing is found for a squad, **Search the web with B-Lue3** now takes you to the chat and runs the search straight away, instead of switching tabs and leaving you to type the question and press Ask, then press Search again. (If B-Lue3's AI is switched off, the button isn't shown.)
