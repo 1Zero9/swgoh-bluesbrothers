@@ -6,6 +6,7 @@ import {
   verifyLinkCookieValue,
   verifyMemberCookieValue,
 } from "@/lib/member-auth";
+import { whenDatabaseDown, type Remembered } from "@/lib/access-fallback";
 import { isOfficerRequest } from "@/lib/officer-session";
 import { getPrisma } from "@/lib/prisma";
 
@@ -22,6 +23,29 @@ export type ViewerAccess = {
   discordUsername?: string;
   membershipState?: "ACTIVE" | "LEFT";
 };
+
+/** The last good lookup per member, so a database hiccup can't sign a member out. Lives only in this server instance's memory. */
+const remembered = new Map<string, Remembered>();
+const DOWN = Symbol("database down");
+
+/** Looks a member up, trying twice, and says DOWN (not "nobody") when the database can't be reached. */
+async function lookupPlayer(playerId: string) {
+  const find = () => getPrisma().player.findUnique({
+    where: { id: playerId },
+    select: { id: true, currentName: true, discordUserId: true, membershipTerms: { orderBy: { joinedAt: "desc" }, take: 1, select: { state: true, guildId: true } } },
+  });
+  try {
+    return await find();
+  } catch {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    try {
+      return await find();
+    } catch (error) {
+      console.error("access: member lookup failed, keeping the member signed in", error instanceof Error ? error.message : "unknown");
+      return DOWN;
+    }
+  }
+}
 
 /**
  * Resolves the viewer's current access level across the site.
@@ -41,39 +65,31 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
     const memberCookie = store.get(MEMBER_COOKIE_NAME)?.value;
     const playerId = verifyMemberCookieValue(memberCookie);
 
-    const playerLookup = playerId
-      ? getPrisma().player.findUnique({
-        where: { id: playerId },
-        select: {
-          id: true,
-          currentName: true,
-          discordUserId: true,
-          membershipTerms: {
-            orderBy: { joinedAt: "desc" },
-            take: 1,
-            select: { state: true, guildId: true },
-          },
-        },
-      })
-      : Promise.resolve(null);
+    const playerLookup = playerId ? lookupPlayer(playerId) : Promise.resolve(null);
     const [isOfficer, player] = await Promise.all([officerCheck, playerLookup]);
 
+    // The database could not be reached: stay signed in as the member the cookie says they are.
+    if (player === DOWN && playerId) return whenDatabaseDown(playerId, isOfficer, remembered.get(playerId));
+    const found = player === DOWN ? null : player;
+
     {
-      if (player && player.membershipTerms.length > 0) {
-        const latestTerm = player.membershipTerms[0];
+      if (found && found.membershipTerms.length > 0) {
+        const latestTerm = found.membershipTerms[0];
         const isActiveMember = latestTerm.state === "ACTIVE";
 
         if (isActiveMember) {
-          return {
+          const result: ViewerAccess = {
             role: isOfficer ? "OFFICER" : "MEMBER",
             isAuthorized: true,
             isOfficer,
             isMember: true,
-            playerId: player.id,
-            playerName: player.currentName,
-            discordUserId: player.discordUserId ?? undefined,
+            playerId: found.id,
+            playerName: found.currentName,
+            discordUserId: found.discordUserId ?? undefined,
             membershipState: "ACTIVE",
           };
+          remembered.set(found.id, { access: result, at: Date.now() });
+          return result;
         } else {
           // Member has LEFT the guild -> Revoked access
           return {
@@ -81,9 +97,9 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
             isAuthorized: isOfficer,
             isOfficer,
             isMember: false,
-            playerId: player.id,
-            playerName: player.currentName,
-            discordUserId: player.discordUserId ?? undefined,
+            playerId: found.id,
+            playerName: found.currentName,
+            discordUserId: found.discordUserId ?? undefined,
             membershipState: "LEFT",
           };
         }
@@ -113,7 +129,8 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
       discordUsername: link?.username,
       discordUserId: link?.discordUserId,
     };
-  } catch {
+  } catch (error) {
+    console.error("access: could not work out who is looking", error instanceof Error ? error.message : "unknown");
     return {
       role: "PUBLIC",
       isAuthorized: false,

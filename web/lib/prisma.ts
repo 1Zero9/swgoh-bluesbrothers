@@ -14,7 +14,7 @@ export function getPrisma() {
   }
 
   if (!globalForPrisma.prisma) {
-    const adapter = new PrismaPg({ connectionString: explicitSsl(connectionString) });
+    const adapter = new PrismaPg({ connectionString: explicitSsl(connectionString), max: 6, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 10_000 });
     globalForPrisma.prisma = new PrismaClient({ adapter });
   }
 
