@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.7 — 2026-10-18
+
+- **Fewer questions to the database.** The database has a low limit on how many connections it will accept (it was returning "too many connections"). The site no longer looks up the same member more than once every 30 seconds, and counts the officer review badge at most once a minute, so a busy launch uses far fewer connections.
+
 ## 1.50.6 — 2026-10-18
 
 - **The database health check now says why it failed** (too many connections, timeout, cannot reach the server, connection dropped), never showing the address or password. This is so a connection limit can be told apart from an outage.
