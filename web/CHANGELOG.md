@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.6 — 2026-10-18
+
+- **The database health check now says why it failed** (too many connections, timeout, cannot reach the server, connection dropped), never showing the address or password. This is so a connection limit can be told apart from an outage.
+
 ## 1.50.5 — 2026-10-18
 
 - **The site holds fewer database connections.** A test showed the database refusing most requests when several arrived at once ("too many connections"), which caused empty pages, dashes instead of the guild numbers, and sign-outs under load. Each server instance now keeps at most 2 connections and releases idle ones after 4 seconds, so many members using the site together don't use up the database's connection limit.
