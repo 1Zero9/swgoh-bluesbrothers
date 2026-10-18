@@ -2,6 +2,12 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.3 — 2026-10-18
+
+- **A database hiccup no longer signs anyone out.** If the site couldn't reach its database for a moment (a timeout, or too many connections at once), it treated every signed-in member as signed out, which is what a "you've been logged out" looked like, along with dashes in place of the guild numbers on the front page. Now it tries the lookup twice and, if the database still can't be reached, keeps a member with a valid sign-in cookie signed in until it recovers. The real check comes back as soon as the database does.
+- The site also gives each server instance fewer database connections and lets idle ones go sooner, to make "too many connections" less likely when many members are on at once.
+- When this happens it is now written to the server log ("access: member lookup failed…"), so it can be seen.
+
 ## 1.50.2 — 2026-10-18
 
 - **The site version is shown in the admin area.** The Admin home header says "Site version 1.50.2 · build abc1234" (the release number and the short id of the code running), and a small "Site v1.50.2" sits at the foot of the left menu for the site admin, so you can always tell which release is live.

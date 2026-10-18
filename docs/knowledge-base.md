@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.97.0 · **Last updated:** 2026-10-18 · tracks site `v1.50.0`
+**Doc version:** 1.98.0 · **Last updated:** 2026-10-18 · tracks site `v1.50.3`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -534,6 +534,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.98.0 — 2026-10-18**: session resilience. `getViewerAccess` used to return PUBLIC on any error, so a database timeout looked like a logout. `lookupPlayer` now retries once and returns a DOWN marker; `whenDatabaseDown` (`lib/access-fallback.ts`, tested) keeps a validly-signed member cookie signed in (reusing the last good lookup for up to 6 h, in memory). Failures are logged as `access: member lookup failed…`. `lib/prisma.ts` pool: `max: 6`, `idleTimeoutMillis: 10000`, `connectionTimeoutMillis: 10000` (fewer connections per serverless instance, to avoid "too many clients"). If logouts or dashed guild numbers recur, search the Vercel logs for that message and check the database connection limit.
 - **1.97.0 — 2026-10-18**: `/admin` (site admin home, gated by `isSiteAdmin`) links every admin/officer tool, shows live review/help/request counts and a read-out of the main env switches, and links to Vercel/GitHub/Discord. `GET /api/members/me` now returns `isAdmin`; `HubNav` shows `adminOnly` links (a "Site admin" group in the sidebar and phone More menu) only to the site admin.
 - **1.96.0 — 2026-10-18**: glossary, handbook, bulk publish. `lib/glossary.ts` holds unit nicknames (each tied to a game unit name, tests fail if a name isn't in `lib/unit-names.json`) and general terms. `searchUnits`/`resolveUnit` try nicknames first; `/api/blue` runs `expandUnitNicknames` on the question before the free database step; `glossaryForPrompt()` is added to B-Lue3's instructions and the web-search instructions; `Jargon` (`app/knowledge/jargon.tsx`) wraps short forms in `<abbr>` hover hints on notes, counter strategy text and the finder's tips. `lib/handbook.ts` + `/knowledge/handbook` and `/knowledge/glossary` pages (members only). `POST /api/knowledge/review` accepts `action: "PUBLISH_ALL"` (all CANDIDATE counters without `supersedesId`, officers only).
 - **1.95.0 — 2026-10-18**: review badge. `GET /api/members/me` returns `reviewCount` for officers (candidate/disputed counters + candidate tips); `HubNav` shows it as `.hub-badge` on Review queue (sidebar and phone More menu), the folded Officers heading and the More tab.
