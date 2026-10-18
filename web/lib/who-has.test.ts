@@ -49,3 +49,10 @@ test("the Discord reply is readable and bounded", () => {
   assert.ok(long.length <= 1990);
   assert.match(long, /…and 40 more/);
 });
+
+test("the game's full unit names resolve even where the site shows a shorter one", () => {
+  const units = [{ id: "GRANDMASTERLUKE", name: "Jedi Master Luke" }, { id: "LORDVADER", name: "Lord Vader" }];
+  assert.equal(resolveUnit("Jedi Master Luke Skywalker", units)?.id, "GRANDMASTERLUKE");
+  assert.equal(resolveUnit("Jedi Master Luke", units)?.id, "GRANDMASTERLUKE");
+  assert.equal(resolveUnit("Totally Made Up Hero", units), null);
+});
