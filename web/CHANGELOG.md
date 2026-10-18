@@ -2,6 +2,11 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.2 — 2026-10-18
+
+- **The site version is shown in the admin area.** The Admin home header says "Site version 1.50.2 · build abc1234" (the release number and the short id of the code running), and a small "Site v1.50.2" sits at the foot of the left menu for the site admin, so you can always tell which release is live.
+- **A hint when you're signed in with the officer password.** That session has no player, so My page and the Site admin group don't appear. The menu now says so, with a link that signs you in with Discord and takes you to the admin home.
+
 ## 1.50.1 — 2026-10-18
 
 - **My page explains itself for an officer who signed in with the shared officer password.** That password isn't tied to a player, so there is no page to show; it now says so plainly ("You're in as an officer. Tap once to see your own page") and the button signs you in with Discord and brings you straight back to My page. Signing in with Discord also unlocks the Site admin tools.

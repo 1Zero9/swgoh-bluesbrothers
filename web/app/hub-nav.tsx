@@ -141,9 +141,11 @@ export default function HubNav() {
           })()}
         </nav>
         <div className="hub-side-foot">
+          {viewer?.needsDiscord ? <a className="hub-side-note" href="/api/auth/discord?next=/admin">You are in with the officer password. <strong>Sign in with Discord</strong> to see My page and Site admin.</a> : null}
           <WhosOnline path={pathname} sample={isPreview ? PREVIEW_PRESENCE : undefined} />
           <RefreshButton label="Refresh the site" />
           <p>{viewer?.name ?? (isPreview ? "Steve" : "Signed in")}</p>
+          {viewer?.version ? <small className="hub-side-version" title={viewer.build ? `Build ${viewer.build}` : undefined}>Site v{viewer.version}</small> : null}
           <ThemeToggle />
         </div>
       </aside>
