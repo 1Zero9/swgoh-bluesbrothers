@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.91.0 · **Last updated:** 2026-10-18 · tracks site `v1.44.0`
+**Doc version:** 1.92.0 · **Last updated:** 2026-10-18 · tracks site `v1.45.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -534,6 +534,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.92.0 — 2026-10-18**: "Add these counters to the guild list" on web-search answers. `POST /api/blue/save` (members/officers, 15 submissions/day cap shared with manual adds, needs the AI on) sends the answer plus its source pages to `saveAnswerCounters` (`lib/blue/research.ts`): an extraction call turns the text into counters, then the same code checks as officer research (units resolve, squad shape for the mode, source host in the list the search returned) and files each as a CANDIDATE via `submitMatchup` (`via: BLUE`, "B-Lue3 web search (asked by <name>)"). `parseBlueText` now handles markdown headings and rules.
 - **1.91.0 — 2026-10-18**: counter suggestions. `SuggestImprovement` (`app/knowledge/suggest.tsx`, under published counter cards) posts to `POST /api/knowledge` with `improves: <matchupId>` and `suggestion: "SWAP" | "BETTER"`; after `submitMatchup` creates the candidate, `linkSuggestion` (`lib/knowledge/data.ts`) sets the existing `KbMatchup.supersedesId` and writes a `SUGGESTED` event. `reviewQueue()` adds a plain-words `improves` label (the original squad) shown on the review card. Nothing is auto-retired: an officer publishes the new one and marks the old one outdated if they agree.
 - **1.90.0 — 2026-10-18**: counter starter list and add-to-list. The review page's `ResearchPanel` gets "Research the popular squads": the client loops over `STARTER_LEADERS` (names only, each resolved through `/api/who-has/units`, unrecognised names skipped) and calls `POST /api/knowledge/research` once per leader (so each uses one of the officer's weekly research credits, default 15, set `BLUE_RESEARCH_LIMIT`; it stops on HTTP 429/503). Everything is filed as candidates by the existing checked pipeline (`lib/blue/research.ts`); nothing publishes. "Add a counter you know" appears in the Find a counter empty state and in B-Lue3's no-match reply (window event `bb-add-counter` → `AskTabs` → `CounterFinder`). Web-only search: `askBlue(..., { webSearch: true })` runs Gemini search with no function tools (mixing them looped).
 - **1.89.0 — 2026-10-18**: officer Launch checklist (`/officer/launch`, rules in `lib/launch-check.ts`, tested). Reads live counts (published/candidate counters, tips/ideas, open requests, active/linked/seen members, open sign-in help) and switches (`BLUE_AI`, Google key for web search, bot token, `DISCORD_COUNTERS_WEBHOOK_URL`, `DISCORD_OFFICER_WEBHOOK_URL`, Discord widget reachable) and shows good/needs-a-look/not-ready rows with links to fix them.

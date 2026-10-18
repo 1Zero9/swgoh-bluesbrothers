@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.45.0 — 2026-10-18
+
+- **Web research can now be kept.** Under a B-Lue3 answer that came from a web search, **Add these counters to the guild list** turns the answer into proper counters (enemy squad, your squad, how to run it, and the page it came from). Each one is checked by the site (real units, a squad that fits the mode, a source the search actually found) and goes to the officer review queue. Nothing is public until an officer publishes it, so the next person who searches for that squad finds it free, with no question used.
+- **The Ask page is tidier.**
+  - B-Lue3's answers show headings and dividers properly (no more `###` and `---`).
+  - The conversation flows down the page instead of sitting in a scrolling box inside the page.
+  - The questions-left line is one compact line, and the officer-only details are folded under "Officer info".
+
 ## 1.44.0 — 2026-10-18
 
 - **Two new buttons under every counter: "Swap a unit" and "I have a better counter".**

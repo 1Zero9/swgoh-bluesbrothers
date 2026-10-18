@@ -2,7 +2,9 @@ export type Inline = { kind: "text" | "bold" | "italic"; text: string };
 export type Block =
   | { kind: "paragraph"; inline: Inline[] }
   | { kind: "bullets"; items: Inline[][] }
-  | { kind: "numbers"; items: Inline[][]; start: number };
+  | { kind: "numbers"; items: Inline[][]; start: number }
+  | { kind: "heading"; inline: Inline[] }
+  | { kind: "rule" };
 
 /** **bold** and *italic* in a line; everything else stays as plain text (React escapes it, so nothing here can inject markup). */
 export function parseInline(line: string): Inline[] {
@@ -22,6 +24,9 @@ export function parseBlueText(text: string): Block[] {
   for (const raw of text.replace(/\r/g, "").split("\n")) {
     const line = raw.trimEnd();
     if (!line.trim()) continue;
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { blocks.push({ kind: "rule" }); continue; }
+    const heading = /^\s*#{1,6}\s+(.*?)\s*#*\s*$/.exec(line);
+    if (heading) { blocks.push({ kind: "heading", inline: parseInline(heading[1]) }); continue; }
     const bullet = /^\s*[*•-]\s+(.*)$/.exec(line);
     const number = /^\s*\d+[.)]\s+(.*)$/.exec(line);
     const item = bullet ?? number;

@@ -10,6 +10,8 @@ export default function BlueText({ text }: { text: string }) {
     <div className="blue-text">
       {parseBlueText(text).map((block, index) => {
         if (block.kind === "paragraph") return <p key={index}><Inlines parts={block.inline} /></p>;
+        if (block.kind === "heading") return <h4 key={index}><Inlines parts={block.inline} /></h4>;
+        if (block.kind === "rule") return <hr key={index} />;
         const items = block.items.map((item, i) => <li key={i}><Inlines parts={item} /></li>);
         return block.kind === "bullets" ? <ul key={index}>{items}</ul> : <ol key={index} start={block.start}>{items}</ol>;
       })}

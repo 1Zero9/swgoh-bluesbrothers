@@ -8,7 +8,7 @@ import { resetLabel } from "@/lib/blue/reset-label";
 
 type Source = { title: string; url: string; host: string };
 type Offer = { leaderUnitId: string; leaderName: string; mode: string | null };
-type Turn = { role: "user" | "assistant"; content: string; sources?: Source[]; searchDown?: boolean; searchError?: string; route?: "database" | "ai"; needsWebSearch?: boolean; offer?: Offer | null };
+type Turn = { role: "user" | "assistant"; content: string; sources?: Source[]; searchDown?: boolean; searchError?: string; route?: "database" | "ai"; needsWebSearch?: boolean; offer?: Offer | null; save?: { state: "saving" | "done" | "error"; text?: string } };
 
 const SUGGESTIONS = [
   { icon: "sprout", text: "What should I farm next?" },
@@ -66,6 +66,22 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
     }
   }
 
+  /** Keep a web answer: B-Lue3's answer becomes candidate counters (with their sources) for an officer to check. */
+  async function saveAnswer(index: number) {
+    const turn = turns[index];
+    const question = turns[index - 1]?.content ?? "";
+    setTurns((current) => current.map((item, i) => (i === index ? { ...item, save: { state: "saving" } } : item)));
+    const response = await fetch("/api/blue/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question, answer: turn.content, sources: turn.sources ?? [] }) }).catch(() => null);
+    const data = (await response?.json().catch(() => null)) as { ok?: boolean; error?: string; report?: { filed: unknown[]; rejected: { what: string; reason: string }[] } } | null;
+    let result: Turn["save"];
+    if (data?.ok && data.report) {
+      const filed = data.report.filed.length;
+      const aside = data.report.rejected.length;
+      result = { state: filed ? "done" : "error", text: filed ? `Saved ${filed} counter${filed === 1 ? "" : "s"} for an officer to check${aside ? ` (${aside} set aside: ${data.report.rejected[0].reason})` : ""}. Thank you.` : `Nothing could be saved from that answer${aside ? `: ${data.report.rejected[0].reason}` : ""}.` };
+    } else result = { state: "error", text: data?.error ?? "That didn't save. Try again." };
+    setTurns((current) => current.map((item, i) => (i === index ? { ...item, save: result } : item)));
+  }
+
   async function resetCount() {
     const response = await fetch("/api/blue/reset", { method: "POST" }).catch(() => null);
     const data = (await response?.json().catch(() => null)) as { ok?: boolean; usage?: Usage } | null;
@@ -80,10 +96,10 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
           <span className="blue-pips" aria-hidden="true">{Array.from({ length: usage.limit }, (_, i) => <i key={i} className={i < left ? "on" : ""} />)}</span>
         ) : null}
         <span>{noneLeft ? `No AI questions left this week (back on ${resetLabel(usage.resetsOn)}). Counter and "who has" questions are still free.` : `${left} of ${usage.limit} question${usage.limit === 1 ? "" : "s"} left this week · resets ${resetLabel(usage.resetsOn)}`}</span>
-        <span className={`blue-ws ${webSearch ? "is-on" : "is-off"}`}>Web search {webSearch ? "on" : "off"}</span>
+        <span className={`blue-ws ${webSearch ? "is-on" : "is-off"}`}>{webSearch ? "Web search on" : "Web search off"}</span>
       </div>
       {isOfficer ? (
-        <p className="blue-officer-line">Officers: limit {usage.limit} (BLUE_WEEKLY_LIMIT is {rawLimit === null ? "not set, so the default of 5 applies" : JSON.stringify(rawLimit)}), used {used}. <button type="button" className="kb-link" onClick={resetCount}>Reset my count</button></p>
+        <details className="blue-officer-details"><summary>Officer info</summary><p className="blue-officer-line">Officers: limit {usage.limit} (BLUE_WEEKLY_LIMIT is {rawLimit === null ? "not set, so the default of 5 applies" : JSON.stringify(rawLimit)}), used {used}. <button type="button" className="kb-link" onClick={resetCount}>Reset my count</button></p></details>
       ) : null}
       {turns.length === 0 ? (
         <nav className="blue-question-actions" aria-label="Questions for B-Lue3">
@@ -102,6 +118,16 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
                   <>
                     {turn.sources?.length ? (
                       <p className="blue-sources">From the web: {turn.sources.map((source, i) => <span key={source.url}>{i ? " · " : ""}<a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></span>)}</p>
+                    ) : null}
+                    {turn.route === "ai" && turn.sources?.length && turns[index - 1]?.role === "user" ? (
+                      <div className="blue-save">
+                        {turn.save?.state === "done" || turn.save?.state === "error" ? <p className={turn.save.state === "done" ? "kb-ok" : "kb-error"} role="status">{turn.save.text}</p> : (
+                          <button type="button" className="kb-secondary" disabled={turn.save?.state === "saving"} onClick={() => void saveAnswer(index)}>
+                            {turn.save?.state === "saving" ? <><span className="blue-spinner" aria-hidden="true" />Saving…</> : "Add these counters to the guild list"}
+                          </button>
+                        )}
+                        <small>An officer checks them, with their sources, before anyone else sees them.</small>
+                      </div>
                     ) : null}
                     {turn.searchDown ? <p className="blue-caveat">I couldn&apos;t search the web just now, so this is only from the guild&apos;s own data. Try again in a few minutes.{turn.searchError ? ` [Officers: ${turn.searchError}]` : ""}</p> : null}
                     {turn.needsWebSearch && turns[index - 1]?.role === "user" ? (

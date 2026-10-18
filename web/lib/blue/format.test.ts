@@ -25,3 +25,12 @@ test("markup in the text is never treated as HTML", () => {
   assert.equal(blocks.length, 1);
   assert.equal((blocks[0] as { inline: { text: string }[] }).inline[0].text, "<script>alert(1)</script> ");
 });
+
+test("markdown headings and rules are shown as such, not as stray symbols", () => {
+  const blocks = parseBlueText("### Squad 1 (Premier)\n* **Darth Bane** (Leader)\n---\n## Squad 2");
+  assert.equal(blocks[0].kind, "heading");
+  assert.equal(blocks[1].kind, "bullets");
+  assert.equal(blocks[2].kind, "rule");
+  assert.equal(blocks[3].kind, "heading");
+  assert.equal(parseBlueText("***")[0].kind, "rule");
+});
