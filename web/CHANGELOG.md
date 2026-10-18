@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.5 — 2026-10-18
+
+- **The site holds fewer database connections.** A test showed the database refusing most requests when several arrived at once ("too many connections"), which caused empty pages, dashes instead of the guild numbers, and sign-outs under load. Each server instance now keeps at most 2 connections and releases idle ones after 4 seconds, so many members using the site together don't use up the database's connection limit.
+
 ## 1.50.4 — 2026-10-18
 
 - **A username in the admin setting is now spotted.** `SITE_ADMIN_DISCORD_ID` needs your numeric Discord user id; a username such as "dex7707" used to be reduced to its digits and matched nobody. The site now ignores anything that isn't a real id and the admin page names the problem.
