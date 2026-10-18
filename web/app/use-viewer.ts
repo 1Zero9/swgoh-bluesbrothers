@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type Viewer = { signedIn: boolean; role: "OFFICER" | "MEMBER" | "PUBLIC"; name: string | null };
+export type Viewer = { signedIn: boolean; role: "OFFICER" | "MEMBER" | "PUBLIC"; name: string | null; /** Officers only: counters and tips waiting for a check. */ reviewCount?: number };
 
 /** Who is looking, fetched from /api/members/me so cached pages still show the right menu. null while loading. */
 export function useViewer(refreshKey?: string) {
