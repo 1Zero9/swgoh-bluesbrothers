@@ -2,6 +2,7 @@ import { getViewerAccess } from "@/lib/access-control";
 import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { getPrisma } from "@/lib/prisma";
 import { isSiteAdmin } from "@/lib/site-admin";
+import { BUILD_ID, SITE_VERSION } from "@/lib/version";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -26,6 +27,9 @@ export async function GET() {
       name: access.playerName ?? null,
       reviewCount,
       isAdmin: isSiteAdmin(access),
+      // An officer who came in with the shared password has no player, so no My page and no admin tools until they sign in with Discord.
+      needsDiscord: access.isOfficer && !access.playerId,
+      ...(isSiteAdmin(access) ? { version: SITE_VERSION, build: BUILD_ID } : {}),
     },
     { headers: { "Cache-Control": "private, no-store" } },
   );

@@ -9,6 +9,7 @@ import { researchLimit } from "@/lib/blue/limits";
 import { countNotesAwaitingReview } from "@/lib/knowledge/notes-data";
 import { getPrisma } from "@/lib/prisma";
 import { isSiteAdmin } from "@/lib/site-admin";
+import { BUILD_ID, SITE_VERSION } from "@/lib/version";
 import type { HubLink } from "@/lib/hub-links";
 
 export const dynamic = "force-dynamic";
@@ -67,7 +68,7 @@ export default async function AdminHome() {
 }
 
 /** The page itself, so the local preview can show it without a database. */
-export function AdminHomeView({ counts, switches }: { counts: { review: number; help: number; requests: number }; switches: { label: string; value: string; env: string }[] }) {
+export function AdminHomeView({ counts, switches, version = SITE_VERSION, build = BUILD_ID }: { counts: { review: number; help: number; requests: number }; switches: { label: string; value: string; env: string }[]; version?: string; build?: string }) {
   const tiles = [
     { value: counts.review, label: "to review", href: "/knowledge/review" },
     { value: counts.help, label: "waiting for a sign-in link", href: "/officer/signin-link" },
@@ -75,7 +76,7 @@ export function AdminHomeView({ counts, switches }: { counts: { review: number; 
   ];
   return (
     <HubPage backdrop="themed" inner>
-      <HubHeader eyebrow="Site admin" title="Everything in one place" intro="Only you see this page. The tools for keeping an eye on the site, looking after members, and the links to where it runs." />
+      <HubHeader eyebrow="Site admin" title="Everything in one place" intro="Only you see this page. The tools for keeping an eye on the site, looking after members, and the links to where it runs." meta={<>Site version <strong>{version}</strong>{build ? ` · build ${build}` : ""}</>} />
       <ul className="admin-tiles">
         {tiles.map((tile) => <li key={tile.label} className={tile.value ? "has-work" : undefined}><Link href={tile.href}><strong>{tile.value}</strong><span>{tile.label}</span></Link></li>)}
       </ul>

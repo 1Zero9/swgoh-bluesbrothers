@@ -2703,3 +2703,7 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .admin-switches li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1.6fr); gap: 8px; align-items: baseline; font-size: 14.5px; }
 .admin-switches code { color: var(--hub-muted); font-size: 12px; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .admin-switches li { grid-template-columns: 1fr 1fr; } .admin-switches code { grid-column: 1 / -1; } }
+
+.hub-side-note { display: block; padding: 9px 11px; border: 1px solid rgba(245, 185, 66, 0.55); border-radius: 12px; background: rgba(245, 185, 66, 0.1); color: var(--hub-text); font-size: 12.5px; line-height: 1.4; text-decoration: none; }
+.hub-side-note strong { color: var(--hub-accent); }
+.hub-side-version { color: var(--hub-muted); font: 10.5px var(--font-geist-mono), monospace; letter-spacing: 0.06em; }
