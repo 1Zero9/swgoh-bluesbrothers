@@ -2632,3 +2632,15 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .kb-improves { color: var(--hub-accent); }
 .kb-suggest-note { margin: 0; color: var(--hub-muted); font-size: 14px; }
 .kb-suggest-buttons .kb-secondary { padding: 8px 14px; }
+
+/* Ask page tidy-up: the answer flows down the page (no scroll box inside the page), compact status, readable headings */
+.hub-main.is-inner .blue-thread { max-height: none; overflow: visible; }
+.blue-status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 8px 12px; font-size: 13.5px; }
+.blue-officer-details { font-size: 13px; color: var(--hub-muted); }
+.blue-officer-details summary { cursor: pointer; }
+.blue-officer-details .blue-officer-line { margin: 6px 0 0; }
+.blue-text h4 { margin: 12px 0 4px; font-size: 16px; color: var(--hub-text); }
+.blue-text hr { border: 0; border-top: 1px solid var(--glass-line, var(--hub-line)); margin: 10px 0; }
+.blue-save { display: grid; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--glass-line, var(--hub-line)); }
+.blue-save small { color: var(--hub-muted); font-size: 12.5px; }
+.blue-save .kb-secondary { justify-self: start; }

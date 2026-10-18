@@ -15,6 +15,7 @@ const EXTRACT_INSTRUCTIONS = `Turn the research notes into a list of counters. I
 
 const ExtractSchema = z.object({
   counters: z.array(z.object({
+    mode: z.enum(["TW", "GAC_5V5", "GAC_3V3"]).optional(),
     defenderUnits: z.array(z.string().max(60)).min(1).max(8),
     attackerUnits: z.array(z.string().max(60)).min(1).max(8),
     strategy: z.string().max(1200),
@@ -117,6 +118,48 @@ export async function researchCounters(
     }, "BLUE", knownUnitIds);
     if (!checked.ok) { report.rejected.push({ what: label, reason: checked.error }); continue; }
     const result = await file(checked.value, { via: "BLUE", who: `B-Lue3 research (for ${args.officer})`, whoId: args.officerId });
+    report.filed.push({ attacker: attacker.members.map((member) => unitLabel(member.unitId)).join(", "), defender: defender.members.map((member) => unitLabel(member.unitId)).join(", "), status: result.status, newRecord: result.created, url: item.sourceUrl });
+  }
+  return report;
+}
+
+
+const ANSWER_INSTRUCTIONS = `${EXTRACT_INSTRUCTIONS} Set "mode" to TW, GAC_5V5 or GAC_3V3 using what the question and answer say (3v3 means three-versus-three, Grand Arena Championship 5v5 is GAC_5V5); if it is not clear, use TW. Only use page addresses that appear in the list of pages given.`;
+
+/**
+ * Someone liked a web-search answer from B-Lue3 and asked to keep it. Turn the answer into structured counters, then the code checks each
+ * one (real units, squad shape for the mode, a source page from the list the search returned) and files it as a candidate for an
+ * officer to review. Nothing is published.
+ */
+export async function saveAnswerCounters(
+  args: { question: string; answer: string; sources: AnswerSource[]; defaultMode: KbMode; who: string; whoId: string | null },
+  deps: { model?: LanguageModel; file?: typeof submitMatchup } = {},
+): Promise<ResearchReport> {
+  const model = deps.model ?? blueModel();
+  const file = deps.file ?? submitMatchup;
+  const report: ResearchReport = { filed: [], rejected: [], sources: args.sources, notes: "" };
+  const extracted = await generateText({
+    model,
+    instructions: ANSWER_INSTRUCTIONS,
+    prompt: `The question: ${args.question}\n\nThe answer to turn into counters:\n${args.answer.slice(0, 6000)}\n\nPages found by the search (the ONLY addresses you may use):\n${args.sources.map((source) => source.url).join("\n") || "none"}`,
+    output: Output.object({ schema: ExtractSchema }),
+    maxOutputTokens: 6000,
+    timeout: 45_000,
+  });
+  const hosts = foundHosts(args.sources);
+  for (const item of extracted.output?.counters ?? []) {
+    const label = `${item.attackerUnits[0] ?? "?"} squad`;
+    const mode = (item.mode ?? args.defaultMode) as KbMode;
+    const defender = toSquad(item.defenderUnits);
+    const attacker = toSquad(item.attackerUnits);
+    if (!defender.ok || !attacker.ok) { report.rejected.push({ what: label, reason: `"${(!defender.ok ? defender : (attacker as { unknown: string })).unknown}" isn't a unit I recognise.` }); continue; }
+    if (!sourceWasFound(item.sourceUrl, hosts)) { report.rejected.push({ what: label, reason: "Its source page wasn't one the search found." }); continue; }
+    const checked = validateSubmission({
+      mode, defender: { members: defender.members }, attacker: { members: attacker.members }, strategy: item.strategy,
+      evidence: [{ type: item.evidenceType, sourceProvider: item.sourceTitle || new URL(item.sourceUrl).hostname, sourceUrl: item.sourceUrl, observedAt: new Date().toISOString() }],
+    }, "BLUE", knownUnitIds);
+    if (!checked.ok) { report.rejected.push({ what: label, reason: checked.error }); continue; }
+    const result = await file(checked.value, { via: "BLUE", who: `B-Lue3 web search (asked by ${args.who})`, whoId: args.whoId });
     report.filed.push({ attacker: attacker.members.map((member) => unitLabel(member.unitId)).join(", "), defender: defender.members.map((member) => unitLabel(member.unitId)).join(", "), status: result.status, newRecord: result.created, url: item.sourceUrl });
   }
   return report;
