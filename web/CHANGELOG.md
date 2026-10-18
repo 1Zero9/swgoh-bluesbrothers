@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.50.8 — 2026-10-18
+
+- **The site can now use Prisma's pooled database address.** If `DATABASE_URL` is set to the pooled (Accelerate) address, which starts `prisma+postgres://`, the site goes through Prisma's connection pool instead of opening its own connections, which avoids the database's "too many connections" limit. Nothing changes until that setting is switched; the old direct address keeps working exactly as before. Migrations keep using the direct address from `DIRECT_URL`.
+
 ## 1.50.7 — 2026-10-18
 
 - **Fewer questions to the database.** The database has a low limit on how many connections it will accept (it was returning "too many connections"). The site no longer looks up the same member more than once every 30 seconds, and counts the officer review badge at most once a minute, so a busy launch uses far fewer connections.
