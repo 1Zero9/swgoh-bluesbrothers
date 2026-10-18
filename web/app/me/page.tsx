@@ -41,7 +41,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
   if (!data) {
     return (
       <HubPage backdrop="themed" inner>
-        <HubHeader eyebrow="My page" title="Sign in with Discord to see your page." intro="This page is built from your own in-game account, so it needs a Discord sign-in linked to your player. The shared officer password doesn't carry one." />
+        <HubHeader eyebrow="My page" title={access.isOfficer ? "You're in as an officer. Tap once to see your own page." : "Sign in with Discord to see your page."} intro={access.isOfficer ? "This browser is signed in with the shared officer password, which isn't tied to a player, so there is no page to build. Sign in with Discord once and your page appears. You stay an officer, and the admin tools work too." : "This page is built from your own in-game account, so it needs a Discord sign-in linked to your player."} />
         <section className="members-only-card">
           <a className="btn-discord-gate" href="/api/auth/discord?next=/me">Sign in with Discord</a>
         </section>
