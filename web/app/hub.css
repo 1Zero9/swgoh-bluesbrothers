@@ -2691,3 +2691,15 @@ html:has(.hub-dash) .whos-btn.is-float { display: none; }
 .hb-note { margin: 4px 0 0; color: var(--hub-muted); font-size: 14.5px; }
 .hb-tier { display: grid; gap: 8px; }
 .hb-card ul { list-style: disc; } .hb-two ul, .hb-squad ol { list-style: revert; }
+
+/* Site admin home */
+.admin-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.admin-tiles a { display: grid; gap: 2px; padding: 14px 16px; border: 1px solid var(--glass-line); border-radius: 14px; background: var(--glass); color: var(--hub-text); text-decoration: none; }
+.admin-tiles strong { font-size: 26px; }
+.admin-tiles span { color: var(--hub-muted); font-size: 13.5px; }
+.admin-tiles .has-work a { border-color: rgba(255, 138, 42, 0.7); }
+.admin-tiles .has-work strong { color: #ff8a2a; }
+.admin-switches { display: grid; gap: 8px; margin: 0; padding: 0 !important; list-style: none; }
+.admin-switches li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1.6fr); gap: 8px; align-items: baseline; font-size: 14.5px; }
+.admin-switches code { color: var(--hub-muted); font-size: 12px; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .admin-switches li { grid-template-columns: 1fr 1fr; } .admin-switches code { grid-column: 1 / -1; } }

@@ -53,6 +53,7 @@ export default function HubNav() {
   const active = sectionFor(pathname);
   const activeHref = activeSidebarHref(pathname);
   const isOfficer = isPreview || viewer?.role === "OFFICER";
+  const isAdmin = isPreview || viewer?.isAdmin === true;
   const reviewCount = isPreview ? 4 : isOfficer ? viewer?.reviewCount ?? 0 : 0;
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
   const pins = parsePins(useSyncExternalStore(subscribePins, readPins, () => ""));
@@ -93,7 +94,7 @@ export default function HubNav() {
           {(() => {
             const fixedGroup = SIDEBAR_GROUPS.find((group) => group.title === null);
             const groups = SIDEBAR_GROUPS.filter((group) => group.title !== null);
-            const pinnable = groups.flatMap((group) => group.links).filter((link) => !link.officerOnly || isOfficer);
+            const pinnable = groups.flatMap((group) => group.links).filter((link) => (!link.officerOnly || isOfficer) && (!link.adminOnly || isAdmin));
             const favourites = pinnedLinks(pins, pinnable);
             const renderLink = (link: { label: string; href: string }, pinnableLink: boolean) => (
               <div key={link.href} className="hub-side-row">
@@ -111,7 +112,7 @@ export default function HubNav() {
             );
             return (
               <>
-                {fixedGroup ? <div className="hub-side-group">{fixedGroup.links.filter((link) => !link.officerOnly || isOfficer).map((link) => renderLink(link, false))}</div> : null}
+                {fixedGroup ? <div className="hub-side-group">{fixedGroup.links.filter((link) => (!link.officerOnly || isOfficer) && (!link.adminOnly || isAdmin)).map((link) => renderLink(link, false))}</div> : null}
                 {favourites.length ? (
                   <div className="hub-side-group hub-side-favs" aria-label="Favourites">
                     <p className="hub-side-favtitle"><Star size={11} aria-hidden="true" /> Favourites</p>
@@ -119,7 +120,7 @@ export default function HubNav() {
                   </div>
                 ) : null}
                 {groups.map((group) => {
-                  const links = group.links.filter((link) => !link.officerOnly || isOfficer);
+                  const links = group.links.filter((link) => (!link.officerOnly || isOfficer) && (!link.adminOnly || isAdmin));
                   if (!links.length) return null;
                   const title = group.title as string;
                   const hasActive = links.some((link) => link.href === activeHref);
@@ -152,7 +153,7 @@ export default function HubNav() {
       {dockOpen && DOCK_MENUS[dockOpen] ? (
         <div className="hub-dock-menu" role="menu" aria-label={`${HUB_SECTIONS.find((section) => section.key === dockOpen)?.label} menu`}>
           {DOCK_MENUS[dockOpen]!.map((group) => {
-            const links = group.links.filter((link) => !link.officerOnly || isOfficer);
+            const links = group.links.filter((link) => (!link.officerOnly || isOfficer) && (!link.adminOnly || isAdmin));
             if (!links.length) return null;
             return (
               <div key={group.title ?? "main"} className="hub-dock-group">
