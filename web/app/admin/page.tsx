@@ -52,25 +52,23 @@ export default async function AdminHome() {
     // An officer gets told exactly why, so it can be fixed; anyone else just sees the members-only door.
     if (!access.isOfficer) return <MembersOnly path="/admin" area="The site admin area" />;
     const wrong = adminEnvProblems();
-    const ids = [access.discordUserId, ...(access.discordUserIds ?? [])].filter((id, index, all): id is string => Boolean(id) && all.indexOf(id) === index);
+    const mine = access.sessionDiscordUserId;
     return (
       <HubPage backdrop="themed" inner>
-        <HubHeader eyebrow="Site admin" title="This area is for the site admin only" intro="You are signed in as an officer, but the site doesn't recognise you as the site admin yet." />
+        <HubHeader eyebrow="Site admin" title="This area is for the site admin only" intro="You are signed in as an officer, but this session isn&apos;t recognised as the site admin." />
         <section className="help-box">
-          {!access.playerId ? (
+          {!mine ? (
             <>
-              <p><strong>You are in with the shared officer password.</strong> That isn&apos;t tied to a Discord account, so the site can&apos;t tell it&apos;s you.</p>
+              <p><strong>This sign-in isn&apos;t tied to a Discord account.</strong> It may be the shared officer password, a personal sign-in link, or a session from before this check existed. The site admin must sign in with Discord each time, so it can tell it is really them.</p>
               <p><a className="btn-discord-gate" href="/api/auth/discord?next=/admin">Sign in with Discord</a></p>
             </>
-          ) : ids.length ? (
-            <>
-              <p>You are signed in with Discord as <strong>{access.playerName ?? "a member"}</strong>. The Discord user id the site has for you is:</p>
-              <p><code>{ids.join(", ")}</code></p>
-              {wrong.length ? <p><strong>The setting currently holds {wrong.map((item) => `"${item}"`).join(", ")}, which is a username. It needs the number above, not a name.</strong></p> : null}
-              <p>For the site admin tools, that number needs to be in <code>SITE_ADMIN_DISCORD_ID</code> in Vercel (Settings → Environment Variables, Production). Add it, then redeploy.</p>
-            </>
           ) : (
-            <p>You are signed in as <strong>{access.playerName ?? "a member"}</strong>, but there is no Discord account linked to your player on the site, so it can&apos;t match you. Sign out and sign in with Discord again, then come back.</p>
+            <>
+              <p>You are signed in with Discord account:</p>
+              <p><code>{mine}</code></p>
+              {wrong.length ? <p><strong>The setting currently holds {wrong.map((item) => `"${item}"`).join(", ")}, which is a username. It needs the number above, not a name.</strong></p> : null}
+              <p>That number isn&apos;t the one in <code>SITE_ADMIN_DISCORD_ID</code> in Vercel (Settings → Environment Variables, Production). If it should be you, put it there and redeploy.</p>
+            </>
           )}
         </section>
       </HubPage>

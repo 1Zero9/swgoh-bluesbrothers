@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const session = createMemberCookieValue(player.id);
+  const session = createMemberCookieValue(player.id, link.discordUserId);
   store.delete(LINK_COOKIE_NAME);
   store.set(MEMBER_COOKIE_NAME, session.value, {
     httpOnly: true,
