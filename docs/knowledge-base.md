@@ -1,6 +1,6 @@
 # Blues Brothers Guild — Knowledge Base
 
-**Doc version:** 1.93.0 · **Last updated:** 2026-10-18 · tracks site `v1.46.0`
+**Doc version:** 1.94.0 · **Last updated:** 2026-10-18 · tracks site `v1.47.0`
 
 Internal reference for how the site is built, hosted, automated, and wired
 together. Start here before digging into code.
@@ -534,6 +534,7 @@ PRs are merged into `main` automatically — no confirmation needed.
 
 ## 16. Changelog
 
+- **1.94.0 — 2026-10-18**: "what to work on". `squadStatus` (`lib/counters.ts`) now also returns `needs` (kind `own`/`stars`/`relic`, have, want); `readinessFor` passes it through on each knowledge-base hit and `CounterView.readiness.you` already carried the status. `NextSteps` (`app/ask/next-steps.tsx`) in Find a counter picks the option with the least effort (own = 12, stars = 4, relic levels = 1 each) when none are ready and lists the farm / raise / level steps.
 - **1.93.0 — 2026-10-18**: starter tips. `lib/knowledge/starter-list.ts` holds 50 popular enemy squads (usual line-up + counters mentioned; unsourced). `POST /api/knowledge/import-starter` (officer-only, idempotent by title + author "Starter list") creates them as CANDIDATE `KbNote` TIPs; `GET` returns how many are not in yet; button on `/knowledge/review`. They are not matchups because the source lists only partial counter squads and matchups need full 5-unit squads. Find a counter shows published tips matching the searched enemy (`/api/knowledge/notes?kind=TIP&q=`), and `answerFromDatabase` includes up to 3 matching tips when there is no checked counter.
 - **1.92.0 — 2026-10-18**: "Add these counters to the guild list" on web-search answers. `POST /api/blue/save` (members/officers, 15 submissions/day cap shared with manual adds, needs the AI on) sends the answer plus its source pages to `saveAnswerCounters` (`lib/blue/research.ts`): an extraction call turns the text into counters, then the same code checks as officer research (units resolve, squad shape for the mode, source host in the list the search returned) and files each as a CANDIDATE via `submitMatchup` (`via: BLUE`, "B-Lue3 web search (asked by <name>)"). `parseBlueText` now handles markdown headings and rules.
 - **1.91.0 — 2026-10-18**: counter suggestions. `SuggestImprovement` (`app/knowledge/suggest.tsx`, under published counter cards) posts to `POST /api/knowledge` with `improves: <matchupId>` and `suggestion: "SWAP" | "BETTER"`; after `submitMatchup` creates the candidate, `linkSuggestion` (`lib/knowledge/data.ts`) sets the existing `KbMatchup.supersedesId` and writes a `SUGGESTED` event. `reviewQueue()` adds a plain-words `improves` label (the original squad) shown on the review card. Nothing is auto-retired: an officer publishes the new one and marks the old one outdated if they agree.

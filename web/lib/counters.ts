@@ -41,8 +41,13 @@ export function validateCounter(body: unknown, units: UnitMatch[] = allUnitNames
 
 export type MemberUnits = { playerId: string; name: string; units: Map<string, { stars: number; relic: number; gear: number }> };
 
+/** What a member still has to do for one unit: farm it (not owned), raise its stars, or level its relic. */
+export type Need = { unit: string; kind: "own" | "stars" | "relic"; have: number; want: number };
+
 export type SquadStatus = {
   ready: boolean;
+  /** The same gaps as data, so the page can say "farm X", "raise Y to 7 stars" or "level Z to R7". */
+  needs: Need[];
   /** One line per unit that isn't good enough yet, e.g. "Bo-Katan: not owned" or "JMK: R5 → R7". */
   gaps: string[];
   /** A rough size of the work left (lower is closer). Infinity when a unit isn't owned. */
@@ -52,18 +57,21 @@ export type SquadStatus = {
 /** Can this member run the squad as written? */
 export function squadStatus(squad: SquadSlot[], member: MemberUnits | undefined, nameOf: (id: string) => string): SquadStatus {
   const gaps: string[] = [];
+  const needs: Need[] = [];
   let effort = 0;
   for (const slot of squad) {
     const have = member?.units.get(slot.unitId);
-    if (!have) { gaps.push(`${nameOf(slot.unitId)}: not owned`); effort = Number.POSITIVE_INFINITY; continue; }
+    if (!have) { needs.push({ unit: nameOf(slot.unitId), kind: "own", have: 0, want: slot.minStars }); gaps.push(`${nameOf(slot.unitId)}: not owned`); effort = Number.POSITIVE_INFINITY; continue; }
     const starsShort = Math.max(0, slot.minStars - have.stars);
     const relicShort = Math.max(0, slot.minRelic - have.relic);
     if (starsShort || relicShort) {
+      if (starsShort) needs.push({ unit: nameOf(slot.unitId), kind: "stars", have: have.stars, want: slot.minStars });
+      if (relicShort) needs.push({ unit: nameOf(slot.unitId), kind: "relic", have: have.relic, want: slot.minRelic });
       gaps.push(`${nameOf(slot.unitId)}: ${[starsShort ? `${have.stars}★ → ${slot.minStars}★` : "", relicShort ? `R${have.relic} → R${slot.minRelic}` : ""].filter(Boolean).join(", ")}`);
       effort += starsShort * 3 + relicShort;
     }
   }
-  return { ready: gaps.length === 0, gaps, effort };
+  return { ready: gaps.length === 0, gaps, needs, effort };
 }
 
 export type CounterReadiness = {
