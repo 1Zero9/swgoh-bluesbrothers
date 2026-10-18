@@ -16,7 +16,7 @@ type Wanted = { id: string; mode: string; leaderUnitId: string; leaderName: stri
  * Find a counter from the guild's own knowledge, free: pick the enemy leader (and a mode), see the checked counters and the squads
  * members saved, with whether you can run them. If nothing fits, one tap hands the question to B-Lue3 or to the guild.
  */
-export default function CounterFinder({ names, canAct, onAskBlue }: { names: Record<string, string>; canAct: boolean; onAskBlue: (question: string) => void }) {
+export default function CounterFinder({ names, canAct, onAskBlue }: { names: Record<string, string>; canAct: boolean; /** Absent when B-Lue3's AI is switched off. */ onAskBlue?: (question: string) => void }) {
   const [enemy, setEnemy] = useState<PickedUnit | null>(null);
   const [mode, setMode] = useState<"" | KbMode>("");
   const [hits, setHits] = useState<Listing[] | null>(null);
@@ -145,7 +145,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
           <strong>The guild has nothing saved for {enemy.name}{mode ? ` in ${MODE_LABELS[mode]}` : ""} yet.</strong>
           <p>You have three ways forward. Add one you already know (best, and free), ask the guild, or let B-Lue3 search the web, which uses one of your weekly questions and can be wrong.</p>
           <div className="cf-actions">
-            <button type="button" className="kb-primary" onClick={() => onAskBlue(question)}>Ask B-Lue3 to search the web</button>
+            {onAskBlue ? <button type="button" className="kb-primary" onClick={() => onAskBlue(question)}>Search the web with B-Lue3 · uses 1 question</button> : null}
             {canAct ? <button type="button" className="kb-secondary" onClick={() => { setAddFor(null); setAdding(true); requestAnimationFrame(() => document.getElementById("cf-add-panel")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>Add a counter you know</button> : null}
           </div>
           {canAct ? (

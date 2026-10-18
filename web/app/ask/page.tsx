@@ -59,7 +59,7 @@ export default async function AskPage({ searchParams }: { searchParams: SearchPa
     </>
   );
   const names = Object.fromEntries(allUnitNames().map((unit) => [unit.id, unit.name]));
-  const tabbed = <AskTabs chat={<section className="hub-section hub-chat" id="ask-blue" aria-label="Chat with B-Lue3">{chat}</section>} names={names} canAct={Boolean(access.playerId || access.isOfficer)} initialTab={query.tab === "counters" ? "counters" : "ask"} />;
+  const tabbed = <AskTabs aiOn={aiOn} chat={<section className="hub-section hub-chat" id="ask-blue" aria-label="Chat with B-Lue3">{chat}</section>} names={names} canAct={Boolean(access.playerId || access.isOfficer)} initialTab={query.tab === "counters" ? "counters" : "ask"} />;
   const left = usage ? { left: usage.left, limit: usage.limit, resetsLabel: resetLabel(usage.resetsOn) } : null;
   return <AskView left={left}>{tabbed}</AskView>;
 }
