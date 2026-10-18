@@ -3,7 +3,7 @@
 import Image from "next/image";
 import BlueText from "./blue-text";
 import NavIcon from "./nav-icon";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { resetLabel } from "@/lib/blue/reset-label";
 
 type Source = { title: string; url: string; host: string };
@@ -31,17 +31,19 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
   const endRef = useRef<HTMLDivElement>(null);
 
   /** Sends a question. The server answers from the guild database first (free); `web: true` asks it to use the AI and web search instead. */
-  async function send(question: string, web = false) {
+  async function send(question: string, web = false, fresh = false) {
     const content = question.trim();
     if (!content || busy) return;
-    const next: Turn[] = web ? turns : [...turns, { role: "user", content }];
-    if (!web) { setTurns(next); setText(""); }
+    // A web search started from the button under an answer reuses that conversation; one started from Find a counter adds the question itself.
+    const add = !web || fresh;
+    const next: Turn[] = add ? [...turns, { role: "user", content }] : turns;
+    if (add) { setTurns(next); setText(""); }
     setError("");
     setSearching(web);
     setBusy(true);
     try {
       // Only plain questions and answers go to the server: it re-reads the last question itself.
-      const history = (web ? turns : next).map(({ role, content: body }) => ({ role, content: body }));
+      const history = next.map(({ role, content: body }) => ({ role, content: body }));
       const lastUser = history.map((turn) => turn.role).lastIndexOf("user");
       const response = await fetch("/api/blue", {
         method: "POST",
@@ -50,7 +52,7 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
       });
       const data = (await response.json().catch(() => null)) as { ok?: boolean; answer?: string; sources?: Source[]; left?: number; error?: string; detail?: string; webSearch?: string; searchError?: string; route?: "database" | "ai"; needsWebSearch?: boolean; offer?: Offer | null } | null;
       if (data?.ok && data.answer) {
-        setTurns([...(web ? turns.map((turn) => ({ ...turn, needsWebSearch: false })) : next), { role: "assistant", content: data.answer, sources: data.sources, searchDown: data.webSearch === "unavailable", searchError: data.searchError, route: data.route, needsWebSearch: data.needsWebSearch, offer: data.offer }]);
+        setTurns([...(add ? next : turns.map((turn) => ({ ...turn, needsWebSearch: false }))), { role: "assistant", content: data.answer, sources: data.sources, searchDown: data.webSearch === "unavailable", searchError: data.searchError, route: data.route, needsWebSearch: data.needsWebSearch, offer: data.offer }]);
         setLeft(data.left ?? left);
         setUsed(usage.limit - (data.left ?? left));
       } else {
@@ -87,6 +89,18 @@ export default function BlueChat({ usage, webSearch, isOfficer, rawLimit, initia
     const data = (await response?.json().catch(() => null)) as { ok?: boolean; usage?: Usage } | null;
     if (data?.ok && data.usage) { setLeft(data.usage.left); setUsed(data.usage.used); setError(""); }
   }
+
+  // "Search the web" in Find a counter starts the search here directly, so there is no empty box to fill in and no second button to press.
+  const sendRef = useRef(send);
+  useEffect(() => { sendRef.current = send; });
+  useEffect(() => {
+    const onWeb = (event: Event) => {
+      const question = (event as CustomEvent<{ question: string }>).detail?.question;
+      if (question) void sendRef.current(question, true, true);
+    };
+    window.addEventListener("bb-ask-web", onWeb);
+    return () => window.removeEventListener("bb-ask-web", onWeb);
+  }, []);
 
   const noneLeft = left <= 0; // AI questions only: counter and "who has" questions are answered from the database and stay free
   return (

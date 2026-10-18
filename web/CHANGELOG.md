@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.45.1 — 2026-10-18
+
+- **One tap to search the web from Find a counter.** When nothing is found for a squad, **Search the web with B-Lue3** now takes you to the chat and runs the search straight away, instead of switching tabs and leaving you to type the question and press Ask, then press Search again. (If B-Lue3's AI is switched off, the button isn't shown.)
+
 ## 1.45.0 — 2026-10-18
 
 - **Web research can now be kept.** Under a B-Lue3 answer that came from a web search, **Add these counters to the guild list** turns the answer into proper counters (enemy squad, your squad, how to run it, and the page it came from). Each one is checked by the site (real units, a squad that fits the mode, a source the search actually found) and goes to the officer review queue. Nothing is public until an officer publishes it, so the next person who searches for that squad finds it free, with no question used.
