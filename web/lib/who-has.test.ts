@@ -56,3 +56,10 @@ test("the game's full unit names resolve even where the site shows a shorter one
   assert.equal(resolveUnit("Jedi Master Luke", units)?.id, "GRANDMASTERLUKE");
   assert.equal(resolveUnit("Totally Made Up Hero", units), null);
 });
+
+test("a nickname finds its unit, in suggestions and when resolving a name", () => {
+  const units = [{ id: "COMMANDERLUKESKYWALKER", name: "Commander Luke Skywalker" }, { id: "JEDIMASTERKENOBI", name: "Jedi Master Kenobi" }, { id: "GENERALKENOBI", name: "General Kenobi" }];
+  assert.equal(searchUnits("JMK", 5, units)[0].id, "JEDIMASTERKENOBI");
+  assert.equal(searchUnits("cls", 5, units)[0].id, "COMMANDERLUKESKYWALKER");
+  assert.equal(resolveUnit("JMK", units)?.id, "JEDIMASTERKENOBI");
+});

@@ -1,3 +1,4 @@
+import { expandUnitNicknames } from "@/lib/glossary";
 import { getViewerAccess } from "@/lib/access-control";
 import { askBlue, blueEnabled } from "@/lib/blue/ask";
 import { answerFromDatabase } from "@/lib/blue/db-answer";
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
   // The free step comes first: counter questions and "who has X" are answered from the guild's own database with no AI and no question used.
   // The member can then choose to spend a question on a web search (webSearch: true skips this step).
   if (body?.webSearch !== true) {
-    const free = await answerFromDatabase(access.playerId ?? null, conversation[conversation.length - 1].content).catch(() => null);
+    const free = await answerFromDatabase(access.playerId ?? null, expandUnitNicknames(conversation[conversation.length - 1].content)).catch(() => null);
     if (free) {
       const usage = await getUsage(access.playerId ?? "officer");
       void logQuestion({ playerId: who, playerName: name, question: latest, route: "database", answer: free.text });

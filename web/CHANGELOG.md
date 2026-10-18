@@ -2,6 +2,14 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.49.0 — 2026-10-18
+
+- **Short forms now work.** Type **JMK, CLS, GAS, SEE, SLKR, JKA, QGJ, BAM** and 17 other unit nicknames into any unit search, Find a counter, or a question to B-Lue3, and it finds the right unit ("How do I beat JMK?" works). B-Lue3 also knows them, and spells one out the first time he uses it.
+- **Hover hints.** In tips, counter notes and the handbook, short forms like TM, TW, GAC and CLS are underlined; hover or tap one to see what it means.
+- **New: Combat handbook** (Knowledge → Combat handbook): mod slots and what each can carry, the 8 mod sets, mod colours and slicing, what to buy in the Mod Store, turn order and mod set-ups for CLS Rebels, Imperial Troopers and Traya, and the omicron priority list. Built from the guild handbook document; its numbers are worth a check in game.
+- **New: Glossary** (Knowledge → Glossary): every short form in plain words, game terms and unit nicknames.
+- **Publish all (officers).** The review page has **Publish all N waiting counters** (with a confirmation). Suggested replacements and disputed ones are left for you to look at one by one.
+
 ## 1.48.1 — 2026-10-18
 
 - **Research no longer drops counters over a unit's name.** The site shows a few units under a shorter name than the game uses (for example "Jedi Master Luke" for the game's "Jedi Master Luke Skywalker"), and web research uses the game's names, so a counter involving one was set aside as "isn't a unit I recognise". The site now understands both names. The "Research the popular squads" list uses the same matching, so none of its squads are skipped for this.

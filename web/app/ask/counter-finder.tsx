@@ -6,6 +6,7 @@ import MatchCard, { type Listing } from "@/app/knowledge/match-card";
 import SubmitForm from "@/app/knowledge/submit-form";
 import { MODE_LABELS, type KbMode } from "@/lib/knowledge/modes";
 import type { CounterView } from "@/lib/counters-data";
+import Jargon from "@/app/knowledge/jargon";
 import NextSteps, { type Option } from "./next-steps";
 
 const MODES: KbMode[] = ["TW", "GAC_5V5", "GAC_3V3"];
@@ -140,7 +141,7 @@ export default function CounterFinder({ names, canAct, onAskBlue }: { names: Rec
           {tips.map((tip) => (
             <article key={tip.id} className="kb-card cf-tip">
               <header><strong>{tip.title}</strong><span className="kb-badge">Tip</span></header>
-              <p className="kb-strategy cf-tip-body">{tip.body}</p>
+              <p className="kb-strategy cf-tip-body"><Jargon text={tip.body} /></p>
               <footer><span className="kb-meta">from {tip.authorName}. Check in game before you rely on it.</span></footer>
             </article>
           ))}

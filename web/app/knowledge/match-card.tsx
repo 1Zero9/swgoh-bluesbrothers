@@ -3,6 +3,7 @@
 import { useState } from "react";
 import NavIcon from "@/app/nav-icon";
 import { ModeBadge, SquadChips } from "./squad-chips";
+import Jargon from "./jargon";
 import SuggestImprovement from "./suggest";
 
 export type Squad = { teamName: string; memberIds: string[]; members: { unitId: string; role: string; alternatives?: string[] }[] };
@@ -72,7 +73,7 @@ export default function MatchCard({ item, names, canMark, children }: { item: Li
       {item.readiness && !item.readiness.ready && item.readiness.gaps.length ? <p className="kb-gaps">You still need: {item.readiness.gaps.join("; ")}</p> : null}
       {item.strategy ? (
         <div className="kb-strategy2">
-          <p className={more || !long ? undefined : "is-clamped"}>{item.strategy}</p>
+          <p className={more || !long ? undefined : "is-clamped"}><Jargon text={item.strategy} /></p>
           {long ? <button type="button" className="kb-link" onClick={() => setMore((value) => !value)}>{more ? "Show less" : "Read more"}</button> : null}
         </div>
       ) : null}

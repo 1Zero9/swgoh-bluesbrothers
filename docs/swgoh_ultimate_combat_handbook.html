@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWGOH Ultimate Combat & Modding Handbook</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0b0f19;
+    color: #e2e8f0;
+  }
+  h1, h2, h3, h4, .font-title {
+    font-family: 'Chakra Petch', sans-serif;
+    letter-spacing: 0.05em;
+  }
+  .sw-border {
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.08);
+  }
+  .sw-border-gold {
+    border: 1px solid rgba(234, 179, 8, 0.25);
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.08);
+  }
+  /* Mod tier colors */
+  .tier-grey   { background: #374151; color: #f3f4f6; border-color: #6b7280; }
+  .tier-green  { background: #064e3b; color: #6ee7b7; border-color: #10b981; }
+  .tier-blue   { background: #1e3a8a; color: #93c5fd; border-color: #3b82f6; }
+  .tier-purple { background: #581c87; color: #d8b4fe; border-color: #a855f7; }
+  .tier-gold   { background: #713f12; color: #fde047; border-color: #eab308; }
+  .tier-6dot   { background: #7f1d1d; color: #fca5a5; border-color: #ef4444; }
+</style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 border-b border-sky-800/40 sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-lg bg-sky-500/20 border border-sky-400 flex items-center justify-center text-sky-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold uppercase tracking-wider text-white">SWGOH Master Combat Handbook</h1>
+          <p class="text-xs text-sky-300/80">Mods, Turn-Meter Sequences, Mod Store Filters & Omicron Meta</p>
+        </div>
+      </div>
+      <nav class="flex items-center gap-2 text-xs md:text-sm font-semibold">
+        <a href="#mod-shapes" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-sky-900 text-sky-300 transition">Mod Shapes</a>
+        <a href="#mod-sets" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-sky-900 text-sky-300 transition">Set Bonuses</a>
+        <a href="#mod-evaluation" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-sky-900 text-sky-300 transition">Slicing & Buying</a>
+        <a href="#squad-orders" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-sky-900 text-sky-300 transition">Squad Orders</a>
+        <a href="#omicrons" class="px-3 py-1.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 hover:bg-amber-500/30 transition">Omicron Tier List</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 mt-8 space-y-12">
+
+    <!-- Section 1: Mod Shapes & Slots Visual Diagram -->
+    <section id="mod-shapes" class="sw-border bg-slate-900/80 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs px-2.5 py-1 rounded bg-sky-500/20 text-sky-400 font-mono font-bold uppercase">Section 01</span>
+        <h2 class="text-2xl font-bold text-white tracking-wide">Mod Anatomy & Slot Primary Rules</h2>
+      </div>
+
+      <p class="text-sm text-slate-300 mb-8 leading-relaxed max-w-4xl">
+        Every character equips 6 modification pieces. Left-side mods (Square, Diamond, Circle) have strict primary stat pools, while Right-side mods (Arrow, Triangle, Cross) contain the game's most critical variable stats like <strong class="text-sky-400">Speed</strong>, <strong class="text-amber-400">Critical Damage</strong>, and <strong class="text-emerald-400">Potency / Tenacity</strong>.
+      </p>
+
+      <!-- Grid of Shapes -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. Transmitter / Square -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-slate-700/70 hover:border-sky-500/60 transition group">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-sky-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <rect x="20" y="20" width="60" height="60" rx="8" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="8"/>
+                <rect x="36" y="36" width="28" height="28" rx="4" fill="#38bdf8"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-white text-lg font-title">Square</h3>
+                <span class="text-xs font-mono text-slate-400">Transmitter • Slot 1</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-mono">Static</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-emerald-300 font-semibold flex items-center gap-1.5">
+              <span>Primary:</span> <span class="bg-emerald-950/60 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-mono">Offense % ONLY (+5.88% / +8.5%)</span>
+            </p>
+            <p class="text-slate-400 leading-relaxed">
+              Because the primary is guaranteed, its worth is determined entirely by its <strong class="text-sky-300">Speed secondary</strong> and complementary substats.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. Receiver / Arrow -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-amber-500/40 hover:border-amber-400 transition group shadow-lg shadow-amber-950/20">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-amber-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <polygon points="50,15 85,50 65,50 65,85 35,85 35,50 15,50" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="8"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-amber-300 text-lg font-title">Arrow</h3>
+                <span class="text-xs font-mono text-slate-400">Receiver • Slot 2</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-amber-950 border border-amber-500/50 text-amber-300 font-mono font-bold">Speed King</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-amber-300 font-semibold">Allowed Primaries:</p>
+            <div class="flex flex-wrap gap-1 font-mono text-[11px]">
+              <span class="bg-amber-950/90 text-amber-300 px-1.5 py-0.5 rounded border border-amber-400/50 font-bold">Speed (+30 / +32)</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Offense %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Health %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Protection %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Crit Avoid</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Defense %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Accuracy</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed pt-1">
+              90% of characters want a <strong class="text-amber-300">Speed primary</strong>. High relic attackers (Drogan, Dark Trooper) can use Offense % arrows if secondary speed rolls are 20+.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. Processor / Diamond -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-slate-700/70 hover:border-sky-500/60 transition group">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-sky-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <polygon points="50,15 85,50 50,85 15,50" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="8"/>
+                <polygon points="50,32 68,50 50,68 32,50" fill="#38bdf8"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-white text-lg font-title">Diamond</h3>
+                <span class="text-xs font-mono text-slate-400">Processor • Slot 3</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-mono">Static</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-emerald-300 font-semibold flex items-center gap-1.5">
+              <span>Primary:</span> <span class="bg-emerald-950/60 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-mono">Defense % ONLY (+11.75% / +20%)</span>
+            </p>
+            <p class="text-slate-400 leading-relaxed">
+              Static defense primary. Like the square, sell if no speed substat is uncovered by Tier C (Blue).
+            </p>
+          </div>
+        </div>
+
+        <!-- 4. Holofiber / Triangle -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-purple-500/40 hover:border-purple-400 transition group shadow-lg shadow-purple-950/20">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-purple-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <polygon points="50,15 85,80 15,80" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="8"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-purple-300 text-lg font-title">Triangle</h3>
+                <span class="text-xs font-mono text-slate-400">Holofiber • Slot 4</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-purple-950 border border-purple-500/50 text-purple-300 font-mono font-bold">Rarest Slot</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-purple-300 font-semibold">Allowed Primaries:</p>
+            <div class="flex flex-wrap gap-1 font-mono text-[11px]">
+              <span class="bg-purple-950/90 text-purple-200 px-1.5 py-0.5 rounded border border-purple-400/50 font-bold">Crit Damage (+36% / +42%)</span>
+              <span class="bg-purple-950/90 text-purple-200 px-1.5 py-0.5 rounded border border-purple-400/50 font-bold">Crit Chance %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Offense %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Health %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Protection %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Defense %</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed pt-1">
+              The highest DPS impact slot in SWGOH. Keep all <strong class="text-purple-300">Crit Damage</strong> and <strong class="text-purple-300">Offense %</strong> triangles with visible Speed.
+            </p>
+          </div>
+        </div>
+
+        <!-- 5. Data-Bus / Circle -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-slate-700/70 hover:border-sky-500/60 transition group">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-sky-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <circle cx="50" cy="50" r="35" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="8"/>
+                <circle cx="50" cy="50" r="16" fill="#38bdf8"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-white text-lg font-title">Circle</h3>
+                <span class="text-xs font-mono text-slate-400">Data-Bus • Slot 5</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-mono">Dual Stat</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-emerald-300 font-semibold">Allowed Primaries:</p>
+            <div class="flex gap-2 font-mono text-xs">
+              <span class="bg-slate-900 border border-sky-400/40 text-sky-300 px-2 py-0.5 rounded">Protection % (+23.5% / +24%)</span>
+              <span class="bg-slate-900 border border-emerald-400/40 text-emerald-300 px-2 py-0.5 rounded">Health % (+5.88% / +16%)</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed">
+              Choose <strong class="text-emerald-300">Health %</strong> for characters who ramp max HP (Grievous, Malak, Padmé, Kelleran Beq). Choose <strong class="text-sky-300">Protection %</strong> for shield regenerators.
+            </p>
+          </div>
+        </div>
+
+        <!-- 6. Multiplexer / Cross -->
+        <div class="p-5 rounded-xl bg-slate-800/60 border border-emerald-500/40 hover:border-emerald-400 transition group shadow-lg shadow-emerald-950/20">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-10 h-10 text-emerald-400 group-hover:scale-110 transition transform" viewBox="0 0 100 100" fill="currentColor">
+                <polygon points="40,15 60,15 60,40 85,40 85,60 60,60 60,85 40,85 40,60 15,60 15,40 40,40" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="6"/>
+              </svg>
+              <div>
+                <h3 class="font-bold text-emerald-300 text-lg font-title">Cross</h3>
+                <span class="text-xs font-mono text-slate-400">Multiplexer • Slot 6</span>
+              </div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/50 text-emerald-300 font-mono font-bold">Utility Core</span>
+          </div>
+          <div class="text-xs space-y-2">
+            <p class="text-emerald-300 font-semibold">Allowed Primaries:</p>
+            <div class="flex flex-wrap gap-1 font-mono text-[11px]">
+              <span class="bg-emerald-950/90 text-emerald-200 px-1.5 py-0.5 rounded border border-emerald-400/50 font-bold">Potency % (+24% / +30%)</span>
+              <span class="bg-emerald-950/90 text-emerald-200 px-1.5 py-0.5 rounded border border-emerald-400/50 font-bold">Tenacity % (+24% / +35%)</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Offense %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Health %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Protection %</span>
+              <span class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded">Defense %</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed pt-1">
+              Equip <strong class="text-emerald-300">Potency</strong> on debuff engines (Vader, Mara Jade, C-3PO) and <strong class="text-emerald-300">Tenacity</strong> on solo juggernauts (Wampa, Savage, Malak).
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Mod Set Bonuses & Icons -->
+    <section id="mod-sets" class="sw-border bg-slate-900/80 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs px-2.5 py-1 rounded bg-sky-500/20 text-sky-400 font-mono font-bold uppercase">Section 02</span>
+        <h2 class="text-2xl font-bold text-white tracking-wide">The 8 Mod Set Icons & Tier 15 Bonuses</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <!-- Speed Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-sky-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Speed Icon (Lightning / Runner) -->
+            <div class="w-10 h-10 rounded-lg bg-sky-500/20 border border-sky-400 flex items-center justify-center text-sky-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <polygon points="13,2 4,14 11,14 9,22 20,10 13,10"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Speed Set</h4>
+              <span class="text-xs font-mono text-sky-400 bg-sky-950/60 px-1.5 py-0.5 rounded">Requires 4 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-sky-300 font-mono">+10% Base Speed</div>
+            <p class="text-slate-400">Scales off raw unmodded gear speed. Mandatory for turn-0 starters: Piett, Rex, Mara Jade, Gideon.</p>
+          </div>
+        </div>
+
+        <!-- Offense Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-red-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Offense Icon (Fist) -->
+            <div class="w-10 h-10 rounded-lg bg-red-500/20 border border-red-400 flex items-center justify-center text-red-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Offense Set</h4>
+              <span class="text-xs font-mono text-red-400 bg-red-950/60 px-1.5 py-0.5 rounded">Requires 4 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-red-300 font-mono">+15% Offense</div>
+            <p class="text-slate-400">Ideal for units with true/raw damage that cannot crit (Dark Trooper) or multihit assist engines (Drogan, ARC).</p>
+          </div>
+        </div>
+
+        <!-- Crit Damage Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-purple-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Crit Damage Icon (Crosshair / Target) -->
+            <div class="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-400 flex items-center justify-center text-purple-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <line x1="12" y1="3" x2="12" y2="7"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+                <line x1="3" y1="12" x2="7" y2="12"/>
+                <line x1="17" y1="12" x2="21" y2="12"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Crit Damage Set</h4>
+              <span class="text-xs font-mono text-purple-400 bg-purple-950/60 px-1.5 py-0.5 rounded">Requires 4 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-purple-300 font-mono">+30% Crit Damage</div>
+            <p class="text-slate-400">Core for high CC attackers. Gives Han Solo, JKA, and Echo devastating burst on every critical hit.</p>
+          </div>
+        </div>
+
+        <!-- Crit Chance Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-yellow-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Crit Chance Icon (Reticle) -->
+            <div class="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-400 flex items-center justify-center text-yellow-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"/>
+                <circle cx="12" cy="12" r="9"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Crit Chance Set</h4>
+              <span class="text-xs font-mono text-yellow-400 bg-yellow-950/60 px-1.5 py-0.5 rounded">Requires 2 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-yellow-300 font-mono">+8% Crit Chance</div>
+            <p class="text-slate-400">Used as a 2-piece filler to ensure characters reliably hit critical thresholds to activate kit buffs.</p>
+          </div>
+        </div>
+
+        <!-- Health Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-emerald-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Health Icon (Plus / Heart) -->
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-emerald-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Health Set</h4>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">Requires 2 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-emerald-300 font-mono">+10% Max Health</div>
+            <p class="text-slate-400">Stack 3 sets on HP-scaling monsters like General Grievous, Darth Malak, Old Daka, and Savage Opress.</p>
+          </div>
+        </div>
+
+        <!-- Defense Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-blue-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Defense Icon (Shield) -->
+            <div class="w-10 h-10 rounded-lg bg-blue-500/20 border border-blue-400 flex items-center justify-center text-blue-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Defense Set</h4>
+              <span class="text-xs font-mono text-blue-400 bg-blue-950/60 px-1.5 py-0.5 rounded">Requires 2 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-blue-300 font-mono">+25% Defense</div>
+            <p class="text-slate-400">Dramatically cuts damage taken. Superb on Fives, Ninth Sister, Bossk, and General Kenobi.</p>
+          </div>
+        </div>
+
+        <!-- Potency Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-cyan-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Potency Icon (Bullhorn / Waves) -->
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Potency Set</h4>
+              <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded">Requires 2 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-cyan-300 font-mono">+15% Potency</div>
+            <p class="text-slate-400">Bypasses high enemy tenacity. Essential for Emperor Palpatine, C-3PO, CLS, and Darth Vader.</p>
+          </div>
+        </div>
+
+        <!-- Tenacity Set -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-orange-500/40 hover:bg-slate-800 transition">
+          <div class="flex items-center gap-3 mb-3">
+            <!-- Tenacity Icon (Hand / Shielded Hand) -->
+            <div class="w-10 h-10 rounded-lg bg-orange-500/20 border border-orange-400 flex items-center justify-center text-orange-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white font-title text-base">Tenacity Set</h4>
+              <span class="text-xs font-mono text-orange-400 bg-orange-950/60 px-1.5 py-0.5 rounded">Requires 2 Pieces</span>
+            </div>
+          </div>
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="text-sm font-bold text-orange-300 font-mono">+20% Tenacity</div>
+            <p class="text-slate-400">Resists debuffs and ability blocks. Stack x3 on soloists like Wampa, Savage Opress, and Chewbacca.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 3: Mod Slicing, Colors & Mod Store Guide -->
+    <section id="mod-evaluation" class="sw-border bg-slate-900/80 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs px-2.5 py-1 rounded bg-sky-500/20 text-sky-400 font-mono font-bold uppercase">Section 03</span>
+        <h2 class="text-2xl font-bold text-white tracking-wide">Mod Tiers (Colors), Slicing & Store Buy Checklist</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+
+        <!-- Tier Colors & Roll Rules -->
+        <div class="space-y-4">
+          <h3 class="font-title text-lg font-bold text-sky-300 flex items-center gap-2">
+            <span>Color Tier Upgrades (Slicing)</span>
+          </h3>
+          <p class="text-xs text-slate-400">Each tier corresponds to how many secondary stats start revealed. When upgraded, existing secondaries roll higher values.</p>
+
+          <div class="space-y-2 text-xs font-mono">
+            <div class="p-2.5 rounded-lg border tier-grey flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">5-E (Grey)</span>
+                <span>0 Secondaries showing</span>
+              </div>
+              <span class="text-slate-300 font-sans">Level to 12. If no speed, SELL.</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg border tier-green flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">5-D (Green)</span>
+                <span>1 Secondary showing</span>
+              </div>
+              <span class="text-emerald-200 font-sans">Level to 9. Needs +4 to +5 speed.</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg border tier-blue flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">5-C (Blue)</span>
+                <span>2 Secondaries showing</span>
+              </div>
+              <span class="text-blue-200 font-sans">Needs at least (2) rolls in Speed.</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg border tier-purple flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">5-B (Purple)</span>
+                <span>3 Secondaries showing</span>
+              </div>
+              <span class="text-purple-200 font-sans">Target +10+ Speed before slicing to gold.</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg border tier-gold flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">5-A (Gold)</span>
+                <span>All 4 Secondaries showing</span>
+              </div>
+              <span class="text-yellow-200 font-sans">Target +15+ Speed to slice to 6-Dot.</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg border tier-6dot flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold px-1.5 py-0.5 bg-black/40 rounded">6-E to 6-A (Red/6-Dot)</span>
+              </div>
+              <span class="text-red-200 font-sans">Requires G12+. Boosts primary & secondaries.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mod Store Buying Guide -->
+        <div class="space-y-4">
+          <h3 class="font-title text-lg font-bold text-amber-300 flex items-center gap-2">
+            <span>Mod Store: What to Buy vs. Skip</span>
+          </h3>
+          <p class="text-xs text-slate-400">The Mod Store refreshes every 6 hours. Use Credits and Ship Building Materials carefully.</p>
+
+          <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/40 space-y-2 text-xs">
+            <h4 class="font-bold text-emerald-400 flex items-center gap-1.5 uppercase tracking-wide">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              Always Buy (Credits / Ship Currency Only)
+            </h4>
+            <ul class="list-disc list-inside text-slate-300 space-y-1">
+              <li><strong class="text-white">+30 Speed Arrows</strong> on Speed, Health, Offense, or Potency sets.</li>
+              <li><strong class="text-white">Gold (5A) mods showing +5 Speed</strong> with at least two complementary % stats (e.g. Offense % & CC, or Health % & Defense %).</li>
+              <li><strong class="text-white">Crit Damage Triangles</strong> (Crit Damage or Offense set) that show +4 or +5 Speed.</li>
+              <li><strong class="text-white">Potency / Tenacity Crosses</strong> matching their set icon with visible +4 or +5 Speed.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-red-950/30 border border-red-500/40 space-y-2 text-xs">
+            <h4 class="font-bold text-red-400 flex items-center gap-1.5 uppercase tracking-wide">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+              Never Buy (Waste of Resources)
+            </h4>
+            <ul class="list-disc list-inside text-slate-300 space-y-1">
+              <li><strong class="text-white">Never spend Crystals</strong> in the Mod Store. Use crystals for energy refreshes instead.</li>
+              <li><strong class="text-white">Grey (5E) mods</strong> in the store: Never gamble on blind substats.</li>
+              <li><strong class="text-white">Accuracy Arrows & Defense Crosses</strong> (hyper-niche with zero speed value).</li>
+              <li><strong class="text-white">1-Dot through 4-Dot mods</strong> (sub-optimal stats that cannot reach 6-dot).</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Squad Turn Sequences & Mod Loadouts -->
+    <section id="squad-orders" class="sw-border bg-slate-900/80 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs px-2.5 py-1 rounded bg-sky-500/20 text-sky-400 font-mono font-bold uppercase">Section 04</span>
+        <h2 class="text-2xl font-bold text-white tracking-wide">Turn Order & Mod Specs for Top Meta Squads</h2>
+      </div>
+
+      <div class="space-y-6">
+
+        <!-- CLS Squad Card -->
+        <div class="rounded-xl bg-slate-800/60 border border-slate-700/80 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 pb-3 mb-4">
+            <h3 class="font-title text-xl font-bold text-sky-300">Commander Luke Skywalker (CLS Rebels)</h3>
+            <span class="text-xs font-mono bg-sky-950 text-sky-300 border border-sky-500/40 px-2 py-0.5 rounded">Core Engine: TM Reduction Loop</span>
+          </div>
+          
+          <div class="mb-4">
+            <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 font-bold">Optimal Turn Sequence:</h4>
+            <ol class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-amber-400 font-mono">1. Han Solo:</strong> Turn 0 "Shoots First" on enemy TM starter (e.g. Piett/Rex).</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">2. Chewbacca:</strong> Dispel buff and spread Tenacity Up.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">3. CLS (Lead):</strong> Special 2 (Use the Force) to remove TM & inflict Buff Immunity.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">4. Chewpio:</strong> Special (Chewie's Rage) AoE Blind & stat share.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">5. C-3PO:</strong> Mass assist (Wait for Me!) stacks Confuse and Expose.</li>
+            </ol>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-700/60 rounded">
+              <thead class="bg-slate-900/90 text-slate-300 font-mono">
+                <tr>
+                  <th class="p-2 border-b border-slate-700">Toon</th>
+                  <th class="p-2 border-b border-slate-700">Sets</th>
+                  <th class="p-2 border-b border-slate-700">Arrow</th>
+                  <th class="p-2 border-b border-slate-700">Triangle</th>
+                  <th class="p-2 border-b border-slate-700">Cross</th>
+                  <th class="p-2 border-b border-slate-700">Target Stat Baselines</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 font-mono text-slate-300">
+                <tr>
+                  <td class="p-2 font-bold text-white">CLS (Lead)</td>
+                  <td class="p-2 text-sky-300">Speed + Potency</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Crit Damage</td>
+                  <td class="p-2">Potency</td>
+                  <td class="p-2 text-emerald-400">315+ Speed, 90%+ Potency</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Han Solo</td>
+                  <td class="p-2 text-purple-300">Crit Dmg + CC</td>
+                  <td class="p-2">Crit Dmg / Speed</td>
+                  <td class="p-2">Crit Damage</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2 text-emerald-400">4,200+ Offense, 75%+ CC</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Chewbacca</td>
+                  <td class="p-2 text-orange-300">Tenacity x3</td>
+                  <td class="p-2">Speed / Offense</td>
+                  <td class="p-2">Crit Damage</td>
+                  <td class="p-2">Tenacity</td>
+                  <td class="p-2 text-emerald-400">150%+ Tenacity, Guard on CLS/Chewpio</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Chewpio</td>
+                  <td class="p-2 text-red-300">Offense + Tenacity</td>
+                  <td class="p-2">Speed / Offense</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2 text-emerald-400">9,000+ Physical Offense</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">C-3PO</td>
+                  <td class="p-2 text-sky-300">Speed + Potency</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Protection %</td>
+                  <td class="p-2">Potency</td>
+                  <td class="p-2 text-emerald-400">290+ Speed, 110%+ Potency</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-2 text-[11px] text-amber-300/80 font-mono">
+            * Guard Rule: Mod CLS and Chewpio with lower combined HP+Protection than Han and 3PO to guarantee Chewbacca protects them.
+          </div>
+        </div>
+
+        <!-- Imperial Troopers (Veers) Squad Card -->
+        <div class="rounded-xl bg-slate-800/60 border border-slate-700/80 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 pb-3 mb-4">
+            <h3 class="font-title text-xl font-bold text-sky-300">Imperial Troopers (Veers Lead)</h3>
+            <span class="text-xs font-mono bg-sky-950 text-sky-300 border border-sky-500/40 px-2 py-0.5 rounded">Core Engine: Infinite Assist Train</span>
+          </div>
+          
+          <div class="mb-4">
+            <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 font-bold">Optimal Turn Sequence:</h4>
+            <ol class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-amber-400 font-mono">1. Piett / Gideon:</strong> Piett marks Dark Trooper with Imperial Ambition or AoE.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">2. Range Trooper:</strong> Special 1 (Power in Numbers) grants team buffs & triggers Veers TM.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">3. General Veers:</strong> Special AoE applies Speed Down and feeds additional TM.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">4. Dark Trooper:</strong> Punch / Bombardment (pure physical nuke).</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-sky-300 font-mono">5. Starck / Gideon:</strong> Cycles buffs and removes all enemy TM.</li>
+            </ol>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-700/60 rounded">
+              <thead class="bg-slate-900/90 text-slate-300 font-mono">
+                <tr>
+                  <th class="p-2 border-b border-slate-700">Toon</th>
+                  <th class="p-2 border-b border-slate-700">Sets</th>
+                  <th class="p-2 border-b border-slate-700">Arrow</th>
+                  <th class="p-2 border-b border-slate-700">Triangle</th>
+                  <th class="p-2 border-b border-slate-700">Cross</th>
+                  <th class="p-2 border-b border-slate-700">Target Stat Baselines</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 font-mono text-slate-300">
+                <tr>
+                  <td class="p-2 font-bold text-white">Adm. Piett</td>
+                  <td class="p-2 text-sky-300">Speed + Potency</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Protection %</td>
+                  <td class="p-2">Potency</td>
+                  <td class="p-2 text-emerald-400">335+ Speed (Crucial Opener)</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Dark Trooper</td>
+                  <td class="p-2 text-red-300">Offense + Health</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2 text-emerald-400">10,000+ Physical Offense</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Gen. Veers (Lead)</td>
+                  <td class="p-2 text-sky-300">Speed + Potency</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Crit Damage</td>
+                  <td class="p-2">Potency</td>
+                  <td class="p-2 text-emerald-400">270+ Speed</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Range Trooper</td>
+                  <td class="p-2 text-sky-300">Speed + Health</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Protection %</td>
+                  <td class="p-2">Protection %</td>
+                  <td class="p-2 text-emerald-400">270+ Speed</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Moff Gideon</td>
+                  <td class="p-2 text-sky-300">Speed (Fastest possible)</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Protection %</td>
+                  <td class="p-2">Potency</td>
+                  <td class="p-2 text-emerald-400">345+ Speed</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Traya Sith Trio Squad Card -->
+        <div class="rounded-xl bg-slate-800/60 border border-slate-700/80 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 pb-3 mb-4">
+            <h3 class="font-title text-xl font-bold text-sky-300">Darth Traya (+ Savage Opress Omicron)</h3>
+            <span class="text-xs font-mono bg-purple-950 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded">Core Engine: Out-of-Turn Punishment & Isolate</span>
+          </div>
+          
+          <div class="mb-4">
+            <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 font-bold">Optimal Turn Sequence:</h4>
+            <ol class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-purple-400 font-mono">1. Darth Talon:</strong> Fast opener (+20 Sith speed passive), uses AoE stealth.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-purple-400 font-mono">2. Darth Traya:</strong> Special (Isolate) on the primary enemy engine.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-purple-400 font-mono">3. Darth Nihilus:</strong> Special (Drain Force) to increase cooldowns & prep Annihilate.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-purple-400 font-mono">4. Darth Sion:</strong> AoE Torment to cycle Held by Hatred taunt.</li>
+              <li class="bg-slate-900/80 p-2.5 rounded border border-slate-700/60"><strong class="text-purple-400 font-mono">5. Savage Opress:</strong> Cleanses debuffs on hit, finishes targets with Overpower.</li>
+            </ol>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-700/60 rounded">
+              <thead class="bg-slate-900/90 text-slate-300 font-mono">
+                <tr>
+                  <th class="p-2 border-b border-slate-700">Toon</th>
+                  <th class="p-2 border-b border-slate-700">Sets</th>
+                  <th class="p-2 border-b border-slate-700">Arrow</th>
+                  <th class="p-2 border-b border-slate-700">Triangle</th>
+                  <th class="p-2 border-b border-slate-700">Cross</th>
+                  <th class="p-2 border-b border-slate-700">Target Stat Baselines</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 font-mono text-slate-300">
+                <tr>
+                  <td class="p-2 font-bold text-white">Traya (Lead)</td>
+                  <td class="p-2 text-emerald-300">Health + Defense</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2 text-emerald-400">80k+ Health, 260+ Speed</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Savage Opress</td>
+                  <td class="p-2 text-emerald-300">Health x3</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2 text-emerald-400">120k+ Health, 65%+ Armor</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Nihilus</td>
+                  <td class="p-2 text-sky-300">Speed + Health</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2">Health %</td>
+                  <td class="p-2 text-emerald-400">110k+ Health, 275+ Speed</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Darth Talon</td>
+                  <td class="p-2 text-sky-300">Speed + Health</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Crit Damage</td>
+                  <td class="p-2">Offense %</td>
+                  <td class="p-2 text-emerald-400">315+ Speed</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-white">Darth Sion</td>
+                  <td class="p-2 text-blue-300">Defense x2 + Health</td>
+                  <td class="p-2">Speed</td>
+                  <td class="p-2">Defense %</td>
+                  <td class="p-2">Defense %</td>
+                  <td class="p-2 text-emerald-400">High Armor & Health</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 5: Master Omicron Tier List -->
+    <section id="omicrons" class="sw-border bg-slate-900/80 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs px-2.5 py-1 rounded bg-amber-500/20 text-amber-400 font-mono font-bold uppercase">Section 05</span>
+        <h2 class="text-2xl font-bold text-white tracking-wide">Master Omicron Priority Tier List</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Tier S+ Card -->
+        <div class="p-5 rounded-xl bg-slate-800/80 border border-amber-500/50 shadow-lg shadow-amber-950/20">
+          <div class="flex items-center justify-between mb-4 border-b border-amber-500/30 pb-2">
+            <h3 class="font-title text-lg font-bold text-amber-300">Tier S+ (GL Killers / Core)</h3>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-400/40">Must-Have</span>
+          </div>
+          <ul class="text-xs space-y-3">
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Darth Traya (Unique - Lord of Betrayal)</div>
+              <div class="text-slate-400 mt-1">GAC: Punishes out-of-turn attacks, grants massive Protection Up, counter-attacks, and isolate cooldown refunds.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Savage Opress (Unique - Brute)</div>
+              <div class="text-slate-400 mt-1">GAC: Unlocks solo/duo capability. Cleanse on damage, TM gain, and instant-kill threshold.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Captain Rex (Unique - The Lost Commander)</div>
+              <div class="text-slate-400 mt-1">GAC: Elevates Phoenix into a high-tier counter against Reva Inquisitors.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Wampa (Unique - Cornered Beast)</div>
+              <div class="text-slate-400 mt-1">GAC: Turns Wampa into a solo wrecker against Iden, Mon Mothma, SEE, and Grievous.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Starkiller (Unique - There Is No Conflict)</div>
+              <div class="text-slate-400 mt-1">GAC: Required for Starkiller to pull down the Star Destroyer and counter Rey.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tier S Card -->
+        <div class="p-5 rounded-xl bg-slate-800/80 border border-sky-500/40">
+          <div class="flex items-center justify-between mb-4 border-b border-sky-500/30 pb-2">
+            <h3 class="font-title text-lg font-bold text-sky-300">Tier S (High Value Staples)</h3>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-400/40">Priority</span>
+          </div>
+          <ul class="text-xs space-y-3">
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Qui-Gon Jinn (Lead - Agility Training)</div>
+              <div class="text-slate-400 mt-1">GAC: Trade threat. If QGJ dies, JKA gets +400% offense and a bonus turn to wipe the enemy team.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Iden Versio (Unique - First Sister)</div>
+              <div class="text-slate-400 mt-1">GAC: Free team revive, turn meter push, and dispels. Makes leftover Troopers a nightmare.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Merrin (Special 2 - Magick of the Shadows)</div>
+              <div class="text-slate-400 mt-1">GAC: Continuous revives, full cleanses, and neutralizes enemy turn-meter manipulation.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Juhani (Special - Battle Meditation)</div>
+              <div class="text-slate-400 mt-1">Territory Wars: Creates an unkillable taunt wall under Starkiller. Essential guild TW staple.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Zam Wesell (Unique - Shapeshifter)</div>
+              <div class="text-slate-400 mt-1">GAC: Massive speed and mastery boost to all Bounty Hunters.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tier A Card -->
+        <div class="p-5 rounded-xl bg-slate-800/80 border border-slate-700/80">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+            <h3 class="font-title text-lg font-bold text-slate-300">Tier A (Niche & TW Staples)</h3>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-600">Specialized</span>
+          </div>
+          <ul class="text-xs space-y-3">
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Poggle the Lesser (Unique - Hive Mind)</div>
+              <div class="text-slate-400 mt-1">Territory Wars: Summons B1 Droid to cycle endless attacks for Geonosians.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Dash Rendar (Lead - Prepared for Anything)</div>
+              <div class="text-slate-400 mt-1">GAC: Stat sharing and multi-assists for Scoundrel squads.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Fulcrum Ahsoka (Unique - Whirlwind)</div>
+              <div class="text-slate-400 mt-1">Territory Wars: Solo offensive wrecking ball with buff immunity and infinite counter-attacks.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Admiral Raddus (Unique - Transmission from Scarif)</div>
+              <div class="text-slate-400 mt-1">GAC: Uploads Hope rapidly to allow Rogue One to secure GL kills.</div>
+            </li>
+            <li class="p-2.5 bg-slate-900/80 rounded border border-slate-700/60">
+              <div class="font-bold text-white">Captain Phasma (Lead - Veteran Commander)</div>
+              <div class="text-slate-400 mt-1">Territory Wars: Relentless First Order assist trains.</div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 mt-16 pt-6 text-center text-xs text-slate-500 font-mono">
+    SWGOH Ultimate Combat Handbook • Ready for Grand Arena Championship (GAC) & Territory Wars (TW)
+  </footer>
+
+</body>
+</html>
