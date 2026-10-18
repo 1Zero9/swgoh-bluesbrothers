@@ -1,5 +1,6 @@
 import type { CalloutRoster } from "@/lib/tb-callout-match";
 import { allUnitNames } from "@/lib/wins";
+import unitNameData from "@/lib/unit-names.json";
 
 export type UnitMatch = { id: string; name: string };
 export type Holder = { name: string; stars: number; relic: number; gear: number };
@@ -31,6 +32,10 @@ export function resolveUnit(input: string, units: UnitMatch[] = allUnitNames()):
   if (byId) return byId;
   const byName = units.find((unit) => norm(unit.name) === norm(text));
   if (byName) return byName;
+  // The site shortens a few names ("Jedi Master Luke"); web pages and the AI use the game's full ones ("Jedi Master Luke Skywalker").
+  const official = Object.entries(unitNameData as Record<string, string>).find(([, name]) => norm(name) === norm(text));
+  const byOfficial = official ? units.find((unit) => unit.id === official[0]) : undefined;
+  if (byOfficial) return byOfficial;
   return searchUnits(text, 1, units)[0] ?? null;
 }
 

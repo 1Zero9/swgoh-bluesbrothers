@@ -22,7 +22,6 @@ const STARTER_LEADERS = [
   "Captain Rex", "Commander Ahsoka Tano", "Ahsoka Tano (Fulcrum)", "Qi'ra", "Wat Tambor", "Jabba the Hutt",
 ];
 
-const norm = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 type Row = { name: string; state: "waiting" | "running" | "done" | "skipped" | "failed"; note?: string };
 
 /** Officers: ask B-Lue3 to search the web for counters to one enemy squad. Everything he finds goes to the queue below for review. */
@@ -51,8 +50,8 @@ export default function ResearchPanel({ onDone = () => undefined }: { onDone?: (
       if (stopRef.current) break;
       const name = list[index].name;
       update(index, { state: "running" });
-      const found = (await fetch(`/api/who-has/units?q=${encodeURIComponent(name)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null)) as { units?: PickedUnit[] } | null;
-      const unit = found?.units?.find((u) => norm(u.name) === norm(name)) ?? null;
+      const found = (await fetch(`/api/who-has/units?resolve=1&q=${encodeURIComponent(name)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null)) as { units?: PickedUnit[] } | null;
+      const unit = found?.units?.[0] ?? null;
       if (!unit) { update(index, { state: "skipped", note: "not a unit name I recognise" }); continue; }
       const response = await fetch("/api/knowledge/research", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, leaderUnitId: unit.id }) }).catch(() => null);
       const data = (await response?.json().catch(() => null)) as { ok?: boolean; report?: Report; error?: string } | null;

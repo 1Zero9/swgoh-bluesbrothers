@@ -2,6 +2,10 @@
 
 This project uses semantic versioning while it is under active development.
 
+## 1.48.1 — 2026-10-18
+
+- **Research no longer drops counters over a unit's name.** The site shows a few units under a shorter name than the game uses (for example "Jedi Master Luke" for the game's "Jedi Master Luke Skywalker"), and web research uses the game's names, so a counter involving one was set aside as "isn't a unit I recognise". The site now understands both names. The "Research the popular squads" list uses the same matching, so none of its squads are skipped for this.
+
 ## 1.48.0 — 2026-10-18
 
 - **A "something to review" badge in the menu (officers).** An orange number shows how many counters and tips are waiting for a check: next to **Review queue** in the left menu (and on the **Officers** heading when it is folded), on the **More** tab on a phone, and next to Review queue in the More menu. It disappears when the queue is empty and updates each time you open a page.
