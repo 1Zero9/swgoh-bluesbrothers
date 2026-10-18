@@ -14,9 +14,16 @@ export function adminEnvProblems(env = process.env.SITE_ADMIN_DISCORD_ID): strin
   return (env ?? "").split(",").map((id) => id.replace(/["'\s]/g, "")).filter((id) => id && !/^\d{15,25}$/.test(id));
 }
 
-/** Admin if ANY Discord account linked to the signed-in member (the main one or an extra one) is on the list. */
-export function isSiteAdmin(access: Pick<ViewerAccess, "discordUserId"> & { discordUserIds?: string[] }, env = process.env.SITE_ADMIN_DISCORD_ID): boolean {
-  const ids = adminIds(env);
-  const mine = [access.discordUserId, ...(access.discordUserIds ?? [])].filter((id): id is string => Boolean(id)).map(String);
-  return mine.some((id) => ids.includes(id));
+/**
+ * Admin only if the Discord account this session actually signed in with is on the list. Not "a player linked to that account": a personal
+ * sign-in link, an extra account added to the player, or an old session without the account can never be the admin.
+ */
+export function isSiteAdmin(access: Pick<ViewerAccess, "sessionDiscordUserId">, env = process.env.SITE_ADMIN_DISCORD_ID): boolean {
+  return Boolean(access.sessionDiscordUserId) && adminIds(env).includes(String(access.sessionDiscordUserId));
+}
+
+/** True when any of these Discord accounts is the site admin's, so nobody can be given a sign-in as the admin's player. */
+export function includesAdminAccount(discordIds: (string | null | undefined)[], env = process.env.SITE_ADMIN_DISCORD_ID): boolean {
+  const admin = adminIds(env);
+  return discordIds.some((id) => Boolean(id) && admin.includes(String(id)));
 }

@@ -4,6 +4,7 @@ import {
   LINK_COOKIE_NAME,
   MEMBER_COOKIE_NAME,
   verifyLinkCookieValue,
+  memberSessionDiscordId,
   verifyMemberCookieValue,
 } from "@/lib/member-auth";
 import { whenDatabaseDown, type Remembered } from "@/lib/access-fallback";
@@ -22,6 +23,8 @@ export type ViewerAccess = {
   discordUserId?: string;
   /** Every Discord account linked to this member (the main one and any extra ones). */
   discordUserIds?: string[];
+  /** The Discord account THIS session signed in with. The site admin check uses only this. */
+  sessionDiscordUserId?: string;
   discordUsername?: string;
   membershipState?: "ACTIVE" | "LEFT";
 };
@@ -68,17 +71,20 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
     // 2. Check Member status
     const memberCookie = store.get(MEMBER_COOKIE_NAME)?.value;
     const playerId = verifyMemberCookieValue(memberCookie);
+    const sessionDiscordUserId = memberSessionDiscordId(memberCookie);
+    // The cached lookups below are shared by every session of the same member, so the signed-in account always comes from this request.
+    const mine = (access: ViewerAccess): ViewerAccess => ({ ...access, sessionDiscordUserId });
 
     const recent = playerId ? remembered.get(playerId) : undefined;
     if (playerId && recent && Date.now() - recent.at < FRESH_MS) {
       const officer = await officerCheck;
-      return { ...recent.access, role: officer ? "OFFICER" : "MEMBER", isAuthorized: true, isOfficer: officer, isMember: true };
+      return mine({ ...recent.access, role: officer ? "OFFICER" : "MEMBER", isAuthorized: true, isOfficer: officer, isMember: true });
     }
     const playerLookup = playerId ? lookupPlayer(playerId) : Promise.resolve(null);
     const [isOfficer, player] = await Promise.all([officerCheck, playerLookup]);
 
     // The database could not be reached: stay signed in as the member the cookie says they are.
-    if (player === DOWN && playerId) return whenDatabaseDown(playerId, isOfficer, remembered.get(playerId));
+    if (player === DOWN && playerId) return mine(whenDatabaseDown(playerId, isOfficer, remembered.get(playerId)));
     const found = player === DOWN ? null : player;
 
     {
@@ -98,8 +104,8 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
             discordUserIds: [found.discordUserId, ...found.extraDiscordAccounts.map((account) => account.discordUserId)].filter((id): id is string => Boolean(id)),
             membershipState: "ACTIVE",
           };
-          remembered.set(found.id, { access: result, at: Date.now() });
-          return result;
+          remembered.set(found.id, { access: { ...result, sessionDiscordUserId: undefined }, at: Date.now() });
+          return mine(result);
         } else {
           // Member has LEFT the guild -> Revoked access
           return {
@@ -111,6 +117,7 @@ export const getViewerAccess = cache(async (): Promise<ViewerAccess> => {
             playerName: found.currentName,
             discordUserId: found.discordUserId ?? undefined,
             membershipState: "LEFT",
+            sessionDiscordUserId,
           };
         }
       }
